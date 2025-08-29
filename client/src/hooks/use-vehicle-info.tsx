@@ -4,6 +4,12 @@ import { useState, useCallback, useRef } from 'react';
 // Isso evita múltiplas chamadas para a mesma placa
 const vehicleCache: Record<string, any> = {};
 
+// Função para limpar cache (útil em desenvolvimento)
+export function clearVehicleCache() {
+  Object.keys(vehicleCache).forEach(key => delete vehicleCache[key]);
+  console.log('[CACHE] Cache de veículos limpo');
+}
+
 interface VehicleInfo {
   // Suporte para nomes maiúsculos (direto da API externa)
   MARCA?: string;
@@ -20,6 +26,7 @@ interface VehicleInfo {
   cor?: string;
   placa?: string;
   error?: string;
+  message?: string;
 }
 
 interface UseVehicleInfoReturn {
@@ -28,6 +35,7 @@ interface UseVehicleInfoReturn {
   error: string | null;
   fetchVehicleInfo: (placa: string) => Promise<void>;
   resetVehicleInfo: () => void;
+  clearCache: () => void;
 }
 
 /**
@@ -43,6 +51,14 @@ export function useVehicleInfo(): UseVehicleInfoReturn {
   const resetVehicleInfo = useCallback(() => {
     setVehicleInfo(null);
     setError(null);
+  }, []);
+
+  // Função para limpar cache local e global
+  const clearCache = useCallback(() => {
+    clearVehicleCache();
+    setVehicleInfo(null);
+    setError(null);
+    lastFetchedPlateRef.current = null;
   }, []);
 
   // Referência para controlar a última placa buscada
@@ -159,6 +175,7 @@ export function useVehicleInfo(): UseVehicleInfoReturn {
     isLoading,
     error,
     fetchVehicleInfo,
-    resetVehicleInfo
+    resetVehicleInfo,
+    clearCache
   };
 }
