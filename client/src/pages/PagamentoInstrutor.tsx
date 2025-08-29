@@ -2,8 +2,12 @@ import { FC } from 'react';
 import Header from '../components/Header';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
+import { useScrollTop } from '@/hooks/use-scroll-top';
 
 const PagamentoInstrutor: FC = () => {
+  // Aplica o scroll para o topo quando o componente é montado
+  useScrollTop();
+  
   const [_, setLocation] = useLocation();
 
   return (

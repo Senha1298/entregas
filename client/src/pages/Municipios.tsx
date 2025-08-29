@@ -41,30 +41,11 @@ const Municipios: React.FC = () => {
       return;
     }
 
-    // Carregar municípios do estado do usuário
-    const estadoSigla = cepData.state;
-    
-    if (estadoSigla && municipiosPorEstado[estadoSigla as keyof typeof municipiosPorEstado]) {
-      const getRandomEntregas = () => Math.floor(Math.random() * (48 - 32 + 1)) + 32;
-      
-      const municipiosDoEstado = municipiosPorEstado[estadoSigla as keyof typeof municipiosPorEstado].map((nome: string) => ({
-        nome,
-        selecionado: false, // Inicialmente nenhum selecionado
-        entregas: getRandomEntregas() // Número aleatório de entregas entre 32 e 48
-      }));
-      
-      setMunicipios(municipiosDoEstado);
-    } else {
-      // Caso não encontre os municípios (raro, mas pode acontecer)
-      toast({
-        title: "Erro ao carregar municípios",
-        description: "Não conseguimos encontrar os municípios do seu estado.",
-        variant: "destructive",
-      });
-    }
-    
+    // Pular a seleção de municípios e ir direto para a oportunidade de trabalho
     setLoading(false);
-  }, [cepData, navigate, toast]);
+    // Mostrar automaticamente o modal de oportunidade de trabalho
+    setShowStartDateModal(true);
+  }, [cepData, navigate]);
 
   const toggleAllMunicipios = () => {
     // Verificar se todos estão selecionados
@@ -215,107 +196,12 @@ const Municipios: React.FC = () => {
       
       <div className="flex-grow container mx-auto py-8 w-full">
         <div className="w-full mx-auto p-6 mb-8">
-          <h1 className="text-2xl font-bold text-center mb-2 text-gray-800">Escolha onde retirar os pedidos</h1>
-          <p className="text-center text-gray-600 mb-6">
-            Selecione as cidades onde você pode retirar os pedidos no Centro de distribuição da Shopee. Em cada cidade abaixo está localizado um centro de distribuição e de acordo com a sua disponibilidade pode estar escolhendo mais de 1 centro para retirar os pedidos.
-          </p>
-          
-          <div className="mb-4 flex justify-between items-center">
-            <p className="text-sm font-medium text-gray-700">
-              {cepData?.state ? `Estado: ${cepData.state}` : 'Estado não identificado'}
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4 text-gray-800">Processando seu Cadastro...</h1>
+            <p className="text-gray-600 mb-6">
+              Aguarde, estamos verificando as oportunidades de trabalho disponíveis na sua região.
             </p>
-            <Button 
-              variant="outline" 
-              type="button"
-              onClick={toggleAllMunicipios}
-              className="text-xs py-1 h-8"
-            >
-              {municipios.every(m => m.selecionado) ? 'Desmarcar Todos' : 'Marcar Todos'}
-            </Button>
-          </div>
-          
-          <div className="border rounded-[3px] overflow-hidden p-4 relative">
-            <div className="max-h-[500px] overflow-y-auto custom-scrollbar">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-                {municipios.map((municipio, index) => (
-                  <div 
-                    key={index} 
-                    className={`p-2 sm:p-4 border rounded-[3px] cursor-pointer hover:bg-gray-50 transition-colors ${
-                      municipio.selecionado ? 'border-[#EE4E2E] bg-[#FFF8F6]' : 'border-gray-200'
-                    }`}
-                    onClick={() => toggleMunicipio(index)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs sm:text-sm font-medium text-gray-700 truncate max-w-[75%] sm:max-w-[80%]">
-                        {municipio.nome}
-                      </span>
-                      <Checkbox
-                        checked={municipio.selecionado}
-                        onCheckedChange={() => toggleMunicipio(index)}
-                        className="h-4 w-4 sm:h-5 sm:w-5 border-gray-300 rounded data-[state=checked]:bg-[#EE4E2E] data-[state=checked]:text-white"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          
-          {/* Estatísticas de entregas */}
-          {municipios.filter(m => m.selecionado).length > 0 && (
-            <Card className="mt-6 mb-6 p-4 border border-[#E83D2240] bg-[#FFF8F6]">
-              <div className="flex flex-col">
-                <h3 className="font-medium text-gray-800 mb-2">Previsão de Entregas</h3>
-                <div className="text-sm text-gray-700">
-                  <p>Quantidade média diária de entregas que podem ser destinadas a você:</p>
-                  <div className="mt-2 p-3 bg-white rounded-[3px] border border-[#E83D2220]">
-                    <div className="text-center mb-3 bg-[#FFF8F6] p-2 rounded-[3px]">
-                      <span className="font-medium text-[#E83D22]">A Shopee paga R$ 12,00 por entrega realizada</span>
-                    </div>
-                    
-                    {municipios.filter(m => m.selecionado).map((m, index) => (
-                      <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 last:mb-0">
-                        <span className="font-medium md:col-span-1">{m.nome}:</span>
-                        <span className="font-bold text-[#E83D22] md:col-span-1">
-                          {m.entregas} <span className="font-normal text-gray-700">entregas</span>
-                        </span>
-                        <span className="font-medium text-green-600 md:col-span-1">
-                          R$ {(m.entregas * 12).toFixed(2).replace('.', ',')} <span className="font-normal text-gray-700">/dia</span>
-                        </span>
-                      </div>
-                    ))}
-                    
-                    {municipios.filter(m => m.selecionado).length > 1 && (
-                      <div className="mt-3 pt-3 border-t border-[#E83D2220] grid grid-cols-1 md:grid-cols-3 gap-2">
-                        <span className="font-semibold">Total diário:</span>
-                        <span className="font-bold text-[#E83D22]">
-                          {municipios
-                            .filter(m => m.selecionado)
-                            .reduce((acc, m) => acc + m.entregas, 0)} <span className="font-normal text-gray-700">entregas</span>
-                        </span>
-                        <span className="font-semibold text-green-600">
-                          R$ {(municipios
-                            .filter(m => m.selecionado)
-                            .reduce((acc, m) => acc + m.entregas, 0) * 12).toFixed(2).replace('.', ',')} <span className="font-normal text-gray-700">/dia</span>
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          )}
-          
-          <div className="mt-6">
-            <Button
-              type="button"
-              onClick={handleSubmit}
-              className="w-full bg-[#E83D22] hover:bg-[#d73920] text-white font-medium py-6 text-base rounded-[3px]"
-              disabled={submitting}
-              style={{ height: '50px' }}
-            >
-              {submitting ? 'Processando...' : 'Prosseguir'}
-            </Button>
+            <div className="inline-block w-6 h-6 border-2 border-[#E83D22] border-t-transparent rounded-full animate-spin"></div>
           </div>
         </div>
       </div>
