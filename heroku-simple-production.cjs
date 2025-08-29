@@ -51,52 +51,9 @@ const mockRegions = [
   { name: "Tocantins", abbr: "TO", vacancies: 4 }
 ];
 
-let buildComplete = false;
+// Produção: assumir que build já foi feito durante deploy
+let buildComplete = true;
 let buildError = null;
-
-// Função para fazer build do frontend
-function buildFrontend() {
-  return new Promise((resolve, reject) => {
-    console.log('🏗️ Iniciando build do frontend...');
-    
-    const buildProcess = spawn('npx', ['vite', 'build', '--outDir', 'dist/public'], {
-      stdio: 'pipe'
-    });
-
-    let output = '';
-    let errorOutput = '';
-
-    buildProcess.stdout.on('data', (data) => {
-      const text = data.toString();
-      output += text;
-      console.log('Build:', text.trim());
-    });
-
-    buildProcess.stderr.on('data', (data) => {
-      const text = data.toString();
-      errorOutput += text;
-      console.log('Build Error:', text.trim());
-    });
-
-    buildProcess.on('close', (code) => {
-      if (code === 0) {
-        console.log('✅ Build concluído com sucesso!');
-        buildComplete = true;
-        resolve();
-      } else {
-        console.log('❌ Build falhou com código:', code);
-        buildError = errorOutput || 'Build falhou';
-        reject(new Error(buildError));
-      }
-    });
-
-    // Timeout de 5 minutos para o build
-    setTimeout(() => {
-      buildProcess.kill();
-      reject(new Error('Build timeout'));
-    }, 300000);
-  });
-}
 
 // Middleware para log
 app.use((req, res, next) => {
@@ -304,12 +261,11 @@ app.get('*', (req, res) => {
   const buildPath = path.join(__dirname, 'dist/public');
   const indexPath = path.join(buildPath, 'index.html');
   
-  // Se build foi concluído e arquivo existe
-  if (buildComplete && fs.existsSync(indexPath)) {
+  // Verificar se o index.html existe
+  if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
-  } 
-  // Se houve erro no build
-  else if (buildError) {
+  } else {
+    // Se não existe, mostrar página de erro simples
     res.status(503).type('html').send(`
     <!DOCTYPE html>
     <html lang="pt-BR">
@@ -344,107 +300,11 @@ app.get('*', (req, res) => {
     <body>
         <div class="container">
             <h1>Shopee Delivery Partners</h1>
-            <p>Erro no build da aplicação</p>
+            <p>Arquivos não encontrados</p>
             <div class="error">
-                <strong>Detalhes:</strong> ${buildError}
+                <strong>Status:</strong> Build não foi executado durante o deploy
             </div>
-            <button onclick="window.location.reload()">Tentar novamente</button>
-        </div>
-    </body>
-    </html>
-    `);
-  }
-  // Se build ainda não foi concluído
-  else {
-    res.type('html').send(`
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Shopee Delivery Partners - Preparando</title>
-        <style>
-            body {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-                margin: 0;
-                padding: 0;
-                background: linear-gradient(135deg, #E83D22 0%, #FF6B4A 100%);
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .container {
-                background: white;
-                padding: 3rem;
-                border-radius: 20px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-                text-align: center;
-                max-width: 500px;
-                width: 90%;
-            }
-            .loading {
-                display: inline-block;
-                width: 40px;
-                height: 40px;
-                border: 4px solid #f3f3f3;
-                border-top: 4px solid #E83D22;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-                margin-bottom: 2rem;
-            }
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            h1 { color: #E83D22; }
-            .progress {
-                background: #f0f0f0;
-                border-radius: 20px;
-                padding: 3px;
-                margin: 20px 0;
-                overflow: hidden;
-            }
-            .progress-bar {
-                background: linear-gradient(45deg, #E83D22, #FF6B4A);
-                height: 20px;
-                border-radius: 20px;
-                animation: progress 5s ease-in-out infinite;
-            }
-            @keyframes progress {
-                0% { width: 10%; }
-                50% { width: 80%; }
-                100% { width: 95%; }
-            }
-        </style>
-        <script>
-            function checkBuild() {
-                fetch('/health')
-                  .then(response => response.json())
-                  .then(data => {
-                    if (data.buildComplete) {
-                      window.location.reload();
-                    } else if (data.buildError) {
-                      document.querySelector('.container').innerHTML = 
-                        '<h1>Erro no Build</h1><p>' + data.buildError + '</p><button onclick="window.location.reload()">Tentar novamente</button>';
-                    } else {
-                      setTimeout(checkBuild, 3000);
-                    }
-                  })
-                  .catch(() => setTimeout(checkBuild, 5000));
-            }
-            setTimeout(checkBuild, 5000);
-        </script>
-    </head>
-    <body>
-        <div class="container">
-            <div class="loading"></div>
-            <h1>Shopee Delivery Partners</h1>
-            <p>Preparando sua aplicação React...</p>
-            <div class="progress">
-                <div class="progress-bar"></div>
-            </div>
-            <small>Fazendo build da aplicação. Isso pode levar alguns minutos.</small>
+            <p>Entre em contato com o suporte técnico.</p>
         </div>
     </body>
     </html>
@@ -452,24 +312,25 @@ app.get('*', (req, res) => {
   }
 });
 
-// Iniciar build e depois o servidor
-async function initialize() {
-  console.log('🚀 Iniciando servidor Heroku Simples...');
+// Inicializar servidor de produção
+function initialize() {
+  console.log('🚀 Iniciando servidor Shopee Delivery Partners (Produção)...');
   
-  // Iniciar servidor imediatamente para responder requisições
-  const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Servidor rodando na porta ${PORT}`);
-    console.log(`📦 Iniciando build em background...`);
-  });
+  const buildPath = path.join(__dirname, 'dist/public');
+  const indexPath = path.join(buildPath, 'index.html');
   
-  // Fazer build em background
-  try {
-    await buildFrontend();
-    console.log('🎉 Aplicação pronta! Frontend buildado com sucesso.');
-  } catch (error) {
-    console.log('💥 Erro no build:', error.message);
-    buildError = error.message;
+  if (fs.existsSync(indexPath)) {
+    console.log('✅ Arquivos estáticos encontrados em dist/public/');
+  } else {
+    console.log('⚠️  Arquivos estáticos não encontrados. Execute o build primeiro.');
   }
+  
+  // Iniciar servidor
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Servidor rodando na porta ${PORT}`);
+    console.log(`🌐 Ambiente: ${process.env.NODE_ENV || 'production'}`);
+    console.log(`📦 Servindo arquivos estáticos de: ${buildPath}`);
+  });
 }
 
 // Cleanup
