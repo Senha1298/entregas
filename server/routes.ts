@@ -756,7 +756,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Iniciando proxy para Pagnet...');
       
       // Processar os dados recebidos
-      const { name, cpf, email, phone, amount = 84.70, description = "Kit de Segurança Shopee Delivery" } = req.body;
+      const { name, cpf, email, phone, amount = 79.90, description = "Kit de Segurança Shopee Delivery" } = req.body;
       
       if (!name || !cpf) {
         return res.status(400).json({ error: 'Nome e CPF são obrigatórios' });
