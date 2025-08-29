@@ -96,50 +96,30 @@ export function useVehicleInfo(): UseVehicleInfoReturn {
       // Registrar a placa atual como a última consultada
       lastFetchedPlateRef.current = cleanedPlaca;
       
-      // Estratégia 1: Consulta segura via nosso próprio backend
-      console.log('[DEBUG] Tentando consulta via API segura do backend');
+      // Consulta via nosso próprio backend (funciona tanto no Replit quanto no Heroku)
+      console.log('[DEBUG] Tentando consulta via API do backend');
       try {
-        // Determinar URL base dependendo do ambiente
-        const baseUrl = window.location.hostname.includes('replit.dev') || 
-                      window.location.hostname === 'localhost' 
-                      ? '' : 'https://disparador-f065362693d3.herokuapp.com';
-        
-        const apiUrl = `${baseUrl}/api/vehicle-info/${cleanedPlaca}`;
+        // Para Heroku em produção, usar URL vazia (mesmo domínio)
+        // Para Replit, usar URL vazia também (mesmo domínio)
+        const apiUrl = `/api/vehicle-info/${cleanedPlaca}`;
         console.log(`[DEBUG] Fazendo consulta API: ${apiUrl}`);
         
         const backendResponse = await fetch(apiUrl);
         
         if (backendResponse.ok) {
           const data = await backendResponse.json();
+          console.log('[INFO] Dados do veículo obtidos via backend');
           setVehicleInfo(data);
           // Guardar no cache global
           vehicleCache[cleanedPlaca] = data;
           setIsLoading(false);
           return;
         } else {
-          console.log('[AVISO] API backend retornou status:', backendResponse.status);
+          console.log(`[AVISO] API backend retornou status: ${backendResponse.status}`);
+          throw new Error(`API retornou status ${backendResponse.status}`);
         }
       } catch (backendError) {
         console.error('[ERRO] Falha ao consultar API backend:', backendError);
-      }
-      
-      // Estratégia 2: Tentar via função serverless do Netlify (fallback)
-      console.log('[DEBUG] Tentando consulta via Netlify Function');
-      try {
-        const netlifyResponse = await fetch(`/vehicle-api/${cleanedPlaca}`);
-        
-        if (netlifyResponse.ok) {
-          const data = await netlifyResponse.json();
-          setVehicleInfo(data);
-          // Guardar no cache global
-          vehicleCache[cleanedPlaca] = data; 
-          setIsLoading(false);
-          return;
-        } else {
-          console.log('[AVISO] Netlify Function retornou status:', netlifyResponse.status);
-        }
-      } catch (netlifyError) {
-        console.error('[ERRO] Falha ao consultar Netlify Function:', netlifyError);
       }
       
       // Se chegou aqui, todas as tentativas falharam
