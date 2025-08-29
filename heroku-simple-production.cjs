@@ -77,23 +77,105 @@ app.get('/api/regions', (req, res) => {
   res.json(mockRegions);
 });
 
-app.get('/api/vehicle-info/:placa', (req, res) => {
-  const { placa } = req.params;
-  console.log(`Consultando veículo: ${placa}`);
+// Cache para consultas de veículos
+const vehicleInfoCache = {};
+
+app.get('/api/vehicle-info/:placa', async (req, res) => {
+  // Headers CORS
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
   
-  const mockVehicleData = {
-    MARCA: "VOLKSWAGEN",
-    MODELO: "GOL",
-    SUBMODELO: "1.0 MI",
-    VERSAO: "CITY",
-    ano: "2020",
-    anoModelo: "2020",
-    chassi: "9BWZZZ377VT004251",
-    codigoSituacao: "0",
-    cor: "BRANCA"
-  };
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
   
-  res.json(mockVehicleData);
+  try {
+    const { placa } = req.params;
+    
+    if (!placa) {
+      return res.status(400).json({ error: 'Placa do veículo não fornecida' });
+    }
+    
+    // Limpar a placa
+    const vehiclePlate = placa.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    
+    // Verificar cache
+    if (vehicleInfoCache[vehiclePlate]) {
+      console.log(`[CACHE] Usando dados em cache para placa: ${vehiclePlate}`);
+      return res.json(vehicleInfoCache[vehiclePlate]);
+    }
+    
+    console.log(`[INFO] Consultando informações do veículo com placa: ${vehiclePlate}`);
+    
+    // Verificar se existe API key
+    if (!process.env.VEHICLE_API_KEY) {
+      console.log('[AVISO] API Key de veículos não configurada, usando dados de teste');
+      const testData = {
+        marca: `Toyota (Teste)`,
+        modelo: "COROLLA", 
+        ano: "2022",
+        cor: "PRATA",
+        chassi: "TEST" + vehiclePlate.slice(-4),
+        situacao: "0",
+        message: "Dados de teste - configure VEHICLE_API_KEY no Heroku"
+      };
+      vehicleInfoCache[vehiclePlate] = testData;
+      return res.json(testData);
+    }
+    
+    // Tentar consultar API externa
+    const apiKey = process.env.VEHICLE_API_KEY;
+    const keyPreview = apiKey.substring(0, 5) + '...' + apiKey.substring(apiKey.length - 3);
+    console.log(`[DEBUG] API key presente: ${keyPreview}`);
+    
+    try {
+      console.log('[DEBUG] Tentando consulta direta com chave na URL');
+      const fetch = (await import('node-fetch')).default;
+      const apiUrl = `https://wdapi2.com.br/consulta/${vehiclePlate}/${apiKey}`;
+      
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'User-Agent': 'ShopeeDeliveryApp/1.0'
+        },
+        timeout: 5000
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('[INFO] Dados do veículo obtidos via API externa');
+        vehicleInfoCache[vehiclePlate] = data;
+        return res.json(data);
+      } else {
+        console.log(`[AVISO] API externa retornou status: ${response.status}`);
+      }
+    } catch (apiError) {
+      console.error('[ERRO] Falha na consulta de veículo:', apiError.message);
+    }
+    
+    // Fallback para dados de teste
+    console.log('[DEBUG] Fornecendo dados de veículo de teste para produção');
+    const fallbackData = {
+      marca: `Toyota (Teste)`,
+      modelo: "COROLLA",
+      ano: "2022", 
+      cor: "PRATA",
+      chassi: "TEST" + vehiclePlate.slice(-4),
+      situacao: "0",
+      message: "Dados de teste - API externa indisponível"
+    };
+    
+    vehicleInfoCache[vehiclePlate] = fallbackData;
+    res.json(fallbackData);
+    
+  } catch (error) {
+    console.error('[ERRO] Erro ao consultar veículo:', error);
+    res.status(500).json({ 
+      error: 'Erro ao consultar informações do veículo',
+      message: error.message
+    });
+  }
 });
 
 app.get('/api/check-ip-status', (req, res) => {
