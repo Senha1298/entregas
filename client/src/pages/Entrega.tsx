@@ -20,6 +20,7 @@ import { createPixPayment } from '../lib/payments-api';
 import { initFacebookPixel, trackEvent, trackPurchase, checkPaymentStatus } from '../lib/facebook-pixel';
 import EPIConfirmationModal from '@/components/EPIConfirmationModal';
 import EntregadorCracha from '@/components/EntregadorCracha';
+import QRCodeGenerator from '@/components/QRCodeGenerator';
 
 import kitEpiImage from '../assets/kit-epi-new.webp';
 import pixLogo from '../assets/pix-logo.png';
@@ -798,10 +799,11 @@ const Entrega: React.FC = () => {
                     alt="PIX Logo"
                     className="h-7 mb-2 mx-auto"
                   />
-                  <img 
-                    src={pixInfo.pixQrCode} 
+                  <QRCodeGenerator 
+                    value={pixInfo.pixCode} 
+                    size={160}
+                    className="mx-auto"
                     alt="QR Code PIX" 
-                    className="w-full max-w-[160px] h-auto mx-auto"
                   />
                 </div>
                 

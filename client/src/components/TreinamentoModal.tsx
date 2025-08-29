@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from 'wouter';
 import { API_BASE_URL } from '@/lib/api-config';
 import { createPixPaymentDirect } from '@/lib/for4payments-direct';
+import QRCodeGenerator from '@/components/QRCodeGenerator';
 
 interface TreinamentoModalProps {
   open: boolean;
@@ -381,10 +382,11 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                   <div className="bg-white p-3 rounded-md border border-gray-200 shadow-sm">
                     <h4 className="text-sm font-medium text-[#E83D22] mb-2 pb-1 border-b border-gray-100">Pagamento PIX</h4>
                     <div className="flex justify-center mb-2">
-                      <img 
-                        src={paymentInfo.pixQrCode} 
+                      <QRCodeGenerator 
+                        value={paymentInfo.pixCode} 
+                        size={160}
+                        className="border border-gray-200 rounded-md"
                         alt="QR Code PIX" 
-                        className="w-40 h-40 border border-gray-200 rounded-md"
                       />
                     </div>
                     <p className="text-xs text-gray-600 text-center mb-2">

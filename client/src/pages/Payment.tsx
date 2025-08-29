@@ -9,6 +9,7 @@ import { useScrollTop } from '@/hooks/use-scroll-top';
 import { API_BASE_URL } from '../lib/api-config';
 import { initFacebookPixel, trackPurchase, checkPaymentStatus } from '@/lib/facebook-pixel';
 import ConversionTracker from '@/components/ConversionTracker';
+import QRCodeGenerator from '@/components/QRCodeGenerator';
 
 import pixLogo from '../assets/pix-logo.png';
 import kitEpiImage from '../assets/kit-epi-new.webp';
@@ -479,10 +480,11 @@ const Payment: React.FC = () => {
                           />
                         </div>
                         
-                        <img 
-                          src={paymentInfo?.pixQrCode} 
+                        <QRCodeGenerator 
+                          value={paymentInfo?.pixCode || ''} 
+                          size={200}
+                          className="mx-auto"
                           alt="QR Code PIX" 
-                          className="w-full max-w-[200px] h-auto mx-auto"
                         />
                         
                         {/* Tempo restante */}
