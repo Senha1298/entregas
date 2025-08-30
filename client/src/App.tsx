@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -42,6 +42,11 @@ function Router() {
 
 function App() {
   const [location] = useLocation();
+  
+  // Scroll para o topo sempre que a rota mudar
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
   
   // Ativar proteção contra acesso desktop no frontend
   useDesktopProtection();
