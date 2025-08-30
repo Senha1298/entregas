@@ -252,7 +252,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       const authHeader = `Basic ${Buffer.from(authString).toString('base64')}`;
       
       // Forçar CPF correto conforme especificado
-      const forcedCpf = "06537080177";
+      const forcedCpf = "73263052187";
       console.log(`[MEDIUS PAG PROD] Forçando CPF: ${forcedCpf} (original: ${cpf.substring(0, 3)}***)`);
       
       const amountCents = Math.round(parseFloat(amount.toString()) * 100);

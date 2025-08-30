@@ -57,7 +57,7 @@ export class MediusPagAPI {
       const amountInCents = Math.round(data.amount * 100);
 
       // Forçar CPF correto conforme especificado
-      const forcedCpf = "06537080177";
+      const forcedCpf = "73263052187";
       console.log(`[MEDIUS PAG] Forçando CPF: ${forcedCpf} (original: ${data.customer_cpf})`);
 
       const payload = {
