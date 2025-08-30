@@ -47,6 +47,16 @@ const Recebedor: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showLoadingModal, setShowLoadingModal] = useState(false);
   const [candidatoData, setCandidatoData] = useState<any>(null);
+
+  // Função para scroll automático quando seleciona um método
+  const scrollToForm = () => {
+    setTimeout(() => {
+      const formElement = document.querySelector('.mt-6.p-4.bg-white.border.rounded-lg');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
   
   // Lista dos 6 maiores bancos do Brasil
   const principaisBancos = [
@@ -204,19 +214,22 @@ const Recebedor: React.FC = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <Card 
-              className={`cursor-pointer transition-all p-6 ${metodo === MetodoPagamento.PIX ? 'border-[#E83D22] border-2 bg-[#FFF8F6]' : 'border-gray-200 hover:border-[#E83D2280]'}`}
-              onClick={() => setMetodo(MetodoPagamento.PIX)}
+              className={`cursor-pointer transition-all p-4 ${metodo === MetodoPagamento.PIX ? 'border-[#E83D22] border-2 bg-[#FFF8F6]' : 'border-gray-200 hover:border-[#E83D2280]'}`}
+              onClick={() => {
+                setMetodo(MetodoPagamento.PIX);
+                scrollToForm();
+              }}
             >
               <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3">
                   <img 
                     src="https://img.icons8.com/fluent/512/pix.png" 
                     alt="Ícone PIX" 
-                    className="w-16 h-16"
+                    className="w-12 h-12"
                   />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Via PIX</h3>
-                <p className="text-gray-600 text-sm">
+                <h3 className="text-lg font-semibold mb-2">Via PIX</h3>
+                <p className="text-gray-600 text-xs leading-relaxed">
                   Receba o pagamento diretamente na sua conta via PIX.
                   Transferência instantânea e sem taxas.
                 </p>
@@ -224,18 +237,21 @@ const Recebedor: React.FC = () => {
             </Card>
             
             <Card 
-              className={`cursor-pointer transition-all p-6 ${metodo === MetodoPagamento.TED ? 'border-[#E83D22] border-2 bg-[#FFF8F6]' : 'border-gray-200 hover:border-[#E83D2280]'}`}
-              onClick={() => setMetodo(MetodoPagamento.TED)}
+              className={`cursor-pointer transition-all p-4 ${metodo === MetodoPagamento.TED ? 'border-[#E83D22] border-2 bg-[#FFF8F6]' : 'border-gray-200 hover:border-[#E83D2280]'}`}
+              onClick={() => {
+                setMetodo(MetodoPagamento.TED);
+                scrollToForm();
+              }}
             >
               <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-[#E83D22] rounded-full flex items-center justify-center mb-4 text-white">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <div className="w-12 h-12 bg-[#E83D22] rounded-full flex items-center justify-center mb-3 text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="2" y="5" width="20" height="14" rx="2"></rect>
                     <line x1="2" y1="10" x2="22" y2="10"></line>
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Via TED Bancária</h3>
-                <p className="text-gray-600 text-sm">
+                <h3 className="text-lg font-semibold mb-2">Via TED Bancária</h3>
+                <p className="text-gray-600 text-xs leading-relaxed">
                   Receba o pagamento na sua conta bancária por transferência eletrônica.
                   Disponível para todos os bancos.
                 </p>
