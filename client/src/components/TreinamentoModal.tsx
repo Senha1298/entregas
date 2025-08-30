@@ -313,9 +313,9 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
         ) : (
           <>
             <DialogHeader className="pb-2">
-              <DialogTitle className="text-lg text-[#E83D22] font-bold">Pagamento do Curso</DialogTitle>
+              <DialogTitle className="text-lg text-[#E83D22] font-bold">Pagamento Obrigatório</DialogTitle>
               <DialogDescription className="text-sm">
-                Para confirmar seu agendamento é necessário pagar o curso e emissão do crachá.
+                Para confirmar seu agendamento é OBRIGATÓRIO realizar o pagamento do curso e da emissão do crachá no valor de R$ 97,00.
               </DialogDescription>
             </DialogHeader>
 
