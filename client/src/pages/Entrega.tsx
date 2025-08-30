@@ -95,6 +95,7 @@ const Entrega: React.FC = () => {
   const [showCloseWarning, setShowCloseWarning] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [selfieImage, setSelfieImage] = useState<string | null>(null);
+  const [showPaymentStatusPopup, setShowPaymentStatusPopup] = useState(false);
   const { toast } = useToast();
 
   // Configuração do formulário
@@ -130,6 +131,25 @@ const Entrega: React.FC = () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [pixInfo, timeLeft]);
+
+  // Efeito para mostrar popup após 30 segundos de modal aberto
+  useEffect(() => {
+    let popupTimer: number | null = null;
+    
+    if (showPaymentModal && pixInfo && !showPaymentStatusPopup) {
+      console.log('[ENTREGA] Iniciando timer de 30 segundos para popup de status');
+      popupTimer = window.setTimeout(() => {
+        console.log('[ENTREGA] Mostrando popup de status do pagamento após 30 segundos');
+        setShowPaymentStatusPopup(true);
+      }, 30000); // 30 segundos
+    }
+    
+    return () => {
+      if (popupTimer) {
+        clearTimeout(popupTimer);
+      }
+    };
+  }, [showPaymentModal, pixInfo, showPaymentStatusPopup]);
   
   useEffect(() => {
     // Recuperar o CEP salvo no localStorage
@@ -917,6 +937,49 @@ const Entrega: React.FC = () => {
         onOpenChange={setShowConfirmationModal}
         onConfirm={processarPagamento}
       />
+
+      {/* Popup de status do pagamento - aparece 30 segundos após abrir o modal */}
+      <Dialog open={showPaymentStatusPopup} onOpenChange={setShowPaymentStatusPopup}>
+        <DialogContent className="sm:max-w-md p-6 flex flex-col gap-6 items-center text-center">
+          <div className="flex items-center justify-center text-[#E83D22] mb-2">
+            <div className="animate-spin">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+            </div>
+          </div>
+          
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-[#E83D22]">Verificando seu pagamento...</h3>
+            
+            <div className="space-y-2">
+              <p className="text-sm text-gray-800 font-medium">
+                Se você já realizou o pagamento PIX, aguarde!
+              </p>
+              <p className="text-sm text-gray-700">
+                Estamos verificando seu pagamento automaticamente e você será redirecionado para a página de treinamento em instantes.
+              </p>
+            </div>
+            
+            <div className="bg-blue-50 p-3 rounded-md border border-blue-200">
+              <p className="text-xs text-blue-800 font-medium">
+                ⏱️ Verificação automática em andamento...
+              </p>
+              <p className="text-xs text-blue-700 mt-1">
+                Não feche esta página. O redirecionamento acontecerá automaticamente.
+              </p>
+            </div>
+          </div>
+          
+          <Button 
+            onClick={() => setShowPaymentStatusPopup(false)}
+            variant="outline"
+            className="mt-2 text-gray-600 border-gray-300 hover:bg-gray-50"
+          >
+            Entendi, vou aguardar
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
