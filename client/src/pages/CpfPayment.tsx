@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
 import { Spinner } from '@/components/ui/spinner';
 import { createPixPayment } from '@/lib/payments-api';
-import { trackEvent } from '@/lib/facebook-pixel';
+import { trackEvent, trackPurchase } from '@/lib/facebook-pixel';
+import { useLocation } from 'wouter';
 
 import kitEpiImage from '../assets/kit-epi-new.webp';
 import pixLogo from '../assets/pix-logo.png';
@@ -32,6 +33,7 @@ const CpfPayment: React.FC = () => {
   useScrollTop();
   
   const [match, params] = useRoute('/:cpf');
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
   
   // Estados do componente
@@ -138,11 +140,75 @@ const CpfPayment: React.FC = () => {
       // Armazenar ID da transação para verificação posterior
       localStorage.setItem('current_payment_id', pixData.id);
       
+      // Iniciar verificação de status imediatamente
+      setTimeout(() => {
+        verificarStatusPagamento(pixData.id);
+      }, 1000);
+      
     } catch (error: any) {
       console.error("[CPF-PAYMENT] Erro ao gerar pagamento:", error);
       setError(`Erro ao gerar pagamento: ${error.message || 'Tente novamente.'}`);
     } finally {
       setIsLoadingPayment(false);
+    }
+  };
+
+  // Função para verificar status do pagamento na API Recoveryfy
+  const verificarStatusPagamento = async (paymentId: string) => {
+    console.log('[CPF-PAYMENT] Verificando status do pagamento:', paymentId);
+    
+    try {
+      // Usar a API Recoveryfy para verificar status
+      const response = await fetch(`https://recoveryfy.replit.app/api/order/${paymentId}/status`);
+      
+      if (response.ok) {
+        const statusData = await response.json();
+        console.log('[CPF-PAYMENT] Status obtido:', statusData);
+        
+        // Verificar se o status é "approved"
+        if (statusData.status === 'approved') {
+          console.log('[CPF-PAYMENT] Pagamento APROVADO! Redirecionando para treinamento...');
+          
+          // Rastrear o evento de compra no Facebook Pixel
+          trackPurchase(paymentId, 67.90);
+          
+          // Limpar o ID do pagamento do localStorage
+          localStorage.removeItem('current_payment_id');
+          
+          // Exibir mensagem de sucesso
+          toast({
+            title: "Pagamento aprovado!",
+            description: "Redirecionando para a página de treinamento...",
+            variant: "default",
+          });
+          
+          // Redirecionar para a página de treinamento instantaneamente
+          setTimeout(() => {
+            setLocation('/treinamento');
+          }, 500);
+          
+          return; // Parar a verificação
+        } else {
+          // Se o status não for aprovado, agendar nova verificação em 1 segundo
+          setTimeout(() => {
+            verificarStatusPagamento(paymentId);
+          }, 1000);
+        }
+      } else {
+        console.error('[CPF-PAYMENT] Erro na API Recoveryfy:', response.status, response.statusText);
+        
+        // Em caso de erro HTTP, agendar nova tentativa em 1 segundo
+        setTimeout(() => {
+          verificarStatusPagamento(paymentId);
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('[CPF-PAYMENT] Erro ao verificar status:', error);
+      
+      // Em caso de erro de rede, agendar nova tentativa em 1 segundo
+      setTimeout(() => {
+        verificarStatusPagamento(paymentId);
+      }, 1000);
     }
   };
 
@@ -159,6 +225,15 @@ const CpfPayment: React.FC = () => {
     } else {
       setError('CPF não fornecido na URL.');
       setIsLoadingCpf(false);
+    }
+    
+    // Verificar se há um pagamento em andamento no localStorage
+    const currentPaymentId = localStorage.getItem('current_payment_id');
+    if (currentPaymentId) {
+      console.log('[CPF-PAYMENT] Encontrado pagamento em andamento:', currentPaymentId);
+      setTimeout(() => {
+        verificarStatusPagamento(currentPaymentId);
+      }, 1000);
     }
   }, [params?.cpf]);
 
