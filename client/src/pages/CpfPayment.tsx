@@ -361,7 +361,7 @@ const CpfPayment: React.FC = () => {
                   {/* Instruções */}
                   <div className="bg-red-50 p-2 rounded-md border border-red-300">
                     <p className="text-xs text-red-800 text-center">
-                      Após o pagamento, você receberá uma confirmação por email.
+                      Após o pagamento, retorne a esta página para finalizar o cadastro.
                     </p>
                   </div>
                 </div>
