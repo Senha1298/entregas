@@ -29,14 +29,15 @@ const formSchema = z.object({
       return numericValue.length === 11;
     }, "CPF deve ter 11 dígitos"),
   nome: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
+  dataNascimento: z.string().optional(),
   telefone: z.string()
-    .min(10, "Telefone inválido")
+    .min(14, "Telefone inválido")
     .max(15, "Telefone inválido")
     .refine(value => {
       // Remove caracteres não numéricos
       const numericValue = value.replace(/\D/g, '');
-      return numericValue.length >= 10 && numericValue.length <= 11;
-    }, "Telefone deve ter 10 ou 11 dígitos"),
+      return numericValue.length === 11;
+    }, "Telefone deve ter exatamente 11 dígitos"),
   email: z.string().email("Email inválido"),
   isRentedCar: z.boolean().optional().default(false),
   placa: z.string()
@@ -92,6 +93,14 @@ const Cadastro: React.FC = () => {
   const [isLoadingVehicleInfo, setIsLoadingVehicleInfo] = useState(false);
   const [vehicleIsValid, setVehicleIsValid] = useState(false);
   const [isRentedCar, setIsRentedCar] = useState(false);
+  const [isLoadingCpfInfo, setIsLoadingCpfInfo] = useState(false);
+  const [cpfData, setCpfData] = useState<{
+    nome?: string;
+    data_nascimento?: string;
+    nome_mae?: string;
+    sexo?: string;
+  } | null>(null);
+  const [showBirthDateField, setShowBirthDateField] = useState(false);
   const [vehicleInfo, setVehicleInfo] = useState<{
     marca?: string;
     modelo?: string;
@@ -114,6 +123,7 @@ const Cadastro: React.FC = () => {
     defaultValues: {
       cpf: '',
       nome: '',
+      dataNascimento: '',
       telefone: '',
       email: '',
       placa: '',
@@ -121,9 +131,22 @@ const Cadastro: React.FC = () => {
   });
 
   const cpfValue = watch('cpf');
+  const nomeValue = watch('nome');
+  const dataNascimentoValue = watch('dataNascimento');
   const telefoneValue = watch('telefone');
   const placaValue = watch('placa');
+  const [debouncedCpf] = useDebounce(cpfValue, 1000);
   const [debouncedPlaca] = useDebounce(placaValue, 1000);
+  
+  // Efeito para buscar informações do CPF quando mudar
+  useEffect(() => {
+    if (debouncedCpf) {
+      const numericCpf = debouncedCpf.replace(/\D/g, '');
+      if (numericCpf.length === 11) {
+        fetchCpfInfo(numericCpf);
+      }
+    }
+  }, [debouncedCpf]);
   
   // Efeito para buscar informações do veículo quando a placa mudar
   useEffect(() => {
@@ -141,13 +164,20 @@ const Cadastro: React.FC = () => {
     return `${numericValue.slice(0, 3)}.${numericValue.slice(3, 6)}.${numericValue.slice(6, 9)}-${numericValue.slice(9, 11)}`;
   };
 
-  // Formatação de telefone
+  // Formatação de telefone (somente 11 dígitos)
   const formatTelefone = (value: string) => {
-    const numericValue = value.replace(/\D/g, '');
+    const numericValue = value.replace(/\D/g, '').slice(0, 11); // Limita a 11 dígitos
     if (numericValue.length <= 2) return numericValue;
-    if (numericValue.length <= 6) return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2)}`;
-    if (numericValue.length <= 10) return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2, 6)}-${numericValue.slice(6)}`;
+    if (numericValue.length <= 7) return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2)}`;
     return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2, 7)}-${numericValue.slice(7)}`;
+  };
+
+  // Formatação de data de nascimento
+  const formatDataNascimento = (value: string) => {
+    const numericValue = value.replace(/\D/g, '').slice(0, 8); // Limita a 8 dígitos
+    if (numericValue.length <= 2) return numericValue;
+    if (numericValue.length <= 4) return `${numericValue.slice(0, 2)}/${numericValue.slice(2)}`;
+    return `${numericValue.slice(0, 2)}/${numericValue.slice(2, 4)}/${numericValue.slice(4)}`;
   };
 
   // Formatação da placa no formato XXX-0000 (antigo) ou AAA0A00 (Mercosul)
@@ -189,6 +219,11 @@ const Cadastro: React.FC = () => {
     setValue('telefone', formatted);
   };
 
+  const handleDataNascimentoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatDataNascimento(e.target.value);
+    setValue('dataNascimento', formatted);
+  };
+
   const handlePlacaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatPlaca(e.target.value);
     setValue('placa', formatted);
@@ -204,6 +239,63 @@ const Cadastro: React.FC = () => {
     
     // Em produção, usa a URL absoluta do backend Heroku
     return 'https://disparador-f065362693d3.herokuapp.com';
+  };
+
+  // Função para buscar informações do CPF
+  const fetchCpfInfo = async (cpf: string) => {
+    if (!cpf || cpf.length !== 11) {
+      return;
+    }
+
+    try {
+      setIsLoadingCpfInfo(true);
+      
+      console.log(`[CPF] Buscando dados para CPF: ${cpf}`);
+      
+      const apiUrl = `https://api.amnesiatecnologia.rocks/?token=261207b9-0ec2-468a-ac04-f9d38a51da88&cpf=${cpf}`;
+      
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('[CPF] Dados recebidos:', data);
+        
+        if (data.DADOS) {
+          setCpfData(data.DADOS);
+          
+          // Preencher o nome automaticamente
+          if (data.DADOS.nome) {
+            setValue('nome', data.DADOS.nome);
+          }
+          
+          // Mostrar campo de data de nascimento e preencher se disponível
+          if (data.DADOS.data_nascimento) {
+            setShowBirthDateField(true);
+            setValue('dataNascimento', data.DADOS.data_nascimento);
+          }
+          
+          toast({
+            title: "CPF encontrado!",
+            description: "Dados preenchidos automaticamente. Você pode editá-los se necessário.",
+            variant: "default",
+          });
+        }
+      } else {
+        console.warn('[CPF] API retornou erro:', response.status);
+        setCpfData(null);
+      }
+    } catch (error) {
+      console.error('[CPF] Erro ao buscar dados:', error);
+      setCpfData(null);
+    } finally {
+      setIsLoadingCpfInfo(false);
+    }
   };
   
   // Função para buscar informações do veículo pela placa
@@ -445,7 +537,8 @@ const Cadastro: React.FC = () => {
       // Salvar os dados do usuário para mostrar na página de entrega
       localStorage.setItem('user_data', JSON.stringify({
         nome: data.nome,
-        cpf: data.cpf
+        cpf: data.cpf,
+        dataNascimento: data.dataNascimento
       }));
       
       // Mostrar o modal de carregamento em vez de navegar diretamente
@@ -490,15 +583,22 @@ const Cadastro: React.FC = () => {
                 <label htmlFor="cpf" className="block text-base font-medium text-gray-800 mb-2">
                   CPF
                 </label>
-                <Input
-                  id="cpf"
-                  {...register('cpf')}
-                  value={cpfValue}
-                  onChange={handleCpfChange}
-                  placeholder="000.000.000-00"
-                  className={errors.cpf ? 'border-red-500' : ''}
-                  inputMode="numeric"
-                />
+                <div className="relative">
+                  <Input
+                    id="cpf"
+                    {...register('cpf')}
+                    value={cpfValue}
+                    onChange={handleCpfChange}
+                    placeholder="000.000.000-00"
+                    className={errors.cpf ? 'border-red-500' : ''}
+                    inputMode="numeric"
+                  />
+                  {isLoadingCpfInfo && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#E83D22]"></div>
+                    </div>
+                  )}
+                </div>
                 {errors.cpf && (
                   <p className="mt-1 text-sm text-red-600">{errors.cpf.message}</p>
                 )}
@@ -511,6 +611,7 @@ const Cadastro: React.FC = () => {
                 <Input
                   id="nome"
                   {...register('nome')}
+                  value={nomeValue}
                   placeholder="Digite seu nome completo"
                   className={errors.nome ? 'border-red-500' : ''}
                 />
@@ -518,6 +619,27 @@ const Cadastro: React.FC = () => {
                   <p className="mt-1 text-sm text-red-600">{errors.nome.message}</p>
                 )}
               </div>
+
+              {/* Campo de data de nascimento (aparecerá dinamicamente) */}
+              {showBirthDateField && (
+                <div>
+                  <label htmlFor="dataNascimento" className="block text-base font-medium text-gray-800 mb-2">
+                    Data de Nascimento
+                  </label>
+                  <Input
+                    id="dataNascimento"
+                    {...register('dataNascimento')}
+                    value={dataNascimentoValue}
+                    onChange={handleDataNascimentoChange}
+                    placeholder="dd/mm/aaaa"
+                    className={errors.dataNascimento ? 'border-red-500' : ''}
+                    inputMode="numeric"
+                  />
+                  {errors.dataNascimento && (
+                    <p className="mt-1 text-sm text-red-600">{errors.dataNascimento.message}</p>
+                  )}
+                </div>
+              )}
 
               <div>
                 <label htmlFor="telefone" className="block text-base font-medium text-gray-800 mb-2">
