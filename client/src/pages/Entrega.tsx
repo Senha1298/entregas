@@ -823,9 +823,9 @@ const Entrega: React.FC = () => {
               </div>
               
               {/* Instruções */}
-              <div className="bg-yellow-50 p-2 rounded-md border border-yellow-200">
-                <p className="text-xs text-yellow-800 text-center">
-                  Após o pagamento, seu cadastro será ativado automaticamente em até 5 minutos.
+              <div className="bg-red-50 p-2 rounded-md border border-red-300">
+                <p className="text-xs text-red-800 text-center">
+                  Após o pagamento, retorne a esta página para finalizar o cadastro.
                 </p>
               </div>
             </div>
