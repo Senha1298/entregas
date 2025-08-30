@@ -94,7 +94,7 @@ export function trackEvent(eventName: string, eventData?: Record<string, any>): 
 }
 
 /**
- * Rastreia um evento de compra aprovada
+ * Rastreia um evento de compra aprovada (com proteção contra duplicatas)
  * @param transactionId ID da transação
  * @param amount Valor da transação
  * @param currency Moeda (default: BRL)
@@ -106,6 +106,15 @@ export function trackPurchase(
   currency: string = 'BRL',
   itemName: string = 'Kit de Segurança Shopee'
 ): boolean {
+  // Verificar se esta conversão já foi rastreada
+  const conversionKey = `fb_conversion_${transactionId}`;
+  const alreadyTracked = localStorage.getItem(conversionKey);
+  
+  if (alreadyTracked) {
+    console.log(`[PIXEL] Conversão ${transactionId} já foi rastreada anteriormente. Ignorando duplicata.`);
+    return false;
+  }
+  
   console.log('[PIXEL] Rastreando compra aprovada:', { transactionId, amount });
   
   const eventData = {
@@ -117,51 +126,13 @@ export function trackPurchase(
     transaction_id: transactionId,
   };
   
-  // Enviar o evento de múltiplas formas para maximizar a chance de registro
-  
-  // Método 1: Usando fbq padrão
+  // Enviar apenas UMA vez via fbq padrão
   trackEvent('Purchase', eventData);
   
-  // Método 2: Também envia um evento personalizado para ter certeza
-  trackEvent('CompleteRegistration', {
-    content_name: 'Cadastro com pagamento aprovado',
-    transaction_id: transactionId,
-    status: 'approved'
-  });
+  // Marcar esta conversão como já rastreada
+  localStorage.setItem(conversionKey, new Date().toISOString());
   
-  // Métodos de backup para cada um dos pixels
-  FACEBOOK_PIXEL_IDS.forEach(pixelId => {
-    // Método 3: Chamada direta ao pixel via imagem (funciona mesmo com bloqueadores)
-    try {
-      const img = new Image();
-      img.src = `https://www.facebook.com/tr?id=${pixelId}&ev=Purchase&cd[value]=${amount}&cd[currency]=${currency}&cd[content_name]=${encodeURIComponent(itemName)}&cd[content_type]=product&cd[content_ids]=${transactionId}&cd[transaction_id]=${transactionId}&noscript=1`;
-    } catch (imgErr) {
-      console.error(`[PIXEL] Erro ao enviar via imagem pixel para ID ${pixelId}:`, imgErr);
-    }
-    
-    // Método 4: Enviar evento via beacon para garantir envio mesmo se página for fechada
-    try {
-      if (navigator.sendBeacon) {
-        const pixelUrl = `https://www.facebook.com/tr?id=${pixelId}&ev=Purchase&noscript=1&cd[value]=${amount}&cd[currency]=${currency}&cd[transaction_id]=${transactionId}`;
-        navigator.sendBeacon(pixelUrl);
-      }
-    } catch (err) {
-      console.error(`[PIXEL] Erro ao enviar via beacon para ID ${pixelId}:`, err);
-    }
-    
-    // Método 5: Enviar evento via iframe (alternativa para casos onde outros métodos falham)
-    try {
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = `https://www.facebook.com/tr?id=${pixelId}&ev=Purchase&cd[value]=${amount}&cd[currency]=${currency}&noscript=1`;
-      document.body.appendChild(iframe);
-      setTimeout(() => document.body.removeChild(iframe), 1000);
-    } catch (iframeErr) {
-      console.error(`[PIXEL] Erro ao enviar via iframe para ID ${pixelId}:`, iframeErr);
-    }
-  });
-  
-  console.log(`[PIXEL] Evento de compra enviado para ${FACEBOOK_PIXEL_IDS.length} pixels do Facebook`);
+  console.log(`[PIXEL] Conversão ${transactionId} rastreada e marcada como processada`);
   return true;
 }
 

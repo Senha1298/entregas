@@ -144,7 +144,7 @@ const Payment: React.FC = () => {
                   amount = rawAmount > 1000 ? rawAmount / 100 : rawAmount;
                 }
                 
-                // Rastrear a compra com diferentes abordagens para garantir recebimento
+                // Rastrear a compra apenas uma vez
                 trackPurchase(id, amount);
                 
                 // Também notifica o backend para fins de registro
@@ -205,7 +205,8 @@ const Payment: React.FC = () => {
                     amount = rawAmount > 1000 ? rawAmount / 100 : rawAmount;
                   }
                   
-                  trackPurchase(id, amount);
+                  // trackPurchase já foi chamado anteriormente, evitando duplicata
+                  console.log('[PAYMENT] Pagamento aprovado via backend - conversão já rastreada');
                   
                   // Notificar o usuário
                   toast({
