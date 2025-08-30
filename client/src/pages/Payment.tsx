@@ -35,7 +35,7 @@ const Payment: React.FC = () => {
   
   const [isLoading, setIsLoading] = useState(true);
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
-  const [timeLeft, setTimeLeft] = useState<number>(30 * 60); // 30 minutos em segundos
+  const [timeLeft, setTimeLeft] = useState<number>(3 * 24 * 60 * 60); // 3 dias em segundos
   const timerRef = useRef<number | null>(null);
   
   // Informações do usuário

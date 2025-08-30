@@ -201,7 +201,11 @@ export class TechByNetAPI {
           qr_code: transactionData.qrCode,
           pix_code: transactionData.qrCode, // Para compatibilidade
           payment_url: transactionData.payUrl,
-          expires_at: transactionData.pix?.expirationDate || null,
+          expires_at: (() => {
+            const expiration = new Date();
+            expiration.setDate(expiration.getDate() + 3);
+            return expiration.toISOString();
+          })(),
           provider: 'TechByNet',
           raw_response: responseData
         };
