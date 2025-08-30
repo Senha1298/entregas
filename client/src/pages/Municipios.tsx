@@ -261,46 +261,14 @@ const Municipios: React.FC = () => {
             </div>
           </div>
           
-          {/* Estatísticas de entregas */}
+          {/* Previsão de ganhos */}
           {municipios.filter(m => m.selecionado).length > 0 && (
             <Card className="mt-6 mb-6 p-4 border border-[#E83D2240] bg-[#FFF8F6]">
               <div className="flex flex-col">
-                <h3 className="font-medium text-gray-800 mb-2">Previsão de Entregas</h3>
-                <div className="text-sm text-gray-700">
-                  <p>Quantidade média diária de entregas que podem ser destinadas a você:</p>
-                  <div className="mt-2 p-3 bg-white rounded-[3px] border border-[#E83D2220]">
-                    <div className="text-center mb-3 bg-[#FFF8F6] p-2 rounded-[3px]">
-                      <span className="font-medium text-[#E83D22]">A Shopee paga R$ 12,00 por entrega realizada</span>
-                    </div>
-                    
-                    {municipios.filter(m => m.selecionado).map((m, index) => (
-                      <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 last:mb-0">
-                        <span className="font-medium md:col-span-1">{m.nome}:</span>
-                        <span className="font-bold text-[#E83D22] md:col-span-1">
-                          {m.entregas} <span className="font-normal text-gray-700">entregas</span>
-                        </span>
-                        <span className="font-medium text-green-600 md:col-span-1">
-                          R$ {(m.entregas * 12).toFixed(2).replace('.', ',')} <span className="font-normal text-gray-700">/dia</span>
-                        </span>
-                      </div>
-                    ))}
-                    
-                    {municipios.filter(m => m.selecionado).length > 1 && (
-                      <div className="mt-3 pt-3 border-t border-[#E83D2220] grid grid-cols-1 md:grid-cols-3 gap-2">
-                        <span className="font-semibold">Total diário:</span>
-                        <span className="font-bold text-[#E83D22]">
-                          {municipios
-                            .filter(m => m.selecionado)
-                            .reduce((acc, m) => acc + m.entregas, 0)} <span className="font-normal text-gray-700">entregas</span>
-                        </span>
-                        <span className="font-semibold text-green-600">
-                          R$ {(municipios
-                            .filter(m => m.selecionado)
-                            .reduce((acc, m) => acc + m.entregas, 0) * 12).toFixed(2).replace('.', ',')} <span className="font-normal text-gray-700">/dia</span>
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                <div className="text-center p-4 bg-white rounded-[3px] border border-[#E83D2220]">
+                  <span className="text-gray-700">Sua previsão de ganho diário é de </span>
+                  <span className="font-bold text-green-600">R$540,00</span>
+                  <span className="text-gray-700"> trabalhando até 8 horas com a Shopee nessa região.</span>
                 </div>
               </div>
             </Card>
