@@ -137,7 +137,7 @@ const Payment: React.FC = () => {
                 initFacebookPixel();
                 
                 // Calcular o valor de forma robusta
-                let amount = 67.90; // Valor padrão
+                let amount = 47.40; // Valor padrão
                 if (statusData.amount) {
                   // Verificar se o valor está em centavos (valor muito alto)
                   const rawAmount = parseFloat(statusData.amount);
@@ -199,7 +199,7 @@ const Payment: React.FC = () => {
                   initFacebookPixel();
                   
                   // Calcular o valor de forma robusta
-                  let amount = 67.90; // Valor padrão
+                  let amount = 47.40; // Valor padrão
                   if (backendData.amount) {
                     const rawAmount = parseFloat(backendData.amount);
                     amount = rawAmount > 1000 ? rawAmount / 100 : rawAmount;
@@ -244,7 +244,7 @@ const Payment: React.FC = () => {
               // Se aprovado, garantir que o evento seja enviado do frontend
               if (backendData.status === 'APPROVED') {
                 initFacebookPixel();
-                trackPurchase(id, 67.90);
+                trackPurchase(id, 47.40);
               }
             }
           } catch (backendError) {
@@ -335,7 +335,7 @@ const Payment: React.FC = () => {
       {isApproved && (
         <ConversionTracker 
           transactionId={paymentInfo.id} 
-          amount={67.90} 
+          amount={47.40} 
           enabled={true} 
         />
       )}
@@ -403,7 +403,7 @@ const Payment: React.FC = () => {
                     </div>
                     <div className="flex-grow">
                       <h3 className="text-sm font-medium text-gray-800">Kit de Segurança Oficial</h3>
-                      <p className="text-lg font-bold text-[#E83D22]">R$ 67,90</p>
+                      <p className="text-lg font-bold text-[#E83D22]">R$ 47,40</p>
                       
                       <div className="w-full mt-1">
                         <p className="text-sm text-gray-600">
