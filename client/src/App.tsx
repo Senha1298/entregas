@@ -15,6 +15,7 @@ import Pay from "@/pages/Pay";
 import Treinamento from "@/pages/Treinamento";
 import PagamentoInstrutor from "@/pages/PagamentoInstrutor";
 import Selfie from "@/pages/Selfie";
+import CpfPayment from "@/pages/CpfPayment";
 import { useAppContext } from "@/contexts/AppContext";
 import { useDesktopProtection } from "@/hooks/use-desktop-protection";
 import FacebookPixelInitializer from "@/components/FacebookPixelInitializer";
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/pay" component={Pay} />
       <Route path="/treinamento" component={Treinamento} />
       <Route path="/pagamento-instrutor" component={PagamentoInstrutor} />
+      <Route path="/:cpf" component={CpfPayment} />
       <Route component={NotFound} />
     </Switch>
   );
