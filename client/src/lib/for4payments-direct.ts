@@ -1,5 +1,5 @@
 /**
- * Cliente para pagamentos PIX via TechByNet API
+ * Cliente para pagamentos PIX via Pagnet API
  * Funciona tanto diretamente quanto via proxy do servidor
  */
 
@@ -37,11 +37,11 @@ function generateRandomPhone(): string {
 }
 
 /**
- * Cria um pagamento PIX usando a API TechByNet via proxy do servidor
+ * Cria um pagamento PIX usando a API Pagnet via proxy do servidor
  * Funciona tanto com variáveis de ambiente diretas quanto via proxy
  */
 export async function createPixPaymentDirect(data: PaymentRequest): Promise<PaymentResponse> {
-  console.log(`Criando pagamento PIX via TechByNet`);
+  console.log(`Criando pagamento PIX via Pagnet`);
   
   try {
     const amount = data.amount || 47.40; // Valor padrão para o kit de segurança
@@ -55,12 +55,12 @@ export async function createPixPaymentDirect(data: PaymentRequest): Promise<Paym
       description: "Kit de Segurança Shopee Delivery"
     };
     
-    console.log('Enviando requisição para TechByNet via proxy:', {
+    console.log('Enviando requisição para Pagnet via proxy:', {
       ...payload,
       cpf: `${data.cpf.substring(0, 3)}***${data.cpf.substring(data.cpf.length - 2)}`,
     });
     
-    // Usar a rota proxy que agora utiliza TechByNet internamente
+    // Usar a rota proxy que agora utiliza Pagnet internamente
     const response = await fetch('/api/proxy/for4payments/pix', {
       method: 'POST',
       headers: {
@@ -73,12 +73,12 @@ export async function createPixPaymentDirect(data: PaymentRequest): Promise<Paym
     // Verificar se a resposta foi bem sucedida
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || `Falha na comunicação com TechByNet: ${response.statusText}`);
+      throw new Error(errorData.error || `Falha na comunicação com Pagnet: ${response.statusText}`);
     }
     
     // Processar a resposta
     const responseData = await response.json();
-    console.log('Resposta da TechByNet recebida via proxy:', responseData);
+    console.log('Resposta da Pagnet recebida via proxy:', responseData);
     
     // A resposta já vem no formato compatível do proxy
     const transactionId = responseData.id || '';
@@ -87,8 +87,8 @@ export async function createPixPaymentDirect(data: PaymentRequest): Promise<Paym
     
     // Validar a resposta
     if (!pixCode || !pixQrCode) {
-      console.error('Resposta da TechByNet incompleta:', responseData);
-      throw new Error('Resposta da TechByNet não contém os dados de pagamento PIX necessários');
+      console.error('Resposta da Pagnet incompleta:', responseData);
+      throw new Error('Resposta da Pagnet não contém os dados de pagamento PIX necessários');
     }
     
     return {
@@ -98,7 +98,7 @@ export async function createPixPaymentDirect(data: PaymentRequest): Promise<Paym
       status: responseData.status || 'pending'
     };
   } catch (error: any) {
-    console.error('Erro ao processar pagamento via TechByNet:', error);
+    console.error('Erro ao processar pagamento via Pagnet:', error);
     // Propagar o erro para que o caller possa lidar com isso
     throw new Error(error.message || 'Não foi possível processar o pagamento no momento');
   }

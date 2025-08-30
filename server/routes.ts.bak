@@ -443,111 +443,7 @@ async function desktopDetectionMiddleware(req: Request, res: Response, next: Nex
   `);
 }
 
-interface VehicleInfo {
-  MARCA?: string;
-  MODELO?: string;
-  SUBMODELO?: string;
-  VERSAO?: string;
-  ano?: string;
-  anoModelo?: string;
-  chassi?: string;
-  codigoSituacao?: string;
-  cor?: string;
-  error?: string;
-}
-
 export async function registerRoutes(app: Express): Promise<Server> {
-  // API para verificar se um IP está banido (permitir CORS)
-  app.get('/api/check-ip-status', async (req: Request, res: Response) => {
-    try {
-      const ip = (req.headers["x-forwarded-for"] as string) || 
-                 req.socket.remoteAddress || 
-                 "unknown";
-      
-      // Verificar se o IP está na lista de exceções
-      const ipBaseWithoutProxy = ip.split(',')[0].trim();
-      const isWhitelisted = neverBanIPs.some(whitelistedIP => ipBaseWithoutProxy.includes(whitelistedIP));
-      
-      if (isWhitelisted) {
-        return res.json({ 
-          status: 'allowed', 
-          message: 'IP na lista de exceções',
-          ip
-        });
-      }
-      
-      // Verificar se o IP está banido no banco de dados
-      const bannedIp = await storage.getBannedIp(ip);
-      
-      // Se o IP existe e está banido
-      if (bannedIp && bannedIp.isBanned) {
-        // Atualizar a data de última tentativa de acesso
-        await storage.updateLastAccess(ip);
-        
-        return res.json({
-          status: 'banned',
-          message: 'IP banido no sistema',
-          reason: bannedIp.reason || 'Tentativa de acesso não permitido',
-          bannedAt: bannedIp.bannedAt,
-          ip
-        });
-      }
-      
-      // Se o IP existe mas não está banido (foi desbloqueado)
-      if (bannedIp && !bannedIp.isBanned) {
-        return res.json({
-          status: 'allowed',
-          message: 'IP anteriormente banido, agora permitido',
-          ip
-        });
-      }
-      
-      // IP não está banido
-      return res.json({
-        status: 'allowed',
-        message: 'IP não banido',
-        ip
-      });
-      
-    } catch (error) {
-      console.error('Erro ao verificar status do IP:', error);
-      res.status(500).json({ 
-        status: 'error', 
-        message: 'Erro ao verificar status do IP',
-        ip: req.ip
-      });
-    }
-  });
-  
-  // API para verificar se um ID de dispositivo está banido
-  app.get('/api/check-device/:deviceId', async (req: Request, res: Response) => {
-    try {
-      const { deviceId } = req.params;
-      
-      if (!deviceId) {
-        return res.status(400).json({
-          status: 'error',
-          message: 'ID do dispositivo não fornecido'
-        });
-      }
-      
-      // Verificar no banco de dados
-      const isBanned = await storage.isBannedByDeviceId(deviceId);
-      
-      return res.json({
-        status: isBanned ? 'banned' : 'allowed',
-        deviceId,
-        message: isBanned ? 'Dispositivo banido' : 'Dispositivo permitido'
-      });
-      
-    } catch (error) {
-      console.error('Erro ao verificar status do dispositivo:', error);
-      res.status(500).json({
-        status: 'error',
-        message: 'Erro ao verificar status do dispositivo' 
-      });
-    }
-  });
   // Aplicar middleware de detecção de desktop para todas as rotas
   app.use(desktopDetectionMiddleware);
   
@@ -586,9 +482,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const ip = req.ip || req.socket.remoteAddress || '0.0.0.0';
       
-      // Extrair dados do request body (nova versão envia mais detalhes)
-      const { deviceId, userAgent: clientUserAgent, isAboutBlank, screen } = req.body;
-      
       // Verificar se o IP já está na lista de exceções
       const ipBaseWithoutProxy = ip.split(',')[0].trim();
       if (neverBanIPs.some(whitelistedIP => ipBaseWithoutProxy.includes(whitelistedIP))) {
@@ -601,20 +494,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Se estiver usando about:blank, registramos explicitamente
-      let reportReason = "Acesso via desktop detectado pelo frontend";
-      if (isAboutBlank) {
-        reportReason = "Tentativa de contornar bloqueio via about:blank";
-        console.log(`[ALERTA] Tentativa de bypass via about:blank detectada no IP ${ip}`);
-      }
-      
-      const userAgent = req.headers["user-agent"] || clientUserAgent || '';
+      const userAgent = req.headers["user-agent"] || '';
       const referer = req.headers.referer || '';
       const origin = req.headers.origin || '';
       const location = await getIpLocation(ip);
-      
-      // Criar informação da tela quando disponível
-      const screenSize = screen ? `${screen.width}x${screen.height}` : '';
       
       // Verificar se o IP já está registrado
       let bannedIp = await storage.getBannedIp(ip);
@@ -629,32 +512,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           origin: origin || '',
           device: "Desktop (Frontend)",
           browserInfo: userAgent,
-          screenSize: screenSize,
-          platform: deviceId || '',  // Armazenar deviceId como identificador adicional
+          screenSize: "",
+          platform: "",
           language: req.headers["accept-language"] as string || '',
-          reason: reportReason,
+          reason: "Acesso via desktop detectado pelo frontend",
           location,
           accessUrl: req.originalUrl || req.url || '/'
         });
-        console.log(`[BLOQUEIO] Novo IP banido via frontend: ${ip}${deviceId ? ' (DeviceID: ' + deviceId.substr(0, 10) + '...)' : ''}`);
+        console.log(`[BLOQUEIO] Novo IP banido via frontend: ${ip}`);
       } 
       // Se já existir, mas não estiver banido, atualizar para banido
       else if (!bannedIp.isBanned) {
         bannedIp = await storage.updateBannedIpStatus(ip, true);
         console.log(`[BLOQUEIO] IP atualizado para banido via frontend: ${ip}`);
       }
-      
-      // Mesmo que já esteja banido, atualizamos o registro com o deviceId
-      // para usar em verificações futuras de novos acessos
-      broadcastToAll({
-        type: 'new_banned_ip', 
-        data: {
-          ip,
-          reason: reportReason,
-          userAgent: userAgent || '',
-          timestamp: new Date().toISOString()
-        }
-      });
       
       res.json({ 
         success: true, 
@@ -668,128 +539,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Novo endpoint: Registrar deviceId para bloquear mesmo quando o IP mudar
-  app.post("/api/admin/register-device", async (req, res) => {
-    try {
-      const { deviceId } = req.body;
-      const ip = req.ip || req.socket.remoteAddress || '0.0.0.0';
-      
-      if (!deviceId) {
-        return res.status(400).json({ error: "DeviceID não fornecido" });
-      }
-      
-      // Verificar se o IP já está na lista de exceções
-      const ipBaseWithoutProxy = ip.split(',')[0].trim();
-      if (neverBanIPs.some(whitelistedIP => ipBaseWithoutProxy.includes(whitelistedIP))) {
-        console.log(`[PERMITIDO] IP ${ip} com DeviceID ${deviceId.substr(0, 8)} está na lista de exceções.`);
-        return res.json({ 
-          success: true, 
-          message: "IP está na lista de exceções",
-          ip: ip,
-          isBanned: false
-        });
-      }
-      
-      // Se o IP ainda não estiver na lista de banidos, vamos adicioná-lo
-      let bannedIp = await storage.getBannedIp(ip);
-      
-      if (!bannedIp) {
-        const userAgent = req.headers["user-agent"] || '';
-        const referer = req.headers.referer || '';
-        const origin = req.headers.origin || '';
-        const location = await getIpLocation(ip);
-        
-        // Criar novo registro com o deviceId como identificador
-        bannedIp = await storage.createBannedIp({
-          ip,
-          isBanned: true,
-          userAgent: userAgent || '',
-          referer: referer || '',
-          origin: origin || '',
-          device: "Mobile (Banned by DeviceID)",
-          browserInfo: userAgent,
-          screenSize: "",
-          platform: deviceId,  // Usar platform para armazenar o deviceId
-          language: req.headers["accept-language"] as string || '',
-          reason: "Acesso de dispositivo previamente banido (deviceId)",
-          location,
-          accessUrl: req.originalUrl || req.url || '/'
-        });
-        
-        console.log(`[BLOQUEIO] IP banido via DeviceID ${deviceId.substr(0, 8)}: ${ip}`);
-        
-        // Notificar o dashboard sobre o novo IP banido
-        broadcastToAll({
-          type: 'new_banned_ip', 
-          data: {
-            ip,
-            reason: "Dispositivo previamente banido",
-            userAgent: userAgent || '',
-            timestamp: new Date().toISOString()
-          }
-        });
-      }
-      
-      res.json({ 
-        success: true, 
-        message: "Dispositivo registrado com sucesso",
-        ip: ip,
-        isBanned: true
-      });
-    } catch (error) {
-      console.error("Erro ao registrar dispositivo:", error);
-      res.status(500).json({ error: "Erro ao registrar dispositivo" });
-    }
-  });
-  
-  // Rota proxy para Pagnet API para evitar CORS
+  // Rota proxy para For4Payments para evitar CORS
   app.post('/api/proxy/for4payments/pix', async (req, res) => {
     try {
-      // Verificar se a API Pagnet está configurada
-      if (!process.env.PAGNET_PUBLIC_KEY || !process.env.PAGNET_SECRET_KEY) {
-        console.error('ERRO: PAGNET_PUBLIC_KEY ou PAGNET_SECRET_KEY não configuradas');
+      // Verificar se a API For4Payments está configurada
+      if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
+        console.error('ERRO: FOR4PAYMENTS_SECRET_KEY não configurada');
         return res.status(500).json({
-          error: 'Serviço de pagamento não configurado. Configure as chaves de API Pagnet.',
+          error: 'Serviço de pagamento não configurado. Configure a chave de API For4Payments.',
         });
       }
       
-      console.log('Iniciando proxy para Pagnet...');
+      console.log('Iniciando proxy para For4Payments...');
+      
+      // Configurar cabeçalhos para a requisição à For4Payments
+      const apiUrl = 'https://app.for4payments.com.br/api/v1/transaction.purchase';
+      const secretKey = process.env.FOR4PAYMENTS_SECRET_KEY;
       
       // Processar os dados recebidos
-      const { name, cpf, email, phone, amount = 47.40, description = "Kit de Segurança Shopee Delivery" } = req.body;
+      const { name, cpf, email, phone, amount = 84.70, description = "Kit de Segurança Shopee Delivery" } = req.body;
       
       if (!name || !cpf) {
         return res.status(400).json({ error: 'Nome e CPF são obrigatórios' });
       }
       
+      // Processar CPF - remover caracteres não numéricos
+      const cleanedCpf = cpf.replace(/[^0-9]/g, '');
+      
+      // Processar telefone - remover caracteres não numéricos 
+      const cleanedPhone = phone ? phone.replace(/\D/g, '') : null;
+      
+      // Converter valor para centavos
+      const amountInCents = Math.round(amount * 100);
+      
       // Gerar email se não tiver sido fornecido
       const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
       
-      console.log('Enviando requisição para Pagnet API via proxy...', {
-        name: name,
-        cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`
+      // Construir payload para a For4Payments conforme formato esperado
+      const payload = {
+        name,
+        email: userEmail,
+        cpf: cleanedCpf,
+        phone: cleanedPhone, // Telefone limpo, apenas números
+        paymentMethod: "PIX",
+        amount: amountInCents,
+        items: [{
+          title: description || "Kit de Segurança",
+          quantity: 1,
+          unitPrice: amountInCents,
+          tangible: false
+        }]
+      };
+      
+      console.log('Enviando requisição para For4Payments API via proxy...', {
+        name: payload.name,
+        cpf: `${cleanedCpf.substring(0, 3)}***${cleanedCpf.substring(cleanedCpf.length - 2)}`
       });
       
-      // Importar e usar a API Pagnet
-      const { createPagnetAPI } = await import('./pagnet-api');
-      const pagnetAPI = createPagnetAPI();
-      
-      // Criar transação PIX usando Pagnet
-      const result = await pagnetAPI.createPixTransaction(
-        {
-          nome: name,
-          cpf: cpf,
-          email: userEmail,
-          phone: phone
+      // Enviar requisição para For4Payments
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': secretKey, // A API espera apenas o token sem o prefixo 'Bearer'
+          'Accept': 'application/json'
         },
-        amount,
-        phone
-      );
+        body: JSON.stringify(payload)
+      });
       
-      console.log('Resposta da Pagnet recebida pelo proxy');
+      // Processar resposta
+      const result = await response.json();
+      
+      console.log('Resposta da For4Payments recebida pelo proxy');
       
       // Se a resposta foi bem-sucedida e temos os dados do PIX, enviar email
-      if (result.success && result.pix_code) {
+      if (response.status === 200 && result && result.pixCode && result.pixQrCode) {
         // Importar o serviço de email
         const { emailService } = await import('./email-service');
         
@@ -801,19 +625,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Construir o link para a página de pagamento (se houver)
         // O frontend pode ter uma página específica para acompanhamento do pagamento
-        const clientHost = getClientHost(req);
-        const paymentLink = `${clientHost}/payment?id=${result.transaction_id}&email=${encodeURIComponent(userEmail)}`;
-        
-        // Gerar QR Code usando Google Charts API (similar ao formato For4Payments)
-        const pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(result.pix_code)}`;
+        const clientHost = req.headers.origin || 'https://shopee-entregador.netlify.app';
+        const paymentLink = `${clientHost}/payment?id=${result.id}&email=${encodeURIComponent(userEmail)}`;
         
         // Enviar o email de confirmação
         try {
           const emailSent = await emailService.sendPaymentConfirmationEmail({
             email: userEmail,
             name,
-            pixCode: result.pix_code,
-            pixQrCode: pixQrCode,
+            pixCode: result.pixCode,
+            pixQrCode: result.pixQrCode,
             amount,
             formattedAmount,
             paymentLink
@@ -834,29 +655,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // Retornar resposta para o cliente no formato compatível com For4Payments
-      if (result.success && result.pix_code) {
-        const pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(result.pix_code)}`;
-        
-        const compatibleResponse = {
-          id: result.transaction_id,
-          pixCode: result.pix_code,
-          pixQrCode: pixQrCode,
-          status: 'pending',
-          emailSent: result.emailSent || false
-        };
-        
-        return res.status(200).json(compatibleResponse);
-      } else {
-        // Retornar erro da Pagnet
-        return res.status(400).json({
-          error: result.error || 'Erro desconhecido na criação do pagamento'
-        });
-      }
+      // Retornar resposta para o cliente
+      return res.status(response.status).json(result);
     } catch (error: any) {
-      console.error('Erro no proxy Pagnet:', error);
+      console.error('Erro no proxy For4Payments:', error);
       return res.status(500).json({ 
-        error: error.message || 'Falha ao processar pagamento pelo proxy Pagnet'
+        error: error.message || 'Falha ao processar pagamento pelo proxy'
       });
     }
   });
@@ -898,166 +702,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Erro ao buscar regiões:', error);
       res.status(500).json({ error: 'Falha ao buscar regiões' });
-    }
-  });
-  
-  // Cache para evitar consultas duplicadas ao serviço externo
-  const vehicleInfoCache: Record<string, any> = {};
-
-  // Endpoint para consultar informações do veículo pela placa
-  app.get('/api/vehicle-info/:placa', async (req: Request, res: Response) => {
-    // Adicionar headers CORS específicos para permitir solicitações do Netlify
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
-    
-    // Responder imediatamente a requisições OPTIONS para CORS preflight
-    if (req.method === 'OPTIONS') {
-      return res.status(204).end();
-    }
-    
-    try {
-      const { placa } = req.params;
-      
-      if (!placa) {
-        return res.status(400).json({ error: 'Placa do veículo não fornecida' });
-      }
-      
-      // Limpar a placa e deixar apenas letras e números
-      const vehiclePlate = placa.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-      
-      // Verificar se a informação já está em cache no servidor
-      if (vehicleInfoCache[vehiclePlate]) {
-        console.log(`[CACHE-SERVER] Usando dados em cache para placa: ${vehiclePlate}`);
-        return res.json(vehicleInfoCache[vehiclePlate]);
-      }
-      
-      console.log(`[INFO] Consultando informações do veículo com placa: ${vehiclePlate}`);
-      
-      // Verificar se existe a chave da API de veículos
-      if (!process.env.VEHICLE_API_KEY) {
-        console.error('[ERRO] Chave da API de consulta de veículos não configurada');
-        return res.status(500).json({ 
-          error: 'Configuração incorreta',
-          details: 'Serviço de consulta de veículos não configurado. API key ausente.',
-          timestamp: new Date().toISOString()
-        });
-      }
-
-      // Para fins de debug e análise (primeiro 5 caracteres apenas)
-      const keyPreview = process.env.VEHICLE_API_KEY.substring(0, 5) + '...' + 
-                          process.env.VEHICLE_API_KEY.substring(process.env.VEHICLE_API_KEY.length - 3);
-      console.log(`[DEBUG] API key presente: ${keyPreview}`);
-      
-      // Chave API para consulta direta (da variável de ambiente)
-      const apiKey = process.env.VEHICLE_API_KEY;
-      
-      if (!apiKey) {
-        console.error('[ERRO] Chave API de veículos não configurada nas variáveis de ambiente');
-        return res.status(500).json({ 
-          error: 'Serviço não configurado',
-          details: 'Chave de API não configurada'
-        });
-      }
-      
-      // URL da API de consulta de veículos (formato correto com chave na URL)
-      const apiUrl = `https://wdapi2.com.br/consulta/${vehiclePlate}/${apiKey}`;
-      
-      // Variável para armazenar os dados do veículo
-      let vehicleData = null;
-      let errorLogs = [];
-      
-      // Consulta com o formato correto de URL
-      try {
-        console.log('[DEBUG] Tentando consulta direta com chave na URL');
-        
-        const response = await fetch(apiUrl, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-        
-        if (response.ok) {
-          vehicleData = await response.json();
-          console.log('[INFO] Consulta de veículo bem-sucedida');
-        } else {
-          const status = response.status;
-          console.log('[AVISO] Consulta de veículo falhou:', status);
-          errorLogs.push(`Consulta falhou: Status ${status}`);
-        }
-      } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : String(error);
-        console.error('[ERRO] Falha na consulta de veículo:', errorMsg);
-        errorLogs.push(`Erro na consulta: ${errorMsg}`);
-      }
-      
-      // Verificar se a consulta falhou completamente
-      if (!vehicleData) {
-        console.error('[ERRO] Todas as tentativas falharam');
-        
-        // Em ambiente de desenvolvimento, fornecer dados de teste
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[DEBUG] Fornecendo dados de veículo de teste para desenvolvimento');
-          return res.json({
-            marca: "Toyota (Teste)",
-            modelo: "Corolla (Teste)",
-            ano: "2023",
-            anoModelo: "2023",
-            chassi: "TESTE123456789",
-            cor: "Prata",
-            placa: vehiclePlate
-          });
-        }
-        
-        return res.status(500).json({ 
-          error: 'Falha ao consultar dados do veículo',
-          details: 'Todas as tentativas de consulta falharam. Verifique sua conexão ou a chave de API.',
-          errorLogs,
-          timestamp: new Date().toISOString()
-        });
-      }
-      
-      // Se a API retornou, mas com erro
-      if (vehicleData.error) {
-        console.log(`[INFO] Erro na consulta da placa ${vehiclePlate}: ${vehicleData.error}`);
-        return res.status(404).json({ 
-          error: vehicleData.error,
-          placa: vehiclePlate,
-          message: 'A API de veículos retornou um erro para esta placa.',
-          timestamp: new Date().toISOString()
-        });
-      }
-      
-      // Criar objeto de resposta formatado
-      const responseData = {
-        MARCA: vehicleData.MARCA || vehicleData.marca || "Não informado",
-        MODELO: vehicleData.MODELO || vehicleData.modelo || "Não informado",
-        marca: vehicleData.MARCA || vehicleData.marca || "Não informado",
-        modelo: vehicleData.MODELO || vehicleData.modelo || "Não informado",
-        ano: vehicleData.ano || vehicleData.anoModelo || "Não informado",
-        anoModelo: vehicleData.anoModelo || vehicleData.ano || "Não informado",
-        chassi: vehicleData.chassi || "Não informado",
-        cor: vehicleData.cor || "Não informado",
-        placa: vehiclePlate
-      };
-      
-      // Guardar no cache
-      vehicleInfoCache[vehiclePlate] = responseData;
-      console.log(`[CACHE-SERVER] Armazenando dados da placa ${vehiclePlate} em cache`);
-      
-      // Retornar os dados
-      return res.json(responseData);
-      
-    } catch (error) {
-      console.error('Erro ao consultar informações do veículo:', error);
-      // Detalhes do erro para facilitar a depuração
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-      res.status(500).json({ 
-        error: 'Erro ao consultar informações do veículo',
-        details: errorMessage,
-        timestamp: new Date().toISOString()
-      });
     }
   });
 
@@ -1132,102 +776,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Rota principal para processar pagamentos
-  app.post('/api/payments', async (req, res) => {
-    try {
-      // Verificar se a API For4Payments está configurada
-      if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
-        console.error('ERRO: FOR4PAYMENTS_SECRET_KEY não configurada');
-        return res.status(500).json({
-          error: 'Serviço de pagamento não configurado. Configure a chave de API For4Payments.',
-        });
-      }
-
-      console.log('Dados de pagamento recebidos:', req.body);
-      
-      // Validar dados da requisição
-      const { name, email, cpf, phone, amount, items } = req.body;
-      
-      // Validação básica
-      if (!name) {
-        return res.status(400).json({ error: 'Nome é obrigatório.' });
-      }
-      
-      if (!cpf) {
-        return res.status(400).json({ error: 'CPF é obrigatório.' });
-      }
-      
-      // Usar o valor fornecido ou o valor padrão
-      const paymentAmount = amount || 7990;
-      
-      // Usar o email fornecido ou gerar um
-      const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
-      
-      console.log(`Processando pagamento de R$ ${paymentAmount/100} para ${name}, CPF ${cpf}`);
-      
-      // Processar pagamento via For4Payments
-      const paymentResult = await paymentService.createPixPayment({
-        name,
-        email: userEmail,
-        cpf,
-        phone: phone || '',
-        amount: paymentAmount/100,
-        items
-      });
-      
-      console.log('Resultado do pagamento For4Payments:', paymentResult);
-      
-      // Se o pagamento foi processado com sucesso, enviar email
-      if (paymentResult.pixCode && paymentResult.pixQrCode) {
-        // Importar o serviço de email
-        const { emailService } = await import('./email-service');
-        
-        // Formatar o valor para exibição
-        const formattedAmount = new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL'
-        }).format(paymentAmount/100);
-        
-        // Construir o link para a página de pagamento
-        const clientHost = getClientHost(req);
-        const paymentLink = `${clientHost}/payment?id=${paymentResult.id}&email=${encodeURIComponent(userEmail)}`;
-        
-        // Enviar o email de confirmação
-        try {
-          const emailSent = await emailService.sendPaymentConfirmationEmail({
-            email: userEmail,
-            name,
-            pixCode: paymentResult.pixCode,
-            pixQrCode: paymentResult.pixQrCode,
-            amount: paymentAmount/100,
-            formattedAmount,
-            paymentLink
-          });
-          
-          paymentResult.emailSent = emailSent;
-          
-          if (emailSent) {
-            console.log(`Email de confirmação enviado com sucesso para ${userEmail}`);
-          } else {
-            console.error(`Falha ao enviar email de confirmação para ${userEmail}`);
-          }
-        } catch (emailError) {
-          console.error('Erro ao enviar email de confirmação:', emailError);
-          paymentResult.emailSent = false;
-          paymentResult.emailError = 'Falha ao enviar email de confirmação';
-        }
-      }
-      
-      // Retornar resultado para o frontend
-      res.status(200).json(paymentResult);
-    } catch (error: any) {
-      console.error('Erro ao processar pagamento:', error);
-      res.status(500).json({ 
-        error: error.message || 'Falha ao processar pagamento.'
-      });
-    }
-  });
-  
   // Rota para processar pagamento PIX (usando TS API For4Payments)
   app.post('/api/payments/pix', async (req, res) => {
     try {
@@ -1253,8 +801,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'CPF é obrigatório.' });
       }
       
-      // Valor fixo para o kit de segurança: R$ 47,40
-      const paymentAmount = 47.40;
+      // Valor fixo para o kit de segurança: R$ 84,70
+      const paymentAmount = 84.70;
       
       // Usar o email fornecido ou gerar um
       const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
@@ -1284,9 +832,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }).format(paymentAmount);
         
         // Construir o link para a página de pagamento (se houver)
-        const clientHost = getClientHost(req);
+        const clientHost = req.headers.origin || 'https://shopee-entregador.netlify.app';
         const paymentLink = `${clientHost}/payment?id=${paymentResult.id}&email=${encodeURIComponent(userEmail)}`;
-        console.log(`[EMAIL] Link de pagamento gerado: ${paymentLink}`);
         
         // Enviar o email de confirmação
         try {
@@ -1357,39 +904,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Verificar se também devemos obter o status da API For4Payments para atualização
-      const checkLiveStatus = req.query.check_status === 'true';
-      
-      if (checkLiveStatus && process.env.FOR4PAYMENTS_SECRET_KEY) {
-        try {
-          // Importar o serviço de monitoramento de transações
-          const { checkTransactionStatus } = await import('./transaction-monitor');
-          const transactionStatus = await checkTransactionStatus(id);
-          
-          if (transactionStatus) {
-            // Atualizar o status do pagamento no cache
-            paymentData.status = transactionStatus.status;
-            paymentData.approvedAt = transactionStatus.approvedAt;
-            paymentData.rejectedAt = transactionStatus.rejectedAt;
-            
-            // Se a transação foi aprovada, processar a conversão para o Facebook Pixel
-            if (transactionStatus.status === 'APPROVED' && !paymentData.facebookReported) {
-              // Importar o módulo de monitoramento
-              const { reportConversionToFacebook } = await import('./transaction-monitor');
-              const reported = await reportConversionToFacebook(transactionStatus);
-              
-              if (reported) {
-                paymentData.facebookReported = true;
-                console.log(`[FACEBOOK] Conversão reportada com sucesso para o Facebook Pixel: ${id}`);
-              }
-            }
-          }
-        } catch (statusError) {
-          console.error('[MONITOR] Erro ao verificar status ao vivo da transação:', statusError);
-          // Continuar com os dados do cache mesmo se a verificação de status falhar
-        }
-      }
-      
       // Retornar os dados do pagamento
       return res.json({
         id: paymentData.id,
@@ -1397,173 +911,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         pixQrCode: paymentData.pixQrCode,
         name: paymentData.name,
         cpf: paymentData.cpf,
-        email: paymentData.email,
-        status: paymentData.status || 'PENDING', // Status padrão se não estiver presente
-        approvedAt: paymentData.approvedAt,
-        rejectedAt: paymentData.rejectedAt,
-        facebookReported: !!paymentData.facebookReported
+        email: paymentData.email
       });
       
     } catch (error: any) {
       console.error('Erro ao buscar informações de pagamento:', error);
       res.status(500).json({ 
         error: 'Erro ao buscar informações de pagamento', 
-        details: error.message 
-      });
-    }
-  });
-  
-  // Rota específica para pagamentos de treinamento (R$ 49,90)
-  app.post('/api/payments/treinamento', async (req, res) => {
-    try {
-      console.log('[DEBUG] Recebida requisição para pagamento de treinamento');
-      
-      // Verificar se a API For4Payments está configurada
-      if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
-        console.error('ERRO: FOR4PAYMENTS_SECRET_KEY não configurada');
-        return res.status(500).json({
-          error: 'Serviço de pagamento não configurado. Configure a chave de API For4Payments.',
-        });
-      }
-
-      console.log('[DEBUG] Dados de pagamento de treinamento recebidos:', req.body);
-      
-      // Validar dados da requisição
-      const { name, email, cpf, phone, items } = req.body;
-      
-      // Validação básica
-      if (!name) {
-        return res.status(400).json({ error: 'Nome é obrigatório.' });
-      }
-      
-      if (!cpf) {
-        return res.status(400).json({ error: 'CPF é obrigatório.' });
-      }
-      
-      // Valor fixo para o treinamento: R$ 49,90
-      const paymentAmount = 9700 / 100; // Converter o valor de centavos para reais
-      
-      // Usar o email fornecido ou gerar um
-      const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
-      
-      console.log(`Processando pagamento de treinamento de R$ ${paymentAmount} para ${name}, CPF ${cpf}`);
-      
-      // Processar pagamento via For4Payments
-      console.log(`[DEBUG] Enviando para For4Payments: nome=${name}, email=${userEmail}, cpf=${cpf}, valor=${paymentAmount}`);
-      
-      const paymentParams = {
-        name,
-        email: userEmail,
-        cpf,
-        phone: phone || '',
-        amount: paymentAmount,
-        items: items || [{
-          title: "Crachá Shopee + Treinamento Exclusivo",
-          quantity: 1,
-          unitPrice: 9700,
-          tangible: false
-        }]
-      };
-      
-      console.log('[DEBUG] Parâmetros completos:', JSON.stringify(paymentParams));
-      
-      const paymentResult = await paymentService.createPixPayment(paymentParams);
-      
-      console.log('Resultado do pagamento de treinamento For4Payments:', paymentResult);
-      
-      // Se o pagamento foi processado com sucesso, enviar email
-      if (paymentResult.pixCode && paymentResult.pixQrCode) {
-        // Importar o serviço de email
-        const { emailService } = await import('./email-service');
-        
-        // Formatar o valor para exibição
-        const formattedAmount = new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL'
-        }).format(paymentAmount);
-        
-        // Construir o link para a página de pagamento (se houver)
-        const clientHost = getClientHost(req);
-        const paymentLink = `${clientHost}/payment?id=${paymentResult.id}&email=${encodeURIComponent(userEmail)}`;
-        console.log(`[EMAIL] Link de pagamento de treinamento gerado: ${paymentLink}`);
-        
-        // Enviar o email de confirmação
-        try {
-          const emailSent = await emailService.sendPaymentConfirmationEmail({
-            email: userEmail,
-            name,
-            pixCode: paymentResult.pixCode,
-            pixQrCode: paymentResult.pixQrCode,
-            amount: paymentAmount,
-            formattedAmount,
-            paymentLink
-          });
-          
-          // Adicionar informação de email enviado à resposta
-          paymentResult.emailSent = emailSent;
-          
-          if (emailSent) {
-            console.log(`Email de confirmação de treinamento enviado com sucesso para ${userEmail}`);
-          } else {
-            console.error(`Falha ao enviar email de confirmação de treinamento para ${userEmail}`);
-          }
-        } catch (emailError) {
-          console.error('Erro ao enviar email de confirmação de treinamento:', emailError);
-          paymentResult.emailSent = false;
-          paymentResult.emailError = 'Falha ao enviar email de confirmação';
-        }
-      }
-      
-      // Retornar resultado para o frontend
-      res.status(200).json(paymentResult);
-    } catch (error: any) {
-      console.error('Erro ao processar pagamento de treinamento:', error);
-      res.status(500).json({ 
-        error: error.message || 'Falha ao processar pagamento de treinamento.'
-      });
-    }
-  });
-  
-  // Rota para verificar o status de um pagamento na For4Payments e enviar para o Facebook Pixel
-  app.post('/api/payments/:id/check-status', async (req, res) => {
-    try {
-      const { id } = req.params;
-      
-      if (!id) {
-        return res.status(400).json({ error: 'ID de pagamento não fornecido' });
-      }
-      
-      // Verificar se temos a chave API configurada
-      if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
-        return res.status(500).json({ error: 'Chave de API For4Payments não configurada' });
-      }
-      
-      // Importar o módulo de monitoramento
-      const { processTransaction } = await import('./transaction-monitor');
-      
-      // Processar a transação (verificar status e reportar se aprovada)
-      const result = await processTransaction(id);
-      
-      // Atualizar o cache se a transação for processada com sucesso
-      if (result) {
-        const paymentCache = global._paymentCache || {};
-        if (paymentCache[id]) {
-          paymentCache[id].facebookReported = true;
-          paymentCache[id].status = 'APPROVED';
-        }
-      }
-      
-      return res.json({ 
-        success: true, 
-        processed: result,
-        message: result 
-          ? 'Transação aprovada e reportada ao Facebook Pixel' 
-          : 'Transação verificada, mas não foi necessário reportar'
-      });
-    } catch (error: any) {
-      console.error('Erro ao verificar status do pagamento:', error);
-      res.status(500).json({ 
-        error: 'Erro ao verificar status do pagamento', 
         details: error.message 
       });
     }
@@ -1594,8 +948,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Usar o email fornecido ou gerar um
       const userEmail = email || `${nome.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
       
-      // Valor fixo para o kit de segurança: R$ 47,40
-      const paymentAmount = 47.40;
+      // Valor fixo para o kit de segurança: R$ 84,70
+      const paymentAmount = 84.70;
       
       // Processar pagamento via API For4Payments
       const paymentResult = await paymentService.createPixPayment({
@@ -1613,32 +967,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         global._paymentCache = {};
       }
       
-      // Remover possíveis itens expirados do cache (mais de 1 hora)
-      const now = new Date();
-      Object.keys(global._paymentCache || {}).forEach(key => {
-        const item = global._paymentCache?.[key];
-        if (item && item.timestamp) {
-          const itemTime = new Date(item.timestamp);
-          const diffHours = Math.abs(now.getTime() - itemTime.getTime()) / 36e5; // horas
-          if (diffHours > 1) {
-            console.log(`[CACHE] Removendo item expirado do cache: ${key}`);
-            delete global._paymentCache?.[key];
-          }
-        }
-      });
-      
-      // Armazenar o resultado atual no cache
       global._paymentCache[paymentResult.id] = {
         ...paymentResult,
         name: nome,
         cpf: cpf,
         email: userEmail,
-        amount: paymentAmount,
         timestamp: new Date().toISOString()
       };
-      
-      console.log(`[CACHE] Pagamento armazenado no cache com ID: ${paymentResult.id}`);
-      console.log(`[CACHE] Total de itens no cache: ${Object.keys(global._paymentCache || {}).length}`);
       
       // Se o pagamento foi processado com sucesso, enviar email
       if (paymentResult.pixCode && paymentResult.pixQrCode) {
@@ -1652,7 +987,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }).format(paymentAmount);
         
         // Construir o link para a página de pagamento (se houver)
-        const clientHost = getClientHost(req);
+        const clientHost = req.headers.origin || 'https://shopee-entregador.netlify.app';
         const paymentLink = `${clientHost}/payment?id=${paymentResult.id}&email=${encodeURIComponent(userEmail)}`;
         
         // Enviar o email de confirmação

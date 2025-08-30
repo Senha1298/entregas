@@ -42,7 +42,7 @@ const CpfPayment: React.FC = () => {
   const [cpfData, setCpfData] = useState<CpfData | null>(null);
   const [pixInfo, setPixInfo] = useState<PixQRCode | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [timeLeft, setTimeLeft] = useState<number>(3 * 24 * 60 * 60); // 3 dias em segundos
+  const [timeLeft, setTimeLeft] = useState<number>(30 * 60); // 30 minutos em segundos
   const timerRef = useRef<number | null>(null);
 
   // Função para formatar o tempo restante

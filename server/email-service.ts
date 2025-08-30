@@ -88,9 +88,9 @@ export class EmailService {
   }): Promise<boolean> {
     const { email, name, pixCode, pixQrCode, amount, formattedAmount, paymentLink } = params;
     
-    // Gerar a data de expiração (3 dias a partir de agora)
+    // Gerar a data de expiração (30 minutos a partir de agora)
     const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + 3);
+    expirationDate.setMinutes(expirationDate.getMinutes() + 30);
     
     const formattedExpiration = expirationDate.toLocaleString('pt-BR', {
       day: '2-digit',
