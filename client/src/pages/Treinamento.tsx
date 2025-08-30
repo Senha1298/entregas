@@ -100,7 +100,7 @@ const Treinamento: FC = () => {
                     className="w-full bg-[#EE4E2E] hover:bg-[#D43C1E] text-white font-medium py-3"
                     onClick={() => setModalOpen(true)}
                   >
-                    Iniciar Treinamento Agora
+                    Agendar Treinamento Agora
                   </Button>
                 </div>
               </div>
@@ -242,7 +242,7 @@ const Treinamento: FC = () => {
                 className="bg-[#EE4E2E] hover:bg-[#D43C1E] text-white font-medium py-3 px-8"
                 onClick={() => setModalOpen(true)}
               >
-                Iniciar Treinamento Agora
+                Agendar Treinamento Agora
               </Button>
             </div>
           </div>
