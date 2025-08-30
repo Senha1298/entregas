@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from 'ws';
 import { storage } from "./storage";
 import { paymentService } from "./payment";
-import { createFor4Payment } from "./for4payments-bridge";
+// Importação removida - migrado para TechByNet API
 import { 
   insertCandidateSchema, 
   insertStateSchema, 
