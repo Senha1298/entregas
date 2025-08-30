@@ -79,7 +79,7 @@ const Entrega: React.FC = () => {
       console.log('[ENTREGA] Encontrado pagamento em andamento:', currentPaymentId);
       setTimeout(() => {
         verificarStatusPagamento(currentPaymentId);
-      }, 3000);
+      }, 1000);
     }
   }, []);
   
@@ -292,10 +292,10 @@ const Entrega: React.FC = () => {
       // Armazenar ID da transação para verificação posterior
       localStorage.setItem('current_payment_id', pixData.id);
       
-      // Iniciar verificação de status após 15 segundos
+      // Iniciar verificação de status imediatamente
       setTimeout(() => {
         verificarStatusPagamento(pixData.id);
-      }, 15000);
+      }, 1000);
       
     } catch (error: any) {
       console.error("Erro ao processar pagamento:", error);
@@ -328,102 +328,60 @@ const Entrega: React.FC = () => {
     }
   };
   
-  // Função para verificar o status do pagamento diretamente na For4Payments
+  // Função para verificar o status do pagamento via API Recoveryfy
   const verificarStatusPagamento = async (paymentId: string) => {
     console.log('[ENTREGA] Verificando status do pagamento:', paymentId);
     
-    // Obter a chave de API For4Payments via variável de ambiente específica para frontend
-    const apiKey = import.meta.env.VITE_FOR4PAYMENTS_SECRET_KEY;
-    
-    if (apiKey) {
-      try {
-        // Usar a função que verifica diretamente do frontend
-        const { success, data: statusData } = await checkPaymentStatus(paymentId, apiKey);
+    try {
+      // Usar a nova API Recoveryfy para verificar status
+      const response = await fetch(`https://recoveryfy.replit.app/api/order/${paymentId}/status`);
+      
+      if (response.ok) {
+        const statusData = await response.json();
+        console.log('[ENTREGA] Status obtido:', statusData);
         
-        if (success && statusData) {
-          console.log('[ENTREGA] Status obtido diretamente:', statusData);
+        // Verificar se o status é "approved"
+        if (statusData.status === 'approved') {
+          console.log('[ENTREGA] Pagamento APROVADO! Rastreando conversão...');
           
-          // Se aprovado, relatar diretamente do frontend para o Facebook
-          if (statusData.status === 'APPROVED') {
-            console.log('[ENTREGA] Pagamento APROVADO! Rastreando conversão do frontend...');
-            
-            // Rastrear o evento de compra no Facebook Pixel
-            const amount = statusData.amount ? parseFloat(statusData.amount) / 100 : 59.90;
-            trackPurchase(paymentId, amount);
-            
-            // Exibir mensagem de sucesso para o usuário
-            toast({
-              title: "Pagamento aprovado!",
-              description: "Seu pagamento foi confirmado com sucesso!",
-            });
-            
-            // Também notifica o backend para fins de registro
-            try {
-              await fetch(`${API_BASE_URL}/api/payments/${paymentId}/check-status`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-              });
-            } catch (err) {
-              console.warn('[ENTREGA] Falha ao notificar backend, mas evento já foi enviado do frontend');
-            }
-            
-            // Redirecionar para a página de treinamento
-            console.log('[ENTREGA] Redirecionando para página de treinamento...');
-            setTimeout(() => {
-              setLocation('/treinamento');
-            }, 1000);
-          } else {
-            // Se não está aprovado, agendar nova verificação em 30 segundos
-            setTimeout(() => {
-              verificarStatusPagamento(paymentId);
-            }, 30000);
-          }
+          // Rastrear o evento de compra no Facebook Pixel
+          trackPurchase(paymentId, 59.90);
+          
+          // Exibir mensagem de sucesso para o usuário
+          toast({
+            title: "Pagamento aprovado!",
+            description: "Seu pagamento foi confirmado com sucesso!",
+          });
+          
+          // Redirecionar instantaneamente para a página de treinamento
+          console.log('[ENTREGA] Redirecionando para página de treinamento...');
+          setLocation('/treinamento');
+          
+          // Limpar o ID do pagamento do localStorage
+          localStorage.removeItem('current_payment_id');
+          
+          return; // Parar a verificação
+        } else {
+          // Se não está aprovado, agendar nova verificação em 1 segundo
+          setTimeout(() => {
+            verificarStatusPagamento(paymentId);
+          }, 1000);
         }
-      } catch (error) {
-        console.error('[ENTREGA] Erro ao verificar status:', error);
+      } else {
+        console.error('[ENTREGA] Erro na API Recoveryfy:', response.status, response.statusText);
         
-        // Em caso de erro, agendar nova tentativa em 60 segundos
+        // Em caso de erro HTTP, agendar nova tentativa em 1 segundo
         setTimeout(() => {
           verificarStatusPagamento(paymentId);
-        }, 60000);
+        }, 1000);
       }
-    } else {
-      // Sem a chave API no frontend, tentar via backend
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/payments/${paymentId}?check_status=true`);
-        if (response.ok) {
-          const data = await response.json();
-          
-          if (data.status === 'APPROVED') {
-            // Mesmo sem acesso direto à API, rastreamos o evento do frontend
-            initFacebookPixel();
-            trackPurchase(paymentId, 59.90);
-            
-            toast({
-              title: "Pagamento aprovado!",
-              description: "Seu pagamento foi confirmado com sucesso!"
-            });
-            
-            // Redirecionar para a página de treinamento
-            console.log('[ENTREGA] Redirecionando para página de treinamento via verificação backend...');
-            setTimeout(() => {
-              setLocation('/treinamento');
-            }, 1000);
-          } else {
-            // Se não está aprovado, agendar nova verificação em 30 segundos
-            setTimeout(() => {
-              verificarStatusPagamento(paymentId);
-            }, 30000);
-          }
-        }
-      } catch (error) {
-        console.error('[ENTREGA] Erro na verificação via backend:', error);
-        
-        // Em caso de erro, agendar nova tentativa em 60 segundos
-        setTimeout(() => {
-          verificarStatusPagamento(paymentId);
-        }, 60000);
-      }
+    } catch (error) {
+      console.error('[ENTREGA] Erro ao verificar status:', error);
+      
+      // Em caso de erro de rede, agendar nova tentativa em 1 segundo
+      setTimeout(() => {
+        verificarStatusPagamento(paymentId);
+      }, 1000);
     }
   };
 
