@@ -532,14 +532,25 @@ const Cadastro: React.FC = () => {
         cep: cepData.cep,
       };
 
+      console.log('[CADASTRO] Salvando dados do candidato:', candidatoData);
       localStorage.setItem('candidato_data', JSON.stringify(candidatoData));
       
       // Salvar os dados do usuário para mostrar na página de entrega
-      localStorage.setItem('user_data', JSON.stringify({
+      const userData = {
         nome: data.nome,
         cpf: data.cpf,
-        dataNascimento: data.dataNascimento
-      }));
+        dataNascimento: data.dataNascimento,
+        tipoVeiculo: tipoVeiculo,
+        cidade: cepData.city,
+        estado: cepData.state
+      };
+      
+      console.log('[CADASTRO] Salvando dados do usuário:', userData);
+      localStorage.setItem('user_data', JSON.stringify(userData));
+      
+      // Também salvar apenas o nome separadamente como backup
+      localStorage.setItem('user_name', data.nome);
+      localStorage.setItem('user_cpf', data.cpf);
       
       // Mostrar o modal de carregamento em vez de navegar diretamente
       setShowLoadingModal(true);

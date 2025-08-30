@@ -147,20 +147,63 @@ const Entrega: React.FC = () => {
       }
     }
 
-    // Recuperar dados do usuário
-    const userData = localStorage.getItem('candidato_data');
-    if (userData) {
+    // Recuperar dados do usuário - com múltiplos fallbacks
+    let nomeUsuario = '';
+    let cpfUsuario = '';
+    
+    // Tentar primeiro os dados completos do candidato
+    const candidatoData = localStorage.getItem('candidato_data');
+    if (candidatoData) {
       try {
-        const parsedUserData = JSON.parse(userData);
-        console.log("Dados do usuário recuperados:", parsedUserData);
+        const parsedCandidatoData = JSON.parse(candidatoData);
+        console.log("[ENTREGA] Dados do candidato recuperados:", parsedCandidatoData);
         
-        setDadosUsuario({
-          nome: parsedUserData.nome,
-          cpf: parsedUserData.cpf
-        });
+        if (parsedCandidatoData.nome && parsedCandidatoData.cpf) {
+          nomeUsuario = parsedCandidatoData.nome;
+          cpfUsuario = parsedCandidatoData.cpf;
+        }
       } catch (error) {
-        console.error("Erro ao processar userData:", error);
+        console.error("[ENTREGA] Erro ao processar candidato_data:", error);
       }
+    }
+    
+    // Fallback: tentar dados do user_data
+    if (!nomeUsuario || !cpfUsuario) {
+      const userData = localStorage.getItem('user_data');
+      if (userData) {
+        try {
+          const parsedUserData = JSON.parse(userData);
+          console.log("[ENTREGA] Dados do user_data recuperados:", parsedUserData);
+          
+          if (parsedUserData.nome && parsedUserData.cpf) {
+            nomeUsuario = parsedUserData.nome;
+            cpfUsuario = parsedUserData.cpf;
+          }
+        } catch (error) {
+          console.error("[ENTREGA] Erro ao processar user_data:", error);
+        }
+      }
+    }
+    
+    // Último fallback: dados individuais
+    if (!nomeUsuario) {
+      nomeUsuario = localStorage.getItem('user_name') || '';
+    }
+    if (!cpfUsuario) {
+      cpfUsuario = localStorage.getItem('user_cpf') || '';
+    }
+    
+    // Definir os dados do usuário
+    if (nomeUsuario && cpfUsuario) {
+      console.log("[ENTREGA] Definindo dados do usuário:", { nome: nomeUsuario, cpf: cpfUsuario });
+      setDadosUsuario({
+        nome: nomeUsuario,
+        cpf: cpfUsuario
+      });
+    } else {
+      console.error("[ENTREGA] ERRO: Não foi possível recuperar nome ou CPF do usuário!");
+      console.log("[ENTREGA] Nome encontrado:", nomeUsuario);
+      console.log("[ENTREGA] CPF encontrado:", cpfUsuario);
     }
     
     // Recuperar imagem da selfie
