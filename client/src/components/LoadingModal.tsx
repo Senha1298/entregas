@@ -62,10 +62,10 @@ export const LoadingModal: React.FC<LoadingModalProps> = ({
         
         <div className="absolute top-0 left-0 w-full h-full bg-white z-0"></div>
         
-        <div className="relative flex flex-col justify-center items-center h-screen bg-transparent z-10">
+        <div className="relative flex flex-col items-center h-screen bg-transparent z-10 py-8 overflow-y-auto">
           {/* Loader */}
           {!isComplete && (
-            <div className="flex space-x-2 mb-8 fixed top-1/4">
+            <div className="flex space-x-2 mb-8 mt-20">
               <div className="loading-dot w-3 h-3 bg-[#E83D22] rounded-full"></div>
               <div className="loading-dot w-3 h-3 bg-[#E83D22] rounded-full"></div>
               <div className="loading-dot w-3 h-3 bg-[#E83D22] rounded-full"></div>
@@ -73,7 +73,7 @@ export const LoadingModal: React.FC<LoadingModalProps> = ({
           )}
           
           {/* Status Modal */}
-          <div className="w-11/12 max-w-md mt-48">
+          <div className="w-11/12 max-w-md mt-8">
             <h2 className="font-semibold text-lg text-center mb-6">{title}</h2>
 
             <div className="space-y-3">
