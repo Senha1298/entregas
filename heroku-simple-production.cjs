@@ -423,19 +423,6 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       // Gerar QR Code URL
       const pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
       
-      // Resposta compatível com o formato esperado pelo frontend
-      const pixResponse = {
-        id: transactionId,
-        pixCode: pixCode,
-        pixQrCode: pixQrCode,
-        status: 'pending',
-        emailSent: false
-      };
-      
-      console.log('✅ Transação Pagnet criada com sucesso:', transactionId);
-      console.log('Enviando resposta para frontend:', JSON.stringify(pixResponse, null, 2));
-      
-      // Garantir que a resposta seja enviada corretamente
       pixResponse = {
         id: transactionId,
         pixCode: pixCode,
@@ -478,7 +465,7 @@ app.use(express.static(path.join(__dirname, 'dist/public'), {
   etag: true
 }));
 
-// Rota para SPA (Single Page Application) com scroll automático
+// Rota para SPA (Single Page Application)
 app.get('*', (req, res) => {
   const buildPath = path.join(__dirname, 'dist/public');
   const indexPath = path.join(buildPath, 'index.html');
@@ -486,16 +473,50 @@ app.get('*', (req, res) => {
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(404).send('Página não encontrada');
+    console.log('⚠️ Arquivo index.html não encontrado, retornando página de erro');
+    res.status(404).send(`
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Shopee Delivery Partners</title>
+        <style>
+            body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+            .container { max-width: 600px; margin: 0 auto; }
+            .error { background: #ffebee; border: 1px solid #f44336; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Shopee Delivery Partners</h1>
+            <p>Arquivos não encontrados</p>
+            <div class="error">
+                <strong>Status:</strong> Build não foi executado durante o deploy
+            </div>
+            <p>Entre em contato com o suporte técnico.</p>
+        </div>
+    </body>
+    </html>
+    `);
   }
 });
 
-// Iniciar servidor
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Servidor Heroku rodando na porta ${PORT}`);
-  console.log(`Gateway escolhido: ${process.env.GATEWAY_CHOICE || 'PAGNET'}`);
+// Cleanup
+process.on('SIGTERM', () => {
+  console.log('Recebido SIGTERM, encerrando...');
+  process.exit(0);
 });
-      const authHeader = `Basic ${Buffer.from(authString).toString('base64')}`;
-      
-      // Preparar dados da transação
+
+process.on('SIGINT', () => {
+  console.log('Recebido SIGINT, encerrando...');
+  process.exit(0);
+});
+
+// Iniciar servidor
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Servidor Heroku rodando na porta ${PORT}`);
+  console.log(`🌐 Ambiente: ${process.env.NODE_ENV || 'production'}`);
+  console.log(`🎯 Gateway escolhido: ${process.env.GATEWAY_CHOICE || 'PAGNET'}`);
+  console.log(`📦 Servindo arquivos estáticos de: ${path.join(__dirname, 'dist/public')}`);
+});
