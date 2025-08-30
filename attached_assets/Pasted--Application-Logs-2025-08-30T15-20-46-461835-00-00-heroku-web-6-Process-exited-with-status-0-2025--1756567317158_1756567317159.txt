@@ -1,0 +1,1144 @@
+
+Application Logs
+2025-08-30T15:20:46.461835+00:00 heroku[web.6]: Process exited with status 0
+2025-08-30T15:20:46.504820+00:00 heroku[web.11]: Process exited with status 0
+2025-08-30T15:20:46.536648+00:00 heroku[web.2]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.547048+00:00 heroku[web.16]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.622084+00:00 heroku[web.46]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.666867+00:00 heroku[web.31]: Stopping all processes with SIGTERM
+2025-08-30T15:20:46.689986+00:00 app[web.31]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:46.696726+00:00 heroku[web.52]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.704200+00:00 heroku[web.32]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.740830+00:00 heroku[web.31]: Process exited with status 0
+2025-08-30T15:20:46.861964+00:00 heroku[web.59]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.883946+00:00 heroku[web.68]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.901229+00:00 heroku[web.4]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.651172+00:00 app[web.66]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:46.651435+00:00 app[web.66]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:46.657656+00:00 app[web.66]: ✅ Servidor rodando na porta 11915
+2025-08-30T15:20:46.657682+00:00 app[web.66]: 🌐 Ambiente: production
+2025-08-30T15:20:46.657701+00:00 app[web.66]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:46.929934+00:00 heroku[web.34]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.930696+00:00 heroku[web.9]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.674486+00:00 app[web.53]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:46.674779+00:00 app[web.53]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:46.680435+00:00 app[web.53]: ✅ Servidor rodando na porta 34880
+2025-08-30T15:20:46.680472+00:00 app[web.53]: 🌐 Ambiente: production
+2025-08-30T15:20:46.680496+00:00 app[web.53]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:46.965879+00:00 heroku[web.70]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.709933+00:00 app[web.14]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:46.709975+00:00 app[web.14]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:46.715540+00:00 app[web.14]: ✅ Servidor rodando na porta 11738
+2025-08-30T15:20:46.715596+00:00 app[web.14]: 🌐 Ambiente: production
+2025-08-30T15:20:46.715635+00:00 app[web.14]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:46.761674+00:00 app[web.7]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:46.761688+00:00 app[web.7]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:46.768752+00:00 app[web.7]: ✅ Servidor rodando na porta 15574
+2025-08-30T15:20:46.768915+00:00 app[web.7]: 🌐 Ambiente: production
+2025-08-30T15:20:46.768916+00:00 app[web.7]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.021738+00:00 heroku[web.12]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.067924+00:00 heroku[web.13]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.054101+00:00 heroku[web.27]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.799299+00:00 app[web.40]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:46.799562+00:00 app[web.40]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:46.807335+00:00 app[web.40]: ✅ Servidor rodando na porta 25743
+2025-08-30T15:20:46.807343+00:00 app[web.40]: 🌐 Ambiente: production
+2025-08-30T15:20:46.807374+00:00 app[web.40]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:46.895623+00:00 app[web.36]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:46.895636+00:00 app[web.36]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:46.901794+00:00 app[web.36]: ✅ Servidor rodando na porta 24326
+2025-08-30T15:20:46.901795+00:00 app[web.36]: 🌐 Ambiente: production
+2025-08-30T15:20:46.901796+00:00 app[web.36]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.210374+00:00 heroku[web.58]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:46.987477+00:00 app[web.25]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:46.987734+00:00 app[web.25]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:46.993569+00:00 app[web.25]: ✅ Servidor rodando na porta 23081
+2025-08-30T15:20:46.993607+00:00 app[web.25]: 🌐 Ambiente: production
+2025-08-30T15:20:46.993630+00:00 app[web.25]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.050596+00:00 app[web.26]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.050886+00:00 app[web.26]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.056714+00:00 app[web.26]: ✅ Servidor rodando na porta 4946
+2025-08-30T15:20:47.056748+00:00 app[web.26]: 🌐 Ambiente: production
+2025-08-30T15:20:47.056767+00:00 app[web.26]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.078891+00:00 app[web.17]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.078915+00:00 app[web.17]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.086021+00:00 app[web.17]: ✅ Servidor rodando na porta 14565
+2025-08-30T15:20:47.086198+00:00 app[web.17]: 🌐 Ambiente: production
+2025-08-30T15:20:47.086199+00:00 app[web.17]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.344432+00:00 heroku[web.69]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.364898+00:00 heroku[web.39]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.142714+00:00 app[web.35]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.143051+00:00 app[web.35]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.151503+00:00 app[web.35]: ✅ Servidor rodando na porta 9219
+2025-08-30T15:20:47.151555+00:00 app[web.35]: 🌐 Ambiente: production
+2025-08-30T15:20:47.151583+00:00 app[web.35]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.411739+00:00 heroku[web.37]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.497532+00:00 heroku[web.51]: Stopping all processes with SIGTERM
+2025-08-30T15:20:47.497811+00:00 heroku[web.41]: Stopping all processes with SIGTERM
+2025-08-30T15:20:47.513234+00:00 app[web.41]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:47.518448+00:00 app[web.51]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:47.556334+00:00 heroku[web.41]: Process exited with status 0
+2025-08-30T15:20:47.560139+00:00 heroku[web.51]: Process exited with status 0
+2025-08-30T15:20:47.380582+00:00 app[web.2]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.380885+00:00 app[web.2]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.388529+00:00 app[web.2]: ✅ Servidor rodando na porta 6619
+2025-08-30T15:20:47.388575+00:00 app[web.2]: 🌐 Ambiente: production
+2025-08-30T15:20:47.388603+00:00 app[web.2]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.646063+00:00 heroku[web.66]: Stopping all processes with SIGTERM
+2025-08-30T15:20:47.409227+00:00 app[web.16]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.410110+00:00 app[web.16]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.416650+00:00 app[web.16]: ✅ Servidor rodando na porta 16698
+2025-08-30T15:20:47.416652+00:00 app[web.16]: 🌐 Ambiente: production
+2025-08-30T15:20:47.416652+00:00 app[web.16]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.679388+00:00 heroku[web.7]: Stopping all processes with SIGTERM
+2025-08-30T15:20:47.706134+00:00 heroku[web.53]: Stopping all processes with SIGTERM
+2025-08-30T15:20:47.668453+00:00 app[web.66]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:47.720811+00:00 heroku[web.66]: Process exited with status 0
+2025-08-30T15:20:47.729611+00:00 heroku[web.49]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.729989+00:00 app[web.53]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:47.765912+00:00 heroku[web.55]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.765339+00:00 heroku[web.53]: Process exited with status 0
+2025-08-30T15:20:47.515097+00:00 app[web.46]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.515114+00:00 app[web.46]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.518676+00:00 app[web.46]: ✅ Servidor rodando na porta 45755
+2025-08-30T15:20:47.518841+00:00 app[web.46]: 🌐 Ambiente: production
+2025-08-30T15:20:47.518842+00:00 app[web.46]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.796344+00:00 heroku[web.7]: Process exited with status 0
+2025-08-30T15:20:47.702105+00:00 app[web.7]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:47.548323+00:00 app[web.34]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.548572+00:00 app[web.34]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.554533+00:00 app[web.34]: ✅ Servidor rodando na porta 55413
+2025-08-30T15:20:47.554567+00:00 app[web.34]: 🌐 Ambiente: production
+2025-08-30T15:20:47.554587+00:00 app[web.34]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.544124+00:00 app[web.32]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.544352+00:00 app[web.32]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.550259+00:00 app[web.32]: ✅ Servidor rodando na porta 12584
+2025-08-30T15:20:47.550291+00:00 app[web.32]: 🌐 Ambiente: production
+2025-08-30T15:20:47.550316+00:00 app[web.32]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.815917+00:00 heroku[web.23]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.865218+00:00 heroku[web.36]: Stopping all processes with SIGTERM
+2025-08-30T15:20:47.882313+00:00 heroku[web.30]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.896813+00:00 heroku[web.40]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.884296+00:00 app[web.36]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:47.935656+00:00 heroku[web.36]: Process exited with status 0
+2025-08-30T15:20:47.685862+00:00 app[web.52]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.695077+00:00 app[web.52]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.699994+00:00 app[web.52]: ✅ Servidor rodando na porta 5369
+2025-08-30T15:20:47.701322+00:00 app[web.52]: 🌐 Ambiente: production
+2025-08-30T15:20:47.701323+00:00 app[web.52]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:47.956542+00:00 heroku[web.60]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.758754+00:00 app[web.9]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.759150+00:00 app[web.9]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.768423+00:00 app[web.9]: ✅ Servidor rodando na porta 3330
+2025-08-30T15:20:47.768481+00:00 app[web.9]: 🌐 Ambiente: production
+2025-08-30T15:20:47.768929+00:00 app[web.9]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.038570+00:00 heroku[web.53]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.074934+00:00 heroku[web.22]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.096628+00:00 heroku[web.28]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.127228+00:00 heroku[web.17]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.155374+00:00 heroku[web.26]: Stopping all processes with SIGTERM
+2025-08-30T15:20:47.910294+00:00 app[web.68]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.910307+00:00 app[web.68]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.917355+00:00 app[web.68]: ✅ Servidor rodando na porta 19292
+2025-08-30T15:20:47.917356+00:00 app[web.68]: 🌐 Ambiente: production
+2025-08-30T15:20:47.917357+00:00 app[web.68]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.158648+00:00 heroku[web.5]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.938643+00:00 app[web.70]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.938903+00:00 app[web.70]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.945023+00:00 app[web.70]: ✅ Servidor rodando na porta 3620
+2025-08-30T15:20:47.945024+00:00 app[web.70]: 🌐 Ambiente: production
+2025-08-30T15:20:47.945024+00:00 app[web.70]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.172528+00:00 app[web.26]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:48.158345+00:00 app[web.17]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:48.219379+00:00 heroku[web.26]: Process exited with status 0
+2025-08-30T15:20:48.225025+00:00 heroku[web.17]: Process exited with status 0
+2025-08-30T15:20:48.237156+00:00 heroku[web.2]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.270978+00:00 heroku[web.18]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:47.983608+00:00 app[web.59]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:47.983630+00:00 app[web.59]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:47.990461+00:00 app[web.59]: ✅ Servidor rodando na porta 58544
+2025-08-30T15:20:47.990463+00:00 app[web.59]: 🌐 Ambiente: production
+2025-08-30T15:20:47.990464+00:00 app[web.59]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.282316+00:00 heroku[web.39]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.290618+00:00 heroku[web.60]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.253996+00:00 app[web.2]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:48.032635+00:00 app[web.12]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.032949+00:00 app[web.12]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.040439+00:00 app[web.12]: ✅ Servidor rodando na porta 11970
+2025-08-30T15:20:48.040484+00:00 app[web.12]: 🌐 Ambiente: production
+2025-08-30T15:20:48.040511+00:00 app[web.12]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.304805+00:00 heroku[web.2]: Process exited with status 0
+2025-08-30T15:20:48.043299+00:00 app[web.4]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.046748+00:00 app[web.4]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.051446+00:00 app[web.4]: ✅ Servidor rodando na porta 39574
+2025-08-30T15:20:48.051447+00:00 app[web.4]: 🌐 Ambiente: production
+2025-08-30T15:20:48.051448+00:00 app[web.4]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.353950+00:00 heroku[web.10]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.362397+00:00 heroku[web.40]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.398998+00:00 heroku[web.25]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.398229+00:00 heroku[web.29]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.163326+00:00 app[web.58]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.163641+00:00 app[web.58]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.169899+00:00 app[web.58]: ✅ Servidor rodando na porta 36346
+2025-08-30T15:20:48.169933+00:00 app[web.58]: 🌐 Ambiente: production
+2025-08-30T15:20:48.169952+00:00 app[web.58]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.386213+00:00 app[web.40]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:48.439796+00:00 heroku[web.1]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.437545+00:00 heroku[web.40]: Process exited with status 0
+2025-08-30T15:20:48.183382+00:00 app[web.69]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.183396+00:00 app[web.69]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.190767+00:00 app[web.69]: ✅ Servidor rodando na porta 34978
+2025-08-30T15:20:48.190796+00:00 app[web.69]: 🌐 Ambiente: production
+2025-08-30T15:20:48.190822+00:00 app[web.69]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.417332+00:00 app[web.25]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:48.461276+00:00 heroku[web.25]: Process exited with status 0
+2025-08-30T15:20:48.249198+00:00 app[web.13]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.249428+00:00 app[web.13]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.255652+00:00 app[web.13]: ✅ Servidor rodando na porta 35598
+2025-08-30T15:20:48.255653+00:00 app[web.13]: 🌐 Ambiente: production
+2025-08-30T15:20:48.255654+00:00 app[web.13]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.523065+00:00 heroku[web.71]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.270002+00:00 app[web.27]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.270014+00:00 app[web.27]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.276491+00:00 app[web.27]: ✅ Servidor rodando na porta 42582
+2025-08-30T15:20:48.276657+00:00 app[web.27]: 🌐 Ambiente: production
+2025-08-30T15:20:48.276658+00:00 app[web.27]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.563030+00:00 heroku[web.34]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.622961+00:00 heroku[web.42]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.580903+00:00 app[web.34]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:48.622532+00:00 heroku[web.52]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.631791+00:00 heroku[web.34]: Process exited with status 0
+2025-08-30T15:20:48.317643+00:00 app[web.39]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.317657+00:00 app[web.39]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.322651+00:00 app[web.39]: ✅ Servidor rodando na porta 18626
+2025-08-30T15:20:48.322657+00:00 app[web.39]: 🌐 Ambiente: production
+2025-08-30T15:20:48.322687+00:00 app[web.39]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.670138+00:00 heroku[web.57]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.678140+00:00 heroku[web.65]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.677183+00:00 heroku[web.43]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.640484+00:00 app[web.52]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:48.698698+00:00 heroku[web.52]: Process exited with status 0
+2025-08-30T15:20:48.477728+00:00 app[web.55]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.478045+00:00 app[web.55]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.485406+00:00 app[web.55]: ✅ Servidor rodando na porta 4828
+2025-08-30T15:20:48.485407+00:00 app[web.55]: 🌐 Ambiente: production
+2025-08-30T15:20:48.485408+00:00 app[web.55]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.752950+00:00 heroku[web.72]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.523105+00:00 app[web.37]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.523122+00:00 app[web.37]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.533421+00:00 app[web.37]: ✅ Servidor rodando na porta 18207
+2025-08-30T15:20:48.533423+00:00 app[web.37]: 🌐 Ambiente: production
+2025-08-30T15:20:48.533423+00:00 app[web.37]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.825138+00:00 heroku[web.31]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.840753+00:00 heroku[web.54]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.586051+00:00 app[web.40]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.586280+00:00 app[web.40]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.592960+00:00 app[web.40]: ✅ Servidor rodando na porta 10239
+2025-08-30T15:20:48.592993+00:00 app[web.40]: 🌐 Ambiente: production
+2025-08-30T15:20:48.593012+00:00 app[web.40]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.597732+00:00 app[web.49]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.598020+00:00 app[web.49]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.604265+00:00 app[web.49]: ✅ Servidor rodando na porta 35833
+2025-08-30T15:20:48.604298+00:00 app[web.49]: 🌐 Ambiente: production
+2025-08-30T15:20:48.604321+00:00 app[web.49]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.612164+00:00 app[web.60]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.612464+00:00 app[web.60]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.618422+00:00 app[web.60]: ✅ Servidor rodando na porta 56379
+2025-08-30T15:20:48.618468+00:00 app[web.60]: 🌐 Ambiente: production
+2025-08-30T15:20:48.618470+00:00 app[web.60]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.872121+00:00 heroku[web.12]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.628772+00:00 app[web.23]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.628974+00:00 app[web.23]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.634931+00:00 app[web.23]: ✅ Servidor rodando na porta 45085
+2025-08-30T15:20:48.634936+00:00 app[web.23]: 🌐 Ambiente: production
+2025-08-30T15:20:48.634975+00:00 app[web.23]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.897383+00:00 heroku[web.8]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.914287+00:00 heroku[web.44]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:48.916631+00:00 heroku[web.35]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.914562+00:00 heroku[web.59]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.669956+00:00 app[web.53]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.670194+00:00 app[web.53]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.676192+00:00 app[web.53]: ✅ Servidor rodando na porta 25501
+2025-08-30T15:20:48.676226+00:00 app[web.53]: 🌐 Ambiente: production
+2025-08-30T15:20:48.676246+00:00 app[web.53]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.891542+00:00 app[web.12]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:48.945659+00:00 heroku[web.12]: Process exited with status 0
+2025-08-30T15:20:48.952762+00:00 heroku[web.16]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.961104+00:00 heroku[web.68]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.705117+00:00 app[web.28]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.705340+00:00 app[web.28]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.710915+00:00 app[web.28]: ✅ Servidor rodando na porta 38671
+2025-08-30T15:20:48.710951+00:00 app[web.28]: 🌐 Ambiente: production
+2025-08-30T15:20:48.710974+00:00 app[web.28]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:48.969837+00:00 heroku[web.70]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.937603+00:00 app[web.35]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:48.980273+00:00 heroku[web.46]: Stopping all processes with SIGTERM
+2025-08-30T15:20:48.943764+00:00 app[web.59]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.001206+00:00 heroku[web.40]: State changed from starting to up
+2025-08-30T15:20:48.996028+00:00 heroku[web.59]: Process exited with status 0
+2025-08-30T15:20:48.979705+00:00 app[web.16]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.033836+00:00 heroku[web.35]: Process exited with status 0
+2025-08-30T15:20:48.995987+00:00 app[web.70]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.036364+00:00 heroku[web.16]: Process exited with status 0
+2025-08-30T15:20:48.782167+00:00 app[web.30]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.782518+00:00 app[web.30]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.790372+00:00 app[web.30]: ✅ Servidor rodando na porta 35818
+2025-08-30T15:20:48.790633+00:00 app[web.30]: 🌐 Ambiente: production
+2025-08-30T15:20:48.790634+00:00 app[web.30]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.047295+00:00 heroku[web.70]: Process exited with status 0
+2025-08-30T15:20:48.988538+00:00 app[web.68]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.001226+00:00 app[web.46]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.049913+00:00 heroku[web.68]: Process exited with status 0
+2025-08-30T15:20:49.053645+00:00 heroku[web.69]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.053939+00:00 heroku[web.46]: Process exited with status 0
+2025-08-30T15:20:49.062272+00:00 heroku[web.32]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.069051+00:00 heroku[web.14]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.076139+00:00 heroku[web.4]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.099314+00:00 heroku[web.49]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.089229+00:00 app[web.14]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.081505+00:00 app[web.32]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.132731+00:00 heroku[web.60]: State changed from starting to up
+2025-08-30T15:20:49.128453+00:00 heroku[web.14]: Process exited with status 0
+2025-08-30T15:20:49.129510+00:00 heroku[web.32]: Process exited with status 0
+2025-08-30T15:20:49.099956+00:00 app[web.4]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:48.890846+00:00 app[web.22]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:48.891243+00:00 app[web.22]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:48.897508+00:00 app[web.22]: ✅ Servidor rodando na porta 28219
+2025-08-30T15:20:48.897553+00:00 app[web.22]: 🌐 Ambiente: production
+2025-08-30T15:20:48.897582+00:00 app[web.22]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.073106+00:00 app[web.69]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.153186+00:00 heroku[web.69]: Process exited with status 0
+2025-08-30T15:20:49.161743+00:00 heroku[web.4]: Process exited with status 0
+2025-08-30T15:20:49.173362+00:00 heroku[web.50]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.196642+00:00 heroku[web.53]: State changed from starting to up
+2025-08-30T15:20:49.190322+00:00 heroku[web.27]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.223390+00:00 heroku[web.21]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.231531+00:00 heroku[web.66]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.248866+00:00 heroku[web.19]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.320562+00:00 heroku[web.25]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.259909+00:00 heroku[web.28]: State changed from starting to up
+2025-08-30T15:20:49.217092+00:00 app[web.27]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.011595+00:00 app[web.39]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.011966+00:00 app[web.39]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.020158+00:00 app[web.39]: ✅ Servidor rodando na porta 21801
+2025-08-30T15:20:49.020215+00:00 app[web.39]: 🌐 Ambiente: production
+2025-08-30T15:20:49.020244+00:00 app[web.39]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.270157+00:00 heroku[web.27]: Process exited with status 0
+2025-08-30T15:20:49.031512+00:00 app[web.60]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.031843+00:00 app[web.60]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.038883+00:00 app[web.60]: ✅ Servidor rodando na porta 26285
+2025-08-30T15:20:49.038927+00:00 app[web.60]: 🌐 Ambiente: production
+2025-08-30T15:20:49.038953+00:00 app[web.60]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.362168+00:00 heroku[web.10]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.424638+00:00 heroku[web.9]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.401101+00:00 heroku[web.13]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.413872+00:00 heroku[web.39]: State changed from starting to up
+2025-08-30T15:20:49.412845+00:00 heroku[web.16]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.151495+00:00 app[web.10]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.153466+00:00 app[web.10]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.158653+00:00 app[web.10]: ✅ Servidor rodando na porta 54886
+2025-08-30T15:20:49.158860+00:00 app[web.10]: 🌐 Ambiente: production
+2025-08-30T15:20:49.158860+00:00 app[web.10]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.416869+00:00 heroku[web.20]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.459903+00:00 heroku[web.55]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.483661+00:00 heroku[web.71]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.450226+00:00 app[web.9]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.503291+00:00 heroku[web.9]: Process exited with status 0
+2025-08-30T15:20:49.500589+00:00 heroku[web.37]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.506475+00:00 heroku[web.13]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.476191+00:00 app[web.55]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.271249+00:00 app[web.1]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.271273+00:00 app[web.1]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.277374+00:00 app[web.1]: ✅ Servidor rodando na porta 46512
+2025-08-30T15:20:49.277441+00:00 app[web.1]: 🌐 Ambiente: production
+2025-08-30T15:20:49.277441+00:00 app[web.1]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.524872+00:00 heroku[web.55]: Process exited with status 0
+2025-08-30T15:20:49.534290+00:00 heroku[web.58]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.539732+00:00 heroku[web.39]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.293488+00:00 app[web.71]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.293875+00:00 app[web.71]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.302086+00:00 app[web.71]: ✅ Servidor rodando na porta 33340
+2025-08-30T15:20:49.302087+00:00 app[web.71]: 🌐 Ambiente: production
+2025-08-30T15:20:49.302088+00:00 app[web.71]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.527945+00:00 app[web.13]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.526035+00:00 app[web.37]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.580527+00:00 heroku[web.13]: Process exited with status 0
+2025-08-30T15:20:49.552001+00:00 app[web.58]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.594639+00:00 heroku[web.37]: Process exited with status 0
+2025-08-30T15:20:49.599492+00:00 heroku[web.58]: Process exited with status 0
+2025-08-30T15:20:49.341997+00:00 app[web.5]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.346429+00:00 app[web.5]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.351560+00:00 app[web.5]: ✅ Servidor rodando na porta 7795
+2025-08-30T15:20:49.351562+00:00 app[web.5]: 🌐 Ambiente: production
+2025-08-30T15:20:49.351562+00:00 app[web.5]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.570482+00:00 app[web.39]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.639195+00:00 heroku[web.39]: Process exited with status 0
+2025-08-30T15:20:49.650959+00:00 heroku[web.61]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.392628+00:00 app[web.18]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.392639+00:00 app[web.18]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.415338+00:00 app[web.18]: ✅ Servidor rodando na porta 55173
+2025-08-30T15:20:49.415340+00:00 app[web.18]: 🌐 Ambiente: production
+2025-08-30T15:20:49.415341+00:00 app[web.18]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.402657+00:00 app[web.42]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.402941+00:00 app[web.42]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.408927+00:00 app[web.42]: ✅ Servidor rodando na porta 18061
+2025-08-30T15:20:49.408969+00:00 app[web.42]: 🌐 Ambiente: production
+2025-08-30T15:20:49.408984+00:00 app[web.42]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.694104+00:00 heroku[web.71]: State changed from starting to up
+2025-08-30T15:20:49.432301+00:00 app[web.29]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.432315+00:00 app[web.29]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.438223+00:00 app[web.29]: ✅ Servidor rodando na porta 23178
+2025-08-30T15:20:49.438224+00:00 app[web.29]: 🌐 Ambiente: production
+2025-08-30T15:20:49.438224+00:00 app[web.29]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.735820+00:00 heroku[web.48]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.484517+00:00 app[web.57]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.484769+00:00 app[web.57]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.490505+00:00 app[web.57]: ✅ Servidor rodando na porta 32538
+2025-08-30T15:20:49.490537+00:00 app[web.57]: 🌐 Ambiente: production
+2025-08-30T15:20:49.490556+00:00 app[web.57]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.752198+00:00 heroku[web.33]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.511759+00:00 app[web.65]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.512057+00:00 app[web.65]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.519265+00:00 app[web.65]: ✅ Servidor rodando na porta 26023
+2025-08-30T15:20:49.519308+00:00 app[web.65]: 🌐 Ambiente: production
+2025-08-30T15:20:49.519334+00:00 app[web.65]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.526188+00:00 app[web.44]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.526445+00:00 app[web.44]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.532086+00:00 app[web.44]: ✅ Servidor rodando na porta 11830
+2025-08-30T15:20:49.532123+00:00 app[web.44]: 🌐 Ambiente: production
+2025-08-30T15:20:49.532142+00:00 app[web.44]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.781625+00:00 heroku[web.65]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.843477+00:00 heroku[web.45]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.863192+00:00 heroku[web.30]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.617408+00:00 app[web.8]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.617685+00:00 app[web.8]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.623757+00:00 app[web.8]: ✅ Servidor rodando na porta 31256
+2025-08-30T15:20:49.623795+00:00 app[web.8]: 🌐 Ambiente: production
+2025-08-30T15:20:49.623815+00:00 app[web.8]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.888082+00:00 heroku[web.22]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.915538+00:00 heroku[web.20]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:49.888153+00:00 app[web.30]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.934145+00:00 heroku[web.30]: Process exited with status 0
+2025-08-30T15:20:49.911135+00:00 app[web.22]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:49.978222+00:00 heroku[web.22]: Process exited with status 0
+2025-08-30T15:20:50.030459+00:00 heroku[web.44]: State changed from starting to up
+2025-08-30T15:20:49.781064+00:00 app[web.49]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.781305+00:00 app[web.49]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.787424+00:00 app[web.49]: ✅ Servidor rodando na porta 3846
+2025-08-30T15:20:49.787463+00:00 app[web.49]: 🌐 Ambiente: production
+2025-08-30T15:20:49.787491+00:00 app[web.49]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.054690+00:00 heroku[web.23]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.767216+00:00 app[web.54]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.767237+00:00 app[web.54]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.779663+00:00 app[web.54]: ✅ Servidor rodando na porta 41374
+2025-08-30T15:20:49.779664+00:00 app[web.54]: 🌐 Ambiente: production
+2025-08-30T15:20:49.779664+00:00 app[web.54]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:49.778468+00:00 app[web.72]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.782209+00:00 app[web.72]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.787809+00:00 app[web.72]: ✅ Servidor rodando na porta 24322
+2025-08-30T15:20:49.787811+00:00 app[web.72]: 🌐 Ambiente: production
+2025-08-30T15:20:49.787811+00:00 app[web.72]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.085525+00:00 heroku[web.31]: State changed from starting to up
+2025-08-30T15:20:50.074984+00:00 heroku[web.49]: Stopping all processes with SIGTERM
+2025-08-30T15:20:49.825598+00:00 app[web.31]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.825611+00:00 app[web.31]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.834566+00:00 app[web.31]: ✅ Servidor rodando na porta 58761
+2025-08-30T15:20:49.834568+00:00 app[web.31]: 🌐 Ambiente: production
+2025-08-30T15:20:49.834569+00:00 app[web.31]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.125079+00:00 heroku[web.60]: Stopping all processes with SIGTERM
+2025-08-30T15:20:50.141664+00:00 heroku[router]: sock=client at=warning code=H27 desc="Client Request Interrupted" method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=0337878d-488c-3cd6-0398-21bb9045ce2c fwd="" dyno= connect=0ms service=0ms status=499 bytes=567 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:50.077786+00:00 app[web.23]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.098936+00:00 app[web.49]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.143618+00:00 heroku[web.49]: Process exited with status 0
+2025-08-30T15:20:50.140490+00:00 heroku[web.23]: Process exited with status 0
+2025-08-30T15:20:50.142801+00:00 app[web.60]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.190678+00:00 heroku[web.60]: Process exited with status 0
+2025-08-30T15:20:50.198633+00:00 heroku[web.38]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.239540+00:00 heroku[web.49]: State changed from starting to up
+2025-08-30T15:20:49.973424+00:00 app[web.66]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:49.973674+00:00 app[web.66]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:49.979746+00:00 app[web.66]: ✅ Servidor rodando na porta 8442
+2025-08-30T15:20:49.979780+00:00 app[web.66]: 🌐 Ambiente: production
+2025-08-30T15:20:49.979800+00:00 app[web.66]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.240751+00:00 heroku[web.54]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.264704+00:00 heroku[web.18]: Stopping all processes with SIGTERM
+2025-08-30T15:20:50.268038+00:00 heroku[web.29]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.281002+00:00 heroku[web.28]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.302193+00:00 heroku[web.57]: State changed from starting to up
+2025-08-30T15:20:50.050715+00:00 app[web.13]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.050986+00:00 app[web.13]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.056787+00:00 app[web.13]: ✅ Servidor rodando na porta 35134
+2025-08-30T15:20:50.056821+00:00 app[web.13]: 🌐 Ambiente: production
+2025-08-30T15:20:50.056840+00:00 app[web.13]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.300106+00:00 heroku[web.5]: Stopping all processes with SIGTERM
+2025-08-30T15:20:50.315732+00:00 heroku[web.46]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.071457+00:00 app[web.21]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.071870+00:00 app[web.21]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.077850+00:00 app[web.21]: ✅ Servidor rodando na porta 59652
+2025-08-30T15:20:50.077887+00:00 app[web.21]: 🌐 Ambiente: production
+2025-08-30T15:20:50.077912+00:00 app[web.21]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.336327+00:00 heroku[web.1]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.294063+00:00 app[web.18]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.346060+00:00 heroku[web.8]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.112005+00:00 app[web.53]: 2025-08-30T15:20:50.111Z - GET /api/vehicle-info/RUH5D66
+2025-08-30T15:20:50.112551+00:00 app[web.53]: [INFO] Consultando informações do veículo com placa: RUH5D66
+2025-08-30T15:20:50.112586+00:00 app[web.53]: [DEBUG] API key presente: a0e45...45e
+2025-08-30T15:20:50.112669+00:00 app[web.53]: [DEBUG] Tentando consulta direta com chave na URL
+2025-08-30T15:20:50.369242+00:00 heroku[web.65]: State changed from starting to up
+2025-08-30T15:20:50.455211+00:00 heroku[web.25]: State changed from starting to up
+2025-08-30T15:20:50.352791+00:00 heroku[web.18]: Process exited with status 0
+2025-08-30T15:20:50.117399+00:00 app[web.25]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.117768+00:00 app[web.25]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.126069+00:00 app[web.25]: ✅ Servidor rodando na porta 8946
+2025-08-30T15:20:50.126117+00:00 app[web.25]: 🌐 Ambiente: production
+2025-08-30T15:20:50.126149+00:00 app[web.25]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.334932+00:00 app[web.5]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.391955+00:00 heroku[web.29]: Stopping all processes with SIGTERM
+2025-08-30T15:20:50.398086+00:00 heroku[web.42]: Stopping all processes with SIGTERM
+2025-08-30T15:20:50.117042+00:00 app[web.43]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.117378+00:00 app[web.43]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.133471+00:00 app[web.43]: ✅ Servidor rodando na porta 46132
+2025-08-30T15:20:50.133473+00:00 app[web.43]: 🌐 Ambiente: production
+2025-08-30T15:20:50.133473+00:00 app[web.43]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.401521+00:00 heroku[web.5]: Process exited with status 0
+2025-08-30T15:20:50.425341+00:00 heroku[web.34]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.442321+00:00 heroku[router]: at=info method=GET path="/entrega" host=shopee.cadastrodoentregador.com request_id=19840803-96c2-1eca-deee-62933c591735 fwd="201.87.252.51" dyno=web.28 connect=9003ms service=16ms status=200 bytes=2183 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:50.460402+00:00 heroku[web.66]: State changed from starting to up
+2025-08-30T15:20:50.465567+00:00 heroku[web.21]: State changed from starting to up
+2025-08-30T15:20:50.422488+00:00 app[web.29]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.192834+00:00 app[web.50]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.192903+00:00 app[web.50]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.199231+00:00 app[web.50]: ✅ Servidor rodando na porta 54690
+2025-08-30T15:20:50.199234+00:00 app[web.50]: 🌐 Ambiente: production
+2025-08-30T15:20:50.199235+00:00 app[web.50]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.197522+00:00 app[web.19]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.197561+00:00 app[web.19]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.203525+00:00 app[web.19]: ✅ Servidor rodando na porta 54647
+2025-08-30T15:20:50.203678+00:00 app[web.19]: 🌐 Ambiente: production
+2025-08-30T15:20:50.203679+00:00 app[web.19]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.475748+00:00 heroku[web.29]: Process exited with status 0
+2025-08-30T15:20:50.423290+00:00 app[web.42]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.498502+00:00 heroku[web.43]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.502226+00:00 heroku[web.42]: Process exited with status 0
+2025-08-30T15:20:50.536040+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=2b6fbbbb-367b-0970-0cbd-e6139a567461 fwd="45.234.109.241" dyno=web.60 connect=1001ms service=12ms status=200 bytes=2183 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:50.554796+00:00 heroku[web.13]: State changed from starting to up
+2025-08-30T15:20:50.552326+00:00 heroku[web.10]: Stopping all processes with SIGTERM
+2025-08-30T15:20:50.592632+00:00 heroku[web.10]: State changed from starting to up
+2025-08-30T15:20:50.342553+00:00 app[web.16]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.344680+00:00 app[web.16]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.352586+00:00 app[web.16]: ✅ Servidor rodando na porta 41032
+2025-08-30T15:20:50.352587+00:00 app[web.16]: 🌐 Ambiente: production
+2025-08-30T15:20:50.352588+00:00 app[web.16]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.355869+00:00 app[web.61]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.355895+00:00 app[web.61]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.363488+00:00 app[web.61]: ✅ Servidor rodando na porta 5624
+2025-08-30T15:20:50.363734+00:00 app[web.61]: 🌐 Ambiente: production
+2025-08-30T15:20:50.363735+00:00 app[web.61]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.571080+00:00 app[web.10]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.613305+00:00 heroku[web.8]: Stopping all processes with SIGTERM
+2025-08-30T15:20:50.618955+00:00 heroku[web.10]: Process exited with status 0
+2025-08-30T15:20:50.636551+00:00 heroku[router]: at=info method=GET path="/api/vehicle-info/RUH5D66" host=shopee.cadastrodoentregador.com request_id=75f08ba8-99b1-1fb2-6aaa-da6cc4253128 fwd="38.210.92.237" dyno=web.53 connect=9002ms service=528ms status=200 bytes=585 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:50.646083+00:00 heroku[web.16]: State changed from starting to up
+2025-08-30T15:20:50.384625+00:00 app[web.10]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.384896+00:00 app[web.10]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.391071+00:00 app[web.10]: ✅ Servidor rodando na porta 38519
+2025-08-30T15:20:50.391073+00:00 app[web.10]: 🌐 Ambiente: production
+2025-08-30T15:20:50.391073+00:00 app[web.10]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.668280+00:00 heroku[web.15]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.631042+00:00 app[web.8]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.677880+00:00 heroku[web.8]: Process exited with status 0
+2025-08-30T15:20:50.431515+00:00 app[web.28]: 2025-08-30T15:20:50.431Z - GET /entrega
+2025-08-30T15:20:50.448544+00:00 app[web.28]: 2025-08-30T15:20:50.448Z - GET /api/vehicle-info/NDU8G28
+2025-08-30T15:20:50.449154+00:00 app[web.28]: [INFO] Consultando informações do veículo com placa: NDU8G28
+2025-08-30T15:20:50.449220+00:00 app[web.28]: [DEBUG] API key presente: a0e45...45e
+2025-08-30T15:20:50.449316+00:00 app[web.28]: [DEBUG] Tentando consulta direta com chave na URL
+2025-08-30T15:20:50.683592+00:00 heroku[web.47]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.739175+00:00 heroku[web.54]: Stopping all processes with SIGTERM
+2025-08-30T15:20:50.703097+00:00 heroku[web.64]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.720591+00:00 heroku[router]: at=info method=GET path="/assets/index-q6vYi6b2.js" host=shopee.cadastrodoentregador.com request_id=17d1c95e-3af9-5774-0d0d-84e15c86e7c8 fwd="201.87.252.51" dyno=web.60 connect=0ms service=43ms status=200 bytes=359765 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:50.742399+00:00 heroku[web.1]: Stopping all processes with SIGTERM
+2025-08-30T15:20:50.754147+00:00 heroku[web.72]: Stopping all processes with SIGTERM
+2025-08-30T15:20:50.772486+00:00 heroku[web.68]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.527119+00:00 app[web.60]: 2025-08-30T15:20:50.526Z - GET /favicon.ico
+2025-08-30T15:20:50.678449+00:00 app[web.60]: 2025-08-30T15:20:50.678Z - GET /assets/index-q6vYi6b2.js
+2025-08-30T15:20:50.515821+00:00 app[web.20]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.516248+00:00 app[web.20]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.524063+00:00 app[web.20]: ✅ Servidor rodando na porta 21039
+2025-08-30T15:20:50.524065+00:00 app[web.20]: 🌐 Ambiente: production
+2025-08-30T15:20:50.524071+00:00 app[web.20]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.792010+00:00 heroku[web.3]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.764083+00:00 app[web.1]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.810112+00:00 heroku[web.36]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.756452+00:00 app[web.54]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.813595+00:00 heroku[web.1]: Process exited with status 0
+2025-08-30T15:20:50.819522+00:00 heroku[web.58]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.821264+00:00 heroku[web.54]: Process exited with status 0
+2025-08-30T15:20:50.578421+00:00 app[web.48]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.582030+00:00 app[web.48]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.587696+00:00 app[web.48]: ✅ Servidor rodando na porta 46025
+2025-08-30T15:20:50.587727+00:00 app[web.48]: 🌐 Ambiente: production
+2025-08-30T15:20:50.587755+00:00 app[web.48]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.838620+00:00 heroku[web.72]: Process exited with status 0
+2025-08-30T15:20:50.839443+00:00 heroku[web.62]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.783705+00:00 app[web.72]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:50.602875+00:00 app[web.71]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.602890+00:00 app[web.71]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.608694+00:00 app[web.71]: ✅ Servidor rodando na porta 25889
+2025-08-30T15:20:50.608695+00:00 app[web.71]: 🌐 Ambiente: production
+2025-08-30T15:20:50.608695+00:00 app[web.71]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.631966+00:00 app[web.53]: [INFO] Dados do veículo obtidos via API externa
+2025-08-30T15:20:50.892800+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=b5751bbc-992a-5534-8fbb-5ea2ee0af9fd fwd="45.234.109.241" dyno=web.49 connect=0ms service=9ms status=304 bytes=0 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:50.884336+00:00 heroku[web.50]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.936899+00:00 heroku[web.33]: State changed from starting to up
+2025-08-30T15:20:50.926979+00:00 heroku[web.47]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.668459+00:00 app[web.65]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.668499+00:00 app[web.65]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.671132+00:00 app[web.65]: ✅ Servidor rodando na porta 49410
+2025-08-30T15:20:50.671133+00:00 app[web.65]: 🌐 Ambiente: production
+2025-08-30T15:20:50.671133+00:00 app[web.65]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.984227+00:00 heroku[router]: at=info method=GET path="/api/vehicle-info/NDU8G28" host=shopee.cadastrodoentregador.com request_id=1f80902d-4110-dc78-ada9-d88771b60ca5 fwd="170.83.175.110" dyno=web.28 connect=7002ms service=536ms status=200 bytes=1185 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:50.696528+00:00 app[web.33]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.696557+00:00 app[web.33]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.704372+00:00 app[web.33]: ✅ Servidor rodando na porta 3169
+2025-08-30T15:20:50.704374+00:00 app[web.33]: 🌐 Ambiente: production
+2025-08-30T15:20:50.704374+00:00 app[web.33]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:50.981634+00:00 heroku[web.5]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.062912+00:00 heroku[web.4]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.068537+00:00 heroku[web.50]: Stopping all processes with SIGTERM
+2025-08-30T15:20:51.090548+00:00 heroku[web.20]: State changed from starting to up
+2025-08-30T15:20:51.079190+00:00 heroku[web.69]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:50.832202+00:00 app[web.20]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:50.832215+00:00 app[web.20]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:50.839143+00:00 app[web.20]: ✅ Servidor rodando na porta 43366
+2025-08-30T15:20:50.839144+00:00 app[web.20]: 🌐 Ambiente: production
+2025-08-30T15:20:50.839145+00:00 app[web.20]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.109299+00:00 heroku[web.43]: Stopping all processes with SIGTERM
+2025-08-30T15:20:50.887623+00:00 app[web.49]: 2025-08-30T15:20:50.887Z - GET /favicon.ico
+2025-08-30T15:20:51.091108+00:00 app[web.50]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:51.141741+00:00 heroku[web.50]: Process exited with status 0
+2025-08-30T15:20:50.982144+00:00 app[web.28]: [INFO] Dados do veículo obtidos via API externa
+2025-08-30T15:20:51.145306+00:00 app[web.43]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:51.233669+00:00 heroku[web.20]: Stopping all processes with SIGTERM
+2025-08-30T15:20:51.226131+00:00 heroku[web.43]: Process exited with status 0
+2025-08-30T15:20:51.007926+00:00 app[web.1]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.007955+00:00 app[web.1]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.013530+00:00 app[web.1]: ✅ Servidor rodando na porta 54857
+2025-08-30T15:20:51.013568+00:00 app[web.1]: 🌐 Ambiente: production
+2025-08-30T15:20:51.013617+00:00 app[web.1]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.029339+00:00 app[web.38]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.029594+00:00 app[web.38]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.035708+00:00 app[web.38]: ✅ Servidor rodando na porta 46644
+2025-08-30T15:20:51.035739+00:00 app[web.38]: 🌐 Ambiente: production
+2025-08-30T15:20:51.035759+00:00 app[web.38]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.032554+00:00 app[web.29]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.032786+00:00 app[web.29]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.038451+00:00 app[web.29]: ✅ Servidor rodando na porta 15116
+2025-08-30T15:20:51.038487+00:00 app[web.29]: 🌐 Ambiente: production
+2025-08-30T15:20:51.038533+00:00 app[web.29]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.250780+00:00 app[web.20]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:51.307844+00:00 heroku[web.20]: Process exited with status 0
+2025-08-30T15:20:51.068574+00:00 app[web.8]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.068589+00:00 app[web.8]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.073999+00:00 app[web.8]: ✅ Servidor rodando na porta 31686
+2025-08-30T15:20:51.074035+00:00 app[web.8]: 🌐 Ambiente: production
+2025-08-30T15:20:51.074060+00:00 app[web.8]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.355625+00:00 heroku[web.72]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.362883+00:00 heroku[web.38]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.090336+00:00 app[web.45]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.090690+00:00 app[web.45]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.098557+00:00 app[web.45]: ✅ Servidor rodando na porta 33280
+2025-08-30T15:20:51.098558+00:00 app[web.45]: 🌐 Ambiente: production
+2025-08-30T15:20:51.098558+00:00 app[web.45]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.383897+00:00 heroku[web.56]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.402101+00:00 heroku[web.29]: State changed from starting to up
+2025-08-30T15:20:51.404647+00:00 heroku[web.26]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.414633+00:00 heroku[web.61]: Stopping all processes with SIGTERM
+2025-08-30T15:20:51.451432+00:00 heroku[web.54]: State changed from starting to up
+2025-08-30T15:20:51.434098+00:00 heroku[web.71]: Stopping all processes with SIGTERM
+2025-08-30T15:20:51.208697+00:00 app[web.54]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.209062+00:00 app[web.54]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.217190+00:00 app[web.54]: ✅ Servidor rodando na porta 56674
+2025-08-30T15:20:51.217234+00:00 app[web.54]: 🌐 Ambiente: production
+2025-08-30T15:20:51.217265+00:00 app[web.54]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.432317+00:00 app[web.61]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:51.479201+00:00 heroku[web.61]: Process exited with status 0
+2025-08-30T15:20:51.496127+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastrodoentregador.com request_id=bd223c13-7e81-2a41-a28d-f4f47471d655 fwd="201.87.252.51" dyno=web.60 connect=0ms service=2ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:51.491644+00:00 heroku[web.44]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.504231+00:00 heroku[web.33]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.505268+00:00 heroku[web.18]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.521264+00:00 heroku[web.1]: State changed from starting to up
+2025-08-30T15:20:51.527534+00:00 heroku[web.30]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.538823+00:00 heroku[web.8]: State changed from starting to up
+2025-08-30T15:20:51.597314+00:00 heroku[web.34]: State changed from starting to up
+2025-08-30T15:20:51.462749+00:00 app[web.71]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:51.560436+00:00 heroku[web.71]: Process exited with status 0
+2025-08-30T15:20:51.581613+00:00 heroku[web.14]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.613355+00:00 heroku[web.46]: State changed from starting to up
+2025-08-30T15:20:51.331391+00:00 app[web.34]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.331690+00:00 app[web.34]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.339141+00:00 app[web.34]: ✅ Servidor rodando na porta 32985
+2025-08-30T15:20:51.339186+00:00 app[web.34]: 🌐 Ambiente: production
+2025-08-30T15:20:51.339213+00:00 app[web.34]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.368034+00:00 app[web.46]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.368405+00:00 app[web.46]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.378507+00:00 app[web.46]: ✅ Servidor rodando na porta 9565
+2025-08-30T15:20:51.378508+00:00 app[web.46]: 🌐 Ambiente: production
+2025-08-30T15:20:51.378509+00:00 app[web.46]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.413902+00:00 app[web.15]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.414176+00:00 app[web.15]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.420321+00:00 app[web.15]: ✅ Servidor rodando na porta 34271
+2025-08-30T15:20:51.420349+00:00 app[web.15]: 🌐 Ambiente: production
+2025-08-30T15:20:51.420372+00:00 app[web.15]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.423759+00:00 app[web.3]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.424061+00:00 app[web.3]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.431140+00:00 app[web.3]: ✅ Servidor rodando na porta 51641
+2025-08-30T15:20:51.431183+00:00 app[web.3]: 🌐 Ambiente: production
+2025-08-30T15:20:51.431207+00:00 app[web.3]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.742716+00:00 heroku[web.43]: State changed from starting to up
+2025-08-30T15:20:51.494854+00:00 app[web.60]: 2025-08-30T15:20:51.494Z - GET /api/check-ip-status
+2025-08-30T15:20:51.761757+00:00 heroku[web.65]: Stopping all processes with SIGTERM
+2025-08-30T15:20:51.800119+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=6468b783-9444-62dd-deb1-71d13079ee2f fwd="201.87.252.51" dyno=web.31 connect=0ms service=15ms status=200 bytes=2259 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:51.528442+00:00 app[web.43]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.528752+00:00 app[web.43]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.537472+00:00 app[web.43]: ✅ Servidor rodando na porta 45753
+2025-08-30T15:20:51.537532+00:00 app[web.43]: 🌐 Ambiente: production
+2025-08-30T15:20:51.537572+00:00 app[web.43]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.542773+00:00 app[web.36]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.543113+00:00 app[web.36]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.551775+00:00 app[web.36]: ✅ Servidor rodando na porta 14695
+2025-08-30T15:20:51.551829+00:00 app[web.36]: 🌐 Ambiente: production
+2025-08-30T15:20:51.551857+00:00 app[web.36]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.822648+00:00 heroku[web.62]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.567281+00:00 app[web.58]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.567573+00:00 app[web.58]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.573870+00:00 app[web.58]: ✅ Servidor rodando na porta 36617
+2025-08-30T15:20:51.573902+00:00 app[web.58]: 🌐 Ambiente: production
+2025-08-30T15:20:51.573921+00:00 app[web.58]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.844112+00:00 heroku[web.15]: State changed from starting to up
+2025-08-30T15:20:51.787226+00:00 app[web.65]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:51.836576+00:00 heroku[web.38]: Stopping all processes with SIGTERM
+2025-08-30T15:20:51.838746+00:00 heroku[web.65]: Process exited with status 0
+2025-08-30T15:20:51.618921+00:00 app[web.47]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.618938+00:00 app[web.47]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.623017+00:00 app[web.47]: ✅ Servidor rodando na porta 39475
+2025-08-30T15:20:51.623049+00:00 app[web.47]: 🌐 Ambiente: production
+2025-08-30T15:20:51.623072+00:00 app[web.47]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.618233+00:00 app[web.28]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.618250+00:00 app[web.28]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.622060+00:00 app[web.28]: ✅ Servidor rodando na porta 54218
+2025-08-30T15:20:51.622290+00:00 app[web.28]: 🌐 Ambiente: production
+2025-08-30T15:20:51.622290+00:00 app[web.28]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.902938+00:00 heroku[web.68]: State changed from starting to up
+2025-08-30T15:20:51.853771+00:00 app[web.38]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:51.904475+00:00 heroku[web.38]: Process exited with status 0
+2025-08-30T15:20:51.654773+00:00 app[web.64]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.655105+00:00 app[web.64]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.663366+00:00 app[web.64]: ✅ Servidor rodando na porta 38465
+2025-08-30T15:20:51.663411+00:00 app[web.64]: 🌐 Ambiente: production
+2025-08-30T15:20:51.663438+00:00 app[web.64]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.926628+00:00 heroku[web.63]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.718646+00:00 app[web.4]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.718834+00:00 app[web.4]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.725424+00:00 app[web.4]: ✅ Servidor rodando na porta 8094
+2025-08-30T15:20:51.725446+00:00 app[web.4]: 🌐 Ambiente: production
+2025-08-30T15:20:51.725463+00:00 app[web.4]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.995607+00:00 heroku[web.9]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.007490+00:00 heroku[web.36]: State changed from starting to up
+2025-08-30T15:20:52.023464+00:00 heroku[web.3]: State changed from starting to up
+2025-08-30T15:20:52.077023+00:00 heroku[web.50]: State changed from starting to up
+2025-08-30T15:20:51.773597+00:00 app[web.68]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.773815+00:00 app[web.68]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.779931+00:00 app[web.68]: ✅ Servidor rodando na porta 38705
+2025-08-30T15:20:51.779976+00:00 app[web.68]: 🌐 Ambiente: production
+2025-08-30T15:20:51.780001+00:00 app[web.68]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:51.790410+00:00 app[web.31]: 2025-08-30T15:20:51.789Z - GET /favicon.ico
+2025-08-30T15:20:51.801259+00:00 app[web.62]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.801277+00:00 app[web.62]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.807797+00:00 app[web.62]: ✅ Servidor rodando na porta 33105
+2025-08-30T15:20:51.807798+00:00 app[web.62]: 🌐 Ambiente: production
+2025-08-30T15:20:51.807799+00:00 app[web.62]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.063103+00:00 heroku[web.56]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.805117+00:00 app[web.5]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.805985+00:00 app[web.5]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.811360+00:00 app[web.5]: ✅ Servidor rodando na porta 37028
+2025-08-30T15:20:51.811394+00:00 app[web.5]: 🌐 Ambiente: production
+2025-08-30T15:20:51.811419+00:00 app[web.5]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.123543+00:00 heroku[web.59]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:51.868520+00:00 app[web.50]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.868538+00:00 app[web.50]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.875619+00:00 app[web.50]: ✅ Servidor rodando na porta 47615
+2025-08-30T15:20:51.875620+00:00 app[web.50]: 🌐 Ambiente: production
+2025-08-30T15:20:51.875620+00:00 app[web.50]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.207917+00:00 heroku[web.47]: State changed from starting to up
+2025-08-30T15:20:52.203838+00:00 heroku[web.63]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.216234+00:00 heroku[web.67]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.235385+00:00 heroku[web.4]: State changed from starting to up
+2025-08-30T15:20:52.240454+00:00 heroku[web.37]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.252681+00:00 heroku[web.5]: State changed from starting to up
+2025-08-30T15:20:51.984483+00:00 app[web.47]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:51.984508+00:00 app[web.47]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:51.990488+00:00 app[web.47]: ✅ Servidor rodando na porta 58727
+2025-08-30T15:20:51.991107+00:00 app[web.47]: 🌐 Ambiente: production
+2025-08-30T15:20:51.991107+00:00 app[web.47]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.271029+00:00 heroku[web.69]: State changed from starting to up
+2025-08-30T15:20:52.013460+00:00 app[web.69]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.013489+00:00 app[web.69]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.021128+00:00 app[web.69]: ✅ Servidor rodando na porta 24627
+2025-08-30T15:20:52.021130+00:00 app[web.69]: 🌐 Ambiente: production
+2025-08-30T15:20:52.021131+00:00 app[web.69]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.279410+00:00 heroku[web.23]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.297783+00:00 heroku[web.42]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.048720+00:00 app[web.38]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.048982+00:00 app[web.38]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.054929+00:00 app[web.38]: ✅ Servidor rodando na porta 3000
+2025-08-30T15:20:52.054962+00:00 app[web.38]: 🌐 Ambiente: production
+2025-08-30T15:20:52.054985+00:00 app[web.38]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.100028+00:00 app[web.72]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.100307+00:00 app[web.72]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.106064+00:00 app[web.72]: ✅ Servidor rodando na porta 35406
+2025-08-30T15:20:52.106094+00:00 app[web.72]: 🌐 Ambiente: production
+2025-08-30T15:20:52.106113+00:00 app[web.72]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.387425+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=3742d688-b225-48dc-d53e-ebc3c8f55406 fwd="45.234.109.241" dyno=web.29 connect=0ms service=9ms status=304 bytes=0 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:52.377733+00:00 heroku[web.35]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.162971+00:00 app[web.26]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.163301+00:00 app[web.26]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.170069+00:00 app[web.26]: ✅ Servidor rodando na porta 49323
+2025-08-30T15:20:52.170098+00:00 app[web.26]: 🌐 Ambiente: production
+2025-08-30T15:20:52.170119+00:00 app[web.26]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.160997+00:00 app[web.33]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.161266+00:00 app[web.33]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.167143+00:00 app[web.33]: ✅ Servidor rodando na porta 39706
+2025-08-30T15:20:52.167176+00:00 app[web.33]: 🌐 Ambiente: production
+2025-08-30T15:20:52.167196+00:00 app[web.33]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.432770+00:00 heroku[web.58]: State changed from starting to up
+2025-08-30T15:20:52.424013+00:00 heroku[web.61]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.446324+00:00 heroku[web.64]: Stopping all processes with SIGTERM
+2025-08-30T15:20:52.210918+00:00 app[web.44]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.211143+00:00 app[web.44]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.216686+00:00 app[web.44]: ✅ Servidor rodando na porta 42572
+2025-08-30T15:20:52.216713+00:00 app[web.44]: 🌐 Ambiente: production
+2025-08-30T15:20:52.216734+00:00 app[web.44]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.244067+00:00 app[web.14]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.244400+00:00 app[web.14]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.252640+00:00 app[web.14]: ✅ Servidor rodando na porta 19194
+2025-08-30T15:20:52.252687+00:00 app[web.14]: 🌐 Ambiente: production
+2025-08-30T15:20:52.252715+00:00 app[web.14]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.533296+00:00 heroku[web.38]: State changed from starting to up
+2025-08-30T15:20:52.469764+00:00 app[web.64]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:52.527731+00:00 heroku[web.64]: Process exited with status 0
+2025-08-30T15:20:52.548774+00:00 heroku[web.72]: State changed from starting to up
+2025-08-30T15:20:52.564136+00:00 heroku[web.26]: State changed from starting to up
+2025-08-30T15:20:52.308349+00:00 app[web.30]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.308383+00:00 app[web.30]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.313636+00:00 app[web.30]: ✅ Servidor rodando na porta 45166
+2025-08-30T15:20:52.313693+00:00 app[web.30]: 🌐 Ambiente: production
+2025-08-30T15:20:52.313726+00:00 app[web.30]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.591212+00:00 heroku[web.67]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.382407+00:00 app[web.29]: 2025-08-30T15:20:52.382Z - GET /favicon.ico
+2025-08-30T15:20:52.656331+00:00 heroku[web.2]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.663935+00:00 heroku[web.52]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.671896+00:00 heroku[web.18]: State changed from starting to up
+2025-08-30T15:20:52.674610+00:00 heroku[web.62]: Stopping all processes with SIGTERM
+2025-08-30T15:20:52.699359+00:00 heroku[web.14]: State changed from starting to up
+2025-08-30T15:20:52.454049+00:00 app[web.18]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.454069+00:00 app[web.18]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.461300+00:00 app[web.18]: ✅ Servidor rodando na porta 13242
+2025-08-30T15:20:52.461342+00:00 app[web.18]: 🌐 Ambiente: production
+2025-08-30T15:20:52.461369+00:00 app[web.18]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.458204+00:00 app[web.56]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.461868+00:00 app[web.56]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.468401+00:00 app[web.56]: ✅ Servidor rodando na porta 6438
+2025-08-30T15:20:52.469595+00:00 app[web.56]: 🌐 Ambiente: production
+2025-08-30T15:20:52.469596+00:00 app[web.56]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.538217+00:00 app[web.62]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.538527+00:00 app[web.62]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.546108+00:00 app[web.62]: ✅ Servidor rodando na porta 15801
+2025-08-30T15:20:52.546144+00:00 app[web.62]: 🌐 Ambiente: production
+2025-08-30T15:20:52.546171+00:00 app[web.62]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.821478+00:00 heroku[web.41]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.696900+00:00 app[web.62]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:52.945958+00:00 heroku[web.45]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.960743+00:00 heroku[web.28]: Stopping all processes with SIGTERM
+2025-08-30T15:20:53.004914+00:00 heroku[web.62]: State changed from starting to up
+2025-08-30T15:20:52.742517+00:00 app[web.9]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.742777+00:00 app[web.9]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.748542+00:00 app[web.9]: ✅ Servidor rodando na porta 12923
+2025-08-30T15:20:52.748574+00:00 app[web.9]: 🌐 Ambiente: production
+2025-08-30T15:20:52.748596+00:00 app[web.9]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.006350+00:00 heroku[web.11]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:53.030146+00:00 heroku[web.21]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:52.783492+00:00 app[web.63]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.783534+00:00 app[web.63]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:52.794402+00:00 app[web.63]: ✅ Servidor rodando na porta 53687
+2025-08-30T15:20:52.794855+00:00 app[web.63]: 🌐 Ambiente: production
+2025-08-30T15:20:52.794857+00:00 app[web.63]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:52.995773+00:00 app[web.28]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:53.065409+00:00 heroku[web.28]: Process exited with status 0
+2025-08-30T15:20:53.121022+00:00 heroku[web.63]: State changed from starting to up
+2025-08-30T15:20:53.138319+00:00 heroku[web.30]: State changed from starting to up
+2025-08-30T15:20:53.136724+00:00 heroku[web.47]: Stopping all processes with SIGTERM
+2025-08-30T15:20:53.165790+00:00 heroku[web.44]: Stopping all processes with SIGTERM
+2025-08-30T15:20:53.160156+00:00 heroku[web.24]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:53.158954+00:00 app[web.47]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:53.182582+00:00 app[web.44]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:53.214089+00:00 heroku[web.47]: Process exited with status 0
+2025-08-30T15:20:53.223062+00:00 heroku[web.44]: Process exited with status 0
+2025-08-30T15:20:53.224056+00:00 heroku[web.22]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:53.266060+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastrodoentregador.com request_id=3377b5a0-e8af-d013-e4d5-4597f77474f6 fwd="187.106.34.27" dyno=web.25 connect=0ms service=10ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:53.343889+00:00 heroku[web.59]: State changed from starting to up
+2025-08-30T15:20:52.998705+00:00 app[web.56]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:52.998721+00:00 app[web.56]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.006059+00:00 app[web.56]: ✅ Servidor rodando na porta 23683
+2025-08-30T15:20:53.006219+00:00 app[web.56]: 🌐 Ambiente: production
+2025-08-30T15:20:53.006298+00:00 app[web.56]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.274644+00:00 heroku[web.17]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:53.047951+00:00 app[web.59]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.048364+00:00 app[web.59]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.057665+00:00 app[web.59]: ✅ Servidor rodando na porta 5934
+2025-08-30T15:20:53.057667+00:00 app[web.59]: 🌐 Ambiente: production
+2025-08-30T15:20:53.057667+00:00 app[web.59]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.306890+00:00 heroku[web.6]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:53.065876+00:00 app[web.37]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.070312+00:00 app[web.37]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.072073+00:00 app[web.37]: ✅ Servidor rodando na porta 53548
+2025-08-30T15:20:53.072118+00:00 app[web.37]: 🌐 Ambiente: production
+2025-08-30T15:20:53.072144+00:00 app[web.37]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.343305+00:00 heroku[web.56]: State changed from starting to up
+2025-08-30T15:20:53.398101+00:00 heroku[web.37]: State changed from starting to up
+2025-08-30T15:20:53.133347+00:00 app[web.42]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.133591+00:00 app[web.42]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.139862+00:00 app[web.42]: ✅ Servidor rodando na porta 44543
+2025-08-30T15:20:53.139915+00:00 app[web.42]: 🌐 Ambiente: production
+2025-08-30T15:20:53.139949+00:00 app[web.42]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.169019+00:00 app[web.23]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.169042+00:00 app[web.23]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.173023+00:00 app[web.23]: ✅ Servidor rodando na porta 18207
+2025-08-30T15:20:53.173024+00:00 app[web.23]: 🌐 Ambiente: production
+2025-08-30T15:20:53.173025+00:00 app[web.23]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.489528+00:00 heroku[web.23]: State changed from starting to up
+2025-08-30T15:20:53.261212+00:00 app[web.25]: 2025-08-30T15:20:53.260Z - GET /api/check-ip-status
+2025-08-30T15:20:53.528818+00:00 heroku[web.56]: Stopping all processes with SIGTERM
+2025-08-30T15:20:53.306950+00:00 app[web.2]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.307315+00:00 app[web.2]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.313738+00:00 app[web.2]: ✅ Servidor rodando na porta 18983
+2025-08-30T15:20:53.313771+00:00 app[web.2]: 🌐 Ambiente: production
+2025-08-30T15:20:53.313790+00:00 app[web.2]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.596770+00:00 heroku[web.35]: State changed from starting to up
+2025-08-30T15:20:53.327391+00:00 app[web.35]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.327709+00:00 app[web.35]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.335270+00:00 app[web.35]: ✅ Servidor rodando na porta 38989
+2025-08-30T15:20:53.335277+00:00 app[web.35]: 🌐 Ambiente: production
+2025-08-30T15:20:53.335278+00:00 app[web.35]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.624561+00:00 heroku[web.9]: State changed from starting to up
+2025-08-30T15:20:53.551005+00:00 app[web.56]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:53.631650+00:00 heroku[web.56]: Process exited with status 0
+2025-08-30T15:20:53.380623+00:00 app[web.67]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.380639+00:00 app[web.67]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.387004+00:00 app[web.67]: ✅ Servidor rodando na porta 53474
+2025-08-30T15:20:53.387006+00:00 app[web.67]: 🌐 Ambiente: production
+2025-08-30T15:20:53.387007+00:00 app[web.67]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.691995+00:00 heroku[web.61]: State changed from starting to up
+2025-08-30T15:20:53.438110+00:00 app[web.61]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.438127+00:00 app[web.61]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.444198+00:00 app[web.61]: ✅ Servidor rodando na porta 30326
+2025-08-30T15:20:53.444200+00:00 app[web.61]: 🌐 Ambiente: production
+2025-08-30T15:20:53.444200+00:00 app[web.61]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.497545+00:00 app[web.63]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.497574+00:00 app[web.63]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.502316+00:00 app[web.63]: ✅ Servidor rodando na porta 33906
+2025-08-30T15:20:53.502317+00:00 app[web.63]: 🌐 Ambiente: production
+2025-08-30T15:20:53.502317+00:00 app[web.63]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.768460+00:00 heroku[web.57]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:53.796701+00:00 heroku[web.67]: State changed from starting to up
+2025-08-30T15:20:53.800725+00:00 heroku[web.2]: State changed from starting to up
+2025-08-30T15:20:53.527629+00:00 app[web.41]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.528026+00:00 app[web.41]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.535258+00:00 app[web.41]: ✅ Servidor rodando na porta 24744
+2025-08-30T15:20:53.535314+00:00 app[web.41]: 🌐 Ambiente: production
+2025-08-30T15:20:53.535345+00:00 app[web.41]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.555008+00:00 app[web.67]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.555020+00:00 app[web.67]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.560145+00:00 app[web.67]: ✅ Servidor rodando na porta 55403
+2025-08-30T15:20:53.560182+00:00 app[web.67]: 🌐 Ambiente: production
+2025-08-30T15:20:53.560206+00:00 app[web.67]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:53.889725+00:00 heroku[web.27]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:53.949744+00:00 heroku[web.3]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:53.967961+00:00 heroku[web.52]: State changed from starting to up
+2025-08-30T15:20:53.973296+00:00 heroku[web.70]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:53.982890+00:00 heroku[web.42]: State changed from starting to up
+2025-08-30T15:20:53.710239+00:00 app[web.52]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.712656+00:00 app[web.52]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.719954+00:00 app[web.52]: ✅ Servidor rodando na porta 17720
+2025-08-30T15:20:53.719955+00:00 app[web.52]: 🌐 Ambiente: production
+2025-08-30T15:20:53.719956+00:00 app[web.52]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:54.018623+00:00 heroku[web.41]: State changed from starting to up
+2025-08-30T15:20:54.047621+00:00 heroku[web.32]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:54.129920+00:00 heroku[web.45]: State changed from starting to up
+2025-08-30T15:20:53.907429+00:00 app[web.45]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.907442+00:00 app[web.45]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.911835+00:00 app[web.45]: ✅ Servidor rodando na porta 28950
+2025-08-30T15:20:53.911836+00:00 app[web.45]: 🌐 Ambiente: production
+2025-08-30T15:20:53.911836+00:00 app[web.45]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:54.191017+00:00 heroku[web.48]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:53.973120+00:00 app[web.17]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:53.973373+00:00 app[web.17]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:53.979384+00:00 app[web.17]: ✅ Servidor rodando na porta 20978
+2025-08-30T15:20:53.979425+00:00 app[web.17]: 🌐 Ambiente: production
+2025-08-30T15:20:53.979452+00:00 app[web.17]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:54.230208+00:00 heroku[web.67]: Stopping all processes with SIGTERM
+2025-08-30T15:20:54.276766+00:00 heroku[web.11]: State changed from starting to up
+2025-08-30T15:20:54.262026+00:00 app[web.67]: Recebido SIGTERM, encerrando...
+2025-08-30T15:20:54.090152+00:00 app[web.22]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:54.090163+00:00 app[web.22]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:54.097071+00:00 app[web.22]: ✅ Servidor rodando na porta 59371
+2025-08-30T15:20:54.097073+00:00 app[web.22]: 🌐 Ambiente: production
+2025-08-30T15:20:54.097073+00:00 app[web.22]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:54.343433+00:00 heroku[web.67]: Process exited with status 0
+2025-08-30T15:20:54.101862+00:00 app[web.11]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:54.101878+00:00 app[web.11]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:54.109780+00:00 app[web.11]: ✅ Servidor rodando na porta 31120
+2025-08-30T15:20:54.109781+00:00 app[web.11]: 🌐 Ambiente: production
+2025-08-30T15:20:54.109782+00:00 app[web.11]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:54.403946+00:00 heroku[web.22]: State changed from starting to up
+2025-08-30T15:20:54.445321+00:00 heroku[web.17]: State changed from starting to up
+2025-08-30T15:20:54.174843+00:00 app[web.24]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:54.174861+00:00 app[web.24]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:54.181090+00:00 app[web.24]: ✅ Servidor rodando na porta 9196
+2025-08-30T15:20:54.181091+00:00 app[web.24]: 🌐 Ambiente: production
+2025-08-30T15:20:54.181092+00:00 app[web.24]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:54.593024+00:00 heroku[web.64]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:54.607155+00:00 heroku[web.24]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:54.642285+00:00 heroku[web.55]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:54.679983+00:00 heroku[web.19]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:54.446132+00:00 app[web.21]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:54.446157+00:00 app[web.21]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:54.494477+00:00 app[web.21]: ✅ Servidor rodando na porta 5528
+2025-08-30T15:20:54.494479+00:00 app[web.21]: 🌐 Ambiente: production
+2025-08-30T15:20:54.494479+00:00 app[web.21]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:54.593244+00:00 app[web.27]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:54.593505+00:00 app[web.27]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:54.599570+00:00 app[web.27]: ✅ Servidor rodando na porta 10743
+2025-08-30T15:20:54.599609+00:00 app[web.27]: 🌐 Ambiente: production
+2025-08-30T15:20:54.599636+00:00 app[web.27]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:54.665250+00:00 app[web.70]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:54.665544+00:00 app[web.70]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:54.671734+00:00 app[web.70]: ✅ Servidor rodando na porta 15913
+2025-08-30T15:20:54.671768+00:00 app[web.70]: 🌐 Ambiente: production
+2025-08-30T15:20:54.671790+00:00 app[web.70]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:55.036202+00:00 heroku[web.27]: State changed from starting to up
+2025-08-30T15:20:55.031056+00:00 heroku[web.51]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:54.812939+00:00 app[web.48]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:54.813175+00:00 app[web.48]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:54.819045+00:00 app[web.48]: ✅ Servidor rodando na porta 33617
+2025-08-30T15:20:54.819084+00:00 app[web.48]: 🌐 Ambiente: production
+2025-08-30T15:20:54.819105+00:00 app[web.48]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:55.163053+00:00 heroku[web.70]: State changed from starting to up
+2025-08-30T15:20:54.965168+00:00 app[web.3]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:54.968956+00:00 app[web.3]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:54.973389+00:00 app[web.3]: ✅ Servidor rodando na porta 33729
+2025-08-30T15:20:54.973390+00:00 app[web.3]: 🌐 Ambiente: production
+2025-08-30T15:20:54.973391+00:00 app[web.3]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:55.256869+00:00 heroku[web.32]: State changed from starting to up
+2025-08-30T15:20:54.971363+00:00 app[web.6]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:54.982389+00:00 app[web.6]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:54.990562+00:00 app[web.6]: ✅ Servidor rodando na porta 20738
+2025-08-30T15:20:54.992206+00:00 app[web.6]: 🌐 Ambiente: production
+2025-08-30T15:20:54.992213+00:00 app[web.6]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:54.989112+00:00 app[web.57]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:54.993587+00:00 app[web.57]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:54.997344+00:00 app[web.57]: ✅ Servidor rodando na porta 41546
+2025-08-30T15:20:54.998045+00:00 app[web.57]: 🌐 Ambiente: production
+2025-08-30T15:20:54.998123+00:00 app[web.57]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:55.340087+00:00 heroku[web.48]: State changed from starting to up
+2025-08-30T15:20:55.131331+00:00 app[web.32]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:55.131353+00:00 app[web.32]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:55.139030+00:00 app[web.32]: ✅ Servidor rodando na porta 41874
+2025-08-30T15:20:55.139032+00:00 app[web.32]: 🌐 Ambiente: production
+2025-08-30T15:20:55.139032+00:00 app[web.32]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:55.510748+00:00 heroku[web.6]: State changed from starting to up
+2025-08-30T15:20:55.528461+00:00 app[web.55]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:55.528751+00:00 app[web.55]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:55.537215+00:00 app[web.55]: ✅ Servidor rodando na porta 32968
+2025-08-30T15:20:55.537310+00:00 app[web.55]: 🌐 Ambiente: production
+2025-08-30T15:20:55.537337+00:00 app[web.55]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:55.836852+00:00 heroku[web.55]: State changed from starting to up
+2025-08-30T15:20:55.964252+00:00 heroku[web.64]: State changed from starting to up
+2025-08-30T15:20:55.976099+00:00 heroku[web.19]: State changed from starting to up
+2025-08-30T15:20:55.709113+00:00 app[web.64]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:55.709503+00:00 app[web.64]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:55.716320+00:00 app[web.64]: ✅ Servidor rodando na porta 41925
+2025-08-30T15:20:55.716369+00:00 app[web.64]: 🌐 Ambiente: production
+2025-08-30T15:20:55.716386+00:00 app[web.64]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:55.913421+00:00 app[web.19]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:55.916798+00:00 app[web.19]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:55.922307+00:00 app[web.19]: ✅ Servidor rodando na porta 20297
+2025-08-30T15:20:55.922308+00:00 app[web.19]: 🌐 Ambiente: production
+2025-08-30T15:20:55.922308+00:00 app[web.19]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:56.219041+00:00 heroku[web.51]: State changed from starting to up
+2025-08-30T15:20:55.970764+00:00 app[web.24]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:55.971038+00:00 app[web.24]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:55.977484+00:00 app[web.24]: ✅ Servidor rodando na porta 59296
+2025-08-30T15:20:55.977485+00:00 app[web.24]: 🌐 Ambiente: production
+2025-08-30T15:20:55.977486+00:00 app[web.24]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:55.994843+00:00 app[web.51]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:55.994857+00:00 app[web.51]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:56.002133+00:00 app[web.51]: ✅ Servidor rodando na porta 54962
+2025-08-30T15:20:56.002134+00:00 app[web.51]: 🌐 Ambiente: production
+2025-08-30T15:20:56.002135+00:00 app[web.51]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:56.317476+00:00 heroku[web.12]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:56.387356+00:00 heroku[web.24]: State changed from starting to up
+2025-08-30T15:20:56.533654+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastrodoentregador.com request_id=d22969a7-3377-0e23-810b-25137fd2761f fwd="45.186.93.34" dyno=web.31 connect=0ms service=2ms status=200 bytes=115 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:56.532212+00:00 app[web.31]: 2025-08-30T15:20:56.532Z - GET /api/check-ip-status
+2025-08-30T15:20:57.066833+00:00 heroku[web.7]: Starting process with command `node heroku-simple-production.cjs`
+2025-08-30T15:20:57.264961+00:00 app[web.12]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:20:57.264979+00:00 app[web.12]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:20:57.273336+00:00 app[web.12]: ✅ Servidor rodando na porta 59069
+2025-08-30T15:20:57.273542+00:00 app[web.12]: 🌐 Ambiente: production
+2025-08-30T15:20:57.273542+00:00 app[web.12]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:20:57.607572+00:00 heroku[web.12]: State changed from starting to up
+2025-08-30T15:20:58.974888+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastrodoentregador.com request_id=78f4c2de-1552-b0fe-4800-2255d70680df fwd="45.234.109.241" dyno=web.11 connect=0ms service=11ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:59.202685+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastrodoentregador.com request_id=042cf2e7-5171-3647-1a95-93417129b60a fwd="177.26.233.151" dyno=web.47 connect=0ms service=9ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:59.214930+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=574f6bc6-10f4-95f3-c1d9-d060a2e686e1 fwd="38.210.92.237" dyno=web.3 connect=0ms service=12ms status=200 bytes=2183 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:20:58.969051+00:00 app[web.11]: 2025-08-30T15:20:58.968Z - GET /api/check-ip-status
+2025-08-30T15:20:59.197950+00:00 app[web.47]: 2025-08-30T15:20:59.197Z - GET /api/check-ip-status
+2025-08-30T15:20:59.206547+00:00 app[web.3]: 2025-08-30T15:20:59.206Z - GET /favicon.ico
+2025-08-30T15:21:00.204475+00:00 heroku[web.62]: Process exited with status 0
+2025-08-30T15:21:00.059147+00:00 app[web.7]: 🚀 Iniciando servidor Shopee Delivery Partners (Produção)...
+2025-08-30T15:21:00.059161+00:00 app[web.7]: ✅ Arquivos estáticos encontrados em dist/public/
+2025-08-30T15:21:00.072114+00:00 app[web.7]: ✅ Servidor rodando na porta 49907
+2025-08-30T15:21:00.072116+00:00 app[web.7]: 🌐 Ambiente: production
+2025-08-30T15:21:00.072116+00:00 app[web.7]: 📦 Servindo arquivos estáticos de: /app/dist/public
+2025-08-30T15:21:01.293401+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=71d2d36d-7944-4ef0-1d07-a5a8fc6719a1 fwd="170.83.175.110" dyno=web.55 connect=1ms service=13ms status=200 bytes=2183 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:01.406380+00:00 heroku[web.7]: State changed from starting to up
+2025-08-30T15:21:01.284228+00:00 app[web.55]: 2025-08-30T15:21:01.283Z - GET /favicon.ico
+2025-08-30T15:21:01.979393+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastrodoentregador.com request_id=0b6532bd-b9c0-9838-643f-1b9962b0023f fwd="45.182.247.240" dyno=web.18 connect=0ms service=13ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:01.988579+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=0934e39b-9146-f623-2e43-a3e65d26b2ab fwd="45.182.247.240" dyno=web.30 connect=0ms service=22ms status=200 bytes=2183 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:01.972296+00:00 app[web.18]: 2025-08-30T15:21:01.971Z - GET /api/check-ip-status
+2025-08-30T15:21:01.974511+00:00 app[web.30]: 2025-08-30T15:21:01.971Z - GET /favicon.ico
+2025-08-30T15:21:02.645049+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=538937a4-eee4-c29b-0eab-2cee6abfd0ac fwd="189.30.122.82" dyno=web.15 connect=1ms service=15ms status=200 bytes=2183 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:02.635346+00:00 app[web.15]: 2025-08-30T15:21:02.634Z - GET /favicon.ico
+2025-08-30T15:21:03.132001+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastrodoentregador.com request_id=2e728975-cb57-7d7f-9fdb-ef1e6451d2d9 fwd="189.30.122.82" dyno=web.68 connect=0ms service=7ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:03.125214+00:00 heroku[web.57]: Stopping all processes with SIGTERM
+2025-08-30T15:21:03.162537+00:00 app[web.57]: Recebido SIGTERM, encerrando...
+2025-08-30T15:21:03.225608+00:00 heroku[web.57]: Process exited with status 0
+2025-08-30T15:21:03.128635+00:00 app[web.68]: 2025-08-30T15:21:03.128Z - GET /api/check-ip-status
+2025-08-30T15:21:06.634172+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=041190a2-0484-9cff-4458-9f0668d7da86 fwd="38.210.92.237" dyno=web.13 connect=0ms service=9ms status=304 bytes=0 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:06.628957+00:00 app[web.13]: 2025-08-30T15:21:06.628Z - GET /favicon.ico
+2025-08-30T15:21:07.651060+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=3b56f506-8e2c-3859-233e-d4fdc26da2ff fwd="38.210.92.237" dyno=web.55 connect=0ms service=3ms status=304 bytes=0 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:07.880746+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=a5fa4dd4-578e-2487-f01c-c47074b01033 fwd="170.231.193.12" dyno=web.70 connect=0ms service=12ms status=200 bytes=2183 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:07.649236+00:00 app[web.55]: 2025-08-30T15:21:07.649Z - GET /favicon.ico
+2025-08-30T15:21:08.115535+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=029e9b45-df50-b450-b933-646a9a43c016 fwd="45.234.109.241" dyno=web.14 connect=0ms service=12ms status=304 bytes=0 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:07.872758+00:00 app[web.70]: 2025-08-30T15:21:07.872Z - GET /favicon.ico
+2025-08-30T15:21:08.108612+00:00 app[web.14]: 2025-08-30T15:21:08.108Z - GET /favicon.ico
+2025-08-30T15:21:08.638846+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=dbda3d6b-2b0b-401a-bc16-70be403282f7 fwd="45.234.109.241" dyno=web.43 connect=0ms service=20ms status=304 bytes=0 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:08.657340+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=42f381a6-f73e-e912-c55a-5627bbe53ea6 fwd="170.83.175.110" dyno=web.63 connect=0ms service=8ms status=304 bytes=0 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:08.628325+00:00 app[web.43]: 2025-08-30T15:21:08.627Z - GET /favicon.ico
+2025-08-30T15:21:08.652368+00:00 app[web.63]: 2025-08-30T15:21:08.652Z - GET /favicon.ico
+2025-08-30T15:21:09.431256+00:00 heroku[router]: at=info method=GET path="/fonts/rawline/rawline-400i.woff2" host=shopee.cadastrodoentregador.com request_id=c713ec35-fa8e-f540-b376-09fcb2458765 fwd="45.186.93.34" dyno=web.27 connect=0ms service=10ms status=200 bytes=85084 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:09.536777+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=7fc7ea43-78ed-9779-69d7-fe4924797b7e fwd="45.186.93.34" dyno=web.36 connect=0ms service=16ms status=200 bytes=2183 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:09.425025+00:00 app[web.27]: 2025-08-30T15:21:09.424Z - GET /fonts/rawline/rawline-400i.woff2
+2025-08-30T15:21:09.756269+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=3e1298e0-040a-b1ca-00b2-c17394b8cba2 fwd="170.83.175.110" dyno=web.62 connect=0ms service=8ms status=304 bytes=0 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:09.525735+00:00 app[web.36]: 2025-08-30T15:21:09.525Z - GET /favicon.ico
+2025-08-30T15:21:09.751283+00:00 app[web.62]: 2025-08-30T15:21:09.750Z - GET /favicon.ico
+2025-08-30T15:21:10.620449+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastrodoentregador.com request_id=8a20710a-4d4a-b9cd-510d-fc005627f52c fwd="189.30.122.82" dyno=web.31 connect=0ms service=3ms status=304 bytes=0 protocol=http2.0 tls=true tls_version=tls1.3
+2025-08-30T15:21:10.618617+00:00 app[web.31]: 2025-08-30T15:21:10.618Z - GET /favicon.ico
