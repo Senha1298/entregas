@@ -188,8 +188,8 @@ const CpfPayment: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full mx-4 text-center">
-          <div className="text-[#E83D22] mb-4">
-            <Spinner size="lg" />
+          <div className="flex justify-center items-center mb-6">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#E83D22] border-t-transparent"></div>
           </div>
           <h2 className="text-xl font-semibold text-gray-800 mb-2">Carregando dados...</h2>
           <p className="text-gray-600">Buscando informações do CPF na base de dados</p>
@@ -242,10 +242,10 @@ const CpfPayment: React.FC = () => {
             <div className="p-4">
               {isLoadingPayment ? (
                 <div className="flex flex-col items-center justify-center py-8">
-                  <div className="text-[#E83D22]">
-                    <Spinner size="lg" />
+                  <div className="flex justify-center items-center mb-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#E83D22] border-t-transparent"></div>
                   </div>
-                  <p className="mt-4 text-gray-600">Gerando QR Code para pagamento...</p>
+                  <p className="text-gray-600">Gerando QR Code para pagamento...</p>
                 </div>
               ) : pixInfo ? (
                 <div className="space-y-3">
