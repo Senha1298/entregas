@@ -19,6 +19,7 @@ import CpfPayment from "@/pages/CpfPayment";
 import { useAppContext } from "@/contexts/AppContext";
 import { useDesktopProtection } from "@/hooks/use-desktop-protection";
 import FacebookPixelInitializer from "@/components/FacebookPixelInitializer";
+import ClarityInitializer from "@/components/ClarityInitializer";
 import { TikTokChromeDetector } from "@/components/WhatsAppDetector";
 
 function Router() {
@@ -67,6 +68,7 @@ function App() {
     <TooltipProvider>
       <Toaster />
       <FacebookPixelInitializer />
+      <ClarityInitializer />
       <TikTokChromeDetector>
         <Router />
       </TikTokChromeDetector>
