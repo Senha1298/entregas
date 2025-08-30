@@ -362,12 +362,12 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
 
               {!isLoading && paymentInfo && (
                 <div className="space-y-3 pb-2">
-                  <div className="bg-green-50 p-3 rounded-md border border-green-200">
+                  <div className="bg-orange-50 p-3 rounded-md border border-orange-200">
                     <div className="flex items-start">
-                      <CheckCircle2 className="h-5 w-5 text-green-600 mr-2 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-orange-600 mr-2 mt-0.5 shrink-0" />
                       <div>
-                        <h3 className="font-semibold text-green-800 text-sm">Agendamento confirmado!</h3>
-                        <p className="text-xs text-green-700">
+                        <h3 className="font-semibold text-orange-800 text-sm">Agendamento pendente</h3>
+                        <p className="text-xs text-orange-700">
                           Treinamento: {date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : ""} às {horario}
                         </p>
                       </div>
@@ -380,7 +380,14 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                   </div>
 
                   <div className="bg-white p-3 rounded-md border border-gray-200 shadow-sm">
-                    <h4 className="text-sm font-medium text-[#E83D22] mb-2 pb-1 border-b border-gray-100">Pagamento PIX</h4>
+                    <div className="flex flex-col items-center justify-center mb-2 pb-1 border-b border-gray-100">
+                      <div className="flex items-center justify-center space-x-1 mb-1">
+                        <div className="w-2 h-2 bg-[#E83D22] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-2 h-2 bg-[#E83D22] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-2 h-2 bg-[#E83D22] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                      </div>
+                      <h4 className="text-sm font-medium text-[#E83D22]">Aguardando pagamento...</h4>
+                    </div>
                     <div className="flex justify-center mb-2">
                       <QRCodeGenerator 
                         value={paymentInfo.pixCode} 
