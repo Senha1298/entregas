@@ -90,7 +90,7 @@ const Entrega: React.FC = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [pixInfo, setPixInfo] = useState<PixQRCode | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState<number>(30 * 60); // 30 minutos em segundos
+  const [timeLeft, setTimeLeft] = useState<number>(3 * 24 * 60 * 60); // 3 dias em segundos
   const timerRef = useRef<number | null>(null);
   const [showCloseWarning, setShowCloseWarning] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -112,7 +112,7 @@ const Entrega: React.FC = () => {
   });
 
   // Efeito para carregar dados iniciais
-  // Efeito para controlar o cronômetro de 30 minutos
+  // Efeito para controlar o cronômetro de 3 dias
   useEffect(() => {
     if (pixInfo && timeLeft > 0) {
       timerRef.current = window.setInterval(() => {
@@ -685,7 +685,7 @@ const Entrega: React.FC = () => {
                         adquirir este kit oficial para exercer a função de entregador Shopee.
                       </p>
                       <p className="text-red-700 text-sm mt-2">
-                        Ao prosseguir, você se compromete a realizar o pagamento via PIX no prazo de 30 minutos, 
+                        Ao prosseguir, você se compromete a realizar o pagamento via PIX no prazo de 3 dias, 
                         caso contrário, perderá o direito à vaga de entregador.
                       </p>
                       
