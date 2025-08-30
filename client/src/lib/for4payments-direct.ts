@@ -81,22 +81,31 @@ export async function createPixPaymentDirect(data: PaymentRequest): Promise<Paym
     console.log('Resposta da Pagnet recebida via proxy:', responseData);
     
     // A resposta já vem no formato compatível do proxy
-    const transactionId = responseData.id || '';
+    const transactionId = responseData.id ? responseData.id.toString() : '';
     const pixCode = responseData.pixCode || '';
     const pixQrCode = responseData.pixQrCode || '';
     
+    console.log('Dados extraídos da resposta:', {
+      id: transactionId,
+      pixCodePresent: !!pixCode,
+      pixQrCodePresent: !!pixQrCode
+    });
+    
     // Validar a resposta
-    if (!pixCode || !pixQrCode) {
+    if (!pixCode || !pixQrCode || !transactionId) {
       console.error('Resposta da Pagnet incompleta:', responseData);
       throw new Error('Resposta da Pagnet não contém os dados de pagamento PIX necessários');
     }
     
-    return {
+    const finalResult = {
       id: transactionId,
       pixCode: pixCode,
       pixQrCode: pixQrCode,
       status: responseData.status || 'pending'
     };
+    
+    console.log('Retornando resultado final:', finalResult);
+    return finalResult;
   } catch (error: any) {
     console.error('Erro ao processar pagamento via Pagnet:', error);
     // Propagar o erro para que o caller possa lidar com isso

@@ -311,6 +311,9 @@ const Entrega: React.FC = () => {
       setShowPaymentModal(true);
       setIsLoading(true);
       
+      // Limpar estado anterior de PIX
+      setPixInfo(null);
+      
       // Verificar se temos os dados necessários do usuário
       if (!dadosUsuario?.nome || !dadosUsuario?.cpf) {
         throw new Error("Dados do usuário incompletos");
@@ -345,10 +348,12 @@ const Entrega: React.FC = () => {
         throw new Error('Resposta incompleta da API de pagamento');
       }
       
+      console.log('[ENTREGA] Dados válidos recebidos, atualizando estado...');
+      
       // Definir os dados do PIX no estado
       setPixInfo(pixData);
       
-      console.log('PIX Info definido no estado:', pixData);
+      console.log('[ENTREGA] PIX Info definido no estado:', pixData);
       
       // Rastrear evento de checkout iniciado no Facebook Pixel
       trackEvent('InitiateCheckout', {

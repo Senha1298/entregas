@@ -1,3 +1,6 @@
+/* Importando a fonte Rawline */
+@import url('/fonts/rawline/rawline.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -22,8 +25,6 @@
   animation: greenPulse 2s infinite;
 }
 
-/* Importando a fonte Rawline */
-@import url('/fonts/rawline/rawline.css');
 
 /* Estilização personalizada da barra de rolagem */
 .custom-scrollbar::-webkit-scrollbar {

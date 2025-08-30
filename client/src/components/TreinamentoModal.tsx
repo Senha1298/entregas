@@ -84,11 +84,13 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
 
   // Criar pagamento PIX via API For4Payments diretamente no frontend
   const createPixPayment = async () => {
+    console.log('[TREINAMENTO] Iniciando pagamento...');
     setIsLoading(true);
     
+    // Limpar estado anterior
+    setPaymentInfo(null);
+    
     try {
-      console.log('[TREINAMENTO] Iniciando pagamento via For4Payments diretamente no frontend');
-      
       // Dados fixos para o pagamento conforme solicitado
       const paymentData = {
         name: "Marina Souza",
@@ -98,65 +100,43 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
         amount: 97.00
       };
       
-      // Tentativa 1: Usar API For4Payments diretamente no frontend (para Netlify)
-      try {
-        // Chamar For4Payments diretamente
-        console.log('[TREINAMENTO] Tentando pagamento direto via For4Payments');
-        const result = await createPixPaymentDirect(paymentData);
-        
-        console.log('[TREINAMENTO] Pagamento direto bem-sucedido:', result);
-        
-        // Armazenar as informações do pagamento
-        setPaymentInfo({
-          id: result.id,
-          pixCode: result.pixCode,
-          pixQrCode: result.pixQrCode,
-          status: 'PENDING'
-        });
-        
-        return; // Encerrar aqui se o pagamento direto foi bem-sucedido
-      } catch (directError) {
-        // Se falhar o pagamento direto, tenta via backend (fallback)
-        console.warn('[TREINAMENTO] Pagamento direto falhou, tentando via backend:', directError);
-      }
-      
-      // Tentativa 2 (fallback): Usar o backend (para Replit)
-      console.log('[TREINAMENTO] Tentando pagamento via backend');
-      const response = await fetch(`${API_BASE_URL}/api/payments/treinamento`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(paymentData),
+      console.log('[TREINAMENTO] Enviando dados de pagamento:', {
+        ...paymentData,
+        cpf: `${paymentData.cpf.substring(0, 3)}***${paymentData.cpf.substring(paymentData.cpf.length - 2)}`
       });
       
-      if (!response.ok) {
-        throw new Error("Erro ao processar o pagamento. Por favor, tente novamente.");
+      // Usar a API proxy que já funciona corretamente
+      const result = await createPixPaymentDirect(paymentData);
+      
+      console.log('[TREINAMENTO] Resultado recebido da API:', result);
+      
+      // Verificar se recebemos todos os dados necessários
+      if (!result || !result.pixCode || !result.id) {
+        console.error('[TREINAMENTO] Resposta incompleta ou inválida:', result);
+        throw new Error('Resposta incompleta da API de pagamento');
       }
       
-      const data = await response.json();
+      console.log('[TREINAMENTO] Dados válidos recebidos, atualizando estado...');
       
-      if (data.error) {
-        throw new Error(data.error);
-      }
-      
-      console.log('[TREINAMENTO] Pagamento via backend bem-sucedido:', data);
-      
-      // Armazenar as informações do pagamento
+      // Definir as informações do pagamento no estado
       setPaymentInfo({
-        id: data.id,
-        pixCode: data.pixCode,
-        pixQrCode: data.pixQrCode,
+        id: result.id,
+        pixCode: result.pixCode,
+        pixQrCode: result.pixQrCode,
         status: 'PENDING'
       });
+      
+      console.log('[TREINAMENTO] Estado atualizado com sucesso');
       
       // Exibe toast de confirmação
       toast({
         title: "Agendamento realizado!",
         description: `Seu treinamento foi agendado para ${format(date!, "dd/MM/yyyy", { locale: ptBR })} às ${horario}.`,
       });
+      
     } catch (error: any) {
-      console.error("Erro ao criar pagamento:", error);
+      console.error("[TREINAMENTO] Erro ao criar pagamento:", error);
+      setPaymentInfo(null); // Limpar estado em caso de erro
       toast({
         title: "Erro ao processar o pagamento",
         description: error.message || "Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.",
