@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Definição do Pixel ID do Facebook
-const FACEBOOK_PIXEL_ID = '1418766538994503';
+const FACEBOOK_PIXEL_ID = '961960469197157';
 
 // Interface para os dados de transação
 interface TransactionStatus {
