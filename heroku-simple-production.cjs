@@ -325,14 +325,15 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     // Gerar QR Code URL
     const pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
     
-    // Resposta compatível com o formato esperado pelo frontend
+    // Resposta compatível com o formato esperado pelo frontend (SEM payment_url externa)
     const pixResponse = {
       id: transactionId,
       pixCode: pixCode,
       pixQrCode: pixQrCode,
       status: 'pending',
       emailSent: false,
-      provider: 'TechByNet'
+      provider: 'TechByNet',
+      payment_url: null // Não usar gateway externo - manter no nosso frontend
     };
     
     console.log('✅ Transação TechByNet criada com sucesso:', transactionId);
