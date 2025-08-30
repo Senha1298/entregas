@@ -68,6 +68,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
   const [step, setStep] = useState<'schedule' | 'payment'>('schedule');
   const [isLoading, setIsLoading] = useState(false);
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   // Desabilita datas no passado, finais de semana e feriados
   const disabledDays = (date: Date) => {
@@ -131,7 +132,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
       // Exibe toast de confirmação
       toast({
         title: "Agendamento realizado!",
-        description: `Seu treinamento foi agendado para ${format(date!, "dd/MM/yyyy", { locale: ptBR })} às ${horario}.`,
+        description: `Realize o pagamento para confirmar o agendamento ${format(date!, "dd/MM/yyyy", { locale: ptBR })} às ${horario}.`,
       });
       
     } catch (error: any) {
@@ -215,7 +216,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-800">Escolha a data</h3>
                   <div className="flex flex-col space-y-1.5">
-                    <Popover>
+                    <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
@@ -232,7 +233,10 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                         <Calendar
                           mode="single"
                           selected={date}
-                          onSelect={setDate}
+                          onSelect={(selectedDate) => {
+                            setDate(selectedDate);
+                            setCalendarOpen(false); // Fechar calendário após seleção
+                          }}
                           disabled={disabledDays}
                           locale={ptBR}
                           initialFocus
@@ -399,15 +403,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                       <CopyIcon className="h-4 w-4" />
                       Copiar código PIX
                     </Button>
-                    
-                    <div className="flex flex-col items-center mt-3 bg-blue-50 p-2 rounded-md border border-blue-100">
-                      <div className="flex items-center justify-center space-x-1 mb-1">
-                        <div className="w-2 h-2 bg-[#E83D22] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                        <div className="w-2 h-2 bg-[#E83D22] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                        <div className="w-2 h-2 bg-[#E83D22] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                      </div>
-                      <p className="text-xs text-blue-800 font-medium">Aguardando pagamento</p>
-                    </div>
+                  
                   </div>
 
                   <div className="flex gap-2 text-xs">
