@@ -96,7 +96,7 @@ const Municipios: React.FC = () => {
   const handleStartDateContinue = () => {
     if (selectedStartDate) {
       setShowStartDateModal(false);
-      navigate('/selfie');
+      navigate('/recebedor');
     } else {
       toast({
         title: "Seleção necessária",
