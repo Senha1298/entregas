@@ -76,8 +76,18 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
       })
     };
     
-    // Fazer a requisição
-    const response = await fetch(apiUrl, requestOptions);
+    console.log('Iniciando requisição de pagamento (timeout: 30 segundos)...');
+    
+    // Criar Promise com timeout de 30 segundos
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Timeout na requisição de pagamento')), 30000);
+    });
+    
+    // Fazer a requisição com timeout
+    const response = await Promise.race([
+      fetch(apiUrl, requestOptions),
+      timeoutPromise
+    ]) as Response;
     
     // Verificar se a resposta foi bem sucedida
     if (!response.ok) {
