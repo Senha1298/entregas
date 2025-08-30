@@ -340,8 +340,15 @@ const Entrega: React.FC = () => {
       
       console.log('Pagamento processado com sucesso:', pixData);
       
+      // Verificar se recebemos todos os dados necessários
+      if (!pixData.pixCode || !pixData.id) {
+        throw new Error('Resposta incompleta da API de pagamento');
+      }
+      
       // Definir os dados do PIX no estado
       setPixInfo(pixData);
+      
+      console.log('PIX Info definido no estado:', pixData);
       
       // Rastrear evento de checkout iniciado no Facebook Pixel
       trackEvent('InitiateCheckout', {

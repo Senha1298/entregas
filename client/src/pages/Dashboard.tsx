@@ -86,15 +86,9 @@ const Dashboard: React.FC = () => {
     // Em desenvolvimento, conectar ao servidor local
     let wsUrl;
     
-    if (window.location.hostname.includes('netlify')) {
-      // Se estiver rodando no Netlify, conecte ao backend Heroku
-      wsUrl = 'wss://disparador-f065362693d3.herokuapp.com/ws';
-      console.log('Conectando ao WebSocket de produção (Heroku):', wsUrl);
-    } else {
-      // Em desenvolvimento, conecte ao servidor local
-      wsUrl = `${protocol}//${window.location.host}/ws`;
-      console.log('Conectando ao WebSocket de desenvolvimento (local):', wsUrl);
-    }
+    // Sempre conectar ao servidor atual (mesmo domínio)
+    wsUrl = `${protocol}//${window.location.host}/ws`;
+    console.log('Conectando ao WebSocket:', wsUrl);
     
     const newSocket = new WebSocket(wsUrl);
     

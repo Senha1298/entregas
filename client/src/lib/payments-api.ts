@@ -45,10 +45,8 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
     }
   }
   
-  // Chamar via backend Heroku com o novo proxy específico para For4Payments
-  const apiUrl = import.meta.env.PROD
-    ? 'https://disparador-f065362693d3.herokuapp.com/api/proxy/for4payments/pix'
-    : '/api/proxy/for4payments/pix';
+  // Chamar via backend (sempre usar URL relativa)
+  const apiUrl = '/api/proxy/for4payments/pix';
     
   console.log(`URL da API de pagamentos (via Heroku): ${apiUrl}`);
   console.log('Dados de pagamento:', {
@@ -58,15 +56,13 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
   });
   
   try {
-    // Configurar opções de requisição para evitar problemas de CORS
+    // Configurar opções de requisição
     const requestOptions = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      mode: 'cors' as RequestMode,
-      credentials: 'omit' as RequestCredentials,
       body: JSON.stringify({
         name: data.name,
         cpf: data.cpf,
@@ -76,8 +72,21 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
       })
     };
     
-    // Fazer a requisição
-    const response = await fetch(apiUrl, requestOptions);
+    // Fazer a requisição com timeout
+    console.log('Enviando requisição para:', apiUrl);
+    console.log('Payload:', requestOptions.body);
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos timeout
+    
+    const response = await fetch(apiUrl, {
+      ...requestOptions,
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    console.log('Resposta recebida, status:', response.status);
     
     // Verificar se a resposta foi bem sucedida
     if (!response.ok) {
@@ -89,13 +98,15 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
     // Processar a resposta
     const result = await response.json();
     
-    console.log('Resposta do servidor recebida com sucesso');
+    console.log('Resposta do servidor processada:', result);
     
     // Validar a resposta
-    if (!result.pixCode || !result.pixQrCode) {
+    if (!result.pixCode || !result.id) {
+      console.error('Resposta incompleta:', result);
       throw new Error('A resposta do servidor não contém os dados de pagamento PIX necessários');
     }
     
+    console.log('Validação concluída, retornando resultado');
     return result;
   } catch (error: any) {
     console.error('Erro ao processar pagamento:', error);

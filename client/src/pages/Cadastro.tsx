@@ -231,14 +231,8 @@ const Cadastro: React.FC = () => {
 
   // Obter a URL base da API do backend dependendo do ambiente
   const getApiBaseUrl = () => {
-    // Em desenvolvimento, usa a URL relativa
-    if (window.location.hostname.includes('localhost') || 
-        window.location.hostname.includes('replit.dev')) {
-      return '';
-    }
-    
-    // Em produção, usa a URL absoluta do backend Heroku
-    return 'https://disparador-f065362693d3.herokuapp.com';
+    // Sempre usa URL relativa pois frontend e backend estão no mesmo servidor
+    return '';
   };
 
   // Função para buscar informações do CPF

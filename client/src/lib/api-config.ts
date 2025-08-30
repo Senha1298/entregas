@@ -6,16 +6,13 @@ const isDev = import.meta.env.DEV;
 
 // API URLs - Define as URLs da API para os ambientes de produção e desenvolvimento
 export const API_URLS = {
-  // Em desenvolvimento, a API é servida localmente
+  // Em ambos os ambientes, a API é servida pelo mesmo servidor
   development: '',
-  
-  // Em produção, a API é servida pelo Heroku
-  // Importante: Usamos https:// para evitar problemas de conexão segura
-  production: 'https://disparador-f065362693d3.herokuapp.com'  // URL atualizada do backend no Heroku
+  production: ''  // Usar URL relativa pois frontend e backend estão no mesmo servidor
 };
 
 // URL base da API dependendo do ambiente
-export const API_BASE_URL = isProd ? API_URLS.production : API_URLS.development;
+export const API_BASE_URL = '';
 
 // Flag para debug
 const DEBUG = true;
