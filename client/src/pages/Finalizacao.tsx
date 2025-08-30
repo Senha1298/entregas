@@ -21,7 +21,6 @@ const finalizacaoSchema = z.object({
   tamanhoColete: z.enum(['P', 'M', 'G', 'GG']),
   tamanhoLuva: z.enum(['P', 'M', 'G', 'GG']),
   numeroCalcado: z.string().min(2, "Número de calçado inválido"),
-  termoUso: z.boolean().refine(val => val === true, "Você precisa aceitar os termos de uso"),
 });
 
 type FinalizacaoFormValues = z.infer<typeof finalizacaoSchema>;
@@ -43,16 +42,9 @@ const Finalizacao: React.FC = () => {
       tamanhoColete: 'M',
       tamanhoLuva: 'M',
       numeroCalcado: '40',
-      termoUso: false,
     }
   });
   
-  // Função para alternar o estado do checkbox dos termos de uso
-  const handleTermsToggle = () => {
-    // Obter o valor atual e alterniar para o oposto
-    const currentValue = watch('termoUso');
-    setValue('termoUso', !currentValue, { shouldValidate: true });
-  };
 
   // Função para selecionar o tamanho do calçado
   const handleShoeSize = (size: string) => {
@@ -233,28 +225,6 @@ const Finalizacao: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-start space-x-2 my-6">
-                  <Checkbox
-                    id="termoUso" 
-                    {...register('termoUso')}
-                    className={errors.termoUso ? 'border-red-500' : 'border-[#E83D22] data-[state=checked]:bg-[#E83D22] data-[state=checked]:text-white'}
-                    onCheckedChange={() => handleTermsToggle()}
-                  />
-                  <div className="grid gap-1.5 leading-none" onClick={() => handleTermsToggle()}>
-                    <label
-                      htmlFor="termoUso"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                    >
-                      Concordo com os termos de uso e política de segurança da Shopee
-                    </label>
-                    <p className="text-sm text-gray-500">
-                      Declaro que usarei os equipamentos de proteção durante todas as entregas.
-                    </p>
-                    {errors.termoUso && (
-                      <p className="text-sm text-red-600">{errors.termoUso.message}</p>
-                    )}
-                  </div>
-                </div>
                 
                 <Button
                   type="submit"
