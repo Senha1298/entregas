@@ -270,17 +270,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
           type: "CPF"
         },
         phone: customerPhone,
-        externalRef: externalRef,
-        address: {
-          street: "Rua Principal",
-          streetNumber: "123",
-          complement: "",
-          zipCode: "01000-000",
-          neighborhood: "Centro",
-          city: "São Paulo",
-          state: "SP",
-          country: "BR"
-        }
+        externalRef: externalRef
       },
       items: [
         {
