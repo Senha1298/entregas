@@ -155,17 +155,7 @@ export class TechByNetAPI {
             type: "CPF"
           },
           phone: customerPhone,
-          externalRef: externalRef,
-          address: {
-            street: "Rua Principal",
-            streetNumber: "123",
-            complement: "",
-            zipCode: "01000-000",
-            neighborhood: "Centro",
-            city: "São Paulo",
-            state: "SP",
-            country: "BR"
-          }
+          externalRef: externalRef
         },
         items: [
           {
@@ -177,7 +167,7 @@ export class TechByNetAPI {
           }
         ],
         pix: {
-          expiresInDays: 1 // PIX expira em 1 dia
+          expiresInDays: 3 // PIX expira em 3 dias
         }
       };
       
