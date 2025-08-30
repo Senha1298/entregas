@@ -282,7 +282,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
         }
       ],
       pix: {
-        expiresInDays: 1
+        expiresInDays: 3
       }
     };
     
