@@ -97,7 +97,7 @@ const Treinamento: FC = () => {
                     </ul>
                   </div>
                   <Button 
-                    className="w-full bg-[#EE4E2E] hover:bg-[#D43C1E] text-white font-medium py-3"
+                    className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-4 animate-green-pulse"
                     onClick={() => setModalOpen(true)}
                   >
                     Agendar Treinamento Agora
@@ -239,7 +239,7 @@ const Treinamento: FC = () => {
                 iniciar suas atividades como entregador Shopee.
               </p>
               <Button 
-                className="bg-[#EE4E2E] hover:bg-[#D43C1E] text-white font-medium py-3 px-8"
+                className="bg-green-500 hover:bg-green-600 text-white font-medium py-4 px-8 animate-green-pulse"
                 onClick={() => setModalOpen(true)}
               >
                 Agendar Treinamento Agora
