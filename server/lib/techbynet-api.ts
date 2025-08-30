@@ -200,7 +200,7 @@ export class TechByNetAPI {
           amount: amount,
           qr_code: transactionData.qrCode,
           pix_code: transactionData.qrCode, // Para compatibilidade
-          payment_url: null, // Não usar gateway externo - manter usuário no nosso frontend
+          payment_url: undefined, // Não usar gateway externo - manter usuário no nosso frontend
           expires_at: (() => {
             const expiration = new Date();
             expiration.setDate(expiration.getDate() + 3);

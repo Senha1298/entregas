@@ -282,7 +282,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
         }
       ],
       pix: {
-        expiresInDays: 3
+        expiresInDays: 3 // Forçar 3 dias na TechByNet
       }
     };
     
@@ -325,6 +325,10 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     // Gerar QR Code URL
     const pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
     
+    // FORÇA expiração de 3 dias (independente da resposta TechByNet)
+    const forceExpiration = new Date();
+    forceExpiration.setDate(forceExpiration.getDate() + 3);
+    
     // Resposta compatível com o formato esperado pelo frontend (SEM payment_url externa)
     const pixResponse = {
       id: transactionId,
@@ -333,7 +337,9 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       status: 'pending',
       emailSent: false,
       provider: 'TechByNet',
-      payment_url: null // Não usar gateway externo - manter no nosso frontend
+      payment_url: undefined, // Não usar gateway externo - manter no nosso frontend
+      expires_at: forceExpiration.toISOString(), // FORÇA 3 dias localmente
+      expiration_forced: true // Marca que forçamos a expiração
     };
     
     console.log('✅ Transação TechByNet criada com sucesso:', transactionId);
