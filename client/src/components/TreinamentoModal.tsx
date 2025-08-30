@@ -131,7 +131,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
       
       // Exibe toast de confirmação
       toast({
-        title: "Agendamento realizado!",
+        title: "Agendamento pendente!",
         description: `Realize o pagamento para confirmar o agendamento ${format(date!, "dd/MM/yyyy", { locale: ptBR })} às ${horario}.`,
       });
       
