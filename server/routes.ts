@@ -1394,7 +1394,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Verificar se também devemos obter o status da API For4Payments para atualização
       const checkLiveStatus = req.query.check_status === 'true';
       
-      if (checkLiveStatus && process.env.FOR4PAYMENTS_SECRET_KEY) {
+      if (checkLiveStatus && process.env.TECHBYNET_API_KEY) {
         try {
           // Importar o serviço de monitoramento de transações
           const { checkTransactionStatus } = await import('./transaction-monitor');
