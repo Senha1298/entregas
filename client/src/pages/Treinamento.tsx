@@ -45,7 +45,7 @@ const Treinamento: FC = () => {
                       </div>
                       <div>
                         <h4 className="text-lg font-medium text-green-700">Aprovado - Kit de Segurança Confirmado!</h4>
-                        <p className="text-sm text-green-600">Seu cadastro foi aprovado e o pagamento do Kit foi confirmado. Entrega em até 5 dias úteis.</p>
+                        <p className="text-sm text-green-600">Seu cadastro foi aprovado e o pagamento do Kit foi confirmado. Mas o seu Kit só será entregue após você se matricular no Treinamento de Entregadores da Shopee.</p>
                       </div>
                     </div>
                   </div>
@@ -66,7 +66,7 @@ const Treinamento: FC = () => {
           {/* Sobre o treinamento */}
           <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
-              <h3 className="font-semibold text-[#E83D22]">Treinamento Online Shopee</h3>
+              <h3 className="font-semibold text-[#E83D22]">Treinamento Online Shopee - R$97,00</h3>
             </div>
             <div className="p-6">
               <div className="flex flex-col md:flex-row gap-6 items-center">
