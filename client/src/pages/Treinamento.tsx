@@ -5,12 +5,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Button } from '@/components/ui/button';
 import { CheckCircle } from 'lucide-react';
 import TreinamentoModal from '../components/TreinamentoModal';
-import { useScrollTop } from '@/hooks/use-scroll-top';
 
 const Treinamento: FC = () => {
-  // Aplica o scroll para o topo quando o componente é montado
-  useScrollTop();
-  
   const [modalOpen, setModalOpen] = useState(false);
   
   return (

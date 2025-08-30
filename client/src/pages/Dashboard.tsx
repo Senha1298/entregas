@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useScrollTop } from '@/hooks/use-scroll-top';
 import { 
   BarChart,
   Bar,
@@ -60,9 +59,6 @@ interface UserDevice {
 }
 
 const Dashboard: React.FC = () => {
-  // Aplica o scroll para o topo quando o componente é montado
-  useScrollTop();
-  
   const [stats, setStats] = useState<DashboardStats>({
     onlineUsers: 0,
     totalVisits: 0,

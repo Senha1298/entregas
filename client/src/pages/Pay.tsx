@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'wouter';
-import { useScrollTop } from '@/hooks/use-scroll-top';
 
 interface Cliente {
   id: number;
@@ -26,9 +25,6 @@ interface ApiResponse {
 }
 
 const Pay: React.FC = () => {
-  // Aplica o scroll para o topo quando o componente é montado
-  useScrollTop();
-  
   const [location] = useLocation();
   const [loading, setLoading] = useState(true);
   const [cliente, setCliente] = useState<Cliente | null>(null);

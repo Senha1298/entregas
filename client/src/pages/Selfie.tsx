@@ -4,12 +4,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import FaceGuide from '@/components/FaceGuide';
-import { useScrollTop } from '@/hooks/use-scroll-top';
 
 const Selfie = () => {
-  // Aplica o scroll para o topo quando o componente é montado
-  useScrollTop();
-  
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -29,7 +25,8 @@ const Selfie = () => {
     setFaceGuideStep(0);
     setCountdown(null);
     
-    // Hook useScrollTop já faz o scroll automaticamente
+    // Rolar para o topo da página
+    window.scrollTo(0, 0);
     
     // Inicializar câmera
     const initCamera = async () => {
