@@ -11,8 +11,12 @@ import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 import CepModal from '@/components/CepModal';
 import { useAppContext } from '@/contexts/AppContext';
+import { useScrollTop } from '@/hooks/use-scroll-top';
 
 const Home: React.FC = () => {
+  // Força o scroll para o topo quando a página carrega
+  useScrollTop();
+  
   const { 
     showCepModal, 
     setShowCepModal, 

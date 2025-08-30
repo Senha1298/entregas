@@ -47,7 +47,17 @@ function App() {
   
   // Scroll para o topo sempre que a rota mudar
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Forçar scroll para o topo imediatamente
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    
+    // Backup com setTimeout para garantir que funcione mesmo com renderização assíncrona
+    const timeoutId = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 0);
+    
+    return () => clearTimeout(timeoutId);
   }, [location]);
   
   // Ativar proteção contra acesso desktop no frontend
