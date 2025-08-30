@@ -53,13 +53,12 @@ export default async (req, res) => {
       });
     }
     
-    // Consultar a API externa
-    const apiUrl = `https://disparador-f065362693d3.herokuapp.com/api/vehicle-info/${placaFormatada}`;
+    // Consultar a API externa - usar apenas https://wdapi2.com.br/consulta/placa/token
+    const apiUrl = `https://wdapi2.com.br/consulta/${placaFormatada}/${apiKey}`;
     
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       }
     });
