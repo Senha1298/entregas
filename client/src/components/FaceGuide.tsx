@@ -31,7 +31,7 @@ const FaceGuide: React.FC<FaceGuideProps> = ({ step, countdown }) => {
     
     switch (step) {
       case 1: return 'Centralize seu rosto no oval';
-      case 2: return 'Aproxime-se mais da câmera';
+      case 2: return 'Afaste-se um pouco da câmera';
       case 3: return 'Mantenha a posição para a captura';
       default: return 'Preparando...';
     }
