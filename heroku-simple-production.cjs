@@ -338,14 +338,47 @@ app.use(express.static(path.join(__dirname, 'dist/public'), {
   etag: true
 }));
 
-// Rota para SPA (Single Page Application)
+// Rota para SPA (Single Page Application) com scroll automático
 app.get('*', (req, res) => {
   const buildPath = path.join(__dirname, 'dist/public');
   const indexPath = path.join(buildPath, 'index.html');
   
   // Verificar se o index.html existe
   if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath);
+    // Ler o arquivo HTML e injetar script de scroll automático
+    fs.readFile(indexPath, 'utf8', (err, html) => {
+      if (err) {
+        res.sendFile(indexPath);
+        return;
+      }
+      
+      // Script para scroll automático em mudanças de rota
+      const scrollScript = `
+        <script>
+          // Scroll automático para o topo em mudanças de página
+          (function() {
+            let lastUrl = location.href;
+            new MutationObserver(() => {
+              const url = location.href;
+              if (url !== lastUrl) {
+                lastUrl = url;
+                window.scrollTo(0, 0);
+              }
+            }).observe(document, {subtree: true, childList: true});
+            
+            // Scroll inicial também
+            window.addEventListener('DOMContentLoaded', () => window.scrollTo(0, 0));
+            
+            // Fallback para mudanças de hash
+            window.addEventListener('hashchange', () => window.scrollTo(0, 0));
+          })();
+        </script>
+      `;
+      
+      // Injetar script antes do fechamento do body
+      const modifiedHtml = html.replace('</body>', scrollScript + '</body>');
+      res.type('html').send(modifiedHtml);
+    });
   } else {
     // Se não existe, mostrar página de erro simples
     res.status(503).type('html').send(`
