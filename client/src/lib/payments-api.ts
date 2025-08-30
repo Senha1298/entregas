@@ -20,21 +20,21 @@ interface PaymentResponse {
 }
 
 /**
- * Cria uma solicitação de pagamento PIX através da API For4Payments
+ * Cria uma solicitação de pagamento PIX através da API TechByNet
  * Esta função escolhe automaticamente a melhor estratégia:
- * 1. Se FOR4PAYMENTS_SECRET_KEY estiver disponível na Netlify - Chama direto a API
+ * 1. Se TECHBYNET_API_KEY estiver disponível na Netlify - Chama direto a API
  * 2. Caso contrário - Usa o backend no Heroku como intermediário
  */
 export async function createPixPayment(data: PaymentRequest): Promise<PaymentResponse> {
   console.log(`Ambiente de execução: ${import.meta.env.PROD ? 'PRODUÇÃO' : 'DESENVOLVIMENTO'}`);
   
-  // Verificar se a chave da For4Payments está disponível no frontend
+  // Verificar se a chave da TechByNet está disponível no frontend
   // (Isso acontecerá se a variável estiver configurada no Netlify)
-  const hasFor4PaymentKey = !!import.meta.env.VITE_FOR4PAYMENTS_SECRET_KEY;
+  const hasTechByNetKey = !!import.meta.env.VITE_TECHBYNET_API_KEY;
   
-  // Em produção, se tiver a chave, chama diretamente a API For4Payments
-  if (import.meta.env.PROD && hasFor4PaymentKey) {
-    console.log('Usando chamada direta para For4Payments API');
+  // Em produção, se tiver a chave, chama diretamente a API TechByNet
+  if (import.meta.env.PROD && hasTechByNetKey) {
+    console.log('Usando chamada direta para TechByNet API');
     
     try {
       // Usar a implementação direta
@@ -45,7 +45,7 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
     }
   }
   
-  // Chamar via backend Heroku com o novo proxy específico para For4Payments
+  // Chamar via backend Heroku com o novo proxy específico para TechByNet
   const apiUrl = import.meta.env.PROD
     ? 'https://disparador-f065362693d3.herokuapp.com/api/proxy/for4payments/pix'
     : '/api/proxy/for4payments/pix';
