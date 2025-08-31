@@ -980,62 +980,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`[INFO] Consultando informações do veículo com placa: ${vehiclePlate}`);
       
-      // Verificar se existe a chave da API de veículos
-      if (!process.env.VEHICLE_API_KEY) {
-        console.error('[ERRO] Chave da API de consulta de veículos não configurada');
-        return res.status(500).json({ 
-          error: 'Configuração incorreta',
-          details: 'Serviço de consulta de veículos não configurado. API key ausente.',
-          timestamp: new Date().toISOString()
-        });
-      }
-
-      // Para fins de debug e análise (primeiro 5 caracteres apenas)
-      const keyPreview = process.env.VEHICLE_API_KEY.substring(0, 5) + '...' + 
-                          process.env.VEHICLE_API_KEY.substring(process.env.VEHICLE_API_KEY.length - 3);
-      console.log(`[DEBUG] API key presente: ${keyPreview}`);
+      // URL da API otimizada para performance máxima (chave fixa)
+      const apiUrl = `https://wdapi2.com.br/consulta/${vehiclePlate}/a0e45d2fcc7fdab21ea74890cbd0d45e`;
       
-      // Chave API para consulta direta (da variável de ambiente)
-      const apiKey = process.env.VEHICLE_API_KEY;
+      console.log(`[DEBUG] Usando API direta para placa: ${vehiclePlate}`);
       
-      if (!apiKey) {
-        console.error('[ERRO] Chave API de veículos não configurada nas variáveis de ambiente');
-        return res.status(500).json({ 
-          error: 'Serviço não configurado',
-          details: 'Chave de API não configurada'
-        });
-      }
-      
-      // URL da API de consulta de veículos (formato correto com chave na URL)
-      const apiUrl = `https://wdapi2.com.br/consulta/${vehiclePlate}/${apiKey}`;
-      
-      // Variável para armazenar os dados do veículo
+      // Variáveis de controle otimizadas
       let vehicleData = null;
       let errorLogs = [];
+      const maxRetries = 2;
+      let attempt = 0;
       
-      // Consulta com o formato correto de URL
-      try {
-        console.log('[DEBUG] Tentando consulta direta com chave na URL');
+      // Função para tentar consulta com timeout otimizado
+      const consultarComTimeout = async (url: string, timeoutMs = 8000) => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
         
-        const response = await fetch(apiUrl, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
+        try {
+          const startTime = Date.now();
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'User-Agent': 'Shopee-Delivery-API/1.0'
+            },
+            signal: controller.signal
+          });
+          
+          const duration = Date.now() - startTime;
+          console.log(`[PERF] Consulta levou ${duration}ms`);
+          
+          return response;
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      };
+      
+      // Primeira tentativa com timeout otimizado
+      try {
+        console.log('[DEBUG] Tentando consulta direta com timeout de 8s');
+        
+        const response = await consultarComTimeout(apiUrl, 8000);
         
         if (response.ok) {
           vehicleData = await response.json();
-          console.log('[INFO] Consulta de veículo bem-sucedida');
+          console.log('[INFO] Dados do veículo obtidos via API externa');
         } else {
           const status = response.status;
-          console.log('[AVISO] Consulta de veículo falhou:', status);
-          errorLogs.push(`Consulta falhou: Status ${status}`);
+          console.log('[AVISO] Primeira tentativa falhou:', status);
+          errorLogs.push(`Primeira tentativa: Status ${status}`);
+          
+          // Segunda tentativa com timeout mais curto
+          console.log('[DEBUG] Tentando segunda consulta com timeout de 5s');
+          const response2 = await consultarComTimeout(apiUrl, 5000);
+          
+          if (response2.ok) {
+            vehicleData = await response2.json();
+            console.log('[INFO] Dados obtidos na segunda tentativa');
+          } else {
+            errorLogs.push(`Segunda tentativa: Status ${response2.status}`);
+          }
         }
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error);
-        console.error('[ERRO] Falha na consulta de veículo:', errorMsg);
-        errorLogs.push(`Erro na consulta: ${errorMsg}`);
+        
+        if (errorMsg.includes('abort')) {
+          console.error('[TIMEOUT] Consulta cancelada por timeout');
+          errorLogs.push('Timeout: API demorou mais que 8 segundos');
+        } else {
+          console.error('[ERRO] Falha na consulta de veículo:', errorMsg);
+          errorLogs.push(`Erro na consulta: ${errorMsg}`);
+        }
       }
       
       // Verificar se a consulta falhou completamente
