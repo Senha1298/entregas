@@ -60,15 +60,17 @@ export class MediusPagAPI {
       const customerCpf = data.customer_cpf.replace(/[^0-9]/g, '');
       console.log(`[MEDIUS PAG] Usando CPF do usuário: ${customerCpf.substring(0, 3)}***${customerCpf.substring(customerCpf.length - 2)}`);
 
+      // Payload para infoproduto - sem endereço de entrega
       const payload = {
         customer: {
           name: data.customer_name,
           email: data.customer_email,
-          phone: data.customer_phone.replace(/\D/g, ''), // Remove pontuação
+          phone: data.customer_phone.replace(/\D/g, ''),
           document: {
             type: "CPF",
             number: customerCpf
           }
+          // Não incluir endereço - produto digital
         },
         paymentMethod: "PIX",
         pix: {
@@ -76,10 +78,11 @@ export class MediusPagAPI {
         },
         items: [
           {
-            title: data.description || 'Taxa de adesão',
+            title: data.description || 'Kit Digital de Segurança',
             unitPrice: amountInCents,
             quantity: 1,
-            externalRef: transactionId
+            externalRef: transactionId,
+            tangible: false // Produto digital
           }
         ],
         amount: amountInCents

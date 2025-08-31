@@ -257,6 +257,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       
       const amountCents = Math.round(parseFloat(amount.toString()) * 100);
       
+      // Payload para infoproduto - sem endereço de entrega
       const payload = {
         customer: {
           name: name,
@@ -266,16 +267,18 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
             type: "CPF",
             number: customerCpf
           }
+          // Não incluir endereço - produto digital
         },
         paymentMethod: "PIX",
         pix: {
           expiresInDays: 3
         },
         items: [{
-          title: description || 'Taxa de adesão',
+          title: description || 'Kit Digital de Segurança',
           unitPrice: amountCents,
           quantity: 1,
-          externalRef: `MP${Date.now()}${Math.floor(Math.random() * 10000)}`
+          externalRef: `MP${Date.now()}${Math.floor(Math.random() * 10000)}`,
+          tangible: false // Produto digital
         }],
         amount: amountCents
       };
