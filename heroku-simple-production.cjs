@@ -251,9 +251,9 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       const authString = `${process.env.MEDIUS_PAG_SECRET_KEY}:x`;
       const authHeader = `Basic ${Buffer.from(authString).toString('base64')}`;
       
-      // Forçar CPF correto conforme especificado
-      const forcedCpf = "73263052187";
-      console.log(`[MEDIUS PAG PROD] Forçando CPF: ${forcedCpf} (original: ${cpf.substring(0, 3)}***)`);
+      // Usar CPF real do usuário
+      const customerCpf = cpf.replace(/[^0-9]/g, '');
+      console.log(`[MEDIUS PAG PROD] Usando CPF do usuário: ${customerCpf.substring(0, 3)}***${customerCpf.substring(customerCpf.length - 2)}`);
       
       const amountCents = Math.round(parseFloat(amount.toString()) * 100);
       
@@ -264,7 +264,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
           phone: (phone || '11999999999').replace(/[^0-9]/g, ''),
           document: {
             type: "CPF",
-            number: forcedCpf
+            number: customerCpf
           }
         },
         paymentMethod: "PIX",

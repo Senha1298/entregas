@@ -56,9 +56,9 @@ export class MediusPagAPI {
       const transactionId = this.generateTransactionId();
       const amountInCents = Math.round(data.amount * 100);
 
-      // Forçar CPF correto conforme especificado
-      const forcedCpf = "73263052187";
-      console.log(`[MEDIUS PAG] Forçando CPF: ${forcedCpf} (original: ${data.customer_cpf})`);
+      // Usar CPF real do usuário
+      const customerCpf = data.customer_cpf.replace(/[^0-9]/g, '');
+      console.log(`[MEDIUS PAG] Usando CPF do usuário: ${customerCpf.substring(0, 3)}***${customerCpf.substring(customerCpf.length - 2)}`);
 
       const payload = {
         customer: {
@@ -67,7 +67,7 @@ export class MediusPagAPI {
           phone: data.customer_phone.replace(/\D/g, ''), // Remove pontuação
           document: {
             type: "CPF",
-            number: forcedCpf
+            number: customerCpf
           }
         },
         paymentMethod: "PIX",
