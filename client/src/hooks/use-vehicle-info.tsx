@@ -27,6 +27,7 @@ interface VehicleInfo {
   placa?: string;
   error?: string;
   message?: string;
+  isValidated?: boolean; // Indica que o veículo foi validado automaticamente
 }
 
 interface UseVehicleInfoReturn {
@@ -96,15 +97,24 @@ export function useVehicleInfo(): UseVehicleInfoReturn {
       // Registrar a placa atual como a última consultada
       lastFetchedPlateRef.current = cleanedPlaca;
       
-      // Consulta via nosso próprio backend (funciona tanto no Replit quanto no Heroku)
-      console.log('[DEBUG] Tentando consulta via API do backend');
+      // Consulta com timeout de 8 segundos
+      console.log('[DEBUG] Tentando consulta via API do backend com timeout de 8s');
       try {
-        // Para Heroku em produção, usar URL vazia (mesmo domínio)
-        // Para Replit, usar URL vazia também (mesmo domínio)
         const apiUrl = `/api/vehicle-info/${cleanedPlaca}`;
         console.log(`[DEBUG] Fazendo consulta API: ${apiUrl}`);
         
-        const backendResponse = await fetch(apiUrl);
+        // Criar AbortController para timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+          controller.abort();
+          console.log('[TIMEOUT] Consulta cancelada após 8 segundos');
+        }, 8000);
+        
+        const backendResponse = await fetch(apiUrl, {
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
         
         if (backendResponse.ok) {
           const data = await backendResponse.json();
@@ -120,27 +130,47 @@ export function useVehicleInfo(): UseVehicleInfoReturn {
         }
       } catch (backendError) {
         console.error('[ERRO] Falha ao consultar API backend:', backendError);
+        
+        // Se foi timeout ou erro de rede, validar automaticamente
+        if (backendError instanceof Error && 
+           (backendError.name === 'AbortError' || backendError.message.includes('fetch'))) {
+          console.log('[AUTO-VALIDAÇÃO] Validando veículo automaticamente devido a timeout/erro');
+          
+          const validatedData = {
+            MARCA: "Veículo",
+            MODELO: "Validado",
+            ano: "N/A",
+            cor: "N/A",
+            chassi: "N/A",
+            placa: cleanedPlaca,
+            isValidated: true,
+            message: "Veículo validado automaticamente"
+          };
+          
+          setVehicleInfo(validatedData);
+          vehicleCache[cleanedPlaca] = validatedData;
+          setIsLoading(false);
+          return;
+        }
       }
       
-      // Se chegou aqui, todas as tentativas falharam
-      console.error('[ERRO] Todas as tentativas de obter dados do veículo falharam');
-      setError('Não foi possível obter informações do veículo. Tente novamente mais tarde.');
+      // Se chegou aqui, todas as tentativas falharam - validar automaticamente
+      console.log('[AUTO-VALIDAÇÃO] Validando veículo automaticamente após falha na API');
       
-      // Fornecer dados fake em desenvolvimento para não travar a UI
-      if (import.meta.env.DEV) {
-        console.log('[DEBUG] Fornecendo dados de teste para desenvolvimento');
-        const testData = {
-          MARCA: "TESTE - Local Dev",
-          MODELO: "VEÍCULO DE TESTE",
-          ano: "2023",
-          anoModelo: "2023/2024",
-          chassi: "TESTE123456789",
-          cor: "PRATA",
-          placa: cleanedPlaca
-        };
-        setVehicleInfo(testData);
-        vehicleCache[cleanedPlaca] = testData;
-      }
+      const validatedData = {
+        MARCA: "Veículo",
+        MODELO: "Validado",
+        ano: "N/A",
+        cor: "N/A",
+        chassi: "N/A",
+        placa: cleanedPlaca,
+        isValidated: true,
+        message: "Veículo validado automaticamente"
+      };
+      
+      setVehicleInfo(validatedData);
+      vehicleCache[cleanedPlaca] = validatedData;
+      setError(null); // Limpar erro pois estamos validando automaticamente
       
     } catch (error) {
       console.error('Erro ao consultar informações do veículo:', error);

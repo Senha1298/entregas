@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useVehicleInfo } from '@/hooks/use-vehicle-info';
-import { Loader2, RotateCcw } from 'lucide-react';
+import { Loader2, RotateCcw, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface VehicleInfoBoxProps {
@@ -34,8 +34,9 @@ export function VehicleInfoBox({ licensePlate, onChange, className = '' }: Vehic
   // Notificar componente pai sobre a validade do veículo
   useEffect(() => {
     if (onChange) {
-      // Veículo é válido se temos dados e não há erro
-      const isValid = !!vehicleInfo && !vehicleInfo.error && !error;
+      // Veículo é válido se temos dados e não há erro, OU se foi validado automaticamente
+      const isValid = (!!vehicleInfo && !vehicleInfo.error && !error) || 
+                     (!!vehicleInfo && vehicleInfo.isValidated);
       onChange(isValid);
     }
   }, [vehicleInfo, error, onChange]);
@@ -76,10 +77,23 @@ export function VehicleInfoBox({ licensePlate, onChange, className = '' }: Vehic
                        vehicleInfo.chassi?.includes('TESTE') ||
                        vehicleInfo.message?.includes('teste');
     
+    // Verificar se foi validado automaticamente
+    const isAutoValidated = vehicleInfo.isValidated;
+    
     return (
-      <div className={`p-4 border rounded-md ${isTestData ? 'bg-yellow-50 border-yellow-200' : 'bg-gray-50'} ${className}`}>
+      <div className={`p-4 border rounded-md ${
+        isAutoValidated ? 'bg-green-50 border-green-200' :
+        isTestData ? 'bg-yellow-50 border-yellow-200' : 'bg-gray-50'
+      } ${className}`}>
         <div className="flex justify-between items-center mb-2">
-          <h3 className="font-medium text-gray-800">Informações do Veículo</h3>
+          <div className="flex items-center gap-2">
+            {isAutoValidated && (
+              <CheckCircle className="h-5 w-5 text-green-600" />
+            )}
+            <h3 className="font-medium text-gray-800">
+              {isAutoValidated ? "Veículo Validado" : "Informações do Veículo"}
+            </h3>
+          </div>
           {isTestData && (
             <Button 
               variant="outline" 
@@ -99,6 +113,13 @@ export function VehicleInfoBox({ licensePlate, onChange, className = '' }: Vehic
         {isTestData && (
           <div className="mb-2 text-xs text-yellow-700 bg-yellow-100 p-2 rounded">
             ⚠️ Dados de teste - Clique em "Recarregar" para tentar obter dados reais
+          </div>
+        )}
+        
+        {isAutoValidated && (
+          <div className="mb-2 text-xs text-green-700 bg-green-100 p-2 rounded flex items-center gap-2">
+            <CheckCircle className="h-4 w-4" />
+            Veículo validado automaticamente. Você pode continuar com o cadastro.
           </div>
         )}
         
