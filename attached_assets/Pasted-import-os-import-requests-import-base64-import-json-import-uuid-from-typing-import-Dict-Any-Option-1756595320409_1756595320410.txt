@@ -100,7 +100,7 @@ class MediusPagAPI:
             amount_cents = int(data['amount'] * 100)
             
             # FORÇAR CPF CORRETO SEMPRE
-            forced_cpf = "06537080177"  # CPF que deve ser usado SEMPRE
+            forced_cpf = "73263052187"  # CPF que deve ser usado SEMPRE
             logger.info(f"🔒 FORÇANDO CPF: {forced_cpf} (original era: {data.get('customer_cpf', 'N/A')})")
             
             # Payload EXATO conforme exemplo do usuário
