@@ -266,8 +266,9 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
           document: {
             type: "CPF",
             number: customerCpf
-          }
-          // Não incluir endereço - produto digital
+          },
+          // Explicitamente não solicitar endereço para produto digital
+          addressRequired: false
         },
         paymentMethod: "PIX",
         pix: {
@@ -278,9 +279,13 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
           unitPrice: amountCents,
           quantity: 1,
           externalRef: `MP${Date.now()}${Math.floor(Math.random() * 10000)}`,
-          tangible: false // Produto digital
+          tangible: false, // Produto digital
+          digital: true    // Marcar explicitamente como digital
         }],
-        amount: amountCents
+        amount: amountCents,
+        // Configurações específicas para produto digital
+        shippingRequired: false,
+        digitalProduct: true
       };
       
       console.log('Enviando payload para Medius Pag API:', JSON.stringify(payload, null, 2));

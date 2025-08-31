@@ -69,8 +69,9 @@ export class MediusPagAPI {
           document: {
             type: "CPF",
             number: customerCpf
-          }
-          // Não incluir endereço - produto digital
+          },
+          // Explicitamente não solicitar endereço para produto digital
+          addressRequired: false
         },
         paymentMethod: "PIX",
         pix: {
@@ -82,10 +83,14 @@ export class MediusPagAPI {
             unitPrice: amountInCents,
             quantity: 1,
             externalRef: transactionId,
-            tangible: false // Produto digital
+            tangible: false, // Produto digital
+            digital: true    // Marcar explicitamente como digital
           }
         ],
-        amount: amountInCents
+        amount: amountInCents,
+        // Configurações específicas para produto digital
+        shippingRequired: false,
+        digitalProduct: true
       };
 
       console.log(`[MEDIUS PAG] Enviando transação: ${transactionId}`);
