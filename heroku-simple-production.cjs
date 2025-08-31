@@ -222,7 +222,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     console.log(`[GATEWAY PROD] Usando gateway: ${gatewayChoice}`);
     
     // Processar os dados recebidos
-    const { name, cpf, email, phone, amount = 24.90, description = "Kit de Segurança Shopee" } = req.body;
+    const { name, cpf, email, phone, amount = 47.90, description = "Kit de Segurança Shopee" } = req.body;
     
     if (!name || !cpf) {
       return res.status(400).json({ error: 'Nome e CPF são obrigatórios' });
