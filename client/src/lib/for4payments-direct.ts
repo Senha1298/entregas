@@ -44,7 +44,7 @@ export async function createPixPaymentDirect(data: PaymentRequest): Promise<Paym
   console.log(`Criando pagamento PIX via Pagnet`);
   
   try {
-    const amount = data.amount || 74.90; // Valor padrão para o kit de segurança
+    const amount = data.amount || 24.90; // Valor padrão para o kit de segurança
     
     const payload = {
       name: data.name,

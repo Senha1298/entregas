@@ -68,7 +68,7 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
         cpf: data.cpf,
         email: data.email || '',
         phone: data.phone || '',
-        amount: data.amount || 74.90 // Valor padrão para o kit de segurança
+        amount: data.amount || 24.90 // Valor padrão para o kit de segurança
       })
     };
     
