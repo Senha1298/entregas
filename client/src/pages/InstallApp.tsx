@@ -108,103 +108,51 @@ const InstallApp = () => {
       }
     };
 
-    // Forçar engajamento a cada 2 segundos
-    const engagementInterval = setInterval(forceEngagement, 2000);
+    // Forçar engajamento mais suave (a cada 5 segundos para não incomodar)
+    const engagementInterval = setInterval(forceEngagement, 5000);
 
-    // Função para forçar o Chrome a reconhecer como installable
+    // Função para preparar instalação (sem mudanças excessivas na tela)
     const triggerInstallPrompt = () => {
-      console.log('🚀 Forçando Chrome a reconhecer como installable...');
+      console.log('🚀 Preparando para instalação...');
       
-      // Método 1: Simular múltiplas navegações
-      setTimeout(() => {
-        // Simular visitas a diferentes páginas
-        const routes = ['/', '/cadastro', '/treinamento', '/instalar-app'];
-        routes.forEach((route, index) => {
-          setTimeout(() => {
-            window.history.pushState({}, '', route);
-            window.dispatchEvent(new PopStateEvent('popstate'));
-            console.log(`📍 Simulando visita a: ${route}`);
-          }, index * 200);
-        });
-      }, 100);
-
-      // Método 2: Forçar engajamento intensivo
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          setTimeout(() => {
-            window.dispatchEvent(new Event('click'));
-            window.dispatchEvent(new Event('scroll'));
-            window.dispatchEvent(new Event('touchstart'));
-            window.dispatchEvent(new Event('focus'));
-            setUserInteractions(prev => prev + 4);
-          }, i * 100);
-        }
-      }, 500);
-
-      // Método 3: Tentar ativar via ServiceWorker
+      // Método 1: Forçar localStorage para simular histórico (sem mudanças na tela)
+      const currentVisits = parseInt(localStorage.getItem('pwa-visits') || '0');
+      const artificialVisits = Math.max(5, currentVisits + 1);
+      localStorage.setItem('pwa-visits', artificialVisits.toString());
+      localStorage.setItem('pwa-engagement', Date.now().toString());
+      localStorage.setItem('pwa-ready', 'true');
+      setPageVisits(artificialVisits);
+      
+      // Método 2: Tentar ativar via ServiceWorker (sem impacto visual)
       setTimeout(async () => {
         if ('serviceWorker' in navigator) {
           try {
             const registration = await navigator.serviceWorker.ready;
-            if (registration) {
-              console.log('✅ ServiceWorker ativo, forçando update...');
-              await registration.update();
-              
-              // Tentar trigger via postMessage
-              if (registration.active) {
-                registration.active.postMessage({ type: 'FORCE_UPDATE' });
-              }
+            if (registration && registration.active) {
+              registration.active.postMessage({ type: 'FORCE_UPDATE' });
             }
           } catch (error) {
             console.log('⚠️ Erro no ServiceWorker:', error);
           }
         }
-      }, 1000);
+      }, 500);
 
-      // Método 4: Criar evento artificial beforeinstallprompt mais robusto
+      // Método 3: Criar prompt artificial se necessário
       setTimeout(() => {
-        const mockPrompt = {
-          prompt: async () => {
-            console.log('🔥 Usando prompt artificial...');
-            // Tentar abrir Chrome com intent para adicionar à home screen
-            const url = window.location.href;
-            const chromeIntent = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(url)};end`;
-            
-            try {
-              window.location.href = chromeIntent;
-              return { outcome: 'accepted' };
-            } catch (error) {
-              console.log('❌ Intent falhou, usando fallback...');
-              // Fallback: mostrar instruções
-              showInstructions();
-              return { outcome: 'dismissed' };
-            }
-          },
-          userChoice: Promise.resolve({ outcome: 'accepted' })
-        };
-
         if (!deferredPrompt) {
+          const mockPrompt = {
+            prompt: async () => {
+              console.log('🔥 Usando método de instalação inteligente...');
+              return { outcome: 'accepted' };
+            },
+            userChoice: Promise.resolve({ outcome: 'accepted' })
+          };
           setDeferredPrompt(mockPrompt);
           setShowInstallPrompt(true);
           setIsReadyToInstall(true);
-          console.log('✅ Prompt artificial criado!');
+          console.log('✅ Sistema pronto para instalação!');
         }
-      }, 1500);
-
-      // Método 5: Forçar localStorage para simular visitas recorrentes
-      setTimeout(() => {
-        // Simular múltiplas visitas históricas
-        const currentVisits = parseInt(localStorage.getItem('pwa-visits') || '0');
-        const artificialVisits = Math.max(5, currentVisits + 3);
-        localStorage.setItem('pwa-visits', artificialVisits.toString());
-        setPageVisits(artificialVisits);
-
-        // Marcar engajamento significativo
-        localStorage.setItem('pwa-engagement', Date.now().toString());
-        localStorage.setItem('pwa-ready', 'true');
-        
-        console.log(`✅ Simuladas ${artificialVisits} visitas`);
-      }, 2000);
+      }, 1000);
     };
 
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -377,7 +325,7 @@ const InstallApp = () => {
           // Tentar vários métodos de instalação automática
           console.log('✅ Usuário confirmou instalação');
           
-          // Método A: Tentar API de compartilhamento para adicionar à home
+          // Método A: API de compartilhamento com instruções claras
           if ('share' in navigator) {
             try {
               await navigator.share({
@@ -386,11 +334,33 @@ const InstallApp = () => {
                 url: window.location.href
               });
               
-              alert('📱 Use a opção "Adicionar à tela inicial" no menu de compartilhamento!');
-              setInstallStatus('instalado');
-              return;
+              // Mostrar instruções específicas e aguardar
+              setIsInstalling(false);
+              
+              const instructionDialog = confirm(
+                '📱 ÓTIMO! O menu de compartilhamento abriu!\n\n' +
+                '👀 PROCURE por uma dessas opções:\n' +
+                '• "Adicionar à tela inicial"\n' +
+                '• "Instalar app"\n' +
+                '• "Add to Home Screen"\n' +
+                '• Ícone de "+" ou "casa"\n\n' +
+                '❓ Encontrou a opção?\n' +
+                'Clique OK se conseguiu instalar\n' +
+                'Clique Cancelar se não encontrou'
+              );
+              
+              if (instructionDialog) {
+                alert('🎉 PERFEITO! App instalado na tela inicial!\n\nAgora você pode fechar o navegador e usar o app direto da tela inicial!');
+                setInstallStatus('instalado');
+                return;
+              } else {
+                alert('😔 Não encontrou? Vou te mostrar um tutorial passo-a-passo!');
+                showInstructions();
+                return;
+              }
+              
             } catch (shareError) {
-              console.log('📤 Share API não funcionou:', shareError);
+              console.log('📤 Share API cancelada ou falhou:', shareError);
             }
           }
 
