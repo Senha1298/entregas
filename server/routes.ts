@@ -9,8 +9,14 @@ import {
   insertStateSchema, 
   insertBenefitSchema,
   insertUserSchema,
-  insertBannedIpSchema
+  insertBannedIpSchema,
+  pushSubscriptions,
+  notificationHistory,
+  insertPushSubscriptionSchema,
+  insertNotificationHistorySchema
 } from "@shared/schema";
+import webpush from "web-push";
+import { eq } from "drizzle-orm";
 
 // Tipagem para o cache global de pagamentos
 declare global {
@@ -29,6 +35,7 @@ declare global {
 }
 import axios from "axios";
 import MobileDetect from "mobile-detect";
+import { setupPushNotifications } from "./pushNotifications";
 
 // Importar spawn do child_process para executar scripts Python
 import { spawn } from 'child_process';
@@ -2207,6 +2214,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Erro ao carregar estatísticas iniciais:', error);
     }
   })();
+
+  // Configurar push notifications
+  setupPushNotifications(app);
 
   return httpServer;
 }

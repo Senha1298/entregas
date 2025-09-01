@@ -1,4 +1,5 @@
-import { pgTable, text, serial, integer, boolean, timestamp, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, varchar, jsonb } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -181,3 +182,60 @@ export const insertBannedDeviceSchema = createInsertSchema(bannedDevices).pick({
 
 export type InsertBannedDevice = z.infer<typeof insertBannedDeviceSchema>;
 export type BannedDevice = typeof bannedDevices.$inferSelect;
+
+// Push Notifications Subscriptions
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: serial("id").primaryKey(),
+  endpoint: text("endpoint").notNull(),
+  p256dhKey: text("p256dh_key").notNull(),
+  authKey: text("auth_key").notNull(),
+  userAgent: text("user_agent"),
+  ipAddress: text("ip_address"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Notification History
+export const notificationHistory = pgTable("notification_history", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  icon: text("icon"),
+  badge: text("badge"),
+  tag: text("tag"),
+  data: jsonb("data"),
+  sentCount: integer("sent_count").default(0),
+  successCount: integer("success_count").default(0),
+  failureCount: integer("failure_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  sentAt: timestamp("sent_at"),
+});
+
+// Schemas de inserção para Push Notifications
+export const insertPushSubscriptionSchema = createInsertSchema(pushSubscriptions).pick({
+  endpoint: true,
+  p256dhKey: true,
+  authKey: true,
+  userAgent: true,
+  ipAddress: true,
+  isActive: true,
+});
+
+export const insertNotificationHistorySchema = createInsertSchema(notificationHistory).pick({
+  title: true,
+  body: true,
+  icon: true,
+  badge: true,
+  tag: true,
+  data: true,
+  sentCount: true,
+  successCount: true,
+  failureCount: true,
+  sentAt: true,
+});
+
+export type InsertPushSubscription = z.infer<typeof insertPushSubscriptionSchema>;
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;
+export type InsertNotificationHistory = z.infer<typeof insertNotificationHistorySchema>;
+export type NotificationHistory = typeof notificationHistory.$inferSelect;

