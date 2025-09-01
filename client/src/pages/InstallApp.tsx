@@ -11,6 +11,8 @@ const InstallApp = () => {
   const [installStatus, setInstallStatus] = useState<string>('');
   const [debugInfo, setDebugInfo] = useState<any>({});
   const [showDebug, setShowDebug] = useState(false);
+  const [engagementTime, setEngagementTime] = useState(0);
+  const [pageVisits, setPageVisits] = useState(0);
 
   // Detectar condições PWA e debugar
   useEffect(() => {
@@ -70,6 +72,16 @@ const InstallApp = () => {
 
     checkPWAConditions();
 
+    // Contar tempo de engajamento
+    const engagementTimer = setInterval(() => {
+      setEngagementTime(prev => prev + 1);
+    }, 1000);
+
+    // Contar visitas (usando localStorage)
+    const visits = parseInt(localStorage.getItem('pwa-visits') || '0') + 1;
+    localStorage.setItem('pwa-visits', visits.toString());
+    setPageVisits(visits);
+
     const handleBeforeInstallPrompt = (e: Event) => {
       console.log('🔥 PWA Install prompt disponível!');
       e.preventDefault();
@@ -100,6 +112,7 @@ const InstallApp = () => {
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
+      clearInterval(engagementTimer);
     };
   }, []);
 
@@ -141,6 +154,12 @@ const InstallApp = () => {
     } finally {
       setIsInstalling(false);
     }
+  };
+
+  // Função para tentar forçar instalação via menu do Chrome
+  const forceInstallPrompt = () => {
+    setInstallStatus('manual');
+    // Mostrar instruções específicas para Chrome mobile
   };
 
   const steps = [
@@ -250,7 +269,37 @@ const InstallApp = () => {
           <Card className="mb-6 border-blue-500 bg-blue-50">
             <CardContent className="pt-6">
               <div className="text-center">
-                <h3 className="font-semibold text-blue-700 mb-1">📱 Instalação Manual</h3>
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="font-semibold text-blue-700">📱 Instalação Manual</h3>
+                  {debugInfo.isChrome && (
+                    <Button 
+                      onClick={forceInstallPrompt}
+                      size="sm"
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      Tentar Agora
+                    </Button>
+                  )}
+                </div>
+                
+                {/* Status de engajamento */}
+                <div className="mb-3 p-2 bg-white rounded border">
+                  <p className="text-xs text-gray-600 mb-1">Status de Engajamento:</p>
+                  <div className="flex justify-between text-xs">
+                    <span>Tempo na página: {engagementTime}s</span>
+                    <span>Visitas: {pageVisits}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1 mt-1">
+                    <div 
+                      className={`h-1 rounded-full transition-all ${engagementTime >= 30 ? 'bg-green-500' : 'bg-yellow-500'}`}
+                      style={{ width: `${Math.min((engagementTime / 30) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {engagementTime >= 30 ? '✅ Tempo suficiente!' : `⏰ ${30 - engagementTime}s restantes`}
+                  </p>
+                </div>
+
                 <p className="text-sm text-blue-600 mb-3">
                   Use o tutorial abaixo para adicionar o app à sua tela inicial
                 </p>
@@ -303,16 +352,26 @@ const InstallApp = () => {
                     </div>
                   </div>
 
-                  {/* Dicas específicas por tipo de navegador */}
-                  {debugInfo.isChrome ? (
+                  {/* Instruções específicas para ativar o prompt automático */}
+                  {debugInfo.isChrome && installStatus !== 'manual' ? (
                     <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
-                      <p className="text-xs text-yellow-800 font-medium">💡 Dicas para o Chrome:</p>
+                      <p className="text-xs text-yellow-800 font-medium">🎯 Como ativar o botão automático:</p>
                       <ul className="text-xs text-yellow-700 mt-1 space-y-1">
-                        <li>• Navegue pelo site por 30 segundos</li>
-                        <li>• Visite 2-3 páginas diferentes</li>
-                        <li>• Aguarde alguns minutos</li>
-                        <li>• Se não funcionar, use o tutorial manual</li>
+                        <li>• ✅ Permaneça na página por 30+ segundos</li>
+                        <li>• 🔗 Visite as páginas: / → /cadastro → /treinamento</li>
+                        <li>• ⏰ Aguarde 2-3 minutos navegando</li>
+                        <li>• 🔄 Volte para /instalar-app</li>
+                        <li>• 🚀 O botão "Instalar Agora" deve aparecer!</li>
                       </ul>
+                    </div>
+                  ) : installStatus === 'manual' ? (
+                    <div className="mt-3 p-2 bg-orange-50 border border-orange-200 rounded">
+                      <p className="text-xs text-orange-800 font-medium">📲 Chrome Menu Method:</p>
+                      <ol className="text-xs text-orange-700 mt-1 space-y-1">
+                        <li>1. Toque nos 3 pontos (⋮) no canto superior do Chrome</li>
+                        <li>2. Procure "Adicionar à tela inicial" ou "Instalar app"</li>
+                        <li>3. Se não aparecer, navegue mais pelo site e tente novamente</li>
+                      </ol>
                     </div>
                   ) : debugInfo.isChromeIOS ? (
                     <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded">
