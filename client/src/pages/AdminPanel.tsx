@@ -36,6 +36,7 @@ export default function AdminPanel() {
   const [notification, setNotification] = useState({
     title: '',
     body: '',
+    url: '',
     icon: '/shopee-icon.jpg',
     badge: '/shopee-icon.jpg',
     tag: 'shopee-admin-notification',
@@ -77,6 +78,7 @@ export default function AdminPanel() {
       setNotification({
         title: '',
         body: '',
+        url: '',
         icon: '/shopee-icon.jpg',
         badge: '/shopee-icon.jpg',
         tag: 'shopee-admin-notification',
@@ -106,7 +108,16 @@ export default function AdminPanel() {
       return;
     }
 
-    sendNotificationMutation.mutate(notification);
+    // Incluir URL no campo data da notificação
+    const notificationData = {
+      ...notification,
+      data: {
+        ...notification.data,
+        url: notification.url || '/'
+      }
+    };
+
+    sendNotificationMutation.mutate(notificationData);
   };
 
   const formatDate = (dateString: string) => {
@@ -228,6 +239,17 @@ export default function AdminPanel() {
                   maxLength={200}
                 />
                 <p className="text-xs text-gray-500">{notification.body.length}/200 caracteres</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="url">URL de Redirecionamento</Label>
+                <Input
+                  id="url"
+                  value={notification.url}
+                  onChange={(e) => setNotification(prev => ({ ...prev, url: e.target.value }))}
+                  placeholder="Ex: /cadastro, /treinamento, /admin (deixe vazio para página inicial)"
+                />
+                <p className="text-xs text-gray-500">Página para onde o usuário será redirecionado ao clicar na notificação</p>
               </div>
 
               <div className="space-y-2">
