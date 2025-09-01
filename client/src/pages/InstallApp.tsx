@@ -15,11 +15,22 @@ const InstallApp = () => {
   // Detectar condições PWA e debugar
   useEffect(() => {
     const checkPWAConditions = async () => {
+      // Melhor detecção de Chrome mobile e desktop
+      const userAgent = navigator.userAgent;
+      const isChrome = /Chrome/.test(userAgent) && !/Edge|Edg/.test(userAgent);
+      const isChromeDesktop = isChrome && !/Android|iPhone|iPad|iPod|Mobile/.test(userAgent);
+      const isChromeMobile = isChrome && /Android/.test(userAgent);
+      const isChromeIOS = /CriOS/.test(userAgent); // Chrome no iOS
+      const isAnyChromeVariant = isChrome || isChromeIOS;
+
       const debug: any = {
-        userAgent: navigator.userAgent,
-        isChrome: /Chrome/.test(navigator.userAgent),
-        isAndroid: /Android/.test(navigator.userAgent),
-        isIOS: /iPhone|iPad|iPod/.test(navigator.userAgent),
+        userAgent: userAgent,
+        isChrome: isAnyChromeVariant,
+        isChromeDesktop: isChromeDesktop,
+        isChromeMobile: isChromeMobile,
+        isChromeIOS: isChromeIOS,
+        isAndroid: /Android/.test(userAgent),
+        isIOS: /iPhone|iPad|iPod/.test(userAgent),
         isStandalone: window.matchMedia('(display-mode: standalone)').matches,
         isIOSStandalone: (window.navigator as any).standalone,
         hasServiceWorker: 'serviceWorker' in navigator,
@@ -265,7 +276,11 @@ const InstallApp = () => {
                     <div className="flex justify-between">
                       <span>Navegador:</span>
                       <span className={debugInfo.isChrome ? 'text-green-600' : 'text-red-600'}>
-                        {debugInfo.isChrome ? '✅ Chrome' : '❌ Não Chrome'}
+                        {debugInfo.isChrome ? (
+                          debugInfo.isChromeMobile ? '✅ Chrome Mobile' :
+                          debugInfo.isChromeIOS ? '✅ Chrome iOS' :
+                          debugInfo.isChromeDesktop ? '✅ Chrome Desktop' : '✅ Chrome'
+                        ) : '❌ Não Chrome'}
                       </span>
                     </div>
                     <div className="flex justify-between">
@@ -288,16 +303,32 @@ const InstallApp = () => {
                     </div>
                   </div>
 
-                  {/* Dicas específicas do Chrome */}
-                  <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
-                    <p className="text-xs text-yellow-800 font-medium">💡 Dicas para o Chrome:</p>
-                    <ul className="text-xs text-yellow-700 mt-1 space-y-1">
-                      <li>• Navegue pelo site por 30 segundos</li>
-                      <li>• Visite 2-3 páginas diferentes</li>
-                      <li>• Aguarde alguns minutos</li>
-                      <li>• Se não funcionar, use o tutorial manual</li>
-                    </ul>
-                  </div>
+                  {/* Dicas específicas por tipo de navegador */}
+                  {debugInfo.isChrome ? (
+                    <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                      <p className="text-xs text-yellow-800 font-medium">💡 Dicas para o Chrome:</p>
+                      <ul className="text-xs text-yellow-700 mt-1 space-y-1">
+                        <li>• Navegue pelo site por 30 segundos</li>
+                        <li>• Visite 2-3 páginas diferentes</li>
+                        <li>• Aguarde alguns minutos</li>
+                        <li>• Se não funcionar, use o tutorial manual</li>
+                      </ul>
+                    </div>
+                  ) : debugInfo.isChromeIOS ? (
+                    <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded">
+                      <p className="text-xs text-blue-800 font-medium">📱 Chrome no iOS:</p>
+                      <p className="text-xs text-blue-700 mt-1">
+                        O Chrome no iOS não suporta instalação automática. Use Safari ou o tutorial manual.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="mt-3 p-2 bg-gray-50 border border-gray-200 rounded">
+                      <p className="text-xs text-gray-800 font-medium">🌐 Seu navegador:</p>
+                      <p className="text-xs text-gray-700 mt-1">
+                        Para instalação automática, use Chrome (Android) ou Edge. Ou siga o tutorial manual abaixo.
+                      </p>
+                    </div>
+                  )}
 
                   {showDebug && (
                     <div className="mt-3 pt-3 border-t">
