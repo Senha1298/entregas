@@ -10,6 +10,8 @@ const PWANotification: React.FC = () => {
   // Função para registrar usuário para push notifications
   const subscribeUserToPush = async () => {
     try {
+      console.log('🔄 Iniciando subscribeUserToPush...');
+      
       // Verificar se service worker e push são suportados
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         console.log('⚠️ Push notifications não suportadas');
@@ -21,9 +23,15 @@ const PWANotification: React.FC = () => {
       const registration = await navigator.serviceWorker.ready;
       console.log('🛠️ Service Worker pronto:', registration);
 
-      // Solicitar permissão
-      const permission = await Notification.requestPermission();
-      console.log('🔐 Permissão de notificação:', permission);
+      // Verificar permissão atual
+      let permission = Notification.permission;
+      console.log('🔐 Permissão atual:', permission);
+      
+      // Solicitar permissão se ainda não foi concedida
+      if (permission === 'default') {
+        permission = await Notification.requestPermission();
+        console.log('🔐 Nova permissão solicitada:', permission);
+      }
 
       if (permission === 'granted') {
         // Obter chave pública VAPID (vamos usar uma chave de exemplo)
@@ -143,9 +151,9 @@ const PWANotification: React.FC = () => {
     const notificationShown = sessionStorage.getItem('pwa_payment_notification_shown');
     console.log('💾 Notificação já mostrada nesta sessão:', notificationShown);
 
-    // TEMPORÁRIO: Para teste, vamos mostrar sempre (remover isPWA da condição)
-    if (!notificationShown && !hasShownNotification) {
-      console.log('🔔 Preparando notificação (modo teste - sempre exibe)...');
+    // SEMPRE tentar registrar push notifications para teste
+    if (!hasShownNotification) {
+      console.log('🔔 Preparando notificação e registro de push...');
       
       // Aguardar um pouco para garantir que a página carregou completamente
       const timer = setTimeout(() => {
