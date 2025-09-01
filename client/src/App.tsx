@@ -16,11 +16,13 @@ import Treinamento from "@/pages/Treinamento";
 import PagamentoInstrutor from "@/pages/PagamentoInstrutor";
 import Selfie from "@/pages/Selfie";
 import CpfPayment from "@/pages/CpfPayment";
+import InstallApp from "@/pages/InstallApp";
 import { useAppContext } from "@/contexts/AppContext";
 import { useDesktopProtection } from "@/hooks/use-desktop-protection";
 import FacebookPixelInitializer from "@/components/FacebookPixelInitializer";
 import ClarityInitializer from "@/components/ClarityInitializer";
 import { TikTokChromeDetector } from "@/components/WhatsAppDetector";
+import ServiceWorkerRegistration from "@/components/ServiceWorker";
 
 function Router() {
   return (
@@ -37,6 +39,7 @@ function Router() {
       <Route path="/pay" component={Pay} />
       <Route path="/treinamento" component={Treinamento} />
       <Route path="/pagamento-instrutor" component={PagamentoInstrutor} />
+      <Route path="/instalar-app" component={InstallApp} />
       <Route path="/:cpf" component={CpfPayment} />
       <Route component={NotFound} />
     </Switch>
@@ -69,6 +72,7 @@ function App() {
       <Toaster />
       <FacebookPixelInitializer />
       <ClarityInitializer />
+      <ServiceWorkerRegistration />
       <TikTokChromeDetector>
         <Router />
       </TikTokChromeDetector>
