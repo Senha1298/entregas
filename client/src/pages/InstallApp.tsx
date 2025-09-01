@@ -92,17 +92,35 @@ const InstallApp: React.FC = () => {
       const isIOS = /iPad|iPhone|iPod/.test(userAgent);
       const isAndroid = /Android/.test(userAgent);
       const isChrome = /Chrome/.test(userAgent) && !/Edge|Edg/.test(userAgent);
+      const isChromeIOS = /CriOS/.test(userAgent); // Chrome específico no iOS
       const isDesktop = !isIOS && !isAndroid;
       
       // Debug completo
       console.log('🔍 DEBUG DETECÇÃO:');
       console.log('User Agent:', userAgent);
-      console.log(`📱 Plataforma: iOS=${isIOS}, Android=${isAndroid}, Chrome=${isChrome}, Desktop=${isDesktop}`);
+      console.log(`📱 Plataforma: iOS=${isIOS}, Android=${isAndroid}, Chrome=${isChrome}, ChromeIOS=${isChromeIOS}, Desktop=${isDesktop}`);
       console.log('Deferred Prompt disponível:', !!deferredPrompt);
 
-      // PARA CHROME (Android, Desktop ou qualquer Chrome)
-      if (isChrome && !isIOS) {
-        console.log('🚀 CHROME DETECTADO - Tentando instalação...');
+      // PARA iOS (Safari ou Chrome no iOS) - Sempre instruções manuais
+      if (isIOS || isChromeIOS) {
+        console.log('🍎 iOS DETECTADO (Safari ou Chrome) - Instruções manuais necessárias');
+        setIsInstalling(false);
+        const wantsInstructions = confirm(
+          '🍎 INSTALAÇÃO MANUAL NECESSÁRIA\n\n' +
+          'iOS (Safari/Chrome) não permite instalação automática.\n' +
+          'Preciso te mostrar como instalar manualmente no Safari.\n\n' +
+          'OK = Ver instruções | Cancelar = Mais tarde'
+        );
+        
+        if (wantsInstructions) {
+          showInstructions();
+        }
+        return;
+      }
+
+      // PARA CHROME (Android ou Desktop - não iOS)
+      if (isChrome && !isIOS && !isChromeIOS) {
+        console.log('🚀 CHROME PURO DETECTADO - Tentando instalação...');
         
         // 1. TENTAR PROMPT PWA NATIVO PRIMEIRO
         if (deferredPrompt) {
@@ -162,22 +180,7 @@ const InstallApp: React.FC = () => {
         }
       }
 
-      // PARA iOS - INSTRUÇÕES DIRETAS
-      if (isIOS) {
-        console.log('🍎 iOS detectado - Mostrando instruções manuais');
-        setIsInstalling(false);
-        const wantsInstructions = confirm(
-          '🍎 INSTALAÇÃO MANUAL NECESSÁRIA\n\n' +
-          'O Safari não permite instalação automática.\n' +
-          'Posso te mostrar como instalar manualmente?\n\n' +
-          'OK = Ver instruções | Cancelar = Mais tarde'
-        );
-        
-        if (wantsInstructions) {
-          showInstructions();
-        }
-        return;
-      }
+      // Caso chegue aqui, é um browser desconhecido
 
       // 4. OUTROS NAVEGADORES - SHARE API
       if ('share' in navigator) {
