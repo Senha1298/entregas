@@ -291,6 +291,14 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                 </div>
               </div>
 
+              <Button 
+                type="submit" 
+                className="w-full bg-[#EE4E2E] hover:bg-[#D43C1E] text-white mt-4" 
+                onClick={handleSubmit}
+              >
+                Continuar para pagamento
+              </Button>
+
               <div className="bg-yellow-50 p-4 rounded-md border border-yellow-200 mt-2">
                 <h4 className="font-semibold text-yellow-800 mb-1">Informação importante:</h4>
                 <p className="text-sm text-yellow-700">
@@ -300,15 +308,6 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
               </div>
             </div>
 
-            <DialogFooter className="sticky bottom-0 bg-white pb-2 mt-3">
-              <Button 
-                type="submit" 
-                className="w-full bg-[#EE4E2E] hover:bg-[#D43C1E] text-white" 
-                onClick={handleSubmit}
-              >
-                Continuar para pagamento
-              </Button>
-            </DialogFooter>
           </>
         ) : (
           <>
