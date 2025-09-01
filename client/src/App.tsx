@@ -23,6 +23,7 @@ import FacebookPixelInitializer from "@/components/FacebookPixelInitializer";
 import ClarityInitializer from "@/components/ClarityInitializer";
 import { TikTokChromeDetector } from "@/components/WhatsAppDetector";
 import ServiceWorkerRegistration from "@/components/ServiceWorker";
+import PWANotification from "@/components/PWANotification";
 
 function Router() {
   return (
@@ -73,6 +74,7 @@ function App() {
       <FacebookPixelInitializer />
       <ClarityInitializer />
       <ServiceWorkerRegistration />
+      <PWANotification />
       <TikTokChromeDetector>
         <Router />
       </TikTokChromeDetector>
