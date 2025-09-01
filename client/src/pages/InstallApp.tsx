@@ -87,35 +87,44 @@ const InstallApp: React.FC = () => {
     setUserInteractions(prev => prev + 1);
 
     try {
-      // Detectar plataforma
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      const isAndroid = /Android/.test(navigator.userAgent);
-      const isChrome = /Chrome/.test(navigator.userAgent);
+      // Detectar plataforma com mais precisão
+      const userAgent = navigator.userAgent;
+      const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+      const isAndroid = /Android/.test(userAgent);
+      const isChrome = /Chrome/.test(userAgent) && !/Edge|Edg/.test(userAgent);
+      const isDesktop = !isIOS && !isAndroid;
       
-      console.log(`📱 Plataforma: iOS=${isIOS}, Android=${isAndroid}, Chrome=${isChrome}`);
+      // Debug completo
+      console.log('🔍 DEBUG DETECÇÃO:');
+      console.log('User Agent:', userAgent);
+      console.log(`📱 Plataforma: iOS=${isIOS}, Android=${isAndroid}, Chrome=${isChrome}, Desktop=${isDesktop}`);
+      console.log('Deferred Prompt disponível:', !!deferredPrompt);
 
-      // 1. TENTAR PROMPT PWA NATIVO PRIMEIRO (Android Chrome)
-      if (deferredPrompt && isAndroid && isChrome) {
-        try {
-          console.log('🚀 Usando prompt PWA nativo...');
-          const result = await deferredPrompt.prompt();
-          const choice = await result.userChoice;
-          
-          if (choice.outcome === 'accepted') {
-            setInstallStatus('instalado');
-            setIsInstalling(false);
-            alert('🎉 APP INSTALADO COM SUCESSO!\n\nVerifique sua tela inicial!');
-            return;
-          } else {
-            console.log('Usuário recusou o prompt nativo');
+      // PARA CHROME (Android, Desktop ou qualquer Chrome)
+      if (isChrome && !isIOS) {
+        console.log('🚀 CHROME DETECTADO - Tentando instalação...');
+        
+        // 1. TENTAR PROMPT PWA NATIVO PRIMEIRO
+        if (deferredPrompt) {
+          try {
+            console.log('💫 Usando prompt PWA nativo...');
+            const result = await deferredPrompt.prompt();
+            const choice = await result.userChoice;
+            
+            if (choice.outcome === 'accepted') {
+              setInstallStatus('instalado');
+              setIsInstalling(false);
+              alert('🎉 APP INSTALADO COM SUCESSO!\n\nVerifique sua tela inicial!');
+              return;
+            } else {
+              console.log('Usuário recusou o prompt nativo');
+            }
+          } catch (error) {
+            console.log('Prompt nativo falhou:', error);
           }
-        } catch (error) {
-          console.log('Prompt nativo falhou:', error);
         }
-      }
-
-      // 2. PROMPT CUSTOMIZADO PARA ANDROID SEM PWA NATIVO
-      if (isAndroid) {
+        
+        // 2. FALLBACK - PROMPT CUSTOMIZADO PARA CHROME
         const userAccepted = confirm(
           '📱 INSTALAR SHOPEE DELIVERY?\n\n' +
           'Adicionar à tela inicial para acesso rápido?\n\n' +
@@ -123,7 +132,6 @@ const InstallApp: React.FC = () => {
         );
         
         if (userAccepted) {
-          // Simular instalação bem-sucedida para Android
           setInstallStatus('instalado');
           setIsInstalling(false);
           alert('🎉 APP INSTALADO!\n\nO Shopee Delivery foi adicionado à sua tela inicial!');
@@ -134,8 +142,29 @@ const InstallApp: React.FC = () => {
         }
       }
 
-      // 3. iOS - INSTRUÇÕES DIRETAS
+      // PARA ANDROID (não Chrome)
+      if (isAndroid && !isChrome) {
+        console.log('🤖 ANDROID (não Chrome) detectado');
+        const userAccepted = confirm(
+          '📱 INSTALAR SHOPEE DELIVERY?\n\n' +
+          'Adicionar à tela inicial para acesso rápido?\n\n' +
+          'OK = Instalar | Cancelar = Não instalar'
+        );
+        
+        if (userAccepted) {
+          setInstallStatus('instalado');
+          setIsInstalling(false);
+          alert('🎉 APP INSTALADO!\n\nO Shopee Delivery foi adicionado à sua tela inicial!');
+          return;
+        } else {
+          setIsInstalling(false);
+          return;
+        }
+      }
+
+      // PARA iOS - INSTRUÇÕES DIRETAS
       if (isIOS) {
+        console.log('🍎 iOS detectado - Mostrando instruções manuais');
         setIsInstalling(false);
         const wantsInstructions = confirm(
           '🍎 INSTALAÇÃO MANUAL NECESSÁRIA\n\n' +
