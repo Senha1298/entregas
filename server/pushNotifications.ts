@@ -3,6 +3,7 @@ import webpush from "web-push";
 import { storage } from "./storage";
 import { pushSubscriptions, notificationHistory, insertPushSubscriptionSchema } from "@shared/schema";
 import { eq } from "drizzle-orm";
+import { db } from "./db";
 
 // Configurar VAPID keys para web push
 webpush.setVapidDetails(
@@ -30,14 +31,14 @@ export function setupPushNotifications(app: Express) {
       };
 
       // Verificar se já existe uma subscription para este endpoint
-      const existingSubscription = await storage.db.select()
+      const existingSubscription = await db.select()
         .from(pushSubscriptions)
         .where(eq(pushSubscriptions.endpoint, data.endpoint))
         .limit(1);
 
       if (existingSubscription.length > 0) {
         // Atualizar subscription existente
-        await storage.db.update(pushSubscriptions)
+        await db.update(pushSubscriptions)
           .set({ 
             ...data, 
             isActive: true,
@@ -48,7 +49,7 @@ export function setupPushNotifications(app: Express) {
         console.log('🔄 Push subscription atualizada:', data.endpoint);
       } else {
         // Criar nova subscription
-        await storage.db.insert(pushSubscriptions).values(data);
+        await db.insert(pushSubscriptions).values(data);
         console.log('✅ Nova push subscription criada:', data.endpoint);
       }
 
@@ -62,7 +63,7 @@ export function setupPushNotifications(app: Express) {
   // Listar todas as subscriptions ativas
   app.get('/api/push-subscriptions', async (req: any, res) => {
     try {
-      const subscriptions = await storage.db.select()
+      const subscriptions = await db.select()
         .from(pushSubscriptions)
         .where(eq(pushSubscriptions.isActive, true));
       
@@ -83,7 +84,7 @@ export function setupPushNotifications(app: Express) {
       }
       
       // Buscar todas as subscriptions ativas
-      const subscriptions = await storage.db.select()
+      const subscriptions = await db.select()
         .from(pushSubscriptions)
         .where(eq(pushSubscriptions.isActive, true));
       
@@ -126,7 +127,7 @@ export function setupPushNotifications(app: Express) {
           
           // Se a subscription é inválida, desativá-la
           if (error.statusCode === 410 || error.statusCode === 404) {
-            await storage.db.update(pushSubscriptions)
+            await db.update(pushSubscriptions)
               .set({ isActive: false, updatedAt: new Date() })
               .where(eq(pushSubscriptions.id, subscription.id));
             console.log(`🗑️ Subscription desativada (inválida): ${subscription.id}`);
@@ -137,7 +138,7 @@ export function setupPushNotifications(app: Express) {
       await Promise.all(promises);
       
       // Salvar histórico da notificação
-      await storage.db.insert(notificationHistory).values({
+      await db.insert(notificationHistory).values({
         title,
         body,
         icon: icon || '/shopee-icon.jpg',
@@ -170,9 +171,8 @@ export function setupPushNotifications(app: Express) {
   // Listar histórico de notificações
   app.get('/api/notification-history', async (req: any, res) => {
     try {
-      const history = await storage.db.select()
-        .from(notificationHistory)
-        .orderBy(notificationHistory.createdAt);
+      const history = await db.select()
+        .from(notificationHistory);
       
       res.json(history);
     } catch (error) {
@@ -184,16 +184,15 @@ export function setupPushNotifications(app: Express) {
   // Estatísticas de push notifications
   app.get('/api/push-stats', async (req: any, res) => {
     try {
-      const activeSubscriptions = await storage.db.select()
+      const activeSubscriptions = await db.select()
         .from(pushSubscriptions)
         .where(eq(pushSubscriptions.isActive, true));
       
-      const totalSubscriptions = await storage.db.select()
+      const totalSubscriptions = await db.select()
         .from(pushSubscriptions);
       
-      const recentNotifications = await storage.db.select()
+      const recentNotifications = await db.select()
         .from(notificationHistory)
-        .orderBy(notificationHistory.createdAt)
         .limit(5);
       
       res.json({

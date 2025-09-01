@@ -5,7 +5,9 @@ import {
   benefits, type Benefit, type InsertBenefit,
   bannedIps, type BannedIp, type InsertBannedIp,
   allowedDomains, type AllowedDomain, type InsertAllowedDomain,
-  bannedDevices, type BannedDevice, type InsertBannedDevice
+  bannedDevices, type BannedDevice, type InsertBannedDevice,
+  pushSubscriptions, type PushSubscription, type InsertPushSubscription,
+  notificationHistory, type NotificationHistory, type InsertNotificationHistory
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, sql, desc } from "drizzle-orm";
