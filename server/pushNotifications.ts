@@ -8,8 +8,8 @@ import { db } from "./db";
 // Configurar VAPID keys para web push
 webpush.setVapidDetails(
   'mailto:admin@shopeedelivery.com',
-  'BEl62iUYgUivxIkv69yViEuiBIa40HI8YlbAPNiI75GkHVAaNa7uQrr-jOyqJzNH-NfJTlwEzGOHO5F9Q5JpQP8',
-  'dUiMkfy_8xpvJ1q3kzWEHIuHBBcw3bwSM3rwMX_EESQ'
+  'BBAAnkFyzcnnfWoQ9DqjiY9QkQSFvScy9P_yi5LstVHcu01ja4rkYi_4ax50cZ24TTa_4aebogbVLur0NSEWHNo',
+  'BtF5d4hPQAGaz0nFV7n9hjwD1VTYOqKQW2R6nivWpKk'
 );
 
 export function setupPushNotifications(app: Express) {

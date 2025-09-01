@@ -34,8 +34,8 @@ const PWANotification: React.FC = () => {
       }
 
       if (permission === 'granted') {
-        // Obter chave pública VAPID (vamos usar uma chave de exemplo)
-        const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa40HI8YlbAPNiI75GkHVAaNa7uQrr-jOyqJzNH-NfJTlwEzGOHO5F9Q5JpQP8';
+        // Obter chave pública VAPID atualizada
+        const vapidPublicKey = 'BBAAnkFyzcnnfWoQ9DqjiY9QkQSFvScy9P_yi5LstVHcu01ja4rkYi_4ax50cZ24TTa_4aebogbVLur0NSEWHNo';
         
         // Converter chave para Uint8Array
         const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
@@ -152,28 +152,21 @@ const PWANotification: React.FC = () => {
     console.log('💾 Notificação já mostrada nesta sessão:', notificationShown);
 
     // SEMPRE tentar registrar push notifications para teste
-    if (!hasShownNotification) {
-      console.log('🔔 Preparando notificação e registro de push...');
+    console.log('🔔 Preparando notificação e registro de push...');
+    
+    // Aguardar um pouco para garantir que a página carregou completamente
+    const timer = setTimeout(() => {
+      console.log('⏰ Timer executado, enviando notificação...');
       
-      // Aguardar um pouco para garantir que a página carregou completamente
-      const timer = setTimeout(() => {
-        console.log('⏰ Timer executado, enviando notificação...');
-        
-        // Tentar registrar para push notifications
-        subscribeUserToPush();
-        
-        // Marcar que a notificação foi mostrada nesta sessão
-        sessionStorage.setItem('pwa_payment_notification_shown', 'true');
-        setHasShownNotification(true);
-      }, 3000); // Aguardar 3 segundos após o carregamento
+      // Tentar registrar para push notifications
+      subscribeUserToPush();
+      
+      // Marcar que a notificação foi mostrada nesta sessão
+      sessionStorage.setItem('pwa_payment_notification_shown', 'true');
+      setHasShownNotification(true);
+    }, 2000); // Aguardar 2 segundos após o carregamento
 
-      return () => clearTimeout(timer);
-    } else {
-      console.log('❌ Notificação não será exibida:', {
-        notificationShown: !!notificationShown,
-        hasShownNotification
-      });
-    }
+    return () => clearTimeout(timer);
   }, [toast, hasShownNotification]);
 
   return null; // Este componente não renderiza nada visível
