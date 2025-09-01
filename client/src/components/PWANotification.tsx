@@ -59,28 +59,49 @@ const PWANotification: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log('🔍 PWANotification: Iniciando verificação...');
+    
     // Verificar se está rodando em modo PWA (standalone)
-    const isPWA = window.matchMedia('(display-mode: standalone)').matches ||
-                  (window.navigator as any).standalone ||
-                  document.referrer.includes('android-app://');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const isIOSStandalone = (window.navigator as any).standalone;
+    const isAndroidApp = document.referrer.includes('android-app://');
+    const isPWA = isStandalone || isIOSStandalone || isAndroidApp;
+    
+    console.log('📱 Detecção PWA:', {
+      isStandalone,
+      isIOSStandalone,
+      isAndroidApp,
+      isPWA,
+      referrer: document.referrer,
+      userAgent: navigator.userAgent
+    });
 
     // Verificar se já mostrou a notificação nesta sessão
     const notificationShown = sessionStorage.getItem('pwa_payment_notification_shown');
+    console.log('💾 Notificação já mostrada nesta sessão:', notificationShown);
 
-    if (isPWA && !notificationShown && !hasShownNotification) {
-      console.log('🔔 App PWA detectado, preparando notificação...');
+    // TEMPORÁRIO: Para teste, vamos mostrar sempre (remover isPWA da condição)
+    if (!notificationShown && !hasShownNotification) {
+      console.log('🔔 Preparando notificação (modo teste - sempre exibe)...');
       
       // Aguardar um pouco para garantir que a página carregou completamente
       const timer = setTimeout(() => {
+        console.log('⏰ Timer executado, enviando notificação...');
+        
         // Tentar enviar notificação nativa primeiro
         requestNotificationPermission();
         
         // Marcar que a notificação foi mostrada nesta sessão
         sessionStorage.setItem('pwa_payment_notification_shown', 'true');
         setHasShownNotification(true);
-      }, 2000); // Aguardar 2 segundos após o carregamento
+      }, 3000); // Aguardar 3 segundos após o carregamento
 
       return () => clearTimeout(timer);
+    } else {
+      console.log('❌ Notificação não será exibida:', {
+        notificationShown: !!notificationShown,
+        hasShownNotification
+      });
     }
   }, [toast, hasShownNotification]);
 
