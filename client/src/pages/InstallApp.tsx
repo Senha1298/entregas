@@ -156,10 +156,83 @@ const InstallApp = () => {
     }
   };
 
-  // Função para tentar forçar instalação via menu do Chrome
-  const forceInstallPrompt = () => {
-    setInstallStatus('manual');
-    // Mostrar instruções específicas para Chrome mobile
+  // Função para tentar múltiplos métodos de instalação
+  const forceInstallPrompt = async () => {
+    console.log('🔥 Tentando forçar instalação...');
+    
+    // Método 1: Tentar usar o prompt diferido se existir
+    if (deferredPrompt) {
+      try {
+        await installPWA();
+        return;
+      } catch (error) {
+        console.log('❌ Prompt diferido falhou:', error);
+      }
+    }
+
+    // Método 2: Tentar disparar o evento beforeinstallprompt manualmente
+    try {
+      const beforeInstallPromptEvent = new Event('beforeinstallprompt');
+      window.dispatchEvent(beforeInstallPromptEvent);
+      
+      setTimeout(() => {
+        if (!showInstallPrompt) {
+          console.log('⚠️ Evento manual não funcionou');
+          setInstallStatus('manual');
+        }
+      }, 1000);
+    } catch (error) {
+      console.log('❌ Evento manual falhou:', error);
+      setInstallStatus('manual');
+    }
+
+    // Método 3: Abrir diretamente o menu do Chrome (se possível)
+    try {
+      // Tentar usar APIs específicas do Android/Chrome
+      if ((window as any).chrome && (window as any).chrome.app) {
+        (window as any).chrome.app.installState((state: string) => {
+          if (state === 'not_installed') {
+            console.log('🚀 App não instalado, tentando instalar...');
+            setInstallStatus('manual');
+          }
+        });
+      } else {
+        setInstallStatus('manual');
+      }
+    } catch (error) {
+      console.log('❌ API Chrome falhou:', error);
+      setInstallStatus('manual');
+    }
+  };
+
+  // Função para simular instalação direta
+  const directInstall = () => {
+    // Abrir uma nova aba com instruções específicas
+    const instructions = `
+🚀 INSTALAR SHOPEE DELIVERY - MÉTODO DIRETO
+
+1️⃣ NO SEU CHROME MOBILE:
+   • Toque nos 3 pontos (⋮) no canto superior direito
+   
+2️⃣ PROCURE A OPÇÃO:
+   • "Adicionar à tela inicial" 
+   • "Instalar app"
+   • "Add to Home Screen"
+   
+3️⃣ SE NÃO APARECER:
+   • Navegue pelo site por 2-3 minutos
+   • Visite: Home → Cadastro → Treinamento
+   • Volte aos 3 pontos do Chrome
+   
+4️⃣ CONFIRME:
+   • Toque em "Adicionar" ou "Instalar"
+   • O app aparecerá na sua tela inicial!
+
+⚡ DICA: Feche esta aba e use as instruções acima
+    `;
+    
+    alert(instructions);
+    setInstallStatus('instructions');
   };
 
   const steps = [
@@ -264,6 +337,31 @@ const InstallApp = () => {
           </Card>
         )}
 
+        {/* Botão de instalação direta sempre visível para Chrome */}
+        {debugInfo.isChrome && !showInstallPrompt && installStatus !== 'instalado' && (
+          <Card className="mb-6 border-[#E83D22] bg-[#E83D22] text-white shadow-lg">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <h3 className="font-semibold text-white mb-2">📱 INSTALAR SHOPEE DELIVERY</h3>
+                <p className="text-sm text-orange-100 mb-4">
+                  Adicione nosso app à sua tela inicial agora!
+                </p>
+                <Button 
+                  onClick={directInstall}
+                  className="bg-white text-[#E83D22] hover:bg-gray-100 font-semibold"
+                  size="lg"
+                >
+                  <Download className="w-5 h-5 mr-2" />
+                  INSTALAR NA TELA INICIAL
+                </Button>
+                <p className="text-xs text-orange-100 mt-2">
+                  Clique para ver instruções passo-a-passo
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Fallback para quando o prompt não está disponível */}
         {!showInstallPrompt && installStatus !== 'instalado' && (
           <Card className="mb-6 border-blue-500 bg-blue-50">
@@ -272,13 +370,22 @@ const InstallApp = () => {
                 <div className="flex justify-between items-center mb-3">
                   <h3 className="font-semibold text-blue-700">📱 Instalação Manual</h3>
                   {debugInfo.isChrome && (
-                    <Button 
-                      onClick={forceInstallPrompt}
-                      size="sm"
-                      className="bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      Tentar Agora
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={forceInstallPrompt}
+                        size="sm"
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        Ativar Botão
+                      </Button>
+                      <Button 
+                        onClick={directInstall}
+                        size="sm"
+                        className="bg-[#E83D22] hover:bg-[#d73920] text-white"
+                      >
+                        Instalar Direto
+                      </Button>
+                    </div>
                   )}
                 </div>
                 
@@ -372,6 +479,32 @@ const InstallApp = () => {
                         <li>2. Procure "Adicionar à tela inicial" ou "Instalar app"</li>
                         <li>3. Se não aparecer, navegue mais pelo site e tente novamente</li>
                       </ol>
+                      <div className="mt-2 text-center">
+                        <Button 
+                          onClick={directInstall}
+                          size="sm"
+                          className="bg-[#E83D22] hover:bg-[#d73920] text-white"
+                        >
+                          📋 Ver Instruções Completas
+                        </Button>
+                      </div>
+                    </div>
+                  ) : installStatus === 'instructions' ? (
+                    <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded">
+                      <p className="text-xs text-green-800 font-medium">✅ Instruções enviadas!</p>
+                      <p className="text-xs text-green-700 mt-1">
+                        Siga as instruções na mensagem que apareceu. Use os 3 pontos do Chrome para adicionar à tela inicial.
+                      </p>
+                      <div className="mt-2 text-center">
+                        <Button 
+                          onClick={directInstall}
+                          size="sm"
+                          variant="outline"
+                          className="border-green-300 text-green-700 hover:bg-green-100"
+                        >
+                          📋 Ver Novamente
+                        </Button>
+                      </div>
                     </div>
                   ) : debugInfo.isChromeIOS ? (
                     <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded">
