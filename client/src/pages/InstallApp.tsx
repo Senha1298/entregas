@@ -3,225 +3,110 @@ import { useLocation } from 'wouter';
 import { Download, Smartphone, Zap, Check, Loader, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-// Tipos para PWA
-interface BeforeInstallPromptEvent extends Event {
-  prompt(): Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
-}
-
-interface ExtendedNavigator extends Navigator {
-  getInstalledRelatedApps?: () => Promise<any[]>;
-  standalone?: boolean;
-}
-
 const InstallApp: React.FC = () => {
   const [, setLocation] = useLocation();
   
   // Estados para controle da instalação
-  const [installStatus, setInstallStatus] = useState<'nao-instalado' | 'instalando' | 'instalado' | 'erro'>('nao-instalado');
   const [isInstalling, setIsInstalling] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
-  const [userInteractions, setUserInteractions] = useState(0);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   // Detectar se já está instalado como PWA
   useEffect(() => {
-    checkIfInstalled();
-    
-    // Listener para beforeinstallprompt
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setShowInstallPrompt(true);
-      console.log('💫 beforeinstallprompt event capturado!');
+    const checkIfInstalled = () => {
+      const standalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+      setIsStandalone(standalone);
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    checkIfInstalled();
+    
+    // Escutar mudanças no display mode
+    const mediaQuery = window.matchMedia('(display-mode: standalone)');
+    mediaQuery.addListener(checkIfInstalled);
     
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      mediaQuery.removeListener(checkIfInstalled);
     };
   }, []);
 
-  const checkIfInstalled = async () => {
-    try {
-      const extNavigator = navigator as ExtendedNavigator;
-      
-      // Método 1: Verificar se é PWA standalone
-      if (extNavigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
-        setInstallStatus('instalado');
-        return;
-      }
-
-      // Método 2: Verificar apps relacionados instalados
-      if (extNavigator.getInstalledRelatedApps) {
-        const relatedApps = await extNavigator.getInstalledRelatedApps();
-        if (relatedApps.length > 0) {
-          setInstallStatus('instalado');
-          return;
-        }
-      }
-
-    } catch (error) {
-      console.log('Verificação de instalação falhou:', error);
-    }
-  };
-
-  const showInstructions = () => {
+  const openHowTo = () => {
     alert(
-      '📱 INSTRUÇÕES DE INSTALAÇÃO\n\n' +
-      '🍎 IPHONE/IPAD (Safari):\n' +
-      '1. Toque no botão de compartilhar (quadrado com seta)\n' +
+      '📱 COMO INSTALAR:\n\n' +
+      '🍎 IPHONE/IPAD:\n' +
+      '1. Toque no ícone de compartilhar (quadrado com seta) no Safari\n' +
       '2. Role para baixo e toque em "Adicionar à Tela de Início"\n' +
       '3. Toque em "Adicionar"\n\n' +
-      '🤖 ANDROID (Chrome/Samsung):\n' +
-      '1. Toque no menu (⋮)\n' +
+      '🤖 ANDROID:\n' +
+      '1. Toque no menu (⋮) no Chrome\n' +
       '2. Toque em "Adicionar à tela inicial"\n' +
       '3. Toque em "Adicionar"\n\n' +
-      '✅ Pronto! O app aparecerá na sua tela inicial!'
+      '✅ O app aparecerá na sua tela inicial!'
     );
   };
 
   const handleInstallClick = async () => {
+    if (isStandalone) {
+      alert('✅ App já está instalado!\n\nO Shopee Delivery já está na sua tela inicial.');
+      return;
+    }
+
     setIsInstalling(true);
-    setUserInteractions(prev => prev + 1);
 
     try {
-      // Detectar plataforma com mais precisão
-      const userAgent = navigator.userAgent;
-      const isIOS = /iPad|iPhone|iPod/.test(userAgent);
-      const isAndroid = /Android/.test(userAgent);
-      const isChrome = /Chrome/.test(userAgent) && !/Edge|Edg/.test(userAgent);
-      const isChromeIOS = /CriOS/.test(userAgent); // Chrome específico no iOS
-      const isDesktop = !isIOS && !isAndroid;
+      // Detectar iOS (incluindo Chrome no iOS)
+      const isiOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
       
-      // Debug completo
-      console.log('🔍 DEBUG DETECÇÃO:');
-      console.log('User Agent:', userAgent);
-      console.log(`📱 Plataforma: iOS=${isIOS}, Android=${isAndroid}, Chrome=${isChrome}, ChromeIOS=${isChromeIOS}, Desktop=${isDesktop}`);
-      console.log('Deferred Prompt disponível:', !!deferredPrompt);
+      // Debug no console
+      console.log('🔍 Detectando plataforma:', {
+        userAgent: navigator.userAgent,
+        isiOS,
+        hasShare: 'share' in navigator,
+        isStandalone
+      });
 
-      // PARA iOS (Safari ou Chrome no iOS) - Sempre instruções manuais
-      if (isIOS || isChromeIOS) {
-        console.log('🍎 iOS DETECTADO (Safari ou Chrome) - Instruções manuais necessárias');
-        setIsInstalling(false);
-        const wantsInstructions = confirm(
-          '🍎 INSTALAÇÃO MANUAL NECESSÁRIA\n\n' +
-          'iOS (Safari/Chrome) não permite instalação automática.\n' +
-          'Preciso te mostrar como instalar manualmente no Safari.\n\n' +
-          'OK = Ver instruções | Cancelar = Mais tarde'
-        );
-        
-        if (wantsInstructions) {
-          showInstructions();
-        }
-        return;
-      }
-
-      // PARA CHROME (Android ou Desktop - não iOS)
-      if (isChrome && !isIOS && !isChromeIOS) {
-        console.log('🚀 CHROME PURO DETECTADO - Tentando instalação...');
-        
-        // 1. TENTAR PROMPT PWA NATIVO PRIMEIRO
-        if (deferredPrompt) {
-          try {
-            console.log('💫 Usando prompt PWA nativo...');
-            const result = await deferredPrompt.prompt();
-            const choice = await result.userChoice;
-            
-            if (choice.outcome === 'accepted') {
-              setInstallStatus('instalado');
-              setIsInstalling(false);
-              alert('🎉 APP INSTALADO COM SUCESSO!\n\nVerifique sua tela inicial!');
-              return;
-            } else {
-              console.log('Usuário recusou o prompt nativo');
-            }
-          } catch (error) {
-            console.log('Prompt nativo falhou:', error);
-          }
-        }
-        
-        // 2. FALLBACK - PROMPT CUSTOMIZADO PARA CHROME
-        const userAccepted = confirm(
-          '📱 INSTALAR SHOPEE DELIVERY?\n\n' +
-          'Adicionar à tela inicial para acesso rápido?\n\n' +
-          'OK = Instalar | Cancelar = Não instalar'
-        );
-        
-        if (userAccepted) {
-          setInstallStatus('instalado');
-          setIsInstalling(false);
-          alert('🎉 APP INSTALADO!\n\nO Shopee Delivery foi adicionado à sua tela inicial!');
-          return;
-        } else {
-          setIsInstalling(false);
-          return;
-        }
-      }
-
-      // PARA ANDROID (não Chrome)
-      if (isAndroid && !isChrome) {
-        console.log('🤖 ANDROID (não Chrome) detectado');
-        const userAccepted = confirm(
-          '📱 INSTALAR SHOPEE DELIVERY?\n\n' +
-          'Adicionar à tela inicial para acesso rápido?\n\n' +
-          'OK = Instalar | Cancelar = Não instalar'
-        );
-        
-        if (userAccepted) {
-          setInstallStatus('instalado');
-          setIsInstalling(false);
-          alert('🎉 APP INSTALADO!\n\nO Shopee Delivery foi adicionado à sua tela inicial!');
-          return;
-        } else {
-          setIsInstalling(false);
-          return;
-        }
-      }
-
-      // Caso chegue aqui, é um browser desconhecido
-
-      // 4. OUTROS NAVEGADORES - SHARE API
-      if ('share' in navigator) {
+      if (isiOS && navigator.share) {
         try {
-          await navigator.share({
+          console.log('🍎 iOS detectado com Share API - Abrindo share sheet...');
+          
+          // Abre o share sheet do iOS; "Adicionar à Tela de Início" fica lá dentro
+          await navigator.share({ 
             title: 'Shopee Delivery Partners',
-            url: window.location.href
+            url: location.href 
           });
           
+          // Aguardar um pouco e verificar se foi instalado
           setTimeout(() => {
-            const installed = confirm(
-              '📱 MENU DE COMPARTILHAMENTO ABRIU?\n\n' +
-              'Procure por "Adicionar à tela inicial"\n' +
-              'ou "Add to Home Screen"\n\n' +
-              'Conseguiu instalar?\n' +
-              'OK = Sim | Cancelar = Não'
-            );
-            
-            if (installed) {
-              setInstallStatus('instalado');
-              alert('🎉 APP INSTALADO!\n\nVerifique sua tela inicial!');
+            const nowStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+            if (nowStandalone) {
+              setIsStandalone(true);
+              alert('🎉 APP INSTALADO COM SUCESSO!\n\nO Shopee Delivery agora está na sua tela inicial!');
             } else {
-              showInstructions();
+              // Mostrar dica sobre onde encontrar a opção
+              alert(
+                '📱 SHARE SHEET ABERTO!\n\n' +
+                'Procure por:\n' +
+                '• "Adicionar à Tela de Início"\n' +
+                '• "Add to Home Screen"\n\n' +
+                'Role para baixo se não encontrar imediatamente.'
+              );
             }
             setIsInstalling(false);
           }, 2000);
+          
         } catch (error) {
+          console.log('Share API falhou:', error);
           setIsInstalling(false);
-          showInstructions();
+          openHowTo();
         }
       } else {
-        // 5. FALLBACK - APENAS INSTRUÇÕES
+        // Para Android ou outros navegadores, mostrar instruções
         setIsInstalling(false);
-        showInstructions();
+        openHowTo();
       }
 
     } catch (error) {
       console.error('Erro na instalação:', error);
-      setInstallStatus('erro');
       setIsInstalling(false);
-      alert('❌ Erro na instalação!\n\nTente novamente ou instale manualmente.');
+      openHowTo();
     }
   };
 
@@ -244,22 +129,12 @@ const InstallApp: React.FC = () => {
 
         {/* Status atual */}
         <div className="mb-6">
-          {installStatus === 'instalado' && (
+          {isStandalone && (
             <div className="bg-green-100 border-2 border-green-300 rounded-lg p-4 mb-4">
               <Check className="w-8 h-8 text-green-600 mx-auto mb-2" />
               <p className="text-green-800 font-semibold">✅ App Já Instalado!</p>
               <p className="text-green-700 text-sm">
                 O Shopee Delivery já está instalado na sua tela inicial
-              </p>
-            </div>
-          )}
-
-          {installStatus === 'erro' && (
-            <div className="bg-red-100 border-2 border-red-300 rounded-lg p-4 mb-4">
-              <AlertCircle className="w-8 h-8 text-red-600 mx-auto mb-2" />
-              <p className="text-red-800 font-semibold">❌ Erro na Instalação</p>
-              <p className="text-red-700 text-sm">
-                Tente novamente ou instale manualmente
               </p>
             </div>
           )}
@@ -285,7 +160,7 @@ const InstallApp: React.FC = () => {
         <div className="space-y-4">
           <Button
             onClick={handleInstallClick}
-            disabled={isInstalling || installStatus === 'instalado'}
+            disabled={isInstalling}
             className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-xl text-lg"
           >
             {isInstalling ? (
@@ -293,7 +168,7 @@ const InstallApp: React.FC = () => {
                 <Loader className="w-5 h-5 mr-2 animate-spin" />
                 Instalando...
               </>
-            ) : installStatus === 'instalado' ? (
+            ) : isStandalone ? (
               <>
                 <Check className="w-5 h-5 mr-2" />
                 Já Instalado
@@ -301,13 +176,13 @@ const InstallApp: React.FC = () => {
             ) : (
               <>
                 <Download className="w-5 h-5 mr-2" />
-                INSTALAR AGORA
+                Instalar na Tela Inicial
               </>
             )}
           </Button>
 
           <Button
-            onClick={showInstructions}
+            onClick={openHowTo}
             variant="outline"
             className="w-full"
           >
@@ -327,6 +202,11 @@ const InstallApp: React.FC = () => {
         <div className="mt-6 text-xs text-gray-500">
           <p>📱 Compatível com iOS Safari e Android Chrome</p>
           <p>🔒 100% seguro • Sem vírus • Sem spam</p>
+          {!isStandalone && (
+            <p className="mt-2 text-orange-600 font-medium">
+              💡 Dica: No iOS, procure "Adicionar à Tela de Início" no menu de compartilhamento
+            </p>
+          )}
         </div>
       </div>
     </div>
