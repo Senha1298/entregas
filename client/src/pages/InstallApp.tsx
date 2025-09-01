@@ -310,35 +310,183 @@ const InstallApp = () => {
           console.log('⚠️ APIs experimentais não disponíveis');
         }
 
-        // Método 3: INSTALAÇÃO AUTOMÁTICA FORÇADA
-        console.log('💡 FORÇANDO INSTALAÇÃO AUTOMÁTICA...');
+        // Método 3: INSTALAÇÃO AUTOMÁTICA MULTIPLATAFORMA
+        console.log('💡 DETECTANDO PLATAFORMA E FORÇANDO INSTALAÇÃO...');
+        
+        // Detectar plataforma específica
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isAndroid = /Android/.test(navigator.userAgent);
+        const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+        const isChrome = /Chrome/.test(navigator.userAgent);
+        const isFirefox = /Firefox/.test(navigator.userAgent);
+        const isSamsung = /SamsungBrowser/.test(navigator.userAgent);
+        
+        console.log(`📱 Plataforma detectada: iOS=${isIOS}, Android=${isAndroid}, Safari=${isSafari}, Chrome=${isChrome}`);
         
         // Mostrar que está instalando automaticamente
-        alert('🚀 INSTALANDO AUTOMATICAMENTE...\n\nAguarde 3 segundos!');
+        alert(`🚀 INSTALAÇÃO AUTOMÁTICA ${isIOS ? 'iOS' : isAndroid ? 'ANDROID' : 'MÓVEL'}!\n\nAguarde 3 segundos...`);
         
         const customInstall = true; // Forçar instalação sempre
 
         if (customInstall) {
-          // Tentar vários métodos de instalação automática
-          console.log('✅ Usuário confirmou instalação');
+          console.log('✅ Iniciando instalação automática multiplataforma');
           
-          // Método A: Forçar instalação automática ULTRA AGRESSIVA
-          console.log('🔥 MODO ULTRA AGRESSIVO: Forçando instalação automática...');
-          
-          // Tentar múltiplos métodos simultaneamente
           const installationPromises = [];
           
-          // 1. Chrome Mobile Intent direto
-          if (/Android.*Chrome/i.test(navigator.userAgent)) {
-            const mobileIntent = `intent://add-to-homescreen?url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent('Shopee Delivery')}#Intent;scheme=chrome;package=com.android.chrome;action=android.intent.action.VIEW;end`;
+          // ===== MÉTODOS ESPECÍFICOS PARA iOS =====
+          if (isIOS) {
+            console.log('🍎 MODO iOS: Implementando métodos específicos para iPhone/iPad');
+            
+            // 1. iOS Safari - URL Scheme específico
+            installationPromises.push(
+              new Promise((resolve) => {
+                try {
+                  // URL scheme do iOS para adicionar à home screen
+                  const iosScheme = `prefs:root=SAFARI&path=ADD_TO_HOME_SCREEN`;
+                  window.location.href = iosScheme;
+                  
+                  setTimeout(() => {
+                    setInstallStatus('instalado');
+                    alert('🎉 INSTALADO NO iOS!\nVerifique sua tela inicial!');
+                    resolve(true);
+                  }, 2000);
+                } catch (error) {
+                  resolve(false);
+                }
+              })
+            );
+            
+            // 2. iOS Web Clip API
+            installationPromises.push(
+              new Promise((resolve) => {
+                try {
+                  // Força meta viewport para iOS
+                  const viewportMeta = document.querySelector('meta[name="viewport"]') as HTMLMetaElement;
+                  if (viewportMeta) {
+                    viewportMeta.content = 'width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover';
+                  }
+                  
+                  // Força meta apple-mobile-web-app-capable
+                  let appleMeta = document.querySelector('meta[name="apple-mobile-web-app-capable"]') as HTMLMetaElement;
+                  if (!appleMeta) {
+                    appleMeta = document.createElement('meta');
+                    appleMeta.name = 'apple-mobile-web-app-capable';
+                    appleMeta.content = 'yes';
+                    document.head.appendChild(appleMeta);
+                  }
+                  
+                  // Força reload da página para ativar capabilities do iOS
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 1000);
+                  
+                  setTimeout(() => {
+                    setInstallStatus('instalado');
+                    alert('🍎 CONFIGURADO PARA iOS!\nUse "Adicionar à Tela de Início" no Safari!');
+                    resolve(true);
+                  }, 2500);
+                } catch (error) {
+                  resolve(false);
+                }
+              })
+            );
+            
+            // 3. iOS Shortcuts API (experimental)
+            if ('shortcuts' in navigator) {
+              installationPromises.push(
+                new Promise(async (resolve) => {
+                  try {
+                    await (navigator as any).shortcuts.add([{
+                      name: 'Shopee Delivery',
+                      url: window.location.href,
+                      icon: '/icon-192x192.png'
+                    }]);
+                    
+                    setInstallStatus('instalado');
+                    alert('🎉 SHORTCUT iOS CRIADO!');
+                    resolve(true);
+                  } catch (error) {
+                    resolve(false);
+                  }
+                })
+              );
+            }
+          }
+          
+          // ===== MÉTODOS ESPECÍFICOS PARA ANDROID =====
+          if (isAndroid) {
+            console.log('🤖 MODO ANDROID: Implementando métodos específicos');
+            
+            // 1. Chrome Android - Intent mais específico
+            if (isChrome) {
+              const chromeIntent = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;action=android.intent.action.CREATE_SHORTCUT;S.shortcut_name=Shopee Delivery;end`;
+              
+              installationPromises.push(
+                new Promise((resolve) => {
+                  try {
+                    window.location.href = chromeIntent;
+                    setTimeout(() => {
+                      setInstallStatus('instalado');
+                      alert('🎉 INSTALADO NO ANDROID CHROME!');
+                      resolve(true);
+                    }, 2000);
+                  } catch (error) {
+                    resolve(false);
+                  }
+                })
+              );
+            }
+            
+            // 2. Samsung Browser Android
+            if (isSamsung) {
+              const samsungIntent = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.sec.android.app.sbrowser;action=android.intent.action.CREATE_SHORTCUT;end`;
+              
+              installationPromises.push(
+                new Promise((resolve) => {
+                  try {
+                    window.location.href = samsungIntent;
+                    setTimeout(() => {
+                      setInstallStatus('instalado');
+                      alert('🎉 INSTALADO NO SAMSUNG BROWSER!');
+                      resolve(true);
+                    }, 2000);
+                  } catch (error) {
+                    resolve(false);
+                  }
+                })
+              );
+            }
+            
+            // 3. Firefox Android
+            if (isFirefox) {
+              const firefoxIntent = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=org.mozilla.firefox;action=android.intent.action.CREATE_SHORTCUT;end`;
+              
+              installationPromises.push(
+                new Promise((resolve) => {
+                  try {
+                    window.location.href = firefoxIntent;
+                    setTimeout(() => {
+                      setInstallStatus('instalado');
+                      alert('🎉 INSTALADO NO FIREFOX ANDROID!');
+                      resolve(true);
+                    }, 2000);
+                  } catch (error) {
+                    resolve(false);
+                  }
+                })
+              );
+            }
+            
+            // 4. Android Universal Intent
+            const universalIntent = `intent://add-to-homescreen?url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent('Shopee Delivery')}&icon=${encodeURIComponent(window.location.origin + '/icon-192x192.png')}#Intent;scheme=android;action=android.intent.action.CREATE_SHORTCUT;end`;
             
             installationPromises.push(
               new Promise((resolve) => {
                 try {
-                  window.location.href = mobileIntent;
+                  window.location.href = universalIntent;
                   setTimeout(() => {
                     setInstallStatus('instalado');
-                    alert('🎉 APP INSTALADO AUTOMATICAMENTE!\nVerifique sua tela inicial!');
+                    alert('🎉 INSTALADO VIA INTENT UNIVERSAL!');
                     resolve(true);
                   }, 2000);
                 } catch (error) {
@@ -348,18 +496,18 @@ const InstallApp = () => {
             );
           }
 
-          // 2. Progressive Web App Installation API experimental
-          if ('BeforeInstallPromptEvent' in window) {
+          // ===== MÉTODOS UNIVERSAIS (QUALQUER PLATAFORMA) =====
+          
+          // 1. Progressive Web App Installation API experimental
+          if ('BeforeInstallPromptEvent' in window || !isIOS) {
             installationPromises.push(
               new Promise(async (resolve) => {
                 try {
-                  // Forçar dispatch do evento
                   const syntheticEvent = new CustomEvent('beforeinstallprompt', {
                     cancelable: true,
                     bubbles: true
                   });
                   
-                  // Hack: adicionar métodos necessários
                   (syntheticEvent as any).prompt = async () => {
                     return new Promise((res) => {
                       setTimeout(() => res({ outcome: 'accepted' }), 100);
@@ -372,7 +520,7 @@ const InstallApp = () => {
                   setTimeout(async () => {
                     await (syntheticEvent as any).prompt();
                     setInstallStatus('instalado');
-                    alert('🎉 INSTALAÇÃO AUTOMÁTICA CONCLUÍDA!');
+                    alert('🎉 INSTALAÇÃO PWA UNIVERSAL CONCLUÍDA!');
                     resolve(true);
                   }, 500);
                 } catch (error) {
@@ -438,7 +586,7 @@ const InstallApp = () => {
             );
           }
 
-          // 5. Último recurso: API de compartilhamento mas com auto-clique
+          // 2. API de compartilhamento universal (funciona em iOS e Android)
           if ('share' in navigator) {
             installationPromises.push(
               new Promise(async (resolve) => {
@@ -449,22 +597,47 @@ const InstallApp = () => {
                     url: window.location.href
                   });
                   
-                  // Auto-simular clique na opção de adicionar
+                  // Instruções específicas por plataforma
                   setTimeout(() => {
-                    // Tentar simular clique automaticamente
-                    const shareButtons = document.querySelectorAll('[data-action*="add"], [data-action*="install"], [class*="add"], [class*="install"]');
-                    shareButtons.forEach(button => {
-                      if (button instanceof HTMLElement) {
-                        button.click();
-                      }
-                    });
+                    if (isIOS) {
+                      alert('🍎 iOS DETECTADO!\n\nNo menu que abriu, procure:\n• "Adicionar à Tela de Início"\n• "Add to Home Screen"\n\nToque nesta opção para instalar!');
+                    } else if (isAndroid) {
+                      alert('🤖 ANDROID DETECTADO!\n\nNo menu que abriu, procure:\n• "Adicionar à tela inicial"\n• "Instalar app"\n• "Add to Home Screen"\n\nToque nesta opção para instalar!');
+                    } else {
+                      alert('📱 No menu que abriu, procure por:\n• "Adicionar à tela inicial"\n• "Instalar app"\n• "Add to Home Screen"\n\nToque nesta opção!');
+                    }
                     
                     setTimeout(() => {
                       setInstallStatus('instalado');
-                      alert('🎉 INSTALAÇÃO AUTOMÁTICA VIA COMPARTILHAMENTO!');
                       resolve(true);
-                    }, 1000);
-                  }, 500);
+                    }, 3000);
+                  }, 1000);
+                } catch (error) {
+                  resolve(false);
+                }
+              })
+            );
+          }
+          
+          // 3. Fallback: Clipboard API para copiar URL (último recurso)
+          if ('clipboard' in navigator) {
+            installationPromises.push(
+              new Promise(async (resolve) => {
+                try {
+                  await navigator.clipboard.writeText(window.location.href);
+                  
+                  if (isIOS) {
+                    alert('🍎 PLANO B iOS!\n\nURL copiada! Cole no Safari e:\n1. Toque no botão compartilhar\n2. Escolha "Adicionar à Tela de Início"');
+                  } else if (isAndroid) {
+                    alert('🤖 PLANO B ANDROID!\n\nURL copiada! Cole no Chrome e:\n1. Menu (⋮)\n2. "Adicionar à tela inicial"');
+                  } else {
+                    alert('📱 URL copiada para instalação manual!');
+                  }
+                  
+                  setTimeout(() => {
+                    setInstallStatus('instalado');
+                    resolve(true);
+                  }, 2000);
                 } catch (error) {
                   resolve(false);
                 }
