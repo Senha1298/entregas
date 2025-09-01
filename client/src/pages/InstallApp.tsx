@@ -6,32 +6,81 @@ import { ChevronRight, Smartphone, Download, Home, Share, Plus } from 'lucide-re
 const InstallApp = () => {
   const [step, setStep] = useState(1);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstalling, setIsInstalling] = useState(false);
+  const [installStatus, setInstallStatus] = useState<string>('');
 
   // Detectar se o usuário pode instalar a PWA
   useEffect(() => {
-    let deferredPrompt: any = null;
-
     const handleBeforeInstallPrompt = (e: Event) => {
+      console.log('🔥 PWA Install prompt disponível!');
       e.preventDefault();
-      deferredPrompt = e;
+      setDeferredPrompt(e);
       setShowInstallPrompt(true);
     };
 
+    // Detectar se já está instalado
+    const handleAppInstalled = () => {
+      console.log('🎉 PWA foi instalada!');
+      setInstallStatus('instalado');
+      setShowInstallPrompt(false);
+      setDeferredPrompt(null);
+    };
+
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    // Verificar se já está rodando como PWA
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const isIOSStandalone = (window.navigator as any).standalone;
+    
+    if (isStandalone || isIOSStandalone) {
+      setInstallStatus('instalado');
+    }
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
 
   const installPWA = async () => {
-    const deferredPrompt = (window as any).deferredPrompt;
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
+    if (!deferredPrompt) {
+      console.log('❌ Prompt de instalação não disponível');
+      return;
+    }
+
+    setIsInstalling(true);
+    
+    try {
+      console.log('🚀 Iniciando instalação da PWA...');
+      
+      // Mostrar o prompt de instalação
+      await deferredPrompt.prompt();
+      
+      // Aguardar a resposta do usuário
       const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User response to the install prompt: ${outcome}`);
-      (window as any).deferredPrompt = null;
+      
+      console.log(`👤 Resposta do usuário: ${outcome}`);
+      
+      if (outcome === 'accepted') {
+        setInstallStatus('instalando');
+        setTimeout(() => {
+          setInstallStatus('instalado');
+        }, 2000);
+      } else {
+        setInstallStatus('rejeitado');
+      }
+      
+      // Limpar o prompt
+      setDeferredPrompt(null);
       setShowInstallPrompt(false);
+      
+    } catch (error) {
+      console.error('❌ Erro durante instalação:', error);
+      setInstallStatus('erro');
+    } finally {
+      setIsInstalling(false);
     }
   };
 
@@ -82,19 +131,73 @@ const InstallApp = () => {
           </p>
         </div>
 
+        {/* Status da Instalação */}
+        {installStatus === 'instalado' && (
+          <Card className="mb-6 border-green-500 bg-green-50">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-center text-center">
+                <div>
+                  <h3 className="font-semibold text-green-700 mb-1">✅ App Já Instalado!</h3>
+                  <p className="text-sm text-green-600">O Shopee Delivery já está instalado na sua tela inicial</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Botão de instalação automática (se disponível) */}
-        {showInstallPrompt && (
-          <Card className="mb-6 border-[#E83D22] bg-orange-50">
+        {showInstallPrompt && installStatus !== 'instalado' && (
+          <Card className="mb-6 border-[#E83D22] bg-orange-50 shadow-lg">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold text-[#E83D22] mb-1">Instalação Rápida</h3>
-                  <p className="text-sm text-gray-600">Instale o app com um clique!</p>
+                  <h3 className="font-semibold text-[#E83D22] mb-1">🚀 Instalação com Um Clique</h3>
+                  <p className="text-sm text-gray-600">Adicione o app à tela inicial instantaneamente!</p>
+                  {installStatus === 'instalando' && (
+                    <p className="text-xs text-blue-600 mt-1">⏳ Instalando...</p>
+                  )}
+                  {installStatus === 'rejeitado' && (
+                    <p className="text-xs text-yellow-600 mt-1">ℹ️ Instalação cancelada pelo usuário</p>
+                  )}
+                  {installStatus === 'erro' && (
+                    <p className="text-xs text-red-600 mt-1">❌ Erro na instalação. Tente novamente.</p>
+                  )}
                 </div>
-                <Button onClick={installPWA} className="bg-[#E83D22] hover:bg-[#d73920]">
-                  <Download className="w-4 h-4 mr-2" />
-                  Instalar App
+                <Button 
+                  onClick={installPWA} 
+                  disabled={isInstalling || installStatus === 'instalado'}
+                  className="bg-[#E83D22] hover:bg-[#d73920] disabled:opacity-50"
+                  size="lg"
+                >
+                  {isInstalling ? (
+                    <>
+                      <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Instalando...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4 mr-2" />
+                      Instalar Agora
+                    </>
+                  )}
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Fallback para quando o prompt não está disponível */}
+        {!showInstallPrompt && installStatus !== 'instalado' && (
+          <Card className="mb-6 border-blue-500 bg-blue-50">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <h3 className="font-semibold text-blue-700 mb-1">📱 Instalação Manual</h3>
+                <p className="text-sm text-blue-600 mb-3">
+                  Use o tutorial abaixo para adicionar o app à sua tela inicial
+                </p>
+                <p className="text-xs text-gray-500">
+                  O botão automático aparece apenas em navegadores compatíveis como Chrome e Edge
+                </p>
               </div>
             </CardContent>
           </Card>
