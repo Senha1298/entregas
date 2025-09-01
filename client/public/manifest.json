@@ -71,5 +71,13 @@
       ]
     }
   ],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "iarc_rating_id": "e58c174a-81d0-5e02-a26f-1b38b8d13567",
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.shopee.delivery",
+      "id": "com.shopee.delivery"
+    }
+  ]
 }
