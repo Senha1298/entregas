@@ -9,14 +9,62 @@ const InstallApp = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstalling, setIsInstalling] = useState(false);
   const [installStatus, setInstallStatus] = useState<string>('');
+  const [debugInfo, setDebugInfo] = useState<any>({});
+  const [showDebug, setShowDebug] = useState(false);
 
-  // Detectar se o usuário pode instalar a PWA
+  // Detectar condições PWA e debugar
   useEffect(() => {
+    const checkPWAConditions = async () => {
+      const debug: any = {
+        userAgent: navigator.userAgent,
+        isChrome: /Chrome/.test(navigator.userAgent),
+        isAndroid: /Android/.test(navigator.userAgent),
+        isIOS: /iPhone|iPad|iPod/.test(navigator.userAgent),
+        isStandalone: window.matchMedia('(display-mode: standalone)').matches,
+        isIOSStandalone: (window.navigator as any).standalone,
+        hasServiceWorker: 'serviceWorker' in navigator,
+        isSecureContext: window.isSecureContext,
+        protocol: window.location.protocol,
+        timestamp: new Date().toISOString()
+      };
+
+      // Verificar Service Worker
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.getRegistration();
+          debug.serviceWorkerRegistered = !!registration;
+          debug.serviceWorkerState = registration?.active?.state;
+        } catch (error) {
+          debug.serviceWorkerError = (error as Error).message;
+        }
+      }
+
+      // Verificar manifest
+      try {
+        const manifestElement = document.querySelector('link[rel="manifest"]');
+        debug.hasManifestLink = !!manifestElement;
+        debug.manifestHref = manifestElement?.getAttribute('href');
+      } catch (error) {
+        debug.manifestError = (error as Error).message;
+      }
+
+      setDebugInfo(debug);
+      console.log('🔍 PWA Debug Info:', debug);
+
+      // Verificar se já está instalado
+      if (debug.isStandalone || debug.isIOSStandalone) {
+        setInstallStatus('instalado');
+      }
+    };
+
+    checkPWAConditions();
+
     const handleBeforeInstallPrompt = (e: Event) => {
       console.log('🔥 PWA Install prompt disponível!');
       e.preventDefault();
       setDeferredPrompt(e);
       setShowInstallPrompt(true);
+      setDebugInfo((prev: any) => ({...prev, promptTriggered: true, promptTime: new Date().toISOString()}));
     };
 
     // Detectar se já está instalado
@@ -30,13 +78,13 @@ const InstallApp = () => {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
 
-    // Verificar se já está rodando como PWA
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    const isIOSStandalone = (window.navigator as any).standalone;
-    
-    if (isStandalone || isIOSStandalone) {
-      setInstallStatus('instalado');
-    }
+    // Aguardar um tempo para ver se o evento dispara
+    setTimeout(() => {
+      if (!showInstallPrompt && !installStatus) {
+        console.log('⚠️ beforeinstallprompt não disparou após 3 segundos');
+        setDebugInfo((prev: any) => ({...prev, promptNotTriggered: true}));
+      }
+    }, 3000);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -195,9 +243,73 @@ const InstallApp = () => {
                 <p className="text-sm text-blue-600 mb-3">
                   Use o tutorial abaixo para adicionar o app à sua tela inicial
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 mb-2">
                   O botão automático aparece apenas em navegadores compatíveis como Chrome e Edge
                 </p>
+                
+                {/* Informações de diagnóstico */}
+                <div className="text-left bg-white p-3 rounded border text-xs">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium text-gray-700">Diagnóstico:</span>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => setShowDebug(!showDebug)}
+                      className="text-blue-600 hover:text-blue-800 p-0 h-auto"
+                    >
+                      {showDebug ? 'Ocultar' : 'Ver detalhes'}
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <div className="flex justify-between">
+                      <span>Navegador:</span>
+                      <span className={debugInfo.isChrome ? 'text-green-600' : 'text-red-600'}>
+                        {debugInfo.isChrome ? '✅ Chrome' : '❌ Não Chrome'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>HTTPS:</span>
+                      <span className={debugInfo.isSecureContext ? 'text-green-600' : 'text-red-600'}>
+                        {debugInfo.isSecureContext ? '✅ Seguro' : '❌ Inseguro'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Service Worker:</span>
+                      <span className={debugInfo.serviceWorkerRegistered ? 'text-green-600' : 'text-yellow-600'}>
+                        {debugInfo.serviceWorkerRegistered ? '✅ Ativo' : '⏳ Carregando'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Manifest:</span>
+                      <span className={debugInfo.hasManifestLink ? 'text-green-600' : 'text-red-600'}>
+                        {debugInfo.hasManifestLink ? '✅ OK' : '❌ Erro'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Dicas específicas do Chrome */}
+                  <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                    <p className="text-xs text-yellow-800 font-medium">💡 Dicas para o Chrome:</p>
+                    <ul className="text-xs text-yellow-700 mt-1 space-y-1">
+                      <li>• Navegue pelo site por 30 segundos</li>
+                      <li>• Visite 2-3 páginas diferentes</li>
+                      <li>• Aguarde alguns minutos</li>
+                      <li>• Se não funcionar, use o tutorial manual</li>
+                    </ul>
+                  </div>
+
+                  {showDebug && (
+                    <div className="mt-3 pt-3 border-t">
+                      <div className="text-xs text-gray-600">
+                        <strong>Detalhes técnicos:</strong>
+                        <pre className="mt-1 bg-gray-100 p-2 rounded text-xs overflow-auto">
+                          {JSON.stringify(debugInfo, null, 2)}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
