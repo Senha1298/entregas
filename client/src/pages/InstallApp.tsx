@@ -323,8 +323,10 @@ const InstallApp = () => {
         
         console.log(`📱 Plataforma detectada: iOS=${isIOS}, Android=${isAndroid}, Safari=${isSafari}, Chrome=${isChrome}`);
         
-        // Mostrar que está instalando automaticamente
-        alert(`🚀 INSTALAÇÃO AUTOMÁTICA ${isIOS ? 'iOS' : isAndroid ? 'ANDROID' : 'MÓVEL'}!\n\nAguarde 3 segundos...`);
+        // Mostrar que está instalando automaticamente (exceto iOS)
+        if (!isIOS) {
+          alert(`🚀 INSTALAÇÃO AUTOMÁTICA ${isAndroid ? 'ANDROID' : 'MÓVEL'}!\n\nAguarde 3 segundos...`);
+        }
         
         const customInstall = true; // Forçar instalação sempre
 
@@ -335,82 +337,59 @@ const InstallApp = () => {
           
           // ===== MÉTODOS ESPECÍFICOS PARA iOS =====
           if (isIOS) {
-            console.log('🍎 MODO iOS: Implementando métodos específicos para iPhone/iPad');
+            console.log('🍎 MODO iOS: Usando API de compartilhamento diretamente');
             
-            // 1. iOS Safari - URL Scheme específico
-            installationPromises.push(
-              new Promise((resolve) => {
-                try {
-                  // URL scheme do iOS para adicionar à home screen
-                  const iosScheme = `prefs:root=SAFARI&path=ADD_TO_HOME_SCREEN`;
-                  window.location.href = iosScheme;
-                  
-                  setTimeout(() => {
-                    setInstallStatus('instalado');
-                    alert('🎉 INSTALADO NO iOS!\nVerifique sua tela inicial!');
-                    resolve(true);
-                  }, 2000);
-                } catch (error) {
-                  resolve(false);
-                }
-              })
+            // iOS só funciona realmente com Share API - pular métodos automáticos que não funcionam
+            setIsInstalling(false); // Parar loading imediatamente
+            
+            // Mostrar instruções específicas para iOS
+            const iosInstructions = confirm(
+              '🍎 INSTALAÇÃO iOS DETECTADA!\n\n' +
+              'Para instalar no iPhone/iPad:\n\n' +
+              '1️⃣ Toque no botão COMPARTILHAR (caixa com seta) no Safari\n' +
+              '2️⃣ Role para baixo e encontre "Adicionar à Tela de Início"\n' +
+              '3️⃣ Toque em "Adicionar"\n\n' +
+              '🔄 Quer que eu abra o menu de compartilhamento?\n\n' +
+              'OK = Abrir menu | Cancelar = Ver tutorial'
             );
             
-            // 2. iOS Web Clip API
-            installationPromises.push(
-              new Promise((resolve) => {
+            if (iosInstructions) {
+              // Tentar abrir Share API para iOS
+              if ('share' in navigator) {
                 try {
-                  // Força meta viewport para iOS
-                  const viewportMeta = document.querySelector('meta[name="viewport"]') as HTMLMetaElement;
-                  if (viewportMeta) {
-                    viewportMeta.content = 'width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover';
-                  }
+                  await navigator.share({
+                    title: 'Shopee Delivery Partners',
+                    text: 'App de entregadores Shopee',
+                    url: window.location.href
+                  });
                   
-                  // Força meta apple-mobile-web-app-capable
-                  let appleMeta = document.querySelector('meta[name="apple-mobile-web-app-capable"]') as HTMLMetaElement;
-                  if (!appleMeta) {
-                    appleMeta = document.createElement('meta');
-                    appleMeta.name = 'apple-mobile-web-app-capable';
-                    appleMeta.content = 'yes';
-                    document.head.appendChild(appleMeta);
-                  }
-                  
-                  // Força reload da página para ativar capabilities do iOS
+                  // Aguardar e perguntar se funcionou
                   setTimeout(() => {
-                    window.location.reload();
-                  }, 1000);
-                  
-                  setTimeout(() => {
-                    setInstallStatus('instalado');
-                    alert('🍎 CONFIGURADO PARA iOS!\nUse "Adicionar à Tela de Início" no Safari!');
-                    resolve(true);
-                  }, 2500);
-                } catch (error) {
-                  resolve(false);
-                }
-              })
-            );
-            
-            // 3. iOS Shortcuts API (experimental)
-            if ('shortcuts' in navigator) {
-              installationPromises.push(
-                new Promise(async (resolve) => {
-                  try {
-                    await (navigator as any).shortcuts.add([{
-                      name: 'Shopee Delivery',
-                      url: window.location.href,
-                      icon: '/icon-192x192.png'
-                    }]);
+                    const success = confirm(
+                      '🍎 Conseguiu encontrar "Adicionar à Tela de Início"?\n\n' +
+                      'OK = Sim, instalei! | Cancelar = Não encontrei'
+                    );
                     
-                    setInstallStatus('instalado');
-                    alert('🎉 SHORTCUT iOS CRIADO!');
-                    resolve(true);
-                  } catch (error) {
-                    resolve(false);
-                  }
-                })
-              );
+                    if (success) {
+                      setInstallStatus('instalado');
+                      alert('🎉 PERFEITO! App instalado no iOS!\n\nAgora você pode usar o app direto da tela inicial!');
+                    } else {
+                      showInstructions();
+                    }
+                  }, 3000);
+                  
+                } catch (error) {
+                  console.log('Share API falhou no iOS');
+                  showInstructions();
+                }
+              } else {
+                showInstructions();
+              }
+            } else {
+              showInstructions();
             }
+            
+            return; // Sair da função para iOS - não usar outros métodos
           }
           
           // ===== MÉTODOS ESPECÍFICOS PARA ANDROID =====
