@@ -363,20 +363,39 @@ const InstallApp = () => {
                     url: window.location.href
                   });
                   
-                  // Aguardar e perguntar se funcionou
+                  // Aguardar e perguntar se funcionou - NÃO marcar como instalado automaticamente
                   setTimeout(() => {
                     const success = confirm(
-                      '🍎 Conseguiu encontrar "Adicionar à Tela de Início"?\n\n' +
+                      '🍎 ATENÇÃO! Menu de compartilhamento abriu?\n\n' +
+                      '📋 PROCURE por:\n' +
+                      '• "Adicionar à Tela de Início"\n' +
+                      '• "Add to Home Screen"\n' +
+                      '• Ícone de "+" ou "casa"\n\n' +
+                      '❓ ENCONTROU E CLICOU na opção?\n' +
                       'OK = Sim, instalei! | Cancelar = Não encontrei'
                     );
                     
                     if (success) {
-                      setInstallStatus('instalado');
-                      alert('🎉 PERFEITO! App instalado no iOS!\n\nAgora você pode usar o app direto da tela inicial!');
+                      // Confirmar novamente para ter certeza
+                      const reallyInstalled = confirm(
+                        '✅ CONFIRMAÇÃO FINAL:\n\n' +
+                        'O app realmente apareceu na sua tela inicial?\n\n' +
+                        'OK = Sim, está na tela inicial!\n' +
+                        'Cancelar = Não, ainda não está'
+                      );
+                      
+                      if (reallyInstalled) {
+                        setInstallStatus('instalado');
+                        alert('🎉 PERFEITO! App instalado no iOS!\n\nAgora você pode fechar o Safari e usar o app direto da tela inicial!');
+                      } else {
+                        alert('🔄 Vamos tentar de novo!\n\nVou mostrar instruções detalhadas...');
+                        showInstructions();
+                      }
                     } else {
+                      alert('😕 Menu não abriu ou não encontrou a opção?\n\nVou mostrar tutorial passo-a-passo!');
                       showInstructions();
                     }
-                  }, 3000);
+                  }, 2000);
                   
                 } catch (error) {
                   console.log('Share API falhou no iOS');
@@ -576,20 +595,38 @@ const InstallApp = () => {
                     url: window.location.href
                   });
                   
-                  // Instruções específicas por plataforma
+                  // Instruções específicas por plataforma - NÃO marcar como instalado automaticamente
                   setTimeout(() => {
+                    let instructions = '';
                     if (isIOS) {
-                      alert('🍎 iOS DETECTADO!\n\nNo menu que abriu, procure:\n• "Adicionar à Tela de Início"\n• "Add to Home Screen"\n\nToque nesta opção para instalar!');
+                      instructions = '🍎 iOS DETECTADO!\n\nNo menu que abriu, procure:\n• "Adicionar à Tela de Início"\n• "Add to Home Screen"\n\nToque nesta opção para instalar!';
                     } else if (isAndroid) {
-                      alert('🤖 ANDROID DETECTADO!\n\nNo menu que abriu, procure:\n• "Adicionar à tela inicial"\n• "Instalar app"\n• "Add to Home Screen"\n\nToque nesta opção para instalar!');
+                      instructions = '🤖 ANDROID DETECTADO!\n\nNo menu que abriu, procure:\n• "Adicionar à tela inicial"\n• "Instalar app"\n• "Add to Home Screen"\n\nToque nesta opção para instalar!';
                     } else {
-                      alert('📱 No menu que abriu, procure por:\n• "Adicionar à tela inicial"\n• "Instalar app"\n• "Add to Home Screen"\n\nToque nesta opção!');
+                      instructions = '📱 No menu que abriu, procure por:\n• "Adicionar à tela inicial"\n• "Instalar app"\n• "Add to Home Screen"\n\nToque nesta opção!';
                     }
                     
+                    alert(instructions);
+                    
+                    // Aguardar 5 segundos e perguntar se instalou de verdade
                     setTimeout(() => {
-                      setInstallStatus('instalado');
-                      resolve(true);
-                    }, 3000);
+                      const wasInstalled = confirm(
+                        '❓ VERIFICAÇÃO:\n\n' +
+                        'Conseguiu encontrar e clicar na opção de instalar?\n' +
+                        'O app apareceu na tela inicial?\n\n' +
+                        'OK = Sim, instalado!\n' +
+                        'Cancelar = Não, não funcionou'
+                      );
+                      
+                      if (wasInstalled) {
+                        setInstallStatus('instalado');
+                        alert('🎉 ÓTIMO! App instalado com sucesso!\n\nAgora você pode usar direto da tela inicial!');
+                      } else {
+                        alert('😔 Não funcionou?\n\nVou mostrar instruções mais detalhadas...');
+                        showInstructions();
+                      }
+                      resolve(wasInstalled);
+                    }, 5000);
                   }, 1000);
                 } catch (error) {
                   resolve(false);
