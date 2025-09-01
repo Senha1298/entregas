@@ -9,6 +9,8 @@ const InstallApp: React.FC = () => {
   // Estados para controle da instalação
   const [isInstalling, setIsInstalling] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
 
   // Detectar se já está instalado como PWA
   useEffect(() => {
@@ -25,6 +27,32 @@ const InstallApp: React.FC = () => {
     
     return () => {
       mediaQuery.removeListener(checkIfInstalled);
+    };
+  }, []);
+
+  // Android PWA: Escutar beforeinstallprompt
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      console.log('🤖 beforeinstallprompt detectado! PWA elegível para instalação Android');
+      e.preventDefault(); // Evita mini-infobar automática
+      setDeferredPrompt(e); // Guarda para usar no clique
+      setIsInstallable(true); // Mostra que pode instalar
+    };
+
+    const handleAppInstalled = () => {
+      console.log('🎉 PWA instalado via beforeinstallprompt!');
+      setIsStandalone(true);
+      setDeferredPrompt(null);
+      setIsInstallable(false);
+    };
+
+    // Escutar eventos PWA
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
 
@@ -52,17 +80,53 @@ const InstallApp: React.FC = () => {
     setIsInstalling(true);
 
     try {
-      // Detectar iOS (incluindo Chrome no iOS)
+      // Detectar plataforma
       const isiOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      const isAndroid = /Android/.test(navigator.userAgent);
       
       // Debug no console
       console.log('🔍 Detectando plataforma:', {
         userAgent: navigator.userAgent,
         isiOS,
+        isAndroid,
         hasShare: 'share' in navigator,
-        isStandalone
+        hasDeferredPrompt: !!deferredPrompt,
+        isStandalone,
+        isInstallable
       });
 
+      // 1. ANDROID com beforeinstallprompt (Chrome/Edge) - PRIORIDADE MÁXIMA
+      if (deferredPrompt && isAndroid) {
+        try {
+          console.log('🤖 ANDROID: Usando beforeinstallprompt nativo...');
+          
+          const result = await deferredPrompt.prompt(); // Abre prompt nativo
+          const choice = await result.userChoice;
+          
+          console.log('👤 Escolha do usuário:', choice.outcome);
+          
+          if (choice.outcome === 'accepted') {
+            console.log('✅ Usuário aceitou instalação Android');
+            setIsStandalone(true);
+            setDeferredPrompt(null);
+            setIsInstallable(false);
+            setIsInstalling(false);
+            alert('🎉 APP INSTALADO COM SUCESSO!\n\nO Shopee Delivery foi adicionado à sua tela inicial!');
+            return;
+          } else {
+            console.log('❌ Usuário recusou instalação Android');
+            setIsInstalling(false);
+            return;
+          }
+        } catch (error) {
+          console.error('❌ Erro no beforeinstallprompt:', error);
+          setIsInstalling(false);
+          openHowTo();
+          return;
+        }
+      }
+
+      // 2. iOS (Safari ou Chrome no iOS) com Share API
       if (isiOS && navigator.share) {
         try {
           console.log('🍎 iOS detectado com Share API - Abrindo share sheet...');
@@ -98,7 +162,8 @@ const InstallApp: React.FC = () => {
           openHowTo();
         }
       } else {
-        // Para Android ou outros navegadores, mostrar instruções
+        // 3. Fallback: Instruções manuais para outros casos
+        console.log('📖 Fallback: Mostrando instruções manuais');
         setIsInstalling(false);
         openHowTo();
       }
@@ -135,6 +200,18 @@ const InstallApp: React.FC = () => {
               <p className="text-green-800 font-semibold">✅ App Já Instalado!</p>
               <p className="text-green-700 text-sm">
                 O Shopee Delivery já está instalado na sua tela inicial
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Status de instalabilidade */}
+        <div className="mb-4">
+          {isInstallable && !isStandalone && (
+            <div className="bg-green-100 border-2 border-green-300 rounded-lg p-3">
+              <p className="text-green-800 font-semibold text-sm">✅ Pronto para Instalar!</p>
+              <p className="text-green-700 text-xs">
+                Seu dispositivo suporta instalação rápida
               </p>
             </div>
           )}
@@ -202,7 +279,12 @@ const InstallApp: React.FC = () => {
         <div className="mt-6 text-xs text-gray-500">
           <p>📱 Compatível com iOS Safari e Android Chrome</p>
           <p>🔒 100% seguro • Sem vírus • Sem spam</p>
-          {!isStandalone && (
+          {!isStandalone && isInstallable && (
+            <p className="mt-2 text-green-600 font-medium">
+              ⚡ Android: Instalação rápida disponível!
+            </p>
+          )}
+          {!isStandalone && !isInstallable && (
             <p className="mt-2 text-orange-600 font-medium">
               💡 Dica: No iOS, procure "Adicionar à Tela de Início" no menu de compartilhamento
             </p>
