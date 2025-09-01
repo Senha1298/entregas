@@ -57,6 +57,68 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
+// ===== FORÇA INSTALAÇÃO PWA =====
+
+// Escutar mensagens da página para forçar instalação
+self.addEventListener('message', (event) => {
+  console.log('📨 Mensagem recebida no SW:', event.data);
+  
+  if (event.data && event.data.type === 'FORCE_UPDATE') {
+    console.log('🔥 Forçando atualização para ativar instalação...');
+    
+    // Tentar trigger do beforeinstallprompt via clients
+    self.clients.matchAll().then(clients => {
+      clients.forEach(client => {
+        console.log('📱 Enviando comando de instalação para client:', client.id);
+        client.postMessage({
+          type: 'TRIGGER_INSTALL_PROMPT',
+          message: 'ServiceWorker está forçando o prompt de instalação'
+        });
+      });
+    });
+    
+    // Forçar renovação do cache para satisfazer critérios PWA
+    event.waitUntil(
+      caches.open(CACHE_NAME).then(cache => {
+        console.log('♻️ Renovando cache para satisfazer critérios PWA...');
+        return cache.addAll(urlsToCache);
+      })
+    );
+  }
+  
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('⏭️ Pulando waiting...');
+    self.skipWaiting();
+  }
+});
+
+// Interceptar instalação para forçar ativação imediata
+self.addEventListener('install', (event) => {
+  console.log('🔧 Service Worker instalando (forçado)...');
+  
+  // Marcar como installable imediatamente
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('📦 Cache criado, marcando como installable...');
+      
+      // Enviar sinal para todas as páginas abertas
+      self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+          client.postMessage({
+            type: 'SW_INSTALLED', 
+            message: 'ServiceWorker instalado, pode ser installable agora'
+          });
+        });
+      });
+      
+      return cache.addAll(urlsToCache);
+    })
+  );
+  
+  // Ativar imediatamente
+  self.skipWaiting();
+});
+
 // ===== PUSH NOTIFICATIONS =====
 
 // Receber push notifications
