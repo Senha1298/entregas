@@ -48,36 +48,32 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
   const isValidCpf = cpf.replace(/\D/g, '').length === 11;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f55a1e] to-[#d73919] flex flex-col">
+    <div className="min-h-screen bg-[#fafbfc] flex flex-col sora" style={{maxWidth:'430px',margin:'0 auto',boxShadow:'0 0 24px 0 rgba(0,0,0,0.08)',height:'100vh'}}>
       {/* Header igual ao do app */}
-      <div className="bg-[#f55a1e] px-4 py-3 shadow-lg">
-        <div className="flex items-center justify-between text-white max-w-md mx-auto">
-          <div className="flex items-center">
-            <div className="w-8 h-8 bg-white rounded-full mr-3 flex items-center justify-center">
-              <i className="fas fa-shopping-bag text-[#f55a1e] text-sm"></i>
-            </div>
-            <div>
-              <h1 className="text-lg font-bold">Entregas Shopee</h1>
-              <p className="text-xs opacity-90">Entregador Parceiro</p>
-            </div>
+      <div className="bg-[#f55a1e] w-full h-[48px] fixed top-0 left-0 flex items-center justify-between px-4 z-30 sora" style={{maxWidth:'430px'}}>
+        <div className="flex items-center">
+          <div className="w-[36px] h-[36px] flex items-center justify-center">
+            <img alt="Shopee logo icon, white bag with orange S on orange background" className="w-7 h-7" height="28" src="https://freelogopng.com/images/all_img/1656181355shopee-icon-white.png" width="28" />
           </div>
-          <div className="text-white mr-3">
-            <i className="fas fa-chevron-right text-3xl font-black" style={{color: 'white'}}></i>
-          </div>
+        </div>
+        <div>
+          <button aria-label="Login" className="relative focus:outline-none">
+            <i className="fas fa-user text-white text-xl"></i>
+          </button>
         </div>
       </div>
 
       {/* Conteúdo principal */}
-      <div className="flex-1 flex items-center justify-center px-4 py-8">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 pt-[60px] sora">
         <div className="w-full max-w-md">
           
           {/* Box de aviso laranja sobre notificações */}
-          <div className="bg-orange-100 border border-orange-300 rounded-lg p-4 mb-6">
+          <div className="bg-orange-100 border border-orange-300 p-4 mb-6 sora" style={{borderRadius: '0'}}>
             <div className="flex items-start gap-3">
               <i className="fas fa-bell text-orange-600 text-lg mt-1"></i>
               <div>
-                <h4 className="font-bold text-orange-800 mb-2">Notificações Obrigatórias</h4>
-                <p className="text-sm text-orange-700">
+                <h4 className="font-bold text-orange-800 mb-2 sora">Notificações Obrigatórias</h4>
+                <p className="text-sm text-orange-700 sora">
                   É obrigatório permitir as notificações do app para receber avisos importantes sobre suas entregas.
                 </p>
               </div>
@@ -85,15 +81,15 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
           </div>
 
           {/* Formulário de login */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="bg-white shadow-lg p-6 border border-[#f3f4f6] sora" style={{borderRadius: '0'}}>
             <div className="text-center mb-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-2">Acesso ao Aplicativo</h2>
-              <p className="text-sm text-gray-600">Digite seu CPF para acessar</p>
+              <h2 className="text-xl font-bold mb-2 sora" style={{color: '#000000cc'}}>Acesso ao Aplicativo</h2>
+              <p className="text-sm sora" style={{color: '#00000066'}}>Digite seu CPF para acessar</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium mb-2 sora" style={{color: '#000000cc'}}>
                   CPF
                 </label>
                 <Input
@@ -101,21 +97,22 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
                   value={cpf}
                   onChange={handleCpfChange}
                   placeholder="000.000.000-00"
-                  className="w-full text-center text-lg tracking-wider"
+                  className="w-full text-center text-lg tracking-wider sora border border-gray-300"
                   maxLength={14}
-                  style={{ fontSize: '16px' }} // Evita zoom no iOS
+                  style={{ fontSize: '16px', borderRadius: '0' }}
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={!isValidCpf}
-                className={`w-full py-3 text-white font-bold rounded-lg transition-all ${
+                className={`w-full py-3 text-white font-bold sora transition-all ${
                   isValidCpf 
                     ? 'bg-[#f55a1e] hover:bg-[#d73919] shadow-lg transform active:translate-y-0.5' 
                     : 'bg-gray-400 cursor-not-allowed'
                 }`}
                 style={{
+                  borderRadius: '0',
                   boxShadow: isValidCpf ? "0 4px 0 0 #c23218" : "none"
                 }}
               >
@@ -124,7 +121,7 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
             </form>
 
             <div className="mt-4 text-center">
-              <p className="text-xs text-gray-500">
+              <p className="text-xs sora" style={{color: '#00000066'}}>
                 Ao continuar, você concorda com nossos termos de uso
               </p>
             </div>
