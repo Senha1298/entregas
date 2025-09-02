@@ -638,6 +638,44 @@ app.post('/api/app-users/save-cities', async (req, res) => {
   }
 });
 
+// Endpoint para estatísticas de push notifications (usado na página /admin)
+app.get('/api/push-stats', async (req, res) => {
+  try {
+    // Contar subscriptions ativas
+    const activeResult = await pool.query('SELECT COUNT(*) as count FROM push_subscriptions WHERE is_active = true');
+    const activeSubscriptions = parseInt(activeResult.rows[0].count);
+    
+    // Contar total de subscriptions
+    const totalResult = await pool.query('SELECT COUNT(*) as count FROM push_subscriptions');
+    const totalSubscriptions = parseInt(totalResult.rows[0].count);
+    
+    // Contar notificações recentes (últimas 5)
+    const recentResult = await pool.query('SELECT * FROM notification_history ORDER BY sent_at DESC LIMIT 5');
+    const recentNotifications = recentResult.rows;
+    
+    res.json({
+      activeSubscriptions: activeSubscriptions,
+      totalSubscriptions: totalSubscriptions,
+      recentNotifications: recentNotifications.length,
+      lastNotifications: recentNotifications
+    });
+  } catch (error) {
+    console.error('❌ Erro ao buscar estatísticas:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
+// Endpoint para histórico de notificações (usado na página /admin)
+app.get('/api/notification-history', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM notification_history ORDER BY sent_at DESC');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('❌ Erro ao buscar histórico:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
 
 // Middleware para APIs não encontradas
 app.use('/api/*', (req, res) => {
