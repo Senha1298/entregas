@@ -299,13 +299,13 @@ const InstallApp: React.FC = () => {
           {/* Informações da Versão */}
           <div className="bg-white p-4 border-b border-gray-200">
             <div className="text-left">
-              <div className="text-sm sora mb-2" style={{color: '#00000099'}}>
+              <div className="text-sm sora mb-2" style={{color: '#00000089'}}>
                 Versão 3.57.60
               </div>
               <div className="text-sm sora leading-relaxed" style={{color: '#000000cc'}}>
-                ⚠️ <strong>IMPORTANTE:</strong> O aplicativo oficial do entregador Shopee só pode ser baixado aqui neste site oficial. 
-                Não baixe de outros lugares para sua segurança.<br/><br/>
-                📲 Lembre-se de <strong>permitir as notificações</strong> quando solicitado e seguir o <strong>passo a passo de instalação</strong> abaixo do banner.
+                IMPORTANTE: O aplicativo oficial do entregador Shopee só pode ser baixado aqui neste site oficial. 
+                Não baixe de outros lugares para sua segurança.
+                Lembre-se de permitir as notificações quando solicitado e seguir o passo a passo de instalação abaixo.
               </div>
             </div>
           </div>
