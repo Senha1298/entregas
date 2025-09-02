@@ -64,7 +64,7 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
       </div>
 
       {/* Conteúdo principal */}
-      <div className="flex-1 flex items-center justify-center px-4 py-8 pt-[60px] sora">
+      <div className="flex-1 flex items-start justify-center px-4 py-8 pt-[80px] sora">
         <div className="w-full max-w-md">
           
           {/* Box de aviso laranja sobre notificações */}
@@ -94,6 +94,8 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
                 </label>
                 <Input
                   type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   value={cpf}
                   onChange={handleCpfChange}
                   placeholder="000.000.000-00"
