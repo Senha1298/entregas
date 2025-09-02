@@ -472,10 +472,6 @@ const pool = new Pool({
 // Verificar e criar tabela de usuários do app se não existir
 (async () => {
   try {
-    // Primeiro, verificar se a conexão com o banco funciona
-    const testConnection = await pool.query('SELECT NOW()');
-    console.log('✅ Conexão com PostgreSQL funcionando:', testConnection.rows[0].now);
-    
     await pool.query(`
       CREATE TABLE IF NOT EXISTS app_users (
         id SERIAL PRIMARY KEY,
@@ -490,22 +486,8 @@ const pool = new Pool({
       )
     `);
     console.log('✅ Tabela app_users verificada/criada no PostgreSQL');
-    
-    // Verificar se a tabela foi criada
-    const tableCheck = await pool.query(`
-      SELECT column_name, data_type 
-      FROM information_schema.columns 
-      WHERE table_name = 'app_users'
-      ORDER BY ordinal_position
-    `);
-    console.log('📋 Estrutura da tabela app_users:', tableCheck.rows);
-    
-    // Verificar quantos registros existem
-    const countResult = await pool.query('SELECT COUNT(*) as total FROM app_users');
-    console.log('📊 Total de usuários no banco:', countResult.rows[0].total);
-    
   } catch (error) {
-    console.error('❌ Erro ao verificar banco de dados:', error);
+    console.error('❌ Erro ao criar tabela app_users:', error);
   }
 })();
 
@@ -576,17 +558,11 @@ app.post('/api/app-users/login', async (req, res) => {
     console.log('🔐 Tentativa de login com CPF:', cpf);
     
     // Buscar usuário no banco de dados
-    console.log('🔍 Buscando no banco CPF:', cpf);
     const result = await pool.query(`
       SELECT id, cpf, name, city, state, selected_cities, reached_delivery_page, created_at
       FROM app_users 
       WHERE cpf = $1
     `, [cpf]);
-    
-    console.log('📊 Resultado da consulta:', result.rows.length, 'registros encontrados');
-    if (result.rows.length > 0) {
-      console.log('🔍 Dados encontrados:', result.rows[0]);
-    }
     
     if (result.rows.length > 0) {
       const userData = result.rows[0];
@@ -662,53 +638,6 @@ app.post('/api/app-users/save-cities', async (req, res) => {
   }
 });
 
-// Endpoint temporário para debug do banco
-app.get('/api/debug-db', async (req, res) => {
-  try {
-    // Testar conexão
-    const connectionTest = await pool.query('SELECT NOW() as current_time');
-    
-    // Verificar se tabela existe
-    const tableExists = await pool.query(`
-      SELECT EXISTS (
-        SELECT FROM information_schema.tables 
-        WHERE table_name = 'app_users'
-      )
-    `);
-    
-    // Contar registros
-    let recordCount = 0;
-    let sampleRecords = [];
-    
-    if (tableExists.rows[0].exists) {
-      const countResult = await pool.query('SELECT COUNT(*) as total FROM app_users');
-      recordCount = countResult.rows[0].total;
-      
-      // Pegar 3 registros de exemplo
-      const sampleResult = await pool.query('SELECT cpf, name, city, state FROM app_users ORDER BY created_at DESC LIMIT 3');
-      sampleRecords = sampleResult.rows;
-    }
-    
-    res.json({
-      database: {
-        connected: true,
-        currentTime: connectionTest.rows[0].current_time,
-        tableExists: tableExists.rows[0].exists,
-        recordCount: recordCount,
-        sampleRecords: sampleRecords
-      }
-    });
-    
-  } catch (error) {
-    console.error('❌ Erro no debug do banco:', error);
-    res.status(500).json({
-      database: {
-        connected: false,
-        error: error.message
-      }
-    });
-  }
-});
 
 // Middleware para APIs não encontradas
 app.use('/api/*', (req, res) => {

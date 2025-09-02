@@ -22,9 +22,58 @@ export default function AppPage() {
     setCurrentPage('home');
   };
 
+  // Função para registrar push notifications
+  const registerPushNotifications = async (user: any) => {
+    try {
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        const registration = await navigator.serviceWorker.ready;
+        
+        // Verificar se já tem subscription
+        const existingSubscription = await registration.pushManager.getSubscription();
+        
+        if (!existingSubscription) {
+          // Criar nova subscription (usando VAPID key correta)
+          const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: 'BBAAnkFyzcnnfWoQ9DqjiY9QkQSFvScy9P_yi5LstVHcu01ja4rkYi_4ax50cZ24TTa_4aebogbVLur0NSEWHNo'
+          });
+          
+          // Enviar subscription para o servidor
+          const p256dhKey = subscription.getKey('p256dh');
+          const authKey = subscription.getKey('auth');
+          
+          await fetch('/api/push-subscriptions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              endpoint: subscription.endpoint,
+              keys: {
+                p256dh: p256dhKey ? btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(p256dhKey)))) : '',
+                auth: authKey ? btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(authKey)))) : ''
+              },
+              userId: user.id,
+              userAgent: navigator.userAgent
+            }),
+          });
+          
+          console.log('✅ Push notifications registradas para:', user.name);
+        } else {
+          console.log('✅ Push notifications já ativas para:', user.name);
+        }
+      }
+    } catch (error) {
+      console.error('❌ Erro ao registrar push notifications:', error);
+    }
+  };
+
   const handleLogin = (cpf: string) => {
     setUserCpf(cpf);
     setIsLoggedIn(true);
+    
+    // Salvar CPF na sessão
+    localStorage.setItem('userCpf', cpf);
     
     // Carregar dados do usuário do localStorage
     const storedUser = localStorage.getItem('appUser');
@@ -32,13 +81,32 @@ export default function AppPage() {
       try {
         const user = JSON.parse(storedUser);
         setUserData(user);
-        console.log('Dados do usuario carregados:', user);
+        console.log('✅ Dados do usuario carregados:', user);
+        
+        // Registrar push notifications automaticamente
+        registerPushNotifications(user);
+        
       } catch (error) {
         console.error('Erro ao carregar dados do usuario:', error);
       }
     }
     
-    console.log('Usuario logado com CPF:', cpf);
+    console.log('✅ Usuario logado com CPF:', cpf);
+  };
+
+  // Função para logout
+  const handleLogout = () => {
+    // Limpar localStorage
+    localStorage.removeItem('appUser');
+    localStorage.removeItem('userCpf');
+    
+    // Resetar estados
+    setIsLoggedIn(false);
+    setUserData(null);
+    setUserCpf('');
+    setCurrentPage('home');
+    
+    console.log('🚪 Logout realizado - sessão limpa');
   };
 
   const openModal = (e: React.MouseEvent) => {
@@ -81,8 +149,35 @@ export default function AppPage() {
       setCurrentPage(targetPage);
     }
     
+    // Verificar sessão salva no localStorage
+    const checkSavedSession = () => {
+      const storedUser = localStorage.getItem('appUser');
+      const storedCpf = localStorage.getItem('userCpf');
+      
+      if (storedUser && storedCpf) {
+        try {
+          const user = JSON.parse(storedUser);
+          console.log('🔄 Sessão encontrada, fazendo login automático:', user.name);
+          
+          setUserData(user);
+          setUserCpf(storedCpf);
+          setIsLoggedIn(true);
+          
+          // Registrar push notifications automaticamente para usuário logado
+          registerPushNotifications(user);
+          
+        } catch (error) {
+          console.error('❌ Erro ao restaurar sessão:', error);
+          // Limpar dados corrompidos
+          localStorage.removeItem('appUser');
+          localStorage.removeItem('userCpf');
+        }
+      }
+    };
+    
     // Carregamento inicial rápido do app (PWA) - reduzido para 800ms
     const timer = setTimeout(() => {
+      checkSavedSession();
       setIsLoading(false);
     }, 800);
     
@@ -490,7 +585,7 @@ export default function AppPage() {
                 <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
                   <h4 className="text-base font-bold mb-3 text-[#f55a1e]">Ações do Perfil</h4>
                   <div className="space-y-2">
-                    <button className="w-full bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 rounded-0 transition text-sm text-left px-3">
+                    <button onClick={handleLogout} className="w-full bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 rounded-0 transition text-sm text-left px-3">
                       <i className="fas fa-sign-out-alt mr-2"></i> Sair da conta
                     </button>
                   </div>
