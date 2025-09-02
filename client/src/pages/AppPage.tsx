@@ -89,7 +89,7 @@ export default function AppPage() {
           }
           /* Força todas as bordas arredondadas para 8px */
           .rounded-2xl, .rounded-xl, .rounded-lg, .rounded-t-2xl, .rounded-b-2xl, .rounded, .rounded-t-lg, .rounded-b-lg, .rounded-t, .rounded-b, .rounded-md, .rounded-sm {
-            border-radius: 8px !important;
+            border-radius: 4px !important;
           }
           .btn-treinamento img, .btn-treinamento .rounded-t-2xl {
             border-radius: 8px 8px 0 0 !important;
