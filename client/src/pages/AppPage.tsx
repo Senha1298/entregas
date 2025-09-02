@@ -451,7 +451,7 @@ export default function AppPage() {
                       <i className="fas fa-user text-white text-2xl"></i>
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold" style={{color: '#000000cc'}}>
+                      <h3 className="text-base font-bold" style={{color: '#000000cc'}}>
                         {userData?.name || 'Nome não informado'}
                       </h3>
                       <p className="text-sm" style={{color: '#00000066'}}>ID: #{userData?.id || 'N/A'}</p>
