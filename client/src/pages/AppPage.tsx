@@ -56,10 +56,10 @@ export default function AppPage() {
       setCurrentPage(targetPage);
     }
     
-    // Simular carregamento inicial do app (PWA)
+    // Carregamento inicial rápido do app (PWA) - reduzido para 800ms
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 800);
     
     return () => {
       // Limpar timer e estilos quando o componente desmontar
@@ -84,6 +84,9 @@ export default function AppPage() {
           <style>{`
             body, .sora {
               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+            }
+            body {
+              background: #f55a1e !important;
             }
           `}</style>
         </Helmet>
