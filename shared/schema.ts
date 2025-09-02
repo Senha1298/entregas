@@ -245,7 +245,8 @@ export const appUsers = pgTable("app_users", {
   id: serial("id").primaryKey(),
   cpf: varchar("cpf", { length: 14 }).notNull().unique(), // CPF formatado (XXX.XXX.XXX-XX)
   name: text("name"), // Nome do usuário (da página /cadastro)
-  selectedCities: jsonb("selected_cities"), // Array de cidades selecionadas
+  city: text("city"), // Cidade do usuário baseada no CEP do popup inicial
+  selectedCities: jsonb("selected_cities"), // Array de cidades selecionadas (deprecated)
   reachedDeliveryPage: boolean("reached_delivery_page").default(false), // Se chegou na página /entrega
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -255,6 +256,7 @@ export const appUsers = pgTable("app_users", {
 export const insertAppUserSchema = createInsertSchema(appUsers).pick({
   cpf: true,
   name: true,
+  city: true,
   selectedCities: true,
   reachedDeliveryPage: true,
 });

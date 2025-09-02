@@ -534,9 +534,7 @@ export default function AppPage() {
             <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow border border-[#f3f4f6]">
               <div className="mb-4">
                 <h3 className="font-bold text-[#f55a1e] sora">
-                  {userData?.selectedCities && userData.selectedCities.length > 0 
-                    ? `${userData.selectedCities[0].city} - ${userData.selectedCities[0].state}` 
-                    : 'São Paulo - SP'}
+                  {userData?.city ? `${userData.city} - SP` : 'São Paulo - SP'}
                 </h3>
                 <p className="text-sm" style={{color: '#00000066'}}>
                   {new Date().toLocaleDateString('pt-BR', { 
@@ -575,16 +573,15 @@ export default function AppPage() {
               </p>
             </div>
 
-            {/* Cidades selecionadas pelo usuário */}
-            {userData?.selectedCities && userData.selectedCities.length > 1 && (
-              <div className="w-[94%] max-w-[400px] mx-auto mb-4 space-y-3">
-                <h3 className="font-bold text-[#f55a1e] sora px-2">Suas Outras Cidades</h3>
-                {userData.selectedCities.slice(1).map((city: any, index: number) => (
-                  <div key={index + 1} className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
-                    <div className="mb-4">
-                      <h4 className="font-bold text-[#f55a1e] sora">{city.city} - {city.state}</h4>
-                      <p className="text-sm" style={{color: '#00000066'}}>
-                        Região disponível para entregas
+            {/* Região de entrega do usuário baseada no CEP */}
+            {userData?.city && (
+              <div className="w-[94%] max-w-[400px] mx-auto mb-4">
+                <h3 className="font-bold text-[#f55a1e] sora px-2">Sua Região de Entrega</h3>
+                <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                  <div className="mb-4">
+                    <h4 className="font-bold text-[#f55a1e] sora">{userData.city} - SP</h4>
+                    <p className="text-sm" style={{color: '#00000066'}}>
+                      Região baseada no seu CEP
                       </p>
                     </div>
                     
@@ -610,13 +607,12 @@ export default function AppPage() {
                       <i className="fas fa-box"></i>
                       Realizar entregas
                     </button>
+                    <p className="text-xs text-center mt-2" style={{color: '#00000066'}}>
+                      Complete o treinamento para habilitar as entregas
+                    </p>
                   </div>
-                ))}
-                <p className="text-xs text-center mt-2" style={{color: '#00000066'}}>
-                  Complete o treinamento para habilitar as entregas em todas as cidades
-                </p>
-              </div>
-            )}
+                </div>
+              )}
           </div>
 
           {/* Saldo Page Content */}
