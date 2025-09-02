@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { Download, Smartphone, Zap, Check, Loader, AlertCircle } from 'lucide-react';
+import { Helmet } from 'react-helmet';
+import { Download, Star, Check, Loader } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const InstallApp: React.FC = () => {
@@ -55,7 +56,17 @@ const InstallApp: React.FC = () => {
   }, []);
 
   const openHowTo = () => {
-    // Mantendo apenas a funcionalidade para mostrar instruções
+    // Mostrar instruções manuais
+    alert(
+      '📱 COMO INSTALAR:\n\n' +
+      '🤖 ANDROID (Chrome):\n' +
+      '• Toque nos 3 pontos ⋮\n' +
+      '• "Instalar aplicativo" ou "Adicionar à tela inicial"\n\n' +
+      '🍎 iOS (Safari):\n' +
+      '• Toque no botão compartilhar 📤\n' +
+      '• "Adicionar à Tela de Início"\n' +
+      '• Confirme "Adicionar"'
+    );
   };
 
   const handleInstallClick = async () => {
@@ -162,123 +173,213 @@ const InstallApp: React.FC = () => {
     }
   };
 
+  // Avaliações fictícias para o tema Play Store
+  const reviews = [
+    {
+      name: "Carlos Silva",
+      rating: 5,
+      text: "Estou faturando R$ 3.500/mês com as entregas! App perfeito e muito fácil de usar."
+    },
+    {
+      name: "Maria Santos",
+      rating: 5,
+      text: "Em 2 meses já consegui comprar uma moto nova. As entregas da Shopee são muito boas!"
+    },
+    {
+      name: "João Costa",
+      rating: 5,
+      text: "Renda extra garantida! Trabalho nas horas vagas e já pago todas as contas."
+    },
+    {
+      name: "Ana Oliveira",
+      rating: 5,
+      text: "Melhor app de entrega que já usei. Suporte excelente e pagamento em dia."
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
+    <>
+      <Helmet>
+        <title>Instalar Entregas Shopee - Download App</title>
+        <meta name="description" content="Baixe o app Entregas Shopee e comece a faturar hoje mesmo fazendo entregas." />
+        <style>{`
+          .sora {
+            font-family: 'Sora', sans-serif;
+          }
+        `}</style>
+      </Helmet>
+      
+      {/* Container Principal */}
+      <div className="bg-[#fafbfc] min-h-screen flex flex-col sora" style={{maxWidth:'430px',margin:'0 auto',boxShadow:'0 0 24px 0 rgba(0,0,0,0.08)',height:'100vh'}}>
         
-        {/* Header */}
-        <div className="mb-6">
-          <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Smartphone className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Instalar App
-          </h1>
-          <p className="text-gray-600">
-            Adicione o Entregas Shopee à sua tela inicial
-          </p>
-        </div>
-
-        {/* Status atual */}
-        <div className="mb-6">
-          {isStandalone && (
-            <div className="bg-green-100 border-2 border-green-300 rounded-lg p-4 mb-4">
-              <Check className="w-8 h-8 text-green-600 mx-auto mb-2" />
-              <p className="text-green-800 font-semibold">✅ App Já Instalado!</p>
-              <p className="text-green-700 text-sm">
-                O Entregas Shopee já está instalado na sua tela inicial
-              </p>
+        {/* Header igual ao /app */}
+        <div className="bg-[#f55a1e] w-full h-[48px] fixed top-0 left-0 flex items-center justify-between px-4 z-30 sora" style={{maxWidth:'430px'}}>
+          <div className="flex items-center">
+            <div className="w-[36px] h-[36px] flex items-center justify-center">
+              <img alt="Shopee logo icon, white bag with orange S on orange background" className="w-7 h-7" height="28" src="https://freelogopng.com/images/all_img/1656181355shopee-icon-white.png" width="28" />
             </div>
-          )}
+          </div>
+          <div>
+            <button 
+              aria-label="Voltar" 
+              className="relative focus:outline-none" 
+              onClick={() => setLocation('/')}
+            >
+              <i className="fas fa-arrow-left text-white text-xl"></i>
+            </button>
+          </div>
         </div>
 
-        {/* Status de instalabilidade */}
-        <div className="mb-4">
-          {isInstallable && !isStandalone && (
-            <div className="bg-green-100 border-2 border-green-300 rounded-lg p-3">
-              <p className="text-green-800 font-semibold text-sm">✅ Pronto para Instalar!</p>
-              <p className="text-green-700 text-xs">
-                Seu dispositivo suporta instalação rápida
-              </p>
+        {/* Conteúdo Principal */}
+        <div className="flex-1 w-full pt-[48px] pb-4 sora overflow-y-auto" style={{maxWidth:'430px'}}>
+          
+          {/* Seção do App Info - Estilo Play Store */}
+          <div className="bg-white p-4 border-b border-gray-200">
+            <div className="flex items-start gap-4">
+              {/* Ícone do App */}
+              <div className="flex-shrink-0">
+                <img 
+                  src="https://e3ba6e8732e83984.cdn.gocache.net/uploads/image/file/3108694/regular_86cdc6d5c3d9095ffab186cdad4b0c26.jfif" 
+                  alt="Ícone do Entregas Shopee"
+                  className="w-16 h-16 border border-gray-300"
+                  style={{borderRadius: '0'}}
+                />
+              </div>
+              
+              {/* Info do App */}
+              <div className="flex-1">
+                <h1 className="text-xl font-bold sora" style={{color: '#000000cc'}}>Entregas Shopee</h1>
+                <p className="text-sm sora" style={{color: '#00000066'}}>Shopee Brasil</p>
+                
+                {/* Rating */}
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-sm font-bold sora">4.9</span>
+                  <div className="flex">
+                    {[1,2,3,4,5].map(star => (
+                      <Star key={star} className="w-3 h-3 fill-[#f55a1e] text-[#f55a1e]" />
+                    ))}
+                  </div>
+                  <span className="text-xs sora" style={{color: '#00000066'}}>(2.847)</span>
+                </div>
+                
+                <div className="text-xs sora mt-1" style={{color: '#00000066'}}>
+                  Grátis • Negócios
+                </div>
+              </div>
             </div>
-          )}
-        </div>
-
-        {/* Benefícios */}
-        <div className="mb-6 space-y-3">
-          <div className="flex items-center text-sm text-gray-700">
-            <Zap className="w-4 h-4 text-orange-500 mr-2" />
-            Acesso rápido sem abrir navegador
+            
+            {/* Botão de Instalar - Estilo Play Store */}
+            <div className="mt-4">
+              <Button
+                onClick={handleInstallClick}
+                disabled={isInstalling}
+                className="w-full bg-[#f55a1e] hover:bg-[#d73919] text-white font-bold sora py-3 px-6 text-base"
+                style={{borderRadius: '0'}}
+              >
+                {isInstalling ? (
+                  <>
+                    <Loader className="w-4 h-4 mr-2 animate-spin" />
+                    Instalando...
+                  </>
+                ) : isStandalone ? (
+                  <>
+                    <Check className="w-4 h-4 mr-2" />
+                    Instalado
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4 mr-2" />
+                    Instalar
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center text-sm text-gray-700">
-            <Download className="w-4 h-4 text-orange-500 mr-2" />
-            Funciona offline
+
+          {/* Banner da Shopee */}
+          <div className="bg-white p-0 border-b border-gray-200">
+            <img 
+              src="https://www.tecnologistica.com.br/up/2024/09/26/shopee_entrega_re_1200.jpg" 
+              alt="Banner Shopee Entregas"
+              className="w-full h-48 object-cover"
+            />
           </div>
-          <div className="flex items-center text-sm text-gray-700">
-            <Check className="w-4 h-4 text-orange-500 mr-2" />
-            Receba notificações de oportunidades
+
+          {/* Seção de Avaliações */}
+          <div className="bg-white p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold sora" style={{color: '#000000cc'}}>Avaliações e opiniões</h2>
+              <div className="flex items-center gap-1">
+                <span className="text-2xl font-bold sora">4.9</span>
+                <Star className="w-4 h-4 fill-[#f55a1e] text-[#f55a1e]" />
+              </div>
+            </div>
+            
+            {/* Rating Bar */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex">
+                {[1,2,3,4,5].map(star => (
+                  <Star key={star} className="w-4 h-4 fill-[#f55a1e] text-[#f55a1e]" />
+                ))}
+              </div>
+              <span className="text-sm sora" style={{color: '#00000066'}}>2.847 avaliações</span>
+            </div>
+
+            {/* Lista de Avaliações */}
+            <div className="space-y-4">
+              {reviews.map((review, index) => (
+                <div key={index} className="border-b border-gray-100 pb-4 last:border-b-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 bg-[#f55a1e] text-white text-xs font-bold flex items-center justify-center" style={{borderRadius: '50%'}}>
+                      {review.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium sora" style={{color: '#000000cc'}}>{review.name}</div>
+                      <div className="flex">
+                        {[1,2,3,4,5].map(star => (
+                          <Star key={star} className="w-3 h-3 fill-[#f55a1e] text-[#f55a1e]" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-sm sora" style={{color: '#000000cc'}}>{review.text}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Botão de instalação */}
-        <div className="space-y-4">
-          <Button
-            onClick={handleInstallClick}
-            disabled={isInstalling}
-            className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-xl text-lg"
-          >
-            {isInstalling ? (
-              <>
-                <Loader className="w-5 h-5 mr-2 animate-spin" />
-                Instalando...
-              </>
-            ) : isStandalone ? (
-              <>
-                <Check className="w-5 h-5 mr-2" />
-                Já Instalado
-              </>
-            ) : (
-              <>
-                <Download className="w-5 h-5 mr-2" />
-                Instalar na Tela Inicial
-              </>
-            )}
-          </Button>
-
-          <Button
-            onClick={openHowTo}
-            variant="outline"
-            className="w-full"
-          >
-            Ver Instruções Manuais
-          </Button>
-
-          <Button
-            onClick={() => setLocation('/')}
-            variant="ghost"
-            className="w-full"
-          >
-            Voltar ao Início
-          </Button>
-        </div>
-
-        {/* Informações adicionais */}
-        <div className="mt-6 text-xs text-gray-500">
-          <p>📱 Compatível com iOS Safari e Android Chrome</p>
-          <p>🔒 100% seguro • Sem vírus • Sem spam</p>
-          {!isStandalone && isInstallable && (
-            <p className="mt-2 text-green-600 font-medium">
-              ⚡ Android: Instalação rápida disponível!
+          {/* Seção Sobre este app */}
+          <div className="bg-white p-4 border-t border-gray-200">
+            <h3 className="text-lg font-bold sora mb-3" style={{color: '#000000cc'}}>Sobre este app</h3>
+            <p className="text-sm sora mb-4" style={{color: '#000000cc'}}>
+              Entregas Shopee é o aplicativo oficial para entregadores parceiros da Shopee no Brasil. 
+              Faça entregas e aumente sua renda de forma flexível e segura.
             </p>
-          )}
-          {!isStandalone && !isInstallable && (
-            <p className="mt-2 text-orange-600 font-medium">
-              💡 Dica: No iOS, procure "Adicionar à Tela de Início" no menu de compartilhamento
-            </p>
-          )}
+            
+            {/* Recursos */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-[#f55a1e]" />
+                <span className="text-sm sora" style={{color: '#000000cc'}}>Renda extra garantida</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-[#f55a1e]" />
+                <span className="text-sm sora" style={{color: '#000000cc'}}>Horários flexíveis</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-[#f55a1e]" />
+                <span className="text-sm sora" style={{color: '#000000cc'}}>Pagamento semanal</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-[#f55a1e]" />
+                <span className="text-sm sora" style={{color: '#000000cc'}}>Suporte 24/7</span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
