@@ -10,30 +10,63 @@ const PWANotification: React.FC = () => {
   // Função para registrar usuário para push notifications
   const subscribeUserToPush = async () => {
     try {
-      // Iniciando registro de push notifications
+      console.log('🔔 Iniciando registro de push notifications...');
+      
+      // Detectar plataforma
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const isiOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+      
+      console.log('📱 Plataforma detectada:', { isAndroid, isiOS, userAgent: navigator.userAgent });
       
       // Verificar se service worker e push são suportados
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        // Push notifications não suportadas
+        console.log('❌ Push notifications não suportadas');
         showToastNotification();
         return;
       }
 
       // Registrar service worker se necessário
       const registration = await navigator.serviceWorker.ready;
-      // Service Worker pronto
+      console.log('✅ Service Worker pronto:', registration);
 
       // Verificar permissão atual
       let permission = Notification.permission;
-      // Verificando permissão atual
+      console.log('🔐 Permissão atual:', permission);
       
-      // Solicitar permissão se ainda não foi concedida
+      // ANDROID: Solicitar permissão de forma mais explícita
       if (permission === 'default') {
-        permission = await Notification.requestPermission();
-        // Permissão solicitada
+        console.log('📱 Solicitando permissão de notificação...');
+        
+        // Para Android, tentar múltiplas abordagens
+        if (isAndroid) {
+          console.log('🤖 ANDROID: Forçando solicitação de permissão...');
+          
+          // Tentar primeira abordagem
+          try {
+            permission = await Notification.requestPermission();
+            console.log('🤖 ANDROID: Primeira tentativa resultado:', permission);
+          } catch (err) {
+            console.log('🤖 ANDROID: Primeira tentativa falhou, tentando callback...');
+            
+            // Fallback para callback (Android mais antigo)
+            permission = await new Promise((resolve) => {
+              Notification.requestPermission((result) => {
+                resolve(result);
+              });
+            });
+            console.log('🤖 ANDROID: Callback resultado:', permission);
+          }
+        } else {
+          // iOS e outros
+          permission = await Notification.requestPermission();
+          console.log('🍎 iOS/Outros: Resultado:', permission);
+        }
       }
 
+      console.log('🔐 Permissão final:', permission);
+      
       if (permission === 'granted') {
+        console.log('✅ Permissão concedida! Configurando push subscription...');
         // Obter chave pública VAPID atualizada
         const vapidPublicKey = 'BBAAnkFyzcnnfWoQ9DqjiY9QkQSFvScy9P_yi5LstVHcu01ja4rkYi_4ax50cZ24TTa_4aebogbVLur0NSEWHNo';
         
@@ -114,35 +147,75 @@ const PWANotification: React.FC = () => {
     // Notificação de pagamento removida conforme solicitado
   };
 
+  // Função para tentar registrar com interação do usuário (Android)
+  const requestNotificationPermissionWithClick = async () => {
+    console.log('🐆 Tentando solicitação com clique do usuário...');
+    
+    const isAndroid = /Android/.test(navigator.userAgent);
+    
+    if (isAndroid && Notification.permission === 'default') {
+      console.log('🤖 ANDROID: Forçando solicitação via interação...');
+      
+      try {
+        const permission = await Notification.requestPermission();
+        console.log('🤖 ANDROID: Resultado com clique:', permission);
+        
+        if (permission === 'granted') {
+          // Se conseguiu permissão, tentar registrar push
+          subscribeUserToPush();
+        }
+      } catch (error) {
+        console.error('🤖 ANDROID: Erro ao solicitar com clique:', error);
+      }
+    }
+  };
+
   useEffect(() => {
-    // PWANotification: Iniciando verificação
+    console.log('🔍 PWANotification: Iniciando verificação...');
     
     // Verificar se está rodando em modo PWA (standalone)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
     const isIOSStandalone = (window.navigator as any).standalone;
     const isAndroidApp = document.referrer.includes('android-app://');
     const isPWA = isStandalone || isIOSStandalone || isAndroidApp;
+    const isAndroid = /Android/.test(navigator.userAgent);
     
-    // Detecção PWA realizada
+    console.log('📱 Detecção PWA:', { isStandalone, isIOSStandalone, isAndroidApp, isPWA, isAndroid });
 
     // Verificar se já mostrou a notificação nesta sessão
     const notificationShown = sessionStorage.getItem('pwa_payment_notification_shown');
-    // Verificando se notificação já foi mostrada
+    console.log('💾 Notificação já mostrada:', notificationShown);
 
-    // SEMPRE tentar registrar push notifications para teste
-    // Preparando notificação e registro de push
+    // SEMPRE tentar registrar push notifications
+    console.log('🔔 Preparando registro de push notifications...');
     
-    // Aguardar um pouco para garantir que a página carregou completamente
+    // Para Android, aguardar mais tempo e tentar na carga
+    const delay = isAndroid ? 3000 : 2000;
+    
     const timer = setTimeout(() => {
-      // Timer executado, processando notificação
+      console.log('⏰ Timer executado, iniciando registro...');
       
       // Tentar registrar para push notifications
       subscribeUserToPush();
       
+      // Para Android, adicionar listener de clique como fallback
+      if (isAndroid && Notification.permission === 'default') {
+        console.log('🤖 ANDROID: Adicionando listener de clique como fallback...');
+        
+        // Adicionar listener global para qualquer clique
+        const handleFirstClick = () => {
+          console.log('🐆 Primeiro clique detectado no Android!');
+          requestNotificationPermissionWithClick();
+          document.removeEventListener('click', handleFirstClick);
+        };
+        
+        document.addEventListener('click', handleFirstClick, { once: true });
+      }
+      
       // Marcar que a notificação foi mostrada nesta sessão
       sessionStorage.setItem('pwa_payment_notification_shown', 'true');
       setHasShownNotification(true);
-    }, 2000); // Aguardar 2 segundos após o carregamento
+    }, delay);
 
     return () => clearTimeout(timer);
   }, [toast, hasShownNotification]);
