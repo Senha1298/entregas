@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useLocation } from 'wouter';
 import kitTreinamentoImage from '@assets/a0e45d2fcc7fdab21ea74890cbd0d45e (1).png';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import TreinamentoModal from '../components/TreinamentoModal';
 
 const TreinamentoApp: FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [, setLocation] = useLocation();
   
   const goBack = () => {
     window.history.back();
@@ -278,15 +280,15 @@ const TreinamentoApp: FC = () => {
 
         {/* Bottom Navigation */}
         <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full bg-white flex justify-between items-center h-[85px] z-50 sora border-t border-[#f3f4f6]" style={{maxWidth:'430px'}}>
-          <div className="flex-1 flex flex-col items-center py-1 cursor-pointer sora transition" onClick={() => window.location.href = '/app'}>
+          <div className="flex-1 flex flex-col items-center py-1 cursor-pointer sora transition" onClick={() => setLocation('/app')}>
             <i className="fas fa-home text-[#f55a1e] text-2xl"></i>
             <span className="text-[#f55a1e] text-base font-medium mt-1 sora">Início</span>
           </div>
-          <div className="flex-1 flex flex-col items-center py-1 cursor-pointer sora transition" onClick={() => window.location.href = '/app?page=entregas'}>
+          <div className="flex-1 flex flex-col items-center py-1 cursor-pointer sora transition" onClick={() => setLocation('/app?page=entregas')}>
             <i className="fas fa-box text-[#f55a1e] text-2xl"></i>
             <span className="text-[#f55a1e] text-base font-medium mt-1 sora">Entregas</span>
           </div>
-          <div className="flex-1 flex flex-col items-center py-1 cursor-pointer sora transition" onClick={() => window.location.href = '/app?page=saldo'}>
+          <div className="flex-1 flex flex-col items-center py-1 cursor-pointer sora transition" onClick={() => setLocation('/app?page=saldo')}>
             <i className="fas fa-wallet text-[#f55a1e] text-2xl"></i>
             <span className="text-[#f55a1e] text-base font-medium mt-1 sora">Saldo</span>
           </div>
