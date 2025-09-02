@@ -282,11 +282,11 @@ const TreinamentoApp: FC = () => {
             <i className="fas fa-home text-[#f55a1e] text-2xl icon-3d"></i>
             <span className="text-[#f55a1e] text-base font-medium mt-1 sora">Início</span>
           </div>
-          <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition opacity-40">
+          <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition" onClick={() => window.location.href = '/app?page=entregas'}>
             <i className="fas fa-box text-[#f55a1e] text-2xl icon-3d"></i>
             <span className="text-[#f55a1e] text-base font-medium mt-1 sora">Entregas</span>
           </div>
-          <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition opacity-40">
+          <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition" onClick={() => window.location.href = '/app?page=saldo'}>
             <i className="fas fa-wallet text-[#f55a1e] text-2xl icon-3d"></i>
             <span className="text-[#f55a1e] text-base font-medium mt-1 sora">Saldo</span>
           </div>

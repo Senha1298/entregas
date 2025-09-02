@@ -46,6 +46,13 @@ export default function AppPage() {
     document.body.style.boxShadow = '0 0 24px 0 rgba(0,0,0,0.08)';
     document.body.style.height = '100vh';
     
+    // Verificar se há parâmetro de página na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetPage = urlParams.get('page');
+    if (targetPage && ['entregas', 'saldo', 'historia', 'ajuda', 'perfil'].includes(targetPage)) {
+      setCurrentPage(targetPage);
+    }
+    
     return () => {
       // Limpar estilos quando o componente desmontar
       document.body.className = '';
