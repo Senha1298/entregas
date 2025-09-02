@@ -98,7 +98,7 @@ export default function AppPage() {
             border-radius: 8px !important;
           }
           /* Custom 2px border radius for specific elements */
-          .rounded-2px {
+          .rounded-0 {
             border-radius: 2px !important;
           }
         `}</style>
@@ -169,19 +169,19 @@ export default function AppPage() {
             {/* Quick Actions */}
             <div className="w-full max-w-[400px] mx-auto mt-8 flex justify-between px-4">
               <div className="flex flex-col items-center">
-                <button className="bg-white rounded-2px shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
+                <button className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
                   <i className="fas fa-book-open text-[#f55a1e] text-2xl"></i>
                 </button>
                 <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Meus Cursos</span>
               </div>
               <div className="flex flex-col items-center">
-                <button className="bg-white rounded-2px shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
+                <button className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
                   <i className="fas fa-question-circle text-[#f55a1e] text-2xl"></i>
                 </button>
                 <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Ajuda</span>
               </div>
               <div className="flex flex-col items-center">
-                <button className="bg-white rounded-2px shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
+                <button className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
                   <i className="fas fa-user text-[#f55a1e] text-2xl"></i>
                 </button>
                 <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Perfil</span>
@@ -219,7 +219,7 @@ export default function AppPage() {
                 Entregas disponíveis: <span className="font-bold">54</span><br />
                 Ganho total: <span className="font-bold">R$ 648,00</span>
               </p>
-              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-2px shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
+              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-0 shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
                 <i className="fas fa-box"></i>
                 Realizar entregas
               </button>
@@ -233,7 +233,7 @@ export default function AppPage() {
                 Entregas disponíveis: <span className="font-bold">68</span><br />
                 Ganho total: <span className="font-bold">R$ 816,00</span>
               </p>
-              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-2px shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
+              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-0 shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
                 <i className="fas fa-box"></i>
                 Realizar entregas
               </button>
@@ -247,7 +247,7 @@ export default function AppPage() {
                 Entregas disponíveis: <span className="font-bold">42</span><br />
                 Ganho total: <span className="font-bold">R$ 504,00</span>
               </p>
-              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-2px shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
+              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-0 shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
                 <i className="fas fa-box"></i>
                 Realizar entregas
               </button>
@@ -261,7 +261,7 @@ export default function AppPage() {
                 Entregas disponíveis: <span className="font-bold">85</span><br />
                 Ganho total: <span className="font-bold">R$ 1.020,00</span>
               </p>
-              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-2px shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
+              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-0 shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
                 <i className="fas fa-box"></i>
                 Realizar entregas
               </button>
@@ -275,7 +275,7 @@ export default function AppPage() {
                 Entregas disponíveis: <span className="font-bold">61</span><br />
                 Ganho total: <span className="font-bold">R$ 732,00</span>
               </p>
-              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-2px shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
+              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-0 shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
                 <i className="fas fa-box"></i>
                 Realizar entregas
               </button>
@@ -290,7 +290,7 @@ export default function AppPage() {
                 <i className="fas fa-wallet text-[#f55a1e] text-3xl mr-3"></i>
                 <span className="text-3xl font-bold sora" style={{color: '#000000cc'}}>R$ 0,00</span>
               </div>
-              <button aria-disabled="true" className="bg-gray-300 text-gray-500 font-bold py-3 px-8 rounded-lg cursor-not-allowed text-lg sora shadow-md opacity-70" disabled type="button">
+              <button aria-disabled="true" className="bg-gray-300 text-gray-500 font-bold py-3 px-8 rounded-0 cursor-not-allowed text-lg sora shadow-md opacity-70" disabled type="button">
                 Realizar saque
               </button>
               <div className="w-full mt-8">
