@@ -59,10 +59,9 @@ export default function AppPage() {
         <meta name="viewport" content="width=375, initial-scale=1" />
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
         <style>{`
           body, .sora {
-            font-family: 'Sora', Arial, sans-serif !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
           }
           .btn-treinamento:focus-visible {
             outline: 2px solid #f55a1e;
@@ -145,8 +144,8 @@ export default function AppPage() {
                 </div>
                 <div>
                   <div className="font-bold text-[#f55a1e] mb-1 sora">Treinamento obrigatório pendente</div>
-                  <div className="text-gray-700 text-sm mb-1">Você ainda não realizou o treinamento obrigatório para entregadores. Acesse o treinamento para continuar utilizando a plataforma.</div>
-                  <div className="text-xs text-gray-400">Agora mesmo</div>
+                  <div className="text-sm mb-1" style={{color: '#000000cc'}}>Você ainda não realizou o treinamento obrigatório para entregadores. Acesse o treinamento para continuar utilizando a plataforma.</div>
+                  <div className="text-xs" style={{color: '#00000066'}}>Agora mesmo</div>
                 </div>
               </div>
             </div>
@@ -179,19 +178,19 @@ export default function AppPage() {
                 <button className="bg-white rounded-2px shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
                   <i className="fas fa-book-open text-[#f55a1e] text-2xl"></i>
                 </button>
-                <span className="text-xs mt-2 text-gray-700 font-medium">Meus Cursos</span>
+                <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Meus Cursos</span>
               </div>
               <div className="flex flex-col items-center">
                 <button className="bg-white rounded-2px shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
                   <i className="fas fa-question-circle text-[#f55a1e] text-2xl"></i>
                 </button>
-                <span className="text-xs mt-2 text-gray-700 font-medium">Ajuda</span>
+                <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Ajuda</span>
               </div>
               <div className="flex flex-col items-center">
                 <button className="bg-white rounded-2px shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
                   <i className="fas fa-user text-[#f55a1e] text-2xl"></i>
                 </button>
-                <span className="text-xs mt-2 text-gray-700 font-medium">Perfil</span>
+                <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Perfil</span>
               </div>
             </div>
             {/* Section: Dicas rápidas */}
@@ -200,15 +199,15 @@ export default function AppPage() {
               <div className="flex space-x-3 overflow-x-auto pb-2">
                 <div className="min-w-[140px] bg-white rounded-xl shadow p-3 flex flex-col items-center border border-[#f3f4f6]">
                   <img alt="Ícone de capacete de entregador laranja, estilo flat" className="w-12 h-12 mb-2" height="60" src="https://replicate.delivery/xezq/hBdOeikZxKRwACiuv9x9uvAKuL7el2ENE6kqK1xuNMS9zfhqA/out-0.png" width="60" />
-                  <span className="text-xs text-gray-700 text-center">Use sempre o capacete</span>
+                  <span className="text-xs text-center" style={{color: '#000000cc'}}>Use sempre o capacete</span>
                 </div>
                 <div className="min-w-[140px] bg-white rounded-xl shadow p-3 flex flex-col items-center border border-[#f3f4f6]">
                   <img alt="Ícone de caixa de entrega laranja, estilo flat" className="w-12 h-12 mb-2" height="60" src="https://replicate.delivery/xezq/MVJaO2VEMNLgOZDGa2xjXjYF7nrjMCICHScVZGb9U5HfezfhqA/out-0.png" width="60" />
-                  <span className="text-xs text-gray-700 text-center">Conferir o pacote antes de sair</span>
+                  <span className="text-xs text-center" style={{color: '#000000cc'}}>Conferir o pacote antes de sair</span>
                 </div>
                 <div className="min-w-[140px] bg-white rounded-xl shadow p-3 flex flex-col items-center border border-[#f3f4f6]">
                   <img alt="Ícone de smartphone com mapa, estilo flat" className="w-12 h-12 mb-2" height="60" src="https://replicate.delivery/xezq/C4e7QRJqkq3kNq0v5GjCcWm6vLBuIvQrcCOqZBfjkBY9zfhqA/out-0.png" width="60" />
-                  <span className="text-xs text-gray-700 text-center">Acompanhe o trajeto pelo app</span>
+                  <span className="text-xs text-center" style={{color: '#000000cc'}}>Acompanhe o trajeto pelo app</span>
                 </div>
               </div>
             </div>
@@ -222,7 +221,7 @@ export default function AppPage() {
                 <img alt="Ícone de pacote de entrega laranja em fundo branco, flat" className="w-10 h-10 rounded-full mr-3" height="40" src="https://replicate.delivery/xezq/lUeAawqR3ZSzVaxfBqaPPofrbTI5riISbI774GdvYQDFXAiqA/out-0.png" width="40" />
                 <h3 className="font-bold sora text-[#f55a1e]">Rota Centro (São Paulo)</h3>
               </div>
-              <p className="text-gray-700 text-sm">
+              <p className="text-sm" style={{color: '#000000cc'}}>
                 Entregas disponíveis: <span className="font-bold">54</span><br />
                 Ganho total: <span className="font-bold">R$ 648,00</span>
               </p>
@@ -236,7 +235,7 @@ export default function AppPage() {
                 <img alt="Ícone de pacote de entrega laranja em fundo branco, flat" className="w-10 h-10 rounded-full mr-3" height="40" src="https://replicate.delivery/xezq/lUeAawqR3ZSzVaxfBqaPPofrbTI5riISbI774GdvYQDFXAiqA/out-0.png" width="40" />
                 <h3 className="font-bold sora text-[#f55a1e]">Rota Zona Sul (São Paulo)</h3>
               </div>
-              <p className="text-gray-700 text-sm">
+              <p className="text-sm" style={{color: '#000000cc'}}>
                 Entregas disponíveis: <span className="font-bold">68</span><br />
                 Ganho total: <span className="font-bold">R$ 816,00</span>
               </p>
@@ -250,7 +249,7 @@ export default function AppPage() {
                 <img alt="Ícone de pacote de entrega laranja em fundo branco, flat" className="w-10 h-10 rounded-full mr-3" height="40" src="https://replicate.delivery/xezq/lUeAawqR3ZSzVaxfBqaPPofrbTI5riISbI774GdvYQDFXAiqA/out-0.png" width="40" />
                 <h3 className="font-bold sora text-[#f55a1e]">Rota Leste (São Paulo)</h3>
               </div>
-              <p className="text-gray-700 text-sm">
+              <p className="text-sm" style={{color: '#000000cc'}}>
                 Entregas disponíveis: <span className="font-bold">42</span><br />
                 Ganho total: <span className="font-bold">R$ 504,00</span>
               </p>
@@ -264,7 +263,7 @@ export default function AppPage() {
                 <img alt="Ícone de pacote de entrega laranja em fundo branco, flat" className="w-10 h-10 rounded-full mr-3" height="40" src="https://replicate.delivery/xezq/lUeAawqR3ZSzVaxfBqaPPofrbTI5riISbI774GdvYQDFXAiqA/out-0.png" width="40" />
                 <h3 className="font-bold sora text-[#f55a1e]">Rota Norte (São Paulo)</h3>
               </div>
-              <p className="text-gray-700 text-sm">
+              <p className="text-sm" style={{color: '#000000cc'}}>
                 Entregas disponíveis: <span className="font-bold">85</span><br />
                 Ganho total: <span className="font-bold">R$ 1.020,00</span>
               </p>
@@ -278,7 +277,7 @@ export default function AppPage() {
                 <img alt="Ícone de pacote de entrega laranja em fundo branco, flat" className="w-10 h-10 rounded-full mr-3" height="40" src="https://replicate.delivery/xezq/lUeAawqR3ZSzVaxfBqaPPofrbTI5riISbI774GdvYQDFXAiqA/out-0.png" width="40" />
                 <h3 className="font-bold sora text-[#f55a1e]">Rota Oeste (São Paulo)</h3>
               </div>
-              <p className="text-gray-700 text-sm">
+              <p className="text-sm" style={{color: '#000000cc'}}>
                 Entregas disponíveis: <span className="font-bold">61</span><br />
                 Ganho total: <span className="font-bold">R$ 732,00</span>
               </p>
@@ -295,7 +294,7 @@ export default function AppPage() {
               <h2 className="text-2xl font-bold mb-4 sora text-center text-[#f55a1e]">Saldo disponível</h2>
               <div className="flex items-center justify-center mb-6">
                 <i className="fas fa-wallet text-[#f55a1e] text-3xl mr-3"></i>
-                <span className="text-3xl font-bold text-gray-800 sora">R$ 0,00</span>
+                <span className="text-3xl font-bold sora" style={{color: '#000000cc'}}>R$ 0,00</span>
               </div>
               <button aria-disabled="true" className="bg-gray-300 text-gray-500 font-bold py-3 px-8 rounded-lg cursor-not-allowed text-lg sora shadow-md opacity-70" disabled type="button">
                 Realizar saque
@@ -304,16 +303,16 @@ export default function AppPage() {
                 <h3 className="text-base font-bold text-[#f55a1e] mb-2">Histórico de transações</h3>
                 <ul className="divide-y divide-gray-100">
                   <li className="flex justify-between py-2">
-                    <span className="text-gray-700">Entrega #12345</span>
-                    <span className="text-gray-500">R$ 0,00</span>
+                    <span style={{color: '#000000cc'}}>Entrega #12345</span>
+                    <span style={{color: '#00000066'}}>R$ 0,00</span>
                   </li>
                   <li className="flex justify-between py-2">
-                    <span className="text-gray-700">Entrega #12344</span>
-                    <span className="text-gray-500">R$ 0,00</span>
+                    <span style={{color: '#000000cc'}}>Entrega #12344</span>
+                    <span style={{color: '#00000066'}}>R$ 0,00</span>
                   </li>
                   <li className="flex justify-between py-2">
-                    <span className="text-gray-700">Entrega #12343</span>
-                    <span className="text-gray-500">R$ 0,00</span>
+                    <span style={{color: '#000000cc'}}>Entrega #12343</span>
+                    <span style={{color: '#00000066'}}>R$ 0,00</span>
                   </li>
                 </ul>
               </div>
