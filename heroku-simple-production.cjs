@@ -684,6 +684,46 @@ app.get('/api/notification-history', async (req, res) => {
   }
 });
 
+// Endpoint para registrar push subscriptions (usado quando usuário aceita notificações)
+app.post('/api/push-subscriptions', async (req, res) => {
+  try {
+    const { endpoint, p256dhKey, authKey } = req.body;
+    
+    if (!endpoint || !p256dhKey || !authKey) {
+      return res.status(400).json({ error: 'Dados da subscription incompletos' });
+    }
+    
+    const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
+    
+    // Verificar se já existe uma subscription para este endpoint
+    const existingResult = await pool.query('SELECT id FROM push_subscriptions WHERE endpoint = $1', [endpoint]);
+    
+    if (existingResult.rows.length > 0) {
+      // Atualizar subscription existente
+      await pool.query(`
+        UPDATE push_subscriptions 
+        SET p256dh_key = $1, auth_key = $2, is_active = true, updated_at = NOW(), ip_address = $3
+        WHERE endpoint = $4
+      `, [p256dhKey, authKey, clientIp, endpoint]);
+      
+      console.log('🔄 Push subscription atualizada:', endpoint.substring(0, 50) + '...');
+    } else {
+      // Criar nova subscription
+      await pool.query(`
+        INSERT INTO push_subscriptions (endpoint, p256dh_key, auth_key, ip_address, user_agent, is_active, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, true, NOW(), NOW())
+      `, [endpoint, p256dhKey, authKey, clientIp, req.headers['user-agent'] || '']);
+      
+      console.log('✅ Nova push subscription criada:', endpoint.substring(0, 50) + '...');
+    }
+    
+    res.json({ success: true, message: 'Subscription salva com sucesso' });
+  } catch (error) {
+    console.error('❌ Erro ao salvar push subscription:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
 // Endpoint para enviar notificações do admin (usado na página /admin)
 app.post('/api/send-notification', async (req, res) => {
   try {
