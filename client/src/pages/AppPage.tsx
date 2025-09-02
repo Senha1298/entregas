@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'wouter';
+import AppLogin from '@/components/AppLogin';
 
 export default function AppPage() {
   const [currentPage, setCurrentPage] = useState('home');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [, setLocation] = useLocation();
+  
+  // State para controlar se o usuário já fez login
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userCpf, setUserCpf] = useState('');
 
   const showPage = (page: string) => {
     setCurrentPage(page);
@@ -14,6 +19,12 @@ export default function AppPage() {
 
   const goBackToHome = () => {
     setCurrentPage('home');
+  };
+
+  const handleLogin = (cpf: string) => {
+    setUserCpf(cpf);
+    setIsLoggedIn(true);
+    console.log('Usuario logado com CPF:', cpf);
   };
 
   const openModal = (e: React.MouseEvent) => {
@@ -109,6 +120,11 @@ export default function AppPage() {
         </div>
       </>
     );
+  }
+
+  // Se não está logado, mostrar tela de login
+  if (!isLoggedIn) {
+    return <AppLogin onLogin={handleLogin} />;
   }
 
   return (
