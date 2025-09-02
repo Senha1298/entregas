@@ -96,7 +96,7 @@ const Payment: React.FC = () => {
       
       // Se a verificação de status estiver ativada, verifica diretamente na For4Payments (frontend)
       if (checkStatus) {
-        console.log('[PAYMENT] Verificando status diretamente do frontend...');
+        // Verificando status diretamente do frontend
         
         // Obter a chave de API For4Payments via variável de ambiente específica para frontend
         // Esta variável deve ser configurada no arquivo .env com VITE_FOR4PAYMENTS_SECRET_KEY
@@ -108,7 +108,7 @@ const Payment: React.FC = () => {
             const { success, data: statusData, approved } = await checkPaymentStatus(id, apiKey);
             
             if (success && statusData) {
-              console.log('[PAYMENT] Status obtido diretamente:', statusData);
+              // Status obtido diretamente
               
               // Atualizar o status local
               setPaymentInfo(prev => {
@@ -131,7 +131,7 @@ const Payment: React.FC = () => {
               
               // Se aprovado, relatar diretamente do frontend para o Facebook
               if (isApproved) {
-                console.log('[PAYMENT] Pagamento APROVADO! Rastreando do frontend...');
+                // Pagamento aprovado, rastreando conversão
                 
                 // Inicializar o Facebook Pixel e rastrear o evento explicitamente
                 initFacebookPixel();
@@ -195,7 +195,7 @@ const Payment: React.FC = () => {
                 
                 // Se aprovado via backend, relatar via frontend de qualquer forma
                 if (isApproved && !backendData.facebookReported) {
-                  console.log('[PAYMENT] Pagamento aprovado via backend. Rastreando do frontend...');
+                  // Pagamento aprovado via backend
                   initFacebookPixel();
                   
                   // Calcular o valor de forma robusta
@@ -206,7 +206,7 @@ const Payment: React.FC = () => {
                   }
                   
                   // trackPurchase já foi chamado anteriormente, evitando duplicata
-                  console.log('[PAYMENT] Pagamento aprovado via backend - conversão já rastreada');
+                  // Conversão já foi rastreada
                   
                   // Notificar o usuário
                   toast({

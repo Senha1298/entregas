@@ -15,7 +15,7 @@ export const API_URLS = {
 export const API_BASE_URL = '';
 
 // Flag para debug
-const DEBUG = true;
+const DEBUG = false;
 
 // Utilitário para construir URLs de API
 export const apiUrl = (path: string): string => {
@@ -24,9 +24,7 @@ export const apiUrl = (path: string): string => {
   const basePath = path.startsWith('/') ? path : `/${path}`;
   const url = `${API_BASE_URL}${basePath}`;
   
-  if (DEBUG) {
-    console.log(`API URL: ${url} (Environment: ${isProd ? 'production' : 'development'})`);
-  }
+  // Debug removido para produção
   
   return url;
 };
@@ -35,7 +33,7 @@ export const apiUrl = (path: string): string => {
 export const checkApiStatus = async (): Promise<{ status: string; env: string }> => {
   try {
     const healthUrl = apiUrl('/health');
-    console.log(`Verificando status da API em: ${healthUrl}`);
+    // Verificação silenciosa da API
     
     const response = await fetch(healthUrl, {
       mode: 'cors',

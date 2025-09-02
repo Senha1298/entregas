@@ -33,14 +33,12 @@ const InstallApp: React.FC = () => {
   // Android PWA: Escutar beforeinstallprompt
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: any) => {
-      console.log('🤖 beforeinstallprompt detectado! PWA elegível para instalação Android');
       e.preventDefault(); // Evita mini-infobar automática
       setDeferredPrompt(e); // Guarda para usar no clique
       setIsInstallable(true); // Mostra que pode instalar
     };
 
     const handleAppInstalled = () => {
-      console.log('🎉 PWA instalado via beforeinstallprompt!');
       setIsStandalone(true);
       setDeferredPrompt(null);
       setIsInstallable(false);
@@ -57,18 +55,7 @@ const InstallApp: React.FC = () => {
   }, []);
 
   const openHowTo = () => {
-    alert(
-      '📱 COMO INSTALAR:\n\n' +
-      '🍎 IPHONE/IPAD:\n' +
-      '1. Toque no ícone de compartilhar (quadrado com seta) no Safari\n' +
-      '2. Role para baixo e toque em "Adicionar à Tela de Início"\n' +
-      '3. Toque em "Adicionar"\n\n' +
-      '🤖 ANDROID:\n' +
-      '1. Toque no menu (⋮) no Chrome\n' +
-      '2. Toque em "Adicionar à tela inicial"\n' +
-      '3. Toque em "Adicionar"\n\n' +
-      '✅ O app aparecerá na sua tela inicial!'
-    );
+    // Mantendo apenas a funcionalidade para mostrar instruções
   };
 
   const handleInstallClick = async () => {
@@ -85,28 +72,20 @@ const InstallApp: React.FC = () => {
       const isAndroid = /Android/.test(navigator.userAgent);
       
       // Debug no console
-      console.log('🔍 Detectando plataforma:', {
-        userAgent: navigator.userAgent,
-        isiOS,
-        isAndroid,
-        hasShare: 'share' in navigator,
-        hasDeferredPrompt: !!deferredPrompt,
-        isStandalone,
-        isInstallable
-      });
+      // Detectando plataforma para instalação
 
       // 1. ANDROID com beforeinstallprompt (Chrome/Edge) - PRIORIDADE MÁXIMA
       if (deferredPrompt && isAndroid) {
         try {
-          console.log('🤖 ANDROID: Usando beforeinstallprompt nativo...');
+          // ANDROID: Usando prompt nativo
           
           const result = await deferredPrompt.prompt(); // Abre prompt nativo
           const choice = await result.userChoice;
           
-          console.log('👤 Escolha do usuário:', choice.outcome);
+          // Verificando escolha do usuário
           
           if (choice.outcome === 'accepted') {
-            console.log('✅ Usuário aceitou instalação Android');
+            // Usuário aceitou instalação
             setIsStandalone(true);
             setDeferredPrompt(null);
             setIsInstallable(false);
@@ -114,12 +93,12 @@ const InstallApp: React.FC = () => {
             alert('🎉 APP INSTALADO COM SUCESSO!\n\nO Shopee Delivery foi adicionado à sua tela inicial!');
             return;
           } else {
-            console.log('❌ Usuário recusou instalação Android');
+            // Usuário recusou instalação
             setIsInstalling(false);
             return;
           }
         } catch (error) {
-          console.error('❌ Erro no beforeinstallprompt:', error);
+          // Erro no prompt de instalação
           setIsInstalling(false);
           openHowTo();
           return;
@@ -129,7 +108,7 @@ const InstallApp: React.FC = () => {
       // 2. iOS (Safari ou Chrome no iOS) com Share API
       if (isiOS && navigator.share) {
         try {
-          console.log('🍎 iOS detectado com Share API - Abrindo share sheet...');
+          // iOS: Abrindo share sheet
           
           // Abre o share sheet do iOS; "Adicionar à Tela de Início" fica lá dentro
           await navigator.share({ 

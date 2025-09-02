@@ -10,27 +10,27 @@ const PWANotification: React.FC = () => {
   // Função para registrar usuário para push notifications
   const subscribeUserToPush = async () => {
     try {
-      console.log('🔄 Iniciando subscribeUserToPush...');
+      // Iniciando registro de push notifications
       
       // Verificar se service worker e push são suportados
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        console.log('⚠️ Push notifications não suportadas');
+        // Push notifications não suportadas
         showToastNotification();
         return;
       }
 
       // Registrar service worker se necessário
       const registration = await navigator.serviceWorker.ready;
-      console.log('🛠️ Service Worker pronto:', registration);
+      // Service Worker pronto
 
       // Verificar permissão atual
       let permission = Notification.permission;
-      console.log('🔐 Permissão atual:', permission);
+      // Verificando permissão atual
       
       // Solicitar permissão se ainda não foi concedida
       if (permission === 'default') {
         permission = await Notification.requestPermission();
-        console.log('🔐 Nova permissão solicitada:', permission);
+        // Permissão solicitada
       }
 
       if (permission === 'granted') {
@@ -46,7 +46,7 @@ const PWANotification: React.FC = () => {
           applicationServerKey: convertedVapidKey
         });
         
-        console.log('🔔 Push subscription obtida:', subscription);
+        // Push subscription obtida
         
         // Enviar subscription para o servidor
         await savePushSubscription(subscription);
@@ -59,9 +59,9 @@ const PWANotification: React.FC = () => {
           tag: 'shopee-welcome'
         });
         
-        console.log('✅ Usuário registrado para push notifications!');
+        // Usuário registrado para push notifications
       } else {
-        console.log('⚠️ Permissão negada, usando toast');
+        // Permissão negada, usando toast
         showToastNotification();
       }
     } catch (error) {
@@ -100,10 +100,10 @@ const PWANotification: React.FC = () => {
         ipAddress: '', // Será preenchido pelo backend
       };
       
-      console.log('💾 Salvando subscription:', subscriptionData);
+      // Salvando subscription no servidor
       
       await axios.post('/api/push-subscriptions', subscriptionData);
-      console.log('✅ Subscription salva no servidor!');
+      // Subscription salva com sucesso
     } catch (error) {
       console.error('❌ Erro ao salvar subscription:', error);
     }
@@ -130,7 +130,7 @@ const PWANotification: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log('🔍 PWANotification: Iniciando verificação...');
+    // PWANotification: Iniciando verificação
     
     // Verificar se está rodando em modo PWA (standalone)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
@@ -138,25 +138,18 @@ const PWANotification: React.FC = () => {
     const isAndroidApp = document.referrer.includes('android-app://');
     const isPWA = isStandalone || isIOSStandalone || isAndroidApp;
     
-    console.log('📱 Detecção PWA:', {
-      isStandalone,
-      isIOSStandalone,
-      isAndroidApp,
-      isPWA,
-      referrer: document.referrer,
-      userAgent: navigator.userAgent
-    });
+    // Detecção PWA realizada
 
     // Verificar se já mostrou a notificação nesta sessão
     const notificationShown = sessionStorage.getItem('pwa_payment_notification_shown');
-    console.log('💾 Notificação já mostrada nesta sessão:', notificationShown);
+    // Verificando se notificação já foi mostrada
 
     // SEMPRE tentar registrar push notifications para teste
-    console.log('🔔 Preparando notificação e registro de push...');
+    // Preparando notificação e registro de push
     
     // Aguardar um pouco para garantir que a página carregou completamente
     const timer = setTimeout(() => {
-      console.log('⏰ Timer executado, enviando notificação...');
+      // Timer executado, processando notificação
       
       // Tentar registrar para push notifications
       subscribeUserToPush();
