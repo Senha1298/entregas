@@ -3,20 +3,14 @@ import { Helmet } from 'react-helmet';
 
 export default function AppPage() {
   const [currentPage, setCurrentPage] = useState('home');
-  const [currentSubPage, setCurrentSubPage] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showPage = (page: string) => {
     setCurrentPage(page);
-    setCurrentSubPage(''); // Reset sub-page when changing main page
-  };
-
-  const showSubPage = (subPage: string) => {
-    setCurrentSubPage(subPage);
   };
 
   const goBackToHome = () => {
-    setCurrentSubPage('');
+    setCurrentPage('home');
   };
 
   const openModal = (e: React.MouseEvent) => {
@@ -195,19 +189,19 @@ export default function AppPage() {
             {/* Quick Actions */}
             <div className="w-full max-w-[400px] mx-auto mt-8 flex justify-between px-4">
               <div className="flex flex-col items-center">
-                <button onClick={() => showSubPage('historico')} className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
+                <button onClick={() => showPage('historico')} className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
                   <i className="fas fa-history text-[#f55a1e] text-2xl"></i>
                 </button>
                 <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Histórico</span>
               </div>
               <div className="flex flex-col items-center">
-                <button onClick={() => showSubPage('ajuda')} className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
+                <button onClick={() => showPage('ajuda')} className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
                   <i className="fas fa-question-circle text-[#f55a1e] text-2xl"></i>
                 </button>
                 <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Ajuda</span>
               </div>
               <div className="flex flex-col items-center">
-                <button onClick={() => showSubPage('perfil')} className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
+                <button onClick={() => showPage('perfil')} className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
                   <i className="fas fa-user text-[#f55a1e] text-2xl"></i>
                 </button>
                 <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Perfil</span>
@@ -233,8 +227,8 @@ export default function AppPage() {
             </div>
           </div>
 
-          {/* Sub-pages dentro da home */}
-          {currentPage === 'home' && currentSubPage === 'historico' && (
+          {/* Historico Page Content */}
+          <div className={`w-full ${currentPage === 'historico' ? '' : 'hidden'}`}>
             <div className="w-full">
               <div className="bg-[#f55a1e] w-full h-[48px] flex items-center justify-between px-4 mb-6">
                 <button onClick={goBackToHome} className="text-white text-xl">
@@ -252,9 +246,10 @@ export default function AppPage() {
                 </button>
               </div>
             </div>
-          )}
+          </div>
 
-          {currentPage === 'home' && currentSubPage === 'ajuda' && (
+          {/* Ajuda Page Content */}
+          <div className={`w-full ${currentPage === 'ajuda' ? '' : 'hidden'}`}>
             <div className="w-full">
               <div className="bg-[#f55a1e] w-full h-[48px] flex items-center justify-between px-4 mb-6">
                 <button onClick={goBackToHome} className="text-white text-xl">
@@ -352,9 +347,10 @@ export default function AppPage() {
                 </div>
               </div>
             </div>
-          )}
+          </div>
 
-          {currentPage === 'home' && currentSubPage === 'perfil' && (
+          {/* Perfil Page Content */}
+          <div className={`w-full ${currentPage === 'perfil' ? '' : 'hidden'}`}>
             <div className="w-full">
               <div className="bg-[#f55a1e] w-full h-[48px] flex items-center justify-between px-4 mb-6">
                 <button onClick={goBackToHome} className="text-white text-xl">
@@ -425,7 +421,7 @@ export default function AppPage() {
                 </div>
               </div>
             </div>
-          )}
+          </div>
 
           {/* Entregas Page Content */}
           <div className={`w-full ${currentPage === 'entregas' ? '' : 'hidden'}`}>
