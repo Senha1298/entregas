@@ -3,10 +3,20 @@ import { Helmet } from 'react-helmet';
 
 export default function AppPage() {
   const [currentPage, setCurrentPage] = useState('home');
+  const [currentSubPage, setCurrentSubPage] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showPage = (page: string) => {
     setCurrentPage(page);
+    setCurrentSubPage(''); // Reset sub-page when changing main page
+  };
+
+  const showSubPage = (subPage: string) => {
+    setCurrentSubPage(subPage);
+  };
+
+  const goBackToHome = () => {
+    setCurrentSubPage('');
   };
 
   const openModal = (e: React.MouseEvent) => {
@@ -169,19 +179,19 @@ export default function AppPage() {
             {/* Quick Actions */}
             <div className="w-full max-w-[400px] mx-auto mt-8 flex justify-between px-4">
               <div className="flex flex-col items-center">
-                <button className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
-                  <i className="fas fa-book-open text-[#f55a1e] text-2xl"></i>
+                <button onClick={() => showSubPage('historico')} className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
+                  <i className="fas fa-history text-[#f55a1e] text-2xl"></i>
                 </button>
-                <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Meus Cursos</span>
+                <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Histórico</span>
               </div>
               <div className="flex flex-col items-center">
-                <button className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
+                <button onClick={() => showSubPage('ajuda')} className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
                   <i className="fas fa-question-circle text-[#f55a1e] text-2xl"></i>
                 </button>
                 <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Ajuda</span>
               </div>
               <div className="flex flex-col items-center">
-                <button className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
+                <button onClick={() => showSubPage('perfil')} className="bg-white rounded-0 shadow-lg w-14 h-14 flex items-center justify-center border border-[#f3f4f6] hover:bg-[#fff5f0] transition">
                   <i className="fas fa-user text-[#f55a1e] text-2xl"></i>
                 </button>
                 <span className="text-xs mt-2 font-medium" style={{color: '#000000cc'}}>Perfil</span>
@@ -206,6 +216,200 @@ export default function AppPage() {
               </div>
             </div>
           </div>
+
+          {/* Sub-pages dentro da home */}
+          {currentPage === 'home' && currentSubPage === 'historico' && (
+            <div className="w-full">
+              <div className="bg-[#f55a1e] w-full h-[48px] flex items-center justify-between px-4 mb-6">
+                <button onClick={goBackToHome} className="text-white text-xl">
+                  <i className="fas fa-arrow-left"></i>
+                </button>
+                <span className="text-white text-lg font-bold sora">Histórico de Entregas</span>
+                <div className="w-6"></div>
+              </div>
+              <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-6 mb-4 mx-auto shadow-lg border border-[#f3f4f6] text-center">
+                <i className="fas fa-box-open text-[#00000066] text-4xl mb-4"></i>
+                <h3 className="text-lg font-bold mb-2 text-[#f55a1e]">Nenhuma entrega realizada</h3>
+                <p className="text-sm" style={{color: '#00000066'}}>Você ainda não realizou nenhuma entrega. Comece agora mesmo!</p>
+                <button onClick={() => {goBackToHome(); showPage('entregas');}} className="mt-4 bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 px-6 rounded-0 shadow transition sora text-sm">
+                  Ver entregas disponíveis
+                </button>
+              </div>
+            </div>
+          )}
+
+          {currentPage === 'home' && currentSubPage === 'ajuda' && (
+            <div className="w-full">
+              <div className="bg-[#f55a1e] w-full h-[48px] flex items-center justify-between px-4 mb-6">
+                <button onClick={goBackToHome} className="text-white text-xl">
+                  <i className="fas fa-arrow-left"></i>
+                </button>
+                <span className="text-white text-lg font-bold sora">Central de Ajuda</span>
+                <div className="w-6"></div>
+              </div>
+              <div className="w-[94%] max-w-[400px] mx-auto mb-4">
+                <h3 className="text-lg font-bold mb-4 text-[#f55a1e] px-2">Procedimentos do Entregador</h3>
+                <div className="space-y-3">
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>1. Como aceitar uma entrega</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Acesse a aba "Entregas" e selecione uma rota disponível.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>2. Equipamentos de segurança obrigatórios</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Capacete, colete refletivo e bag térmica são itens obrigatórios.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>3. Processo de coleta no centro de distribuição</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Apresente seu código de entregador e aguarde a separação dos pedidos.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>4. Verificação dos pacotes antes da saída</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Confira se todos os códigos de rastreamento coincidem com sua lista.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>5. Como usar o aplicativo durante a entrega</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Mantenha o GPS ligado e atualize o status de cada entrega em tempo real.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>6. Procedimento para entregas em prédios</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Identifique-se com o porteiro e solicite contato com o destinatário.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>7. O que fazer quando o cliente não está presente</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Aguarde 5 minutos, tente contato telefônico e depois marque como "Ausente".</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>8. Como tirar fotos da entrega</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Fotografe o produto entregue e, se possível, inclua o número da casa/apartamento.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>9. Procedimento para pagamento via PIX</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Aguarde a confirmação do pagamento no app antes de finalizar a entrega.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>10. Como proceder com produtos danificados</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Não entregue produtos visivelmente danificados e reporte no app imediatamente.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>11. Horários permitidos para entregas residenciais</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Entregas residenciais das 8h às 22h. Comerciais das 8h às 18h.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>12. Como finalizar o dia de trabalho</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Retorne ao centro de distribuição e devolva produtos não entregues.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>13. Políticas de cancelamento de entregas</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Entregas só podem ser canceladas em casos de força maior ou segurança.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>14. Sistema de avaliação de entregadores</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Sua pontuação é baseada em pontualidade, qualidade do atendimento e entregas realizadas.</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <h4 className="font-bold text-sm mb-2" style={{color: '#000000cc'}}>15. Contato de emergência e suporte</h4>
+                    <p className="text-xs" style={{color: '#00000066'}}>Em caso de emergência, ligue para (11) 4000-1234 ou use o botão SOS no app.</p>
+                  </div>
+                </div>
+                <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6] mt-6">
+                  <h3 className="text-lg font-bold mb-4 text-[#f55a1e]">Enviar Ticket de Suporte</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium mb-1" style={{color: '#000000cc'}}>Assunto</label>
+                      <select className="w-full p-2 border border-gray-300 rounded-0 text-sm" style={{color: '#000000cc'}}>
+                        <option>Selecione um assunto</option>
+                        <option>Problema com entrega</option>
+                        <option>Questão sobre pagamento</option>
+                        <option>Problema técnico no app</option>
+                        <option>Sugestão de melhoria</option>
+                        <option>Outros</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1" style={{color: '#000000cc'}}>Descrição do problema</label>
+                      <textarea className="w-full p-2 border border-gray-300 rounded-0 text-sm h-20 resize-none" placeholder="Descreva detalhadamente sua dúvida ou problema..." style={{color: '#000000cc'}}></textarea>
+                    </div>
+                    <button className="w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-0 shadow transition sora text-sm">
+                      Enviar Ticket
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentPage === 'home' && currentSubPage === 'perfil' && (
+            <div className="w-full">
+              <div className="bg-[#f55a1e] w-full h-[48px] flex items-center justify-between px-4 mb-6">
+                <button onClick={goBackToHome} className="text-white text-xl">
+                  <i className="fas fa-arrow-left"></i>
+                </button>
+                <span className="text-white text-lg font-bold sora">Meu Perfil</span>
+                <div className="w-6"></div>
+              </div>
+              <div className="w-[94%] max-w-[400px] mx-auto mb-4">
+                <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6] mb-4">
+                  <div className="flex items-center mb-4">
+                    <div className="w-16 h-16 bg-[#f55a1e] rounded-full flex items-center justify-center mr-4">
+                      <i className="fas fa-user text-white text-2xl"></i>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold" style={{color: '#000000cc'}}>João Silva Santos</h3>
+                      <p className="text-sm" style={{color: '#00000066'}}>ID: #SP789456</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="text-sm font-medium" style={{color: '#000000cc'}}>CPF:</span>
+                      <span className="text-sm" style={{color: '#00000066'}}>123.456.789-01</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="text-sm font-medium" style={{color: '#000000cc'}}>Status do Cadastro:</span>
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-bold">ATIVO</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="text-sm font-medium" style={{color: '#000000cc'}}>Total de Entregas:</span>
+                      <span className="text-sm font-bold text-[#f55a1e]">0 entregas</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span className="text-sm font-medium" style={{color: '#000000cc'}}>Data de Cadastro:</span>
+                      <span className="text-sm" style={{color: '#00000066'}}>15/01/2024</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-sm font-medium" style={{color: '#000000cc'}}>Avaliação:</span>
+                      <div className="flex items-center">
+                        <span className="text-sm mr-2" style={{color: '#00000066'}}>Novo entregador</span>
+                        <div className="flex">
+                          <i className="fas fa-star text-gray-300 text-xs"></i>
+                          <i className="fas fa-star text-gray-300 text-xs"></i>
+                          <i className="fas fa-star text-gray-300 text-xs"></i>
+                          <i className="fas fa-star text-gray-300 text-xs"></i>
+                          <i className="fas fa-star text-gray-300 text-xs"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                  <h4 className="text-base font-bold mb-3 text-[#f55a1e]">Ações do Perfil</h4>
+                  <div className="space-y-2">
+                    <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 rounded-0 transition text-sm text-left px-3">
+                      <i className="fas fa-edit mr-2"></i> Editar informações pessoais
+                    </button>
+                    <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 rounded-0 transition text-sm text-left px-3">
+                      <i className="fas fa-key mr-2"></i> Alterar senha
+                    </button>
+                    <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 rounded-0 transition text-sm text-left px-3">
+                      <i className="fas fa-file-alt mr-2"></i> Baixar certificados
+                    </button>
+                    <button className="w-full bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 rounded-0 transition text-sm text-left px-3">
+                      <i className="fas fa-sign-out-alt mr-2"></i> Sair da conta
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Entregas Page Content */}
           <div className={`w-full ${currentPage === 'entregas' ? '' : 'hidden'}`}>
