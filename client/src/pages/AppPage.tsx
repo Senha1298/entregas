@@ -551,17 +551,17 @@ export default function AppPage() {
         </div>
 
         {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 w-full bg-white flex justify-between items-center h-[70px] z-30 sora" style={{maxWidth:'430px'}}>
-          <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition" onClick={() => showPage('home')}>
-            <i className={`fas fa-home text-[#f55a1e] text-2xl icon-3d ${currentPage !== 'home' ? 'opacity-40' : ''}`}></i>
+        <div className="fixed bottom-0 left-0 w-full bg-white flex justify-between items-center h-[85px] z-30 sora" style={{maxWidth:'430px'}}>
+          <div className="flex-1 flex flex-col items-center py-1 cursor-pointer sora transition" onClick={() => showPage('home')}>
+            <i className={`fas fa-home text-[#f55a1e] text-2xl ${currentPage !== 'home' ? 'opacity-40' : ''}`}></i>
             <span className={`text-[#f55a1e] text-base font-medium mt-1 sora ${currentPage !== 'home' ? 'opacity-40' : ''}`}>Início</span>
           </div>
-          <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition" onClick={() => showPage('entregas')}>
-            <i className={`fas fa-box text-[#f55a1e] text-2xl icon-3d ${currentPage !== 'entregas' ? 'opacity-40' : ''}`}></i>
+          <div className="flex-1 flex flex-col items-center py-1 cursor-pointer sora transition" onClick={() => showPage('entregas')}>
+            <i className={`fas fa-box text-[#f55a1e] text-2xl ${currentPage !== 'entregas' ? 'opacity-40' : ''}`}></i>
             <span className={`text-[#f55a1e] text-base font-medium mt-1 sora ${currentPage !== 'entregas' ? 'opacity-40' : ''}`}>Entregas</span>
           </div>
-          <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition" onClick={() => showPage('saldo')}>
-            <i className={`fas fa-wallet text-[#f55a1e] text-2xl icon-3d ${currentPage !== 'saldo' ? 'opacity-40' : ''}`}></i>
+          <div className="flex-1 flex flex-col items-center py-1 cursor-pointer sora transition" onClick={() => showPage('saldo')}>
+            <i className={`fas fa-wallet text-[#f55a1e] text-2xl ${currentPage !== 'saldo' ? 'opacity-40' : ''}`}></i>
             <span className={`text-[#f55a1e] text-base font-medium mt-1 sora ${currentPage !== 'saldo' ? 'opacity-40' : ''}`}>Saldo</span>
           </div>
         </div>
