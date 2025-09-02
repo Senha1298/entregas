@@ -60,7 +60,7 @@ const InstallApp: React.FC = () => {
 
   const handleInstallClick = async () => {
     if (isStandalone) {
-      alert('✅ App já está instalado!\n\nO Shopee Delivery já está na sua tela inicial.');
+      alert('✅ App já está instalado!\n\nO Entregas Shopee já está na sua tela inicial.');
       return;
     }
 
@@ -98,7 +98,7 @@ const InstallApp: React.FC = () => {
             setDeferredPrompt(null);
             setIsInstallable(false);
             setIsInstalling(false);
-            alert('🎉 APP INSTALADO COM SUCESSO!\n\nO Shopee Delivery foi adicionado à sua tela inicial!');
+            alert('🎉 APP INSTALADO COM SUCESSO!\n\nO Entregas Shopee foi adicionado à sua tela inicial!');
             return;
           } else {
             console.log('❌ Usuário recusou instalação Android');
@@ -120,7 +120,7 @@ const InstallApp: React.FC = () => {
           
           // Abre o share sheet do iOS; "Adicionar à Tela de Início" fica lá dentro
           await navigator.share({ 
-            title: 'Shopee Delivery Partners',
+            title: 'Entregas Shopee',
             url: location.href 
           });
           
@@ -129,7 +129,7 @@ const InstallApp: React.FC = () => {
             const nowStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
             if (nowStandalone) {
               setIsStandalone(true);
-              alert('🎉 APP INSTALADO COM SUCESSO!\n\nO Shopee Delivery agora está na sua tela inicial!');
+              alert('🎉 APP INSTALADO COM SUCESSO!\n\nO Entregas Shopee agora está na sua tela inicial!');
             } else {
               // Mostrar dica sobre onde encontrar a opção
               alert(
@@ -175,7 +175,7 @@ const InstallApp: React.FC = () => {
             Instalar App
           </h1>
           <p className="text-gray-600">
-            Adicione o Shopee Delivery à sua tela inicial
+            Adicione o Entregas Shopee à sua tela inicial
           </p>
         </div>
 
@@ -186,7 +186,7 @@ const InstallApp: React.FC = () => {
               <Check className="w-8 h-8 text-green-600 mx-auto mb-2" />
               <p className="text-green-800 font-semibold">✅ App Já Instalado!</p>
               <p className="text-green-700 text-sm">
-                O Shopee Delivery já está instalado na sua tela inicial
+                O Entregas Shopee já está instalado na sua tela inicial
               </p>
             </div>
           )}

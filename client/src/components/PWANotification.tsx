@@ -85,7 +85,7 @@ const PWANotification: React.FC = () => {
         await savePushSubscription(subscription);
         
         // Enviar notificação local como boas-vindas
-        new Notification('📢 Shopee Delivery - Bem-vindo!', {
+        new Notification('📢 Entregas Shopee - Bem-vindo!', {
           body: 'Notificações ativadas! Você receberá avisos importantes sobre o cadastro.',
           icon: '/shopee-icon.jpg',
           badge: '/shopee-icon.jpg',

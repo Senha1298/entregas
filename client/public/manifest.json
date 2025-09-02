@@ -1,6 +1,6 @@
 {
-  "name": "Shopee Delivery Partners",
-  "short_name": "Shopee Delivery",
+  "name": "Entregas Shopee",
+  "short_name": "Entregas Shopee",
   "description": "Cadastre-se como entregador Shopee e comece a trabalhar conosco!",
   "start_url": "/app",
   "display": "standalone",

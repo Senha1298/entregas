@@ -126,7 +126,7 @@ self.addEventListener('push', (event) => {
   console.log('🔔 Push notification recebida:', event);
   
   let notificationData = {
-    title: 'Shopee Delivery',
+    title: 'Entregas Shopee',
     body: 'Nova notificação!',
     icon: '/shopee-icon.jpg',
     badge: '/shopee-icon.jpg',

@@ -75,7 +75,7 @@ export default function AppPage() {
     return (
       <>
         <Helmet>
-          <title>Shopee Delivery</title>
+          <title>Entregas Shopee</title>
           <meta name="viewport" content="width=375, initial-scale=1" />
           <script src="https://cdn.tailwindcss.com"></script>
           <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
@@ -109,7 +109,7 @@ export default function AppPage() {
   return (
     <>
       <Helmet>
-        <title>Shopee Delivery</title>
+        <title>Entregas Shopee</title>
         <meta name="viewport" content="width=375, initial-scale=1" />
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
@@ -545,23 +545,7 @@ export default function AppPage() {
               <button aria-disabled="true" className="bg-gray-300 text-gray-500 font-bold py-3 px-8 rounded-0 cursor-not-allowed text-lg sora shadow-md opacity-70" disabled type="button">
                 Realizar saque
               </button>
-              <div className="w-full mt-8">
-                <h3 className="text-base font-bold text-[#f55a1e] mb-2">Histórico de transações</h3>
-                <ul className="divide-y divide-gray-100">
-                  <li className="flex justify-between py-2">
-                    <span style={{color: '#000000cc'}}>Entrega #12345</span>
-                    <span style={{color: '#00000066'}}>R$ 0,00</span>
-                  </li>
-                  <li className="flex justify-between py-2">
-                    <span style={{color: '#000000cc'}}>Entrega #12344</span>
-                    <span style={{color: '#00000066'}}>R$ 0,00</span>
-                  </li>
-                  <li className="flex justify-between py-2">
-                    <span style={{color: '#000000cc'}}>Entrega #12343</span>
-                    <span style={{color: '#00000066'}}>R$ 0,00</span>
-                  </li>
-                </ul>
-              </div>
+
             </div>
           </div>
         </div>
