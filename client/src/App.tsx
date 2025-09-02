@@ -18,6 +18,7 @@ import Selfie from "@/pages/Selfie";
 import CpfPayment from "@/pages/CpfPayment";
 import InstallApp from "@/pages/InstallApp";
 import AdminPanel from "@/pages/AdminPanel";
+import AppPage from "@/pages/AppPage";
 import { useAppContext } from "@/contexts/AppContext";
 import { useDesktopProtection } from "@/hooks/use-desktop-protection";
 import FacebookPixelInitializer from "@/components/FacebookPixelInitializer";
@@ -43,6 +44,7 @@ function Router() {
       <Route path="/pagamento-instrutor" component={PagamentoInstrutor} />
       <Route path="/instalar-app" component={InstallApp} />
       <Route path="/admin" component={AdminPanel} />
+      <Route path="/app" component={AppPage} />
       <Route path="/:cpf" component={CpfPayment} />
       <Route component={NotFound} />
     </Switch>
