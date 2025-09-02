@@ -176,7 +176,7 @@ export default function AppPage() {
             </div>
             {/* Square Card Aligned Left with Button Effect and Shadow */}
             <div className="w-full flex justify-start pl-4">
-              <button aria-label="Acessar treinamento" className="btn-treinamento w-[170px] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col sora transition transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-[#f55a1e] active:scale-95 border border-[#f3f4f6]" style={{border:'none', padding:0}} type="button">
+              <button onClick={() => window.location.href = '/treinamento-app'} aria-label="Acessar treinamento" className="btn-treinamento w-[170px] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col sora transition transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-[#f55a1e] active:scale-95 border border-[#f3f4f6]" style={{border:'none', padding:0}} type="button">
                 <div className="relative">
                   <img alt="Banner quadrado Shopee treinamento, ilustração de entregador e texto em português" className="w-full h-[170px] object-cover rounded-t-2xl select-none pointer-events-none transition-shadow duration-200 hover:shadow-xl" draggable="false" src="https://i.ibb.co/nMfSpcM1/assets-task-01k43b21e2eqrszdavwvt81vf6-1756753987-img-0.webp" />
                   <span className="absolute top-2 right-2 bg-white/80 text-[#f55a1e] text-xs font-bold px-2 py-0.5 rounded-full shadow">Novo</span>

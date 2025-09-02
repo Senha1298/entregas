@@ -13,6 +13,7 @@ import Dashboard from "@/pages/Dashboard";
 import Payment from "@/pages/Payment";
 import Pay from "@/pages/Pay";
 import Treinamento from "@/pages/Treinamento";
+import TreinamentoApp from "@/pages/TreinamentoApp";
 import PagamentoInstrutor from "@/pages/PagamentoInstrutor";
 import Selfie from "@/pages/Selfie";
 import CpfPayment from "@/pages/CpfPayment";
@@ -41,6 +42,7 @@ function Router() {
       <Route path="/payment" component={Payment} />
       <Route path="/pay" component={Pay} />
       <Route path="/treinamento" component={Treinamento} />
+      <Route path="/treinamento-app" component={TreinamentoApp} />
       <Route path="/pagamento-instrutor" component={PagamentoInstrutor} />
       <Route path="/instalar-app" component={InstallApp} />
       <Route path="/admin" component={AdminPanel} />
