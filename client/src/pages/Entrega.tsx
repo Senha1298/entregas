@@ -457,7 +457,7 @@ const Entrega: React.FC = () => {
           
           // Redirecionar instantaneamente para a página de treinamento
           console.log('[ENTREGA] Redirecionando para página de treinamento...');
-          setLocation('/treinamento');
+          setLocation('/instalar-app');
           
           // Limpar o ID do pagamento do localStorage
           localStorage.removeItem('current_payment_id');
