@@ -50,7 +50,7 @@ const TreinamentoApp: FC = () => {
       
       <div className="bg-[#fafbfc] min-h-screen flex flex-col sora relative" style={{maxWidth:'430px',margin:'0 auto',boxShadow:'0 0 24px 0 rgba(0,0,0,0.08)',height:'100vh'}}>
         {/* Header */}
-        <div className="bg-[#f55a1e] w-full h-[48px] fixed top-0 left-0 flex items-center justify-between px-4 z-30 sora" style={{maxWidth:'430px'}}>
+        <div className="bg-[#f55a1e] w-full h-[48px] fixed top-0 left-1/2 transform -translate-x-1/2 flex items-center justify-between px-4 z-50 sora" style={{maxWidth:'430px'}}>
           <button onClick={goBack} className="text-white text-xl icon-3d">
             <i className="fas fa-arrow-left"></i>
           </button>

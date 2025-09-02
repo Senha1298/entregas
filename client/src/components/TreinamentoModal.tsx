@@ -426,17 +426,6 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
               )}
             </div>
 
-            <DialogFooter className="pt-2 sticky bottom-0 bg-white pb-2 mt-3">
-              <Button 
-                type="button" 
-                variant="outline"
-                className="w-full text-sm py-1 h-8 rounded-0" 
-                onClick={() => onOpenChange(false)}
-                size="sm"
-              >
-                Fechar
-              </Button>
-            </DialogFooter>
           </>
         )}
       </DialogContent>
