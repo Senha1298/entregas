@@ -2340,6 +2340,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getAppUserByCpf(cpf);
       
       if (user) {
+        // Formatar cidades para o formato esperado pela página /app
+        const formattedCities = user.selectedCities && Array.isArray(user.selectedCities) 
+          ? user.selectedCities.map((cityStr: string) => {
+              const [city, state] = cityStr.split(' - ');
+              return { city: city || cityStr, state: state || 'SP' };
+            })
+          : [];
+          
         res.json({ 
           success: true, 
           message: 'Login realizado com sucesso',
@@ -2347,7 +2355,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             id: user.id,
             cpf: user.cpf,
             name: user.name,
-            selectedCities: user.selectedCities,
+            selectedCities: formattedCities,
             reachedDeliveryPage: user.reachedDeliveryPage
           }
         });
