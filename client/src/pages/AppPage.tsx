@@ -383,10 +383,6 @@ export default function AppPage() {
                       <span className="text-sm font-medium" style={{color: '#000000cc'}}>Total de Entregas:</span>
                       <span className="text-sm font-bold text-[#f55a1e]">0 entregas</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium" style={{color: '#000000cc'}}>Data de Cadastro:</span>
-                      <span className="text-sm" style={{color: '#00000066'}}>15/01/2024</span>
-                    </div>
                     <div className="flex justify-between items-center py-2">
                       <span className="text-sm font-medium" style={{color: '#000000cc'}}>Avaliação:</span>
                       <div className="flex items-center">
@@ -405,15 +401,6 @@ export default function AppPage() {
                 <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
                   <h4 className="text-base font-bold mb-3 text-[#f55a1e]">Ações do Perfil</h4>
                   <div className="space-y-2">
-                    <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 rounded-0 transition text-sm text-left px-3">
-                      <i className="fas fa-edit mr-2"></i> Editar informações pessoais
-                    </button>
-                    <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 rounded-0 transition text-sm text-left px-3">
-                      <i className="fas fa-key mr-2"></i> Alterar senha
-                    </button>
-                    <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 rounded-0 transition text-sm text-left px-3">
-                      <i className="fas fa-file-alt mr-2"></i> Baixar certificados
-                    </button>
                     <button className="w-full bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 rounded-0 transition text-sm text-left px-3">
                       <i className="fas fa-sign-out-alt mr-2"></i> Sair da conta
                     </button>
