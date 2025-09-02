@@ -80,7 +80,7 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
       const data: CepApiResponse = await response.json();
       
       if (data.erro) {
-        setError('CEP não encontrado. Verifique e tente novamente.');
+        // Não mostrar erro - deixar usuário prosseguir
         setLocationData(null);
       } else {
         setLocationData({
@@ -89,7 +89,7 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
         });
       }
     } catch (err) {
-      setError('Erro ao buscar o CEP. Tente novamente.');
+      // Não mostrar erro - deixar usuário prosseguir silenciosamente
       setLocationData(null);
     } finally {
       setIsLoading(false);
@@ -107,10 +107,18 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
   // Confirmar os dados
   const handleConfirm = () => {
     if (locationData) {
+      // Se encontrou dados do CEP, usar eles
       onConfirm({
         cep: formattedCep,
         city: locationData.city,
         state: locationData.state
+      });
+    } else if (cep.length === 8) {
+      // Se não encontrou dados mas o CEP tem 8 dígitos, deixar prosseguir com dados padrão
+      onConfirm({
+        cep: formattedCep,
+        city: 'São Paulo', // Cidade padrão se API falhar
+        state: 'SP'       // Estado padrão se API falhar
       });
     }
   };
@@ -178,11 +186,7 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
               </div>
             )}
             
-            {error && (
-              <div className="text-red-500 text-sm font-medium py-1 bg-red-50 p-3 rounded-md border border-red-100">
-                {error}
-              </div>
-            )}
+            {/* Não mostrar erros - usuário pode prosseguir sempre */}
             
             {locationData && (
               <div className="bg-[#FFF8F6] p-4 rounded-md border border-[#FFE0D9]">
@@ -204,6 +208,26 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
               </div>
             )}
             
+            {!locationData && !isLoading && cep.length === 8 && (
+              <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
+                <div className="flex items-center">
+                  <div className="mr-3 text-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-gray-700">
+                      <span className="font-medium">CEP informado:</span> 
+                      <span className="ml-1 font-semibold">{formattedCep}</span>
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">Você pode continuar o cadastro</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <div className="flex flex-col space-y-3 pt-2">
               {locationData && (
                 <Button
@@ -218,10 +242,10 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
               <Button
                 className="w-full bg-[#E83D22] hover:bg-[#d73920] text-white font-medium py-6 text-base rounded-md"
                 onClick={handleConfirm}
-                disabled={!locationData}
+                disabled={cep.length !== 8 || isLoading}
                 style={{ height: '50px' }}
               >
-                {locationData ? 'Confirmar' : 'Verificar CEP'}
+                {isLoading ? 'Verificando...' : locationData ? 'Confirmar' : 'Continuar'}
               </Button>
             </div>
           </div>
