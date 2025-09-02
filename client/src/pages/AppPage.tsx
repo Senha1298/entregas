@@ -151,7 +151,7 @@ export default function AppPage() {
           {/* Home Page Content */}
           <div className={`w-full ${currentPage === 'home' ? '' : 'hidden'}`}>
             {/* Alert Card */}
-            <div className="w-[94%] max-w-[400px] bg-gradient-to-br from-[#f55a1e] to-[#ff7e3e] rounded-2xl p-0 mb-6 flex justify-center items-center mx-auto shadow-lg border border-[#ff7e3e]/20">
+            <div className="w-[94%] max-w-[400px] bg-gradient-to-br from-[#f55a1e] to-[#ff7e3e] rounded-2xl p-0 mb-6 mt-4 flex justify-center items-center mx-auto shadow-lg border border-[#ff7e3e]/20">
               <img alt="Banner de treinamento obrigatório Shopee, com ícone de alerta e texto em português sobre o treinamento para entregadores" className="w-full object-cover rounded-2xl" src="https://ppyxcanzwxsbsrokvpky.supabase.co/storage/v1/object/public/app-assets/apps/banners/1756753623789-1jp3dstfhyf.png" style={{maxHeight: '200px'}} />
             </div>
             {/* Square Card Aligned Left with Button Effect and Shadow */}
