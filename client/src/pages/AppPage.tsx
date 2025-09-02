@@ -419,71 +419,75 @@ export default function AppPage() {
 
           {/* Entregas Page Content */}
           <div className={`w-full ${currentPage === 'entregas' ? '' : 'hidden'}`}>
-            <h2 className="text-2xl font-bold text-center my-6 sora text-[#f55a1e]">Entregas Disponíveis</h2>
-            <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow-lg border border-[#f3f4f6]">
-              <div className="mb-2">
-                <h3 className="font-bold sora text-[#f55a1e]">Rota Centro (São Paulo)</h3>
+            <h2 className="text-2xl font-bold text-center my-6 sora text-[#f55a1e]">Entregas</h2>
+            
+            {/* Disclaimer */}
+            <div className="w-[94%] max-w-[400px] bg-yellow-50 rounded-2xl p-4 mb-4 mx-auto shadow border border-yellow-200">
+              <div className="flex items-start gap-3">
+                <i className="fas fa-exclamation-triangle text-yellow-600 text-lg mt-1"></i>
+                <div>
+                  <h4 className="font-bold text-yellow-800 mb-2 sora">Atenção!</h4>
+                  <p className="text-sm text-yellow-700">
+                    Para começar a realizar entregas é obrigatório completar o treinamento de entregadores.
+                  </p>
+                </div>
               </div>
-              <p className="text-sm" style={{color: '#000000cc'}}>
-                Entregas disponíveis: <span className="font-bold">54</span><br />
-                Ganho total: <span className="font-bold">R$ 648,00</span>
-              </p>
-              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-0 shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
-                <i className="fas fa-box"></i>
-                Realizar entregas
-              </button>
             </div>
-            <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow-lg border border-[#f3f4f6]">
-              <div className="mb-2">
-                <h3 className="font-bold sora text-[#f55a1e]">Rota Zona Sul (São Paulo)</h3>
+
+            {/* Ganhos de hoje */}
+            <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow border border-[#f3f4f6]">
+              <h3 className="font-bold text-[#f55a1e] mb-3 sora">Ganhos de hoje</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold sora" style={{color: '#000000cc'}}>R$ 0,00</div>
+                  <div className="text-sm" style={{color: '#00000066'}}>Ganhos</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold sora" style={{color: '#000000cc'}}>0</div>
+                  <div className="text-sm" style={{color: '#00000066'}}>Entregas realizadas</div>
+                </div>
               </div>
-              <p className="text-sm" style={{color: '#000000cc'}}>
-                Entregas disponíveis: <span className="font-bold">68</span><br />
-                Ganho total: <span className="font-bold">R$ 816,00</span>
-              </p>
-              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-0 shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
-                <i className="fas fa-box"></i>
-                Realizar entregas
-              </button>
             </div>
-            <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow-lg border border-[#f3f4f6]">
-              <div className="mb-2">
-                <h3 className="font-bold sora text-[#f55a1e]">Rota Leste (São Paulo)</h3>
+
+            {/* Entregas disponíveis hoje */}
+            <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow border border-[#f3f4f6]">
+              <div className="mb-4">
+                <h3 className="font-bold text-[#f55a1e] sora">São Paulo - SP</h3>
+                <p className="text-sm" style={{color: '#00000066'}}>
+                  {new Date().toLocaleDateString('pt-BR', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </p>
               </div>
-              <p className="text-sm" style={{color: '#000000cc'}}>
-                Entregas disponíveis: <span className="font-bold">42</span><br />
-                Ganho total: <span className="font-bold">R$ 504,00</span>
-              </p>
-              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-0 shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
+              
+              <div className="space-y-3 mb-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium" style={{color: '#000000cc'}}>Entregas disponíveis:</span>
+                  <span className="text-sm font-bold text-[#f55a1e]">82</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium" style={{color: '#000000cc'}}>Estimativa de ganhos:</span>
+                  <span className="text-sm font-bold text-green-600">R$ 685,00</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium" style={{color: '#000000cc'}}>Tempo estimado:</span>
+                  <span className="text-sm font-bold" style={{color: '#000000cc'}}>4h 22min</span>
+                </div>
+              </div>
+
+              <button 
+                disabled 
+                className="w-full bg-gray-300 text-gray-500 font-bold py-2 rounded-0 shadow cursor-not-allowed sora text-base flex items-center justify-center gap-2 opacity-70"
+              >
                 <i className="fas fa-box"></i>
                 Realizar entregas
               </button>
-            </div>
-            <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow-lg border border-[#f3f4f6]">
-              <div className="mb-2">
-                <h3 className="font-bold sora text-[#f55a1e]">Rota Norte (São Paulo)</h3>
-              </div>
-              <p className="text-sm" style={{color: '#000000cc'}}>
-                Entregas disponíveis: <span className="font-bold">85</span><br />
-                Ganho total: <span className="font-bold">R$ 1.020,00</span>
+              <p className="text-xs text-center mt-2" style={{color: '#00000066'}}>
+                Complete o treinamento para habilitar as entregas
               </p>
-              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-0 shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
-                <i className="fas fa-box"></i>
-                Realizar entregas
-              </button>
-            </div>
-            <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow-lg border border-[#f3f4f6]">
-              <div className="mb-2">
-                <h3 className="font-bold sora text-[#f55a1e]">Rota Oeste (São Paulo)</h3>
-              </div>
-              <p className="text-sm" style={{color: '#000000cc'}}>
-                Entregas disponíveis: <span className="font-bold">61</span><br />
-                Ganho total: <span className="font-bold">R$ 732,00</span>
-              </p>
-              <button className="mt-4 w-full bg-[#f55a1e] hover:bg-[#e04e1a] text-white font-bold py-2 rounded-0 shadow transition sora text-base flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#f55a1e]">
-                <i className="fas fa-box"></i>
-                Realizar entregas
-              </button>
             </div>
           </div>
 
