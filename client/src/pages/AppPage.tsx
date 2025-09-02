@@ -467,10 +467,9 @@ export default function AppPage() {
 
           {/* Entregas Page Content */}
           <div className={`w-full ${currentPage === 'entregas' ? '' : 'hidden'}`}>
-            <h2 className="text-2xl font-bold text-center my-6 sora text-[#f55a1e]">Entregas</h2>
             
             {/* Disclaimer */}
-            <div className="w-[94%] max-w-[400px] bg-yellow-50 rounded-2xl p-4 mb-4 mx-auto shadow border border-yellow-200">
+            <div className="w-[94%] max-w-[400px] bg-yellow-50 rounded-2xl p-4 mb-4 mt-8 mx-auto shadow border border-yellow-200">
               <div className="flex items-start gap-3">
                 <i className="fas fa-exclamation-triangle text-yellow-600 text-lg mt-1"></i>
                 <div>
