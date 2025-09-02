@@ -297,12 +297,66 @@ const InstallApp: React.FC = () => {
           </div>
 
           {/* Banner da Shopee */}
-          <div className="bg-white p-0 border-b border-gray-200">
-            <img 
-              src="https://www.tecnologistica.com.br/up/2024/09/26/shopee_entrega_re_1200.jpg" 
-              alt="Banner Shopee Entregas"
-              className="w-full h-48 object-cover"
-            />
+          <div className="bg-white p-4 border-b border-gray-200">
+            <div className="w-full max-w-[300px] mx-auto">
+              <img 
+                src="https://www.tecnologistica.com.br/up/2024/09/26/shopee_entrega_re_1200.jpg" 
+                alt="Banner Shopee Entregas"
+                className="w-full h-32 object-cover border border-gray-200"
+                style={{borderRadius: '0'}}
+              />
+            </div>
+          </div>
+
+          {/* Passo a Passo - Como Instalar no Android */}
+          <div className="bg-white p-4 border-b border-gray-200">
+            <h2 className="text-lg font-bold sora mb-4" style={{color: '#000000cc'}}>Como instalar no Android</h2>
+            
+            <div className="space-y-4">
+              {/* Passo 1 */}
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-[#f55a1e] text-white text-xs font-bold flex items-center justify-center" style={{borderRadius: '50%'}}>
+                  1
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium sora mb-1" style={{color: '#000000cc'}}>Toque no botão "Instalar"</div>
+                  <div className="text-sm sora" style={{color: '#00000066'}}>O arquivo do app será baixado automaticamente</div>
+                </div>
+              </div>
+              
+              {/* Passo 2 */}
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-[#f55a1e] text-white text-xs font-bold flex items-center justify-center" style={{borderRadius: '50%'}}>
+                  2
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium sora mb-1" style={{color: '#000000cc'}}>Clique em "Instalar" na notificação</div>
+                  <div className="text-sm sora" style={{color: '#00000066'}}>Aparecerá uma notificação para instalar o aplicativo</div>
+                </div>
+              </div>
+              
+              {/* Passo 3 */}
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-[#f55a1e] text-white text-xs font-bold flex items-center justify-center" style={{borderRadius: '50%'}}>
+                  3
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium sora mb-1" style={{color: '#000000cc'}}>Procure o app nos seus aplicativos</div>
+                  <div className="text-sm sora mb-2" style={{color: '#00000066'}}>Encontre o app na gaveta de aplicativos:</div>
+                  
+                  {/* Visual do app */}
+                  <div className="flex items-center gap-2 bg-gray-50 p-2" style={{borderRadius: '0'}}>
+                    <img 
+                      src="https://e3ba6e8732e83984.cdn.gocache.net/uploads/image/file/3108694/regular_86cdc6d5c3d9095ffab186cdad4b0c26.jfif" 
+                      alt="Ícone Entregas Shopee"
+                      className="w-8 h-8 border border-gray-300"
+                      style={{borderRadius: '0'}}
+                    />
+                    <span className="text-sm font-medium sora" style={{color: '#000000cc'}}>Entregas Shopee</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Seção de Avaliações */}
@@ -311,40 +365,59 @@ const InstallApp: React.FC = () => {
               <h2 className="text-lg font-bold sora" style={{color: '#000000cc'}}>Avaliações e opiniões</h2>
               <div className="flex items-center gap-1">
                 <span className="text-2xl font-bold sora">4.9</span>
-                <Star className="w-4 h-4 fill-[#f55a1e] text-[#f55a1e]" />
+                <Star className="w-5 h-5 fill-[#f55a1e] text-[#f55a1e]" />
               </div>
             </div>
             
-            {/* Rating Bar */}
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex">
-                {[1,2,3,4,5].map(star => (
-                  <Star key={star} className="w-4 h-4 fill-[#f55a1e] text-[#f55a1e]" />
-                ))}
+            {/* Rating Summary */}
+            <div className="bg-gradient-to-r from-orange-50 to-red-50 p-3 mb-4" style={{borderRadius: '0'}}>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <div className="flex">
+                  {[1,2,3,4,5].map(star => (
+                    <Star key={star} className="w-5 h-5 fill-[#f55a1e] text-[#f55a1e]" />
+                  ))}
+                </div>
+                <span className="text-lg font-bold sora" style={{color: '#000000cc'}}>4.9</span>
               </div>
-              <span className="text-sm sora" style={{color: '#00000066'}}>2.847 avaliações</span>
+              <div className="text-center">
+                <span className="text-sm sora" style={{color: '#00000066'}}>2.847 avaliações • 95% recomendam</span>
+              </div>
             </div>
 
-            {/* Lista de Avaliações */}
-            <div className="space-y-4">
+            {/* Lista de Avaliações Melhorada */}
+            <div className="space-y-3">
               {reviews.map((review, index) => (
-                <div key={index} className="border-b border-gray-100 pb-4 last:border-b-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 bg-[#f55a1e] text-white text-xs font-bold flex items-center justify-center" style={{borderRadius: '50%'}}>
+                <div key={index} className="bg-gray-50 p-3 border-l-4 border-[#f55a1e]" style={{borderRadius: '0'}}>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-gradient-to-r from-[#f55a1e] to-[#d73919] text-white text-sm font-bold flex items-center justify-center" style={{borderRadius: '50%'}}>
                       {review.name.charAt(0)}
                     </div>
-                    <div>
-                      <div className="text-sm font-medium sora" style={{color: '#000000cc'}}>{review.name}</div>
-                      <div className="flex">
-                        {[1,2,3,4,5].map(star => (
-                          <Star key={star} className="w-3 h-3 fill-[#f55a1e] text-[#f55a1e]" />
-                        ))}
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <div className="font-medium sora" style={{color: '#000000cc'}}>{review.name}</div>
+                        <div className="flex">
+                          {[1,2,3,4,5].map(star => (
+                            <Star key={star} className="w-3 h-3 fill-[#f55a1e] text-[#f55a1e]" />
+                          ))}
+                        </div>
                       </div>
+                      <div className="text-xs sora" style={{color: '#00000066'}}>Entregador verificado</div>
                     </div>
                   </div>
-                  <p className="text-sm sora" style={{color: '#000000cc'}}>{review.text}</p>
+                  <p className="text-sm sora leading-relaxed" style={{color: '#000000cc'}}>"{review.text}"</p>
+                  <div className="flex items-center gap-4 mt-2 text-xs sora" style={{color: '#00000066'}}>
+                    <span>👍 Útil</span>
+                    <span>📅 Há 2 dias</span>
+                  </div>
                 </div>
               ))}
+            </div>
+            
+            {/* Ver mais avaliações */}
+            <div className="text-center mt-4">
+              <button className="text-[#f55a1e] font-medium sora text-sm">
+                Ver todas as 2.847 avaliações →
+              </button>
             </div>
           </div>
 
