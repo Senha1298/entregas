@@ -5,9 +5,17 @@ const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
+const webpush = require('web-push');
 
 const PORT = process.env.PORT || 5000;
 const app = express();
+
+// Configurar VAPID para push notifications
+webpush.setVapidDetails(
+  'mailto:admin@shopeedelivery.com',
+  'BBAAnkFyzcnnfWoQ9DqjiY9QkQSFvScy9P_yi5LstVHcu01ja4rkYi_4ax50cZ24TTa_4aebogbVLur0NSEWHNo',
+  'BtF5d4hPQAGaz0nFV7n9hjwD1VTYOqKQW2R6nivWpKk'
+);
 
 // Middlewares essenciais
 app.use(cors({
@@ -672,6 +680,99 @@ app.get('/api/notification-history', async (req, res) => {
     res.json(result.rows);
   } catch (error) {
     console.error('❌ Erro ao buscar histórico:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
+// Endpoint para enviar notificações do admin (usado na página /admin)
+app.post('/api/send-notification', async (req, res) => {
+  try {
+    const { title, body, icon, badge, tag, data: notificationData, requireInteraction } = req.body;
+    
+    if (!title || !body) {
+      return res.status(400).json({ error: 'Título e corpo são obrigatórios' });
+    }
+    
+    // Buscar todas as subscriptions ativas
+    const subscriptionsResult = await pool.query('SELECT * FROM push_subscriptions WHERE is_active = true');
+    const subscriptions = subscriptionsResult.rows;
+    
+    if (subscriptions.length === 0) {
+      return res.status(400).json({ error: 'Nenhuma subscription ativa encontrada' });
+    }
+    
+    // Preparar payload da notificação
+    const payload = JSON.stringify({
+      title,
+      body,
+      icon: icon || '/shopee-icon.jpg',
+      badge: badge || '/shopee-icon.jpg',
+      tag: tag || 'shopee-admin-notification',
+      data: notificationData || {},
+      requireInteraction: requireInteraction || false
+    });
+    
+    console.log(`📢 Enviando notificação para ${subscriptions.length} usuários:`, payload);
+    
+    let successCount = 0;
+    let failureCount = 0;
+    
+    // Enviar para cada subscription
+    const promises = subscriptions.map(async (subscription) => {
+      try {
+        await webpush.sendNotification({
+          endpoint: subscription.endpoint,
+          keys: {
+            p256dh: subscription.p256dh_key,
+            auth: subscription.auth_key
+          }
+        }, payload);
+        
+        successCount++;
+        console.log(`✅ Notificação enviada com sucesso para: ${subscription.endpoint.substring(0, 50)}...`);
+      } catch (error) {
+        failureCount++;
+        console.error(`❌ Erro ao enviar para ${subscription.endpoint.substring(0, 50)}...`, error.message);
+        
+        // Se a subscription é inválida, desativá-la
+        if (error.statusCode === 410 || error.statusCode === 404) {
+          await pool.query('UPDATE push_subscriptions SET is_active = false, updated_at = NOW() WHERE id = $1', [subscription.id]);
+          console.log(`🗑️ Subscription desativada (inválida): ${subscription.id}`);
+        }
+      }
+    });
+    
+    await Promise.all(promises);
+    
+    // Salvar histórico da notificação
+    await pool.query(`
+      INSERT INTO notification_history (title, body, icon, badge, tag, data, sent_count, success_count, failure_count, sent_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
+    `, [
+      title,
+      body,
+      icon || '/shopee-icon.jpg',
+      badge || '/shopee-icon.jpg',
+      tag || 'shopee-admin-notification',
+      JSON.stringify(notificationData || {}),
+      subscriptions.length,
+      successCount,
+      failureCount
+    ]);
+    
+    console.log(`📊 Resultado do envio: ${successCount} sucessos, ${failureCount} falhas`);
+    
+    res.json({
+      success: true,
+      message: 'Notificação enviada',
+      stats: {
+        total: subscriptions.length,
+        success: successCount,
+        failure: failureCount
+      }
+    });
+  } catch (error) {
+    console.error('❌ Erro ao enviar notificação:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
