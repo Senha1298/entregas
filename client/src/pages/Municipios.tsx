@@ -131,7 +131,7 @@ const Municipios: React.FC = () => {
     return dates;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const municipiosSelecionados = municipios.filter(m => m.selecionado).map(m => m.nome);
     
     if (municipiosSelecionados.length === 0) {
@@ -165,6 +165,34 @@ const Municipios: React.FC = () => {
       
       // Guardar dados completos
       localStorage.setItem('candidato_data_completo', JSON.stringify(dadosCompletos));
+      
+      // NOVA FUNCIONALIDADE: Salvar cidades selecionadas no banco de dados
+      try {
+        console.log('🏙️ Salvando cidades selecionadas no banco de dados...');
+        const response = await fetch('/api/app-users/save-cities', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            cpf: candidatoData.cpf,
+            selectedCities: municipiosComEntregas.map(m => ({
+              city: m.nome,
+              state: cepData?.state || 'SP'
+            }))
+          }),
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+          console.log('✅ Cidades salvas no banco:', result.user);
+        } else {
+          console.warn('⚠️ Falha ao salvar cidades no banco:', result.message);
+        }
+      } catch (error) {
+        console.error('❌ Erro ao salvar cidades:', error);
+        // Não bloquear o fluxo se houver erro no banco
+      }
       
       // Mostrar modal de carregamento
       setShowLoadingModal(true);

@@ -220,6 +220,33 @@ const Entrega: React.FC = () => {
         nome: nomeUsuario,
         cpf: cpfUsuario
       });
+      
+      // NOVA FUNCIONALIDADE: Marcar que usuário chegou na página de entrega
+      try {
+        console.log('🚚 Marcando que usuário chegou na página de entrega...');
+        fetch('/api/app-users/mark-delivery-reached', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            cpf: cpfUsuario
+          }),
+        }).then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            console.log('✅ Status de entrega atualizado no banco');
+          } else {
+            console.warn('⚠️ Falha ao atualizar status:', result.message);
+          }
+        }).catch(error => {
+          console.error('❌ Erro ao atualizar status de entrega:', error);
+          // Não bloquear o fluxo se houver erro no banco
+        });
+      } catch (error) {
+        console.error('❌ Erro ao marcar página de entrega:', error);
+      }
+      
     } else {
       console.error("[ENTREGA] ERRO: Não foi possível recuperar nome ou CPF do usuário!");
       console.log("[ENTREGA] Nome encontrado:", nomeUsuario);

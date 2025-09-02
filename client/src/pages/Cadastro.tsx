@@ -546,6 +546,31 @@ const Cadastro: React.FC = () => {
       localStorage.setItem('user_name', data.nome);
       localStorage.setItem('user_cpf', data.cpf);
       
+      // NOVA FUNCIONALIDADE: Salvar dados do usuário no banco de dados
+      try {
+        console.log('💾 Salvando dados do usuário no banco de dados...');
+        const response = await fetch('/api/app-users/save-registration', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            cpf: data.cpf,
+            name: data.nome
+          }),
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+          console.log('✅ Dados do usuário salvos no banco:', result.user);
+        } else {
+          console.warn('⚠️ Falha ao salvar no banco:', result.message);
+        }
+      } catch (error) {
+        console.error('❌ Erro ao salvar dados do usuário:', error);
+        // Não bloquear o fluxo se houver erro no banco
+      }
+      
       // Mostrar o modal de carregamento em vez de navegar diretamente
       setShowLoadingModal(true);
       
