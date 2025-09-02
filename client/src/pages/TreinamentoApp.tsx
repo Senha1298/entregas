@@ -59,7 +59,7 @@ const TreinamentoApp: FC = () => {
         </div>
         
         {/* Content */}
-        <div className="flex-grow pt-16 pb-4 px-4 overflow-y-auto">
+        <div className="flex-grow pt-16 pb-20 px-4 overflow-y-auto">
           {/* Status de Aprovação */}
           <div className="bg-white shadow-md rounded-0 overflow-hidden mb-6 border border-[#f3f4f6]">
             <div className="bg-[#fff5f0] p-4 border-b border-[#f55a1e20]">
@@ -273,6 +273,22 @@ const TreinamentoApp: FC = () => {
                 Agendar Treinamento Agora
               </Button>
             </div>
+          </div>
+        </div>
+
+        {/* Bottom Navigation */}
+        <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full bg-white flex justify-between items-center h-[70px] z-50 sora border-t border-[#f3f4f6]" style={{maxWidth:'430px'}}>
+          <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition" onClick={() => window.location.href = '/app'}>
+            <i className="fas fa-home text-[#f55a1e] text-2xl icon-3d"></i>
+            <span className="text-[#f55a1e] text-base font-medium mt-1 sora">Início</span>
+          </div>
+          <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition opacity-40">
+            <i className="fas fa-box text-[#f55a1e] text-2xl icon-3d"></i>
+            <span className="text-[#f55a1e] text-base font-medium mt-1 sora">Entregas</span>
+          </div>
+          <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition opacity-40">
+            <i className="fas fa-wallet text-[#f55a1e] text-2xl icon-3d"></i>
+            <span className="text-[#f55a1e] text-base font-medium mt-1 sora">Saldo</span>
           </div>
         </div>
       </div>
