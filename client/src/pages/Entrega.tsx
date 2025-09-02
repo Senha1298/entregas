@@ -224,7 +224,7 @@ const Entrega: React.FC = () => {
       // NOVA FUNCIONALIDADE: Marcar que usuário chegou na página de entrega
       try {
         console.log('🚚 Marcando que usuário chegou na página de entrega...');
-        fetch('/api/app-users/mark-delivery-reached', {
+        fetch('/api/app-users/reached-delivery', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -549,7 +549,7 @@ const Cadastro: React.FC = () => {
       // NOVA FUNCIONALIDADE: Salvar dados do usuário no banco de dados
       try {
         console.log('💾 Salvando dados do usuário no banco de dados...');
-        const response = await fetch('/api/app-users/save-registration', {
+        const response = await fetch('/api/app-users/save-profile', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
