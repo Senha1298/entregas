@@ -459,6 +459,138 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
   }
 });
 
+// ===== ENDPOINTS PARA USUÁRIOS DO APP =====
+
+// Mock storage para usuários do app (em memória para produção)
+const appUsersStorage = new Map();
+
+// Endpoint para salvar dados do usuário
+app.post('/api/app-users/save-profile', async (req, res) => {
+  try {
+    const { cpf, name, city, state } = req.body;
+    
+    if (!cpf || !name || !city || !state) {
+      return res.status(400).json({
+        success: false,
+        message: 'CPF, nome, cidade e estado são obrigatórios'
+      });
+    }
+    
+    console.log('📝 Salvando dados do usuário:', { cpf, name, city, state });
+    
+    const userData = {
+      id: Date.now(),
+      cpf,
+      name,
+      city,
+      state,
+      selectedCities: [],
+      reachedDeliveryPage: false,
+      createdAt: new Date().toISOString()
+    };
+    
+    appUsersStorage.set(cpf, userData);
+    
+    res.json({
+      success: true,
+      message: 'Dados do usuário salvos com sucesso',
+      user: {
+        cpf: userData.cpf,
+        name: userData.name,
+        id: userData.id
+      }
+    });
+  } catch (error) {
+    console.error('❌ Erro ao salvar dados do usuário:', error);
+    res.status(400).json({
+      success: false,
+      message: 'Erro ao salvar dados do usuário',
+      error: error.message
+    });
+  }
+});
+
+// Endpoint para login com CPF
+app.post('/api/app-users/login', async (req, res) => {
+  try {
+    const { cpf } = req.body;
+    
+    if (!cpf) {
+      return res.status(400).json({
+        success: false,
+        message: 'CPF é obrigatório'
+      });
+    }
+    
+    console.log('🔐 Tentativa de login com CPF:', cpf);
+    
+    const userData = appUsersStorage.get(cpf);
+    
+    if (userData) {
+      console.log('✅ Login realizado com sucesso:', userData.name);
+      res.json({
+        success: true,
+        message: 'Login realizado com sucesso',
+        user: userData
+      });
+    } else {
+      console.log('❌ CPF não encontrado:', cpf);
+      res.status(404).json({
+        success: false,
+        message: 'CPF não encontrado. Faça o cadastro primeiro.'
+      });
+    }
+  } catch (error) {
+    console.error('❌ Erro no endpoint de login:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: error.message
+    });
+  }
+});
+
+// Endpoint para salvar cidades selecionadas
+app.post('/api/app-users/save-cities', async (req, res) => {
+  try {
+    const { cpf, cities } = req.body;
+    
+    if (!cpf || !cities) {
+      return res.status(400).json({
+        success: false,
+        message: 'CPF e cidades são obrigatórios'
+      });
+    }
+    
+    console.log('🏙️ Salvando cidades para CPF:', cpf, 'Cidades:', cities);
+    
+    const userData = appUsersStorage.get(cpf);
+    
+    if (userData) {
+      userData.selectedCities = cities;
+      appUsersStorage.set(cpf, userData);
+      
+      res.json({
+        success: true,
+        message: 'Cidades salvas com sucesso',
+        cities: userData.selectedCities
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+  } catch (error) {
+    console.error('❌ Erro ao salvar cidades:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: error.message
+    });
+  }
+});
+
 // Middleware para APIs não encontradas
 app.use('/api/*', (req, res) => {
   res.status(404).json({
