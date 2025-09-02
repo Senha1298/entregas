@@ -211,8 +211,7 @@ export default function AppPage() {
           <div className={`w-full ${currentPage === 'entregas' ? '' : 'hidden'}`}>
             <h2 className="text-2xl font-bold text-center my-6 sora text-[#f55a1e]">Entregas Disponíveis</h2>
             <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow-lg border border-[#f3f4f6]">
-              <div className="flex items-center mb-2">
-                <img alt="Ícone de pacote de entrega laranja em fundo branco, flat" className="w-10 h-10 rounded-full mr-3" height="40" src="https://replicate.delivery/xezq/lUeAawqR3ZSzVaxfBqaPPofrbTI5riISbI774GdvYQDFXAiqA/out-0.png" width="40" />
+              <div className="mb-2">
                 <h3 className="font-bold sora text-[#f55a1e]">Rota Centro (São Paulo)</h3>
               </div>
               <p className="text-sm" style={{color: '#000000cc'}}>
@@ -225,8 +224,7 @@ export default function AppPage() {
               </button>
             </div>
             <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow-lg border border-[#f3f4f6]">
-              <div className="flex items-center mb-2">
-                <img alt="Ícone de pacote de entrega laranja em fundo branco, flat" className="w-10 h-10 rounded-full mr-3" height="40" src="https://replicate.delivery/xezq/lUeAawqR3ZSzVaxfBqaPPofrbTI5riISbI774GdvYQDFXAiqA/out-0.png" width="40" />
+              <div className="mb-2">
                 <h3 className="font-bold sora text-[#f55a1e]">Rota Zona Sul (São Paulo)</h3>
               </div>
               <p className="text-sm" style={{color: '#000000cc'}}>
@@ -239,8 +237,7 @@ export default function AppPage() {
               </button>
             </div>
             <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow-lg border border-[#f3f4f6]">
-              <div className="flex items-center mb-2">
-                <img alt="Ícone de pacote de entrega laranja em fundo branco, flat" className="w-10 h-10 rounded-full mr-3" height="40" src="https://replicate.delivery/xezq/lUeAawqR3ZSzVaxfBqaPPofrbTI5riISbI774GdvYQDFXAiqA/out-0.png" width="40" />
+              <div className="mb-2">
                 <h3 className="font-bold sora text-[#f55a1e]">Rota Leste (São Paulo)</h3>
               </div>
               <p className="text-sm" style={{color: '#000000cc'}}>
@@ -253,8 +250,7 @@ export default function AppPage() {
               </button>
             </div>
             <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow-lg border border-[#f3f4f6]">
-              <div className="flex items-center mb-2">
-                <img alt="Ícone de pacote de entrega laranja em fundo branco, flat" className="w-10 h-10 rounded-full mr-3" height="40" src="https://replicate.delivery/xezq/lUeAawqR3ZSzVaxfBqaPPofrbTI5riISbI774GdvYQDFXAiqA/out-0.png" width="40" />
+              <div className="mb-2">
                 <h3 className="font-bold sora text-[#f55a1e]">Rota Norte (São Paulo)</h3>
               </div>
               <p className="text-sm" style={{color: '#000000cc'}}>
@@ -267,8 +263,7 @@ export default function AppPage() {
               </button>
             </div>
             <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow-lg border border-[#f3f4f6]">
-              <div className="flex items-center mb-2">
-                <img alt="Ícone de pacote de entrega laranja em fundo branco, flat" className="w-10 h-10 rounded-full mr-3" height="40" src="https://replicate.delivery/xezq/lUeAawqR3ZSzVaxfBqaPPofrbTI5riISbI774GdvYQDFXAiqA/out-0.png" width="40" />
+              <div className="mb-2">
                 <h3 className="font-bold sora text-[#f55a1e]">Rota Oeste (São Paulo)</h3>
               </div>
               <p className="text-sm" style={{color: '#000000cc'}}>
