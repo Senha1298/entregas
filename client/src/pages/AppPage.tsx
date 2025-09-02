@@ -92,10 +92,10 @@ export default function AppPage() {
             border-radius: 4px !important;
           }
           .btn-treinamento img, .btn-treinamento .rounded-t-2xl {
-            border-radius: 8px 8px 0 0 !important;
+            border-radius: 4px 4px 0 0 !important;
           }
           .btn-treinamento {
-            border-radius: 8px !important;
+            border-radius: 4px 4px 0 0 !important;
           }
           /* Custom 2px border radius for specific elements */
           .rounded-0 {
@@ -161,7 +161,7 @@ export default function AppPage() {
                   <img alt="Banner quadrado Shopee treinamento, ilustração de entregador e texto em português" className="w-full h-[170px] object-cover rounded-t-2xl select-none pointer-events-none transition-shadow duration-200 hover:shadow-xl" draggable="false" src="https://i.ibb.co/nMfSpcM1/assets-task-01k43b21e2eqrszdavwvt81vf6-1756753987-img-0.webp" />
                   <span className="absolute top-2 right-2 bg-white/80 text-[#f55a1e] text-xs font-bold px-2 py-0.5 rounded-full shadow">Novo</span>
                 </div>
-                <div className="bg-[#FB4903] text-white text-center py-3 text-base font-bold sora transition-colors duration-150 hover:bg-[#e04e1a] shadow-md tracking-wide">
+                <div className="bg-[#FB4903] text-white text-center py-3 text-base font-bold sora transition-colors duration-150 hover:bg-[#e04e1a] shadow-md tracking-wide" style={{borderRadius: '0 0 0 0'}}>
                   ACESSAR TREINAMENTO
                 </div>
               </button>
