@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 export default function AppPage() {
   const [currentPage, setCurrentPage] = useState('home');
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const showPage = (page: string) => {
     setCurrentPage(page);
@@ -53,8 +54,14 @@ export default function AppPage() {
       setCurrentPage(targetPage);
     }
     
+    // Simular carregamento inicial do app (PWA)
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    
     return () => {
-      // Limpar estilos quando o componente desmontar
+      // Limpar timer e estilos quando o componente desmontar
+      clearTimeout(timer);
       document.body.className = '';
       document.body.style.maxWidth = '';
       document.body.style.margin = '';
@@ -63,10 +70,48 @@ export default function AppPage() {
     };
   }, []);
 
+  // Exibir tela de loading para PWA
+  if (isLoading) {
+    return (
+      <>
+        <Helmet>
+          <title>Shopee Delivery</title>
+          <meta name="viewport" content="width=375, initial-scale=1" />
+          <script src="https://cdn.tailwindcss.com"></script>
+          <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+          <style>{`
+            body, .sora {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+            }
+          `}</style>
+        </Helmet>
+        <div className="min-h-screen bg-[#f55a1e] flex flex-col items-center justify-center relative" style={{maxWidth:'430px', margin: '0 auto'}}>
+          {/* Logo/Ícone */}
+          <div className="mb-8">
+            <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-lg">
+              <i className="fas fa-box text-[#f55a1e] text-4xl"></i>
+            </div>
+          </div>
+          
+          {/* Título */}
+          <h1 className="text-white text-2xl font-bold mb-2 sora">Shopee Delivery</h1>
+          <p className="text-white/80 text-base mb-8 sora">Entregador Parceiro</p>
+          
+          {/* Loader animado */}
+          <div className="flex space-x-2">
+            <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Helmet>
-        <title>Shopee Treinamento</title>
+        <title>Shopee Delivery</title>
         <meta name="viewport" content="width=375, initial-scale=1" />
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />

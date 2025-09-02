@@ -2,7 +2,7 @@
   "name": "Shopee Delivery Partners",
   "short_name": "Shopee Delivery",
   "description": "Cadastre-se como entregador Shopee e comece a trabalhar conosco!",
-  "start_url": "/",
+  "start_url": "/app",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#E83D22",
