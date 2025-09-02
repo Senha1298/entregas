@@ -13,7 +13,9 @@ import {
   pushSubscriptions,
   notificationHistory,
   insertPushSubscriptionSchema,
-  insertNotificationHistorySchema
+  insertNotificationHistorySchema,
+  insertAppUserSchema,
+  type InsertAppUser
 } from "@shared/schema";
 import webpush from "web-push";
 import { eq } from "drizzle-orm";
@@ -2214,6 +2216,155 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Erro ao carregar estatísticas iniciais:', error);
     }
   })();
+
+  // ===== ENDPOINTS PARA USUÁRIOS DO APP =====
+  
+  // Endpoint para salvar dados do usuário (nome + CPF) - usado após cadastro
+  app.post('/api/app-users/save-profile', async (req, res) => {
+    try {
+      const userData = insertAppUserSchema.parse(req.body);
+      console.log('📝 Salvando dados do usuário:', { cpf: userData.cpf, name: userData.name });
+      
+      const user = await storage.upsertAppUser(userData);
+      
+      res.json({ 
+        success: true, 
+        message: 'Dados do usuário salvos com sucesso',
+        user: {
+          cpf: user.cpf,
+          name: user.name,
+          id: user.id
+        }
+      });
+    } catch (error) {
+      console.error('❌ Erro ao salvar dados do usuário:', error);
+      res.status(400).json({ 
+        success: false, 
+        message: 'Erro ao salvar dados do usuário',
+        error: error.message 
+      });
+    }
+  });
+  
+  // Endpoint para salvar cidades selecionadas
+  app.post('/api/app-users/save-cities', async (req, res) => {
+    try {
+      const { cpf, cities } = req.body;
+      
+      if (!cpf || !cities) {
+        return res.status(400).json({
+          success: false,
+          message: 'CPF e cidades são obrigatórios'
+        });
+      }
+      
+      console.log('🏙️ Salvando cidades para CPF:', cpf, 'Cidades:', cities);
+      
+      const user = await storage.updateAppUser(cpf, { 
+        selectedCities: cities 
+      });
+      
+      if (user) {
+        res.json({ 
+          success: true, 
+          message: 'Cidades salvas com sucesso',
+          cities: user.selectedCities
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+    } catch (error) {
+      console.error('❌ Erro ao salvar cidades:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Erro interno do servidor' 
+      });
+    }
+  });
+  
+  // Endpoint para marcar que o usuário chegou na página de entrega
+  app.post('/api/app-users/reached-delivery', async (req, res) => {
+    try {
+      const { cpf } = req.body;
+      
+      if (!cpf) {
+        return res.status(400).json({
+          success: false,
+          message: 'CPF é obrigatório'
+        });
+      }
+      
+      console.log('🚚 Marcando que usuário chegou na página de entrega:', cpf);
+      
+      const user = await storage.updateAppUser(cpf, { 
+        reachedDeliveryPage: true 
+      });
+      
+      if (user) {
+        res.json({ 
+          success: true, 
+          message: 'Status atualizado com sucesso'
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+    } catch (error) {
+      console.error('❌ Erro ao atualizar status de entrega:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Erro interno do servidor' 
+      });
+    }
+  });
+  
+  // Endpoint para login por CPF
+  app.post('/api/app-users/login', async (req, res) => {
+    try {
+      const { cpf } = req.body;
+      
+      if (!cpf) {
+        return res.status(400).json({
+          success: false,
+          message: 'CPF é obrigatório'
+        });
+      }
+      
+      console.log('🔐 Tentativa de login com CPF:', cpf);
+      
+      const user = await storage.getAppUserByCpf(cpf);
+      
+      if (user) {
+        res.json({ 
+          success: true, 
+          message: 'Login realizado com sucesso',
+          user: {
+            id: user.id,
+            cpf: user.cpf,
+            name: user.name,
+            selectedCities: user.selectedCities,
+            reachedDeliveryPage: user.reachedDeliveryPage
+          }
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado. Realize o cadastro primeiro.'
+        });
+      }
+    } catch (error) {
+      console.error('❌ Erro no login:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Erro interno do servidor' 
+      });
+    }
+  });
 
   // Configurar push notifications
   setupPushNotifications(app);

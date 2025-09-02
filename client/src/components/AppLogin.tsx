@@ -104,14 +104,54 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
     setCpf(formattedCpf);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError('');
     
     // Remove formatação para validação
     const cleanCpf = cpf.replace(/\D/g, '');
     
-    if (cleanCpf.length === 11) {
-      onLogin(cleanCpf);
+    if (cleanCpf.length !== 11) {
+      setError('Por favor, digite um CPF válido com 11 dígitos');
+      setIsLoading(false);
+      return;
+    }
+    
+    try {
+      console.log('🔐 Tentando login com CPF:', cpf);
+      
+      // Fazer login via API
+      const response = await fetch('/api/app-users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ cpf: cpf }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log('✅ Login realizado com sucesso:', data.user);
+        
+        // Salvar dados do usuário no localStorage
+        localStorage.setItem('appUser', JSON.stringify(data.user));
+        
+        // Se chegou até aqui, CPF é válido, chamar onLogin
+        onLogin(cleanCpf);
+      } else {
+        console.log('❌ Falha no login:', data.message);
+        setError(data.message || 'Usuário não encontrado. Realize o cadastro primeiro.');
+      }
+    } catch (error) {
+      console.error('❌ Erro ao fazer login:', error);
+      setError('Erro ao conectar com o servidor. Tente novamente.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -175,20 +215,26 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
                 />
               </div>
 
+              {error && (
+                <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 text-sm sora" style={{borderRadius: '0'}}>
+                  {error}
+                </div>
+              )}
+              
               <Button
                 type="submit"
-                disabled={!isValidCpf}
+                disabled={!isValidCpf || isLoading}
                 className={`w-full py-3 text-white font-bold sora transition-all ${
-                  isValidCpf 
+                  (isValidCpf && !isLoading)
                     ? 'bg-[#f55a1e] hover:bg-[#d73919] shadow-lg transform active:translate-y-0.5' 
                     : 'bg-gray-400 cursor-not-allowed'
                 }`}
                 style={{
                   borderRadius: '0',
-                  boxShadow: isValidCpf ? "0 4px 0 0 #c23218" : "none"
+                  boxShadow: (isValidCpf && !isLoading) ? "0 4px 0 0 #c23218" : "none"
                 }}
               >
-                Acessar
+                {isLoading ? 'Verificando...' : 'Acessar'}
               </Button>
             </form>
 

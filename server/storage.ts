@@ -7,7 +7,8 @@ import {
   allowedDomains, type AllowedDomain, type InsertAllowedDomain,
   bannedDevices, type BannedDevice, type InsertBannedDevice,
   pushSubscriptions, type PushSubscription, type InsertPushSubscription,
-  notificationHistory, type NotificationHistory, type InsertNotificationHistory
+  notificationHistory, type NotificationHistory, type InsertNotificationHistory,
+  appUsers, type AppUser, type InsertAppUser
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, sql, desc } from "drizzle-orm";
@@ -53,6 +54,12 @@ export interface IStorage {
   getAllAllowedDomains(): Promise<AllowedDomain[]>;
   createAllowedDomain(allowedDomain: InsertAllowedDomain): Promise<AllowedDomain>;
   updateAllowedDomainStatus(domain: string, isActive: boolean): Promise<AllowedDomain | undefined>;
+  
+  // App User operations
+  getAppUserByCpf(cpf: string): Promise<AppUser | undefined>;
+  createAppUser(appUser: InsertAppUser): Promise<AppUser>;
+  updateAppUser(cpf: string, updates: Partial<InsertAppUser>): Promise<AppUser | undefined>;
+  upsertAppUser(appUser: InsertAppUser): Promise<AppUser>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -242,6 +249,50 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error('Erro ao atualizar status do domínio permitido:', error);
       return undefined;
+    }
+  }
+  
+  // App User operations
+  async getAppUserByCpf(cpf: string): Promise<AppUser | undefined> {
+    const [appUser] = await db.select().from(appUsers).where(eq(appUsers.cpf, cpf));
+    return appUser || undefined;
+  }
+  
+  async createAppUser(insertAppUser: InsertAppUser): Promise<AppUser> {
+    const [appUser] = await db
+      .insert(appUsers)
+      .values(insertAppUser)
+      .returning();
+    return appUser;
+  }
+  
+  async updateAppUser(cpf: string, updates: Partial<InsertAppUser>): Promise<AppUser | undefined> {
+    try {
+      const [updatedUser] = await db
+        .update(appUsers)
+        .set({ 
+          ...updates, 
+          updatedAt: new Date() 
+        })
+        .where(eq(appUsers.cpf, cpf))
+        .returning();
+      return updatedUser || undefined;
+    } catch (error) {
+      console.error('Erro ao atualizar usuário do app:', error);
+      return undefined;
+    }
+  }
+  
+  async upsertAppUser(insertAppUser: InsertAppUser): Promise<AppUser> {
+    const existingUser = await this.getAppUserByCpf(insertAppUser.cpf);
+    
+    if (existingUser) {
+      // Se o usuário já existe, atualizar os dados
+      const updatedUser = await this.updateAppUser(insertAppUser.cpf, insertAppUser);
+      return updatedUser || existingUser;
+    } else {
+      // Se não existe, criar novo
+      return await this.createAppUser(insertAppUser);
     }
   }
 }

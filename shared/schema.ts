@@ -239,3 +239,25 @@ export type InsertPushSubscription = z.infer<typeof insertPushSubscriptionSchema
 export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 export type InsertNotificationHistory = z.infer<typeof insertNotificationHistorySchema>;
 export type NotificationHistory = typeof notificationHistory.$inferSelect;
+
+// Tabela de usuários do app (sistema de login por CPF)
+export const appUsers = pgTable("app_users", {
+  id: serial("id").primaryKey(),
+  cpf: varchar("cpf", { length: 14 }).notNull().unique(), // CPF formatado (XXX.XXX.XXX-XX)
+  name: text("name"), // Nome do usuário (da página /cadastro)
+  selectedCities: jsonb("selected_cities"), // Array de cidades selecionadas
+  reachedDeliveryPage: boolean("reached_delivery_page").default(false), // Se chegou na página /entrega
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Schema de inserção para usuários do app
+export const insertAppUserSchema = createInsertSchema(appUsers).pick({
+  cpf: true,
+  name: true,
+  selectedCities: true,
+  reachedDeliveryPage: true,
+});
+
+export type InsertAppUser = z.infer<typeof insertAppUserSchema>;
+export type AppUser = typeof appUsers.$inferSelect;

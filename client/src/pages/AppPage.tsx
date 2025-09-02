@@ -12,6 +12,7 @@ export default function AppPage() {
   // State para controlar se o usuário já fez login
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userCpf, setUserCpf] = useState('');
+  const [userData, setUserData] = useState<any>(null);
 
   const showPage = (page: string) => {
     setCurrentPage(page);
@@ -24,6 +25,19 @@ export default function AppPage() {
   const handleLogin = (cpf: string) => {
     setUserCpf(cpf);
     setIsLoggedIn(true);
+    
+    // Carregar dados do usuário do localStorage
+    const storedUser = localStorage.getItem('appUser');
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setUserData(user);
+        console.log('Dados do usuario carregados:', user);
+      } catch (error) {
+        console.error('Erro ao carregar dados do usuario:', error);
+      }
+    }
+    
     console.log('Usuario logado com CPF:', cpf);
   };
 
@@ -437,14 +451,18 @@ export default function AppPage() {
                       <i className="fas fa-user text-white text-2xl"></i>
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold" style={{color: '#000000cc'}}>João Silva Santos</h3>
-                      <p className="text-sm" style={{color: '#00000066'}}>ID: #SP789456</p>
+                      <h3 className="text-lg font-bold" style={{color: '#000000cc'}}>
+                        {userData?.name || 'Nome não informado'}
+                      </h3>
+                      <p className="text-sm" style={{color: '#00000066'}}>ID: #{userData?.id || 'N/A'}</p>
                     </div>
                   </div>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-sm font-medium" style={{color: '#000000cc'}}>CPF:</span>
-                      <span className="text-sm" style={{color: '#00000066'}}>123.456.789-01</span>
+                      <span className="text-sm" style={{color: '#00000066'}}>
+                        {userData?.cpf || userCpf || 'Não informado'}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-sm font-medium" style={{color: '#000000cc'}}>Status do Cadastro:</span>
@@ -515,7 +533,11 @@ export default function AppPage() {
             {/* Entregas disponíveis hoje */}
             <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow border border-[#f3f4f6]">
               <div className="mb-4">
-                <h3 className="font-bold text-[#f55a1e] sora">São Paulo - SP</h3>
+                <h3 className="font-bold text-[#f55a1e] sora">
+                  {userData?.selectedCities && userData.selectedCities.length > 0 
+                    ? `${userData.selectedCities[0].city} - ${userData.selectedCities[0].state}` 
+                    : 'São Paulo - SP'}
+                </h3>
                 <p className="text-sm" style={{color: '#00000066'}}>
                   {new Date().toLocaleDateString('pt-BR', { 
                     weekday: 'long', 
@@ -552,6 +574,49 @@ export default function AppPage() {
                 Complete o treinamento para habilitar as entregas
               </p>
             </div>
+
+            {/* Cidades selecionadas pelo usuário */}
+            {userData?.selectedCities && userData.selectedCities.length > 1 && (
+              <div className="w-[94%] max-w-[400px] mx-auto mb-4 space-y-3">
+                <h3 className="font-bold text-[#f55a1e] sora px-2">Suas Outras Cidades</h3>
+                {userData.selectedCities.slice(1).map((city: any, index: number) => (
+                  <div key={index + 1} className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
+                    <div className="mb-4">
+                      <h4 className="font-bold text-[#f55a1e] sora">{city.city} - {city.state}</h4>
+                      <p className="text-sm" style={{color: '#00000066'}}>
+                        Região disponível para entregas
+                      </p>
+                    </div>
+                    
+                    <div className="space-y-3 mb-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium" style={{color: '#000000cc'}}>Entregas disponíveis:</span>
+                        <span className="text-sm font-bold text-[#f55a1e]">{Math.floor(Math.random() * 50) + 20}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium" style={{color: '#000000cc'}}>Estimativa de ganhos:</span>
+                        <span className="text-sm font-bold text-green-600">R$ {(Math.floor(Math.random() * 300) + 200).toLocaleString('pt-BR')},00</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium" style={{color: '#000000cc'}}>Tempo estimado:</span>
+                        <span className="text-sm font-bold" style={{color: '#000000cc'}}>{Math.floor(Math.random() * 3) + 2}h {Math.floor(Math.random() * 60)}min</span>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      disabled 
+                      className="w-full bg-gray-300 text-gray-500 font-bold py-2 rounded-0 shadow cursor-not-allowed sora text-sm flex items-center justify-center gap-2 opacity-70"
+                    >
+                      <i className="fas fa-box"></i>
+                      Realizar entregas
+                    </button>
+                  </div>
+                ))}
+                <p className="text-xs text-center mt-2" style={{color: '#00000066'}}>
+                  Complete o treinamento para habilitar as entregas em todas as cidades
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Saldo Page Content */}
