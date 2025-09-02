@@ -72,20 +72,28 @@ const InstallApp: React.FC = () => {
       const isAndroid = /Android/.test(navigator.userAgent);
       
       // Debug no console
-      // Detectando plataforma para instalação
+      console.log('🔍 Detectando plataforma:', {
+        userAgent: navigator.userAgent,
+        isiOS,
+        isAndroid,
+        hasShare: 'share' in navigator,
+        hasDeferredPrompt: !!deferredPrompt,
+        isStandalone,
+        isInstallable
+      });
 
       // 1. ANDROID com beforeinstallprompt (Chrome/Edge) - PRIORIDADE MÁXIMA
       if (deferredPrompt && isAndroid) {
         try {
-          // ANDROID: Usando prompt nativo
+          console.log('🤖 ANDROID: Usando beforeinstallprompt nativo...');
           
           const result = await deferredPrompt.prompt(); // Abre prompt nativo
           const choice = await result.userChoice;
           
-          // Verificando escolha do usuário
+          console.log('👤 Escolha do usuário:', choice.outcome);
           
           if (choice.outcome === 'accepted') {
-            // Usuário aceitou instalação
+            console.log('✅ Usuário aceitou instalação Android');
             setIsStandalone(true);
             setDeferredPrompt(null);
             setIsInstallable(false);
@@ -93,12 +101,12 @@ const InstallApp: React.FC = () => {
             alert('🎉 APP INSTALADO COM SUCESSO!\n\nO Shopee Delivery foi adicionado à sua tela inicial!');
             return;
           } else {
-            // Usuário recusou instalação
+            console.log('❌ Usuário recusou instalação Android');
             setIsInstalling(false);
             return;
           }
         } catch (error) {
-          // Erro no prompt de instalação
+          console.error('❌ Erro no beforeinstallprompt:', error);
           setIsInstalling(false);
           openHowTo();
           return;
@@ -108,7 +116,7 @@ const InstallApp: React.FC = () => {
       // 2. iOS (Safari ou Chrome no iOS) com Share API
       if (isiOS && navigator.share) {
         try {
-          // iOS: Abrindo share sheet
+          console.log('🍎 iOS detectado com Share API - Abrindo share sheet...');
           
           // Abre o share sheet do iOS; "Adicionar à Tela de Início" fica lá dentro
           await navigator.share({ 

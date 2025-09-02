@@ -109,24 +109,9 @@ const PWANotification: React.FC = () => {
     }
   };
 
-  // Função para mostrar toast como fallback
+  // Função removida - sem notificação de pagamento obrigatório
   const showToastNotification = () => {
-    toast({
-      title: "📢 Aviso Importante",
-      description: (
-        <div className="flex items-start space-x-2">
-          <AlertTriangle className="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" />
-          <div>
-            <p className="font-medium text-sm">Pagamento Obrigatório</p>
-            <p className="text-xs text-gray-600 mt-1">
-              Para se tornar entregador Shopee, é necessário adquirir o Kit de Segurança oficial por R$ 47,90.
-            </p>
-          </div>
-        </div>
-      ),
-      variant: "default",
-      duration: 8000, // 8 segundos
-    });
+    // Notificação de pagamento removida conforme solicitado
   };
 
   useEffect(() => {

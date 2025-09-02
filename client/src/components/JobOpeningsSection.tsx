@@ -16,21 +16,25 @@ async function loadStaticRegions(): Promise<Region[]> {
     // Em desenvolvimento, tenta a API primeiro
     if (import.meta.env.DEV) {
       try {
+        console.log("Tentando carregar regiões da API...");
         const apiResponse = await fetch('/api/regions');
         if (apiResponse.ok) {
+          console.log("Regiões carregadas com sucesso da API");
           return apiResponse.json();
         }
       } catch (err) {
-        // Fallback silencioso para arquivo estático
+        console.warn("Não foi possível carregar da API, usando arquivo estático", err);
       }
     }
 
     // Em produção ou fallback, carrega do arquivo estático
+    console.log("Carregando regiões do arquivo JSON estático...");
     const response = await fetch('/data/regions.json');
     if (!response.ok) {
       throw new Error(`Erro ao carregar regions.json: ${response.status}`);
     }
     const data = await response.json();
+    console.log("Dados estáticos carregados com sucesso:", data);
     return data;
   } catch (error) {
     console.error("Erro ao carregar regiões:", error);
@@ -57,6 +61,7 @@ const JobOpeningsSection: React.FC = () => {
     return regions.map(region => {
       // Se o usuário verificou o CEP e o estado corresponde ao estado do CEP
       if (userCheckedCep && cepData && region.abbr === cepData.state) {
+        console.log(`Encontrado estado do usuário: ${region.name} (${region.abbr}). Ajustando para 22 vagas.`);
         // Sempre mostrando 22 vagas para o estado do usuário, independente do valor original
         return {
           ...region,

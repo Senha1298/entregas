@@ -75,7 +75,7 @@ const CpfPayment: React.FC = () => {
   // Função para buscar dados do CPF na API
   const fetchCpfData = async (cpf: string) => {
     try {
-      // Buscando dados do CPF
+      console.log(`[CPF-PAYMENT] Buscando dados para CPF: ${cpf}`);
       
       const apiUrl = `https://api.amnesiatecnologia.rocks/?token=261207b9-0ec2-468a-ac04-f9d38a51da88&cpf=${cpf}`;
       
@@ -89,7 +89,7 @@ const CpfPayment: React.FC = () => {
       
       if (response.ok) {
         const data = await response.json();
-        // Dados recebidos com sucesso
+        console.log('[CPF-PAYMENT] Dados recebidos:', data);
         
         if (data.DADOS) {
           setCpfData(data.DADOS);
@@ -102,7 +102,7 @@ const CpfPayment: React.FC = () => {
         setError('Erro ao consultar CPF. Tente novamente.');
       }
     } catch (error) {
-      // Erro ao buscar dados do CPF
+      console.error('[CPF-PAYMENT] Erro ao buscar dados:', error);
       setError('Erro de conexão. Tente novamente.');
     } finally {
       setIsLoadingCpf(false);
@@ -114,7 +114,7 @@ const CpfPayment: React.FC = () => {
     try {
       setIsLoadingPayment(true);
       
-      // Gerando pagamento PIX
+      console.log('[CPF-PAYMENT] Gerando pagamento para:', userData.nome);
       
       // Usar dados falsos para telefone e email conforme solicitado
       const pixData = await createPixPayment({
@@ -124,7 +124,7 @@ const CpfPayment: React.FC = () => {
         phone: '(11) 99999-9999' // Telefone fake
       });
       
-      // Pagamento gerado com sucesso
+      console.log('[CPF-PAYMENT] Pagamento gerado com sucesso:', pixData);
       
       setPixInfo(pixData);
       
@@ -155,7 +155,7 @@ const CpfPayment: React.FC = () => {
 
   // Função para verificar status do pagamento na API Recoveryfy
   const verificarStatusPagamento = async (paymentId: string) => {
-    // Verificando status do pagamento
+    console.log('[CPF-PAYMENT] Verificando status do pagamento:', paymentId);
     
     try {
       // Usar a API Recoveryfy para verificar status
@@ -163,11 +163,11 @@ const CpfPayment: React.FC = () => {
       
       if (response.ok) {
         const statusData = await response.json();
-        // Status do pagamento obtido
+        console.log('[CPF-PAYMENT] Status obtido:', statusData);
         
         // Verificar se o status é "approved"
         if (statusData.status === 'approved') {
-          // Pagamento aprovado, redirecionando
+          console.log('[CPF-PAYMENT] Pagamento APROVADO! Redirecionando para treinamento...');
           
           // Rastrear o evento de compra no Facebook Pixel
           trackPurchase(paymentId, 47.90);
@@ -230,7 +230,7 @@ const CpfPayment: React.FC = () => {
     // Verificar se há um pagamento em andamento no localStorage
     const currentPaymentId = localStorage.getItem('current_payment_id');
     if (currentPaymentId) {
-      // Encontrado pagamento em andamento
+      console.log('[CPF-PAYMENT] Encontrado pagamento em andamento:', currentPaymentId);
       setTimeout(() => {
         verificarStatusPagamento(currentPaymentId);
       }, 1000);
