@@ -557,7 +557,8 @@ const Cadastro: React.FC = () => {
           body: JSON.stringify({
             cpf: data.cpf,
             name: data.nome,
-            city: cepData.city // Incluir cidade do CEP
+            city: cepData.city,
+            state: cepData.state // Incluir estado (UF) do CEP
           }),
         });
         

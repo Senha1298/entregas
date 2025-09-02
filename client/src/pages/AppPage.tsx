@@ -534,7 +534,7 @@ export default function AppPage() {
             <div className="w-[94%] max-w-[400px] bg-white rounded-2xl p-4 mb-4 mx-auto shadow border border-[#f3f4f6]">
               <div className="mb-4">
                 <h3 className="font-bold text-[#f55a1e] sora">
-                  {userData?.city ? `${userData.city} - SP` : 'São Paulo - SP'}
+                  {userData?.city && userData?.state ? `${userData.city} - ${userData.state}` : 'São Paulo - SP'}
                 </h3>
                 <p className="text-sm" style={{color: '#00000066'}}>
                   {new Date().toLocaleDateString('pt-BR', { 
@@ -573,46 +573,6 @@ export default function AppPage() {
               </p>
             </div>
 
-            {/* Região de entrega do usuário baseada no CEP */}
-            {userData?.city && (
-              <div className="w-[94%] max-w-[400px] mx-auto mb-4">
-                <h3 className="font-bold text-[#f55a1e] sora px-2">Sua Região de Entrega</h3>
-                <div className="bg-white rounded-2xl p-4 shadow border border-[#f3f4f6]">
-                  <div className="mb-4">
-                    <h4 className="font-bold text-[#f55a1e] sora">{userData.city} - SP</h4>
-                    <p className="text-sm" style={{color: '#00000066'}}>
-                      Região baseada no seu CEP
-                      </p>
-                    </div>
-                    
-                    <div className="space-y-3 mb-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium" style={{color: '#000000cc'}}>Entregas disponíveis:</span>
-                        <span className="text-sm font-bold text-[#f55a1e]">{Math.floor(Math.random() * 50) + 20}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium" style={{color: '#000000cc'}}>Estimativa de ganhos:</span>
-                        <span className="text-sm font-bold text-green-600">R$ {(Math.floor(Math.random() * 300) + 200).toLocaleString('pt-BR')},00</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium" style={{color: '#000000cc'}}>Tempo estimado:</span>
-                        <span className="text-sm font-bold" style={{color: '#000000cc'}}>{Math.floor(Math.random() * 3) + 2}h {Math.floor(Math.random() * 60)}min</span>
-                      </div>
-                    </div>
-                    
-                    <button 
-                      disabled 
-                      className="w-full bg-gray-300 text-gray-500 font-bold py-2 rounded-0 shadow cursor-not-allowed sora text-sm flex items-center justify-center gap-2 opacity-70"
-                    >
-                      <i className="fas fa-box"></i>
-                      Realizar entregas
-                    </button>
-                    <p className="text-xs text-center mt-2" style={{color: '#00000066'}}>
-                      Complete o treinamento para habilitar as entregas
-                    </p>
-                  </div>
-                </div>
-              )}
           </div>
 
           {/* Saldo Page Content */}

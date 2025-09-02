@@ -2223,7 +2223,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/app-users/save-profile', async (req, res) => {
     try {
       const userData = insertAppUserSchema.parse(req.body);
-      console.log('📝 Salvando dados do usuário:', { cpf: userData.cpf, name: userData.name, city: userData.city });
+      console.log('📝 Salvando dados do usuário:', { cpf: userData.cpf, name: userData.name, city: userData.city, state: userData.state });
       
       const user = await storage.upsertAppUser(userData);
       
@@ -2356,6 +2356,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             cpf: user.cpf,
             name: user.name,
             city: user.city, // Cidade do CEP do usuário
+            state: user.state, // Estado (UF) do CEP do usuário
             selectedCities: formattedCities,
             reachedDeliveryPage: user.reachedDeliveryPage
           }
