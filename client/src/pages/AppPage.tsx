@@ -192,15 +192,15 @@ export default function AppPage() {
               <h3 className="text-lg font-bold mb-2 text-[#f55a1e]">Dicas rápidas</h3>
               <div className="flex space-x-3 overflow-x-auto pb-2">
                 <div className="min-w-[140px] bg-white rounded-xl shadow p-3 flex flex-col items-center border border-[#f3f4f6]">
-                  <img alt="Ícone de capacete de entregador laranja, estilo flat" className="w-12 h-12 mb-2" height="60" src="https://replicate.delivery/xezq/hBdOeikZxKRwACiuv9x9uvAKuL7el2ENE6kqK1xuNMS9zfhqA/out-0.png" width="60" />
+                  <img alt="Ícone de capacete de entregador laranja, estilo flat" className="w-12 h-12 mb-2" height="60" src="https://png.pngtree.com/png-vector/20240511/ourmid/pngtree-a-motorcycle-helmet-isolated-on-transparent-background-png-image_12438195.png" width="60" />
                   <span className="text-xs text-center" style={{color: '#000000cc'}}>Use sempre o capacete</span>
                 </div>
                 <div className="min-w-[140px] bg-white rounded-xl shadow p-3 flex flex-col items-center border border-[#f3f4f6]">
-                  <img alt="Ícone de caixa de entrega laranja, estilo flat" className="w-12 h-12 mb-2" height="60" src="https://replicate.delivery/xezq/MVJaO2VEMNLgOZDGa2xjXjYF7nrjMCICHScVZGb9U5HfezfhqA/out-0.png" width="60" />
+                  <img alt="Ícone de caixa de entrega laranja, estilo flat" className="w-12 h-12 mb-2" height="60" src="https://png.pngtree.com/png-vector/20240206/ourmid/pngtree-cartoon-isometric-cardbox-png-image_11667454.png" width="60" />
                   <span className="text-xs text-center" style={{color: '#000000cc'}}>Conferir o pacote antes de sair</span>
                 </div>
                 <div className="min-w-[140px] bg-white rounded-xl shadow p-3 flex flex-col items-center border border-[#f3f4f6]">
-                  <img alt="Ícone de smartphone com mapa, estilo flat" className="w-12 h-12 mb-2" height="60" src="https://replicate.delivery/xezq/C4e7QRJqkq3kNq0v5GjCcWm6vLBuIvQrcCOqZBfjkBY9zfhqA/out-0.png" width="60" />
+                  <img alt="Ícone de smartphone com mapa, estilo flat" className="w-12 h-12 mb-2" height="60" src="https://img.freepik.com/vetores-premium/ponteiro-de-direcao-vermelho-no-mapa-da-cidade-dobrada_176411-938.jpg" width="60" />
                   <span className="text-xs text-center" style={{color: '#000000cc'}}>Acompanhe o trajeto pelo app</span>
                 </div>
               </div>
