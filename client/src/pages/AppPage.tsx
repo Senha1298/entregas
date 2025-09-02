@@ -86,16 +86,14 @@ export default function AppPage() {
           `}</style>
         </Helmet>
         <div className="min-h-screen bg-[#f55a1e] flex flex-col items-center justify-center relative" style={{maxWidth:'430px', margin: '0 auto'}}>
-          {/* Logo/Ícone */}
-          <div className="mb-8">
-            <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-lg">
-              <i className="fas fa-box text-[#f55a1e] text-4xl"></i>
-            </div>
+          {/* Logo Shopee */}
+          <div className="mb-12">
+            <img 
+              src="https://freelogopng.com/images/all_img/1656181355shopee-icon-white.png" 
+              alt="Shopee" 
+              className="w-20 h-20 object-contain"
+            />
           </div>
-          
-          {/* Título */}
-          <h1 className="text-white text-2xl font-bold mb-2 sora">Shopee Delivery</h1>
-          <p className="text-white/80 text-base mb-8 sora">Entregador Parceiro</p>
           
           {/* Loader animado */}
           <div className="flex space-x-2">
