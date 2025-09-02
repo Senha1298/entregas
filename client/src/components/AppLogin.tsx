@@ -135,7 +135,7 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
                 <Input
                   type="text"
                   inputMode="numeric"
-                  pattern="[0-9]*"
+                  pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}"
                   value={cpf}
                   onChange={handleCpfChange}
                   placeholder="000.000.000-00"
