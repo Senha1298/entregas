@@ -61,12 +61,12 @@ const TreinamentoApp: FC = () => {
         {/* Content */}
         <div className="flex-grow pt-16 pb-4 px-4 overflow-y-auto">
           {/* Status de Aprovação */}
-          <div className="bg-white shadow-md rounded-2xl overflow-hidden mb-6 border border-[#f3f4f6]">
+          <div className="bg-white shadow-md rounded-0 overflow-hidden mb-6 border border-[#f3f4f6]">
             <div className="bg-[#fff5f0] p-4 border-b border-[#f55a1e20]">
               <h3 className="font-bold text-[#f55a1e] sora">Status do Cadastro</h3>
             </div>
             <div className="p-4">
-              <div className="bg-green-50 p-4 rounded-2xl border border-green-200 mb-4">
+              <div className="bg-green-50 p-4 rounded-0 border border-green-200 mb-4">
                 <div className="flex items-center">
                   <div className="text-green-500 mr-3">
                     <CheckCircle size={24} />
@@ -92,7 +92,7 @@ const TreinamentoApp: FC = () => {
           </div>
           
           {/* Sobre o treinamento */}
-          <div className="bg-white shadow-md rounded-2xl overflow-hidden mb-6 border border-[#f3f4f6]">
+          <div className="bg-white shadow-md rounded-0 overflow-hidden mb-6 border border-[#f3f4f6]">
             <div className="bg-[#fff5f0] p-4 border-b border-[#f55a1e20]">
               <h3 className="font-bold text-[#f55a1e] sora">Treinamento Online Shopee - R$97,00</h3>
             </div>
@@ -102,7 +102,7 @@ const TreinamentoApp: FC = () => {
                   <img 
                     src={kitTreinamentoImage} 
                     alt="Treinamento Shopee" 
-                    className="w-full rounded-2xl border border-[#f3f4f6]"
+                    className="w-full rounded-0 border border-[#f3f4f6]"
                   />
                 </div>
                 <div className="w-full">
@@ -111,7 +111,7 @@ const TreinamentoApp: FC = () => {
                     Este treinamento essencial capacita você com todos os conhecimentos e habilidades 
                     necessários para atuar como um parceiro Shopee de excelência.
                   </p>
-                  <div className="bg-red-50 p-4 rounded-2xl border border-red-200 mb-4">
+                  <div className="bg-red-50 p-4 rounded-0 border border-red-200 mb-4">
                     <h5 className="text-red-700 font-bold text-sm mb-2 sora">⚠️ ATENÇÃO: TREINAMENTO OBRIGATÓRIO</h5>
                     <p className="text-sm text-red-800 sora">
                       Este treinamento é <strong>OBRIGATÓRIO</strong> para começar a trabalhar como Entregador Shopee. 
@@ -125,7 +125,7 @@ const TreinamentoApp: FC = () => {
                     </ul>
                   </div>
                   <Button 
-                    className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 sora text-sm"
+                    className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 sora text-sm rounded-0"
                     onClick={() => setModalOpen(true)}
                   >
                     Agendar Treinamento Agora
@@ -136,7 +136,7 @@ const TreinamentoApp: FC = () => {
           </div>
           
           {/* Conteúdo do treinamento */}
-          <div className="bg-white shadow-md rounded-2xl overflow-hidden mb-6 border border-[#f3f4f6]">
+          <div className="bg-white shadow-md rounded-0 overflow-hidden mb-6 border border-[#f3f4f6]">
             <div className="bg-[#fff5f0] p-4 border-b border-[#f55a1e20]">
               <h3 className="font-bold text-[#f55a1e] sora">O que você vai aprender</h3>
             </div>
@@ -234,7 +234,7 @@ const TreinamentoApp: FC = () => {
                 </AccordionItem>
               </Accordion>
               
-              <div className="mt-6 bg-orange-50 p-4 rounded-2xl border border-orange-200">
+              <div className="mt-6 bg-orange-50 p-4 rounded-0 border border-orange-200">
                 <h4 className="text-sm font-bold text-orange-700 mb-2 sora">Certificação Shopee para Entregadores</h4>
                 <p className="text-orange-700 text-sm mb-2 sora">
                   Ao completar o treinamento, você receberá o Certificado Oficial Shopee para Entregadores, 
@@ -254,7 +254,7 @@ const TreinamentoApp: FC = () => {
           </div>
           
           {/* Banner de conclusão */}
-          <div className="bg-[#fff5f0] p-4 rounded-2xl border border-[#f55a1e20] mb-6">
+          <div className="bg-[#fff5f0] p-4 rounded-0 border border-[#f55a1e20] mb-6">
             <div className="text-center">
               <h3 className="text-[#f55a1e] text-lg font-bold mb-3 sora">Ganhe dinheiro sendo um Motorista Parceiro Shopee</h3>
               <p className="text-sm mb-4 sora" style={{color: '#000000cc'}}>
@@ -267,7 +267,7 @@ const TreinamentoApp: FC = () => {
                 iniciar suas atividades como entregador Shopee.
               </p>
               <Button 
-                className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 sora text-sm"
+                className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 sora text-sm rounded-0"
                 onClick={() => setModalOpen(true)}
               >
                 Agendar Treinamento Agora
