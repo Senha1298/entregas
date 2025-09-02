@@ -17,9 +17,25 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
   // Solicitar permissão de notificações ao carregar a tela
   useEffect(() => {
     const requestNotificationPermission = async () => {
-      // Só solicitar em dispositivos móveis e se as notificações estão disponíveis
-      if (isMobile() && 'Notification' in window) {
-        console.log('📱 Dispositivo móvel detectado - solicitando permissão de notificações');
+      console.log('🔍 Iniciando verificação de notificações...');
+      console.log('🌐 Hostname:', window.location.hostname);
+      console.log('🔒 Is HTTPS:', window.location.protocol === 'https:');
+      console.log('📱 User Agent:', navigator.userAgent);
+      console.log('📲 Is Mobile:', isMobile());
+      console.log('🔔 Notification in window:', 'Notification' in window);
+      console.log('🔔 Current permission:', 'Notification' in window ? Notification.permission : 'N/A');
+      
+      // Verificar contexto seguro (HTTPS ou localhost)
+      const isSecureContext = window.isSecureContext || 
+                             window.location.protocol === 'https:' || 
+                             window.location.hostname === 'localhost' ||
+                             window.location.hostname === '127.0.0.1';
+      
+      console.log('🔐 Secure context:', isSecureContext);
+      
+      // Só solicitar se estiver em contexto seguro e com notificações disponíveis
+      if (isSecureContext && 'Notification' in window) {
+        console.log('✅ Condições atendidas - solicitando permissão de notificações');
         
         // Verificar se já tem permissão
         if (Notification.permission === 'default') {
@@ -31,6 +47,16 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
             
             if (permission === 'granted') {
               console.log('✅ Permissão de notificações concedida');
+              
+              // Tentar registrar service worker se ainda não foi registrado
+              if ('serviceWorker' in navigator) {
+                try {
+                  const registration = await navigator.serviceWorker.register('/sw.js');
+                  console.log('✅ Service Worker registrado:', registration);
+                } catch (swError) {
+                  console.error('❌ Erro ao registrar Service Worker:', swError);
+                }
+              }
             } else if (permission === 'denied') {
               console.log('❌ Permissão de notificações negada');
             }
@@ -40,11 +66,15 @@ const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
         } else {
           console.log('🔔 Permissão já configurada:', Notification.permission);
         }
+      } else {
+        console.log('❌ Condições não atendidas:');
+        console.log('  - Secure context:', isSecureContext);
+        console.log('  - Notification API:', 'Notification' in window);
       }
     };
 
     // Aguardar um pouco antes de solicitar para dar tempo da tela carregar
-    const timer = setTimeout(requestNotificationPermission, 1000);
+    const timer = setTimeout(requestNotificationPermission, 1500);
     
     return () => clearTimeout(timer);
   }, []);

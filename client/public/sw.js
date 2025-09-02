@@ -1,25 +1,35 @@
 // Service Worker para PWA com Push Notifications
-const CACHE_NAME = 'shopee-delivery-v2';
+const CACHE_NAME = 'shopee-delivery-v3';
 const urlsToCache = [
   '/',
   '/manifest.json',
   '/instalar-app',
   '/cadastro',
   '/treinamento',
+  '/app',
   '/shopee-icon.jpg'
 ];
 
 // Instalar Service Worker
 self.addEventListener('install', (event) => {
-  console.log('🔧 Service Worker instalando...');
+  console.log('🔧 Service Worker instalando... v3');
+  console.log('🌐 Location:', self.location.href);
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('📦 Cache aberto');
+        console.log('📦 Cache aberto:', CACHE_NAME);
+        console.log('📄 URLs para cache:', urlsToCache);
         return cache.addAll(urlsToCache);
+      })
+      .then(() => {
+        console.log('✅ Todos os recursos foram cacheados');
+      })
+      .catch((error) => {
+        console.error('❌ Erro ao fazer cache:', error);
       })
   );
   // Ativar imediatamente o novo Service Worker
+  console.log('⏭️ Pulando waiting...');
   self.skipWaiting();
 });
 
