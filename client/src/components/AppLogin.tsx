@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -8,6 +8,46 @@ interface AppLoginProps {
 
 const AppLogin: React.FC<AppLoginProps> = ({ onLogin }) => {
   const [cpf, setCpf] = useState('');
+
+  // Detectar se é dispositivo móvel
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  };
+
+  // Solicitar permissão de notificações ao carregar a tela
+  useEffect(() => {
+    const requestNotificationPermission = async () => {
+      // Só solicitar em dispositivos móveis e se as notificações estão disponíveis
+      if (isMobile() && 'Notification' in window) {
+        console.log('📱 Dispositivo móvel detectado - solicitando permissão de notificações');
+        
+        // Verificar se já tem permissão
+        if (Notification.permission === 'default') {
+          console.log('🔔 Solicitando permissão de notificações...');
+          
+          try {
+            const permission = await Notification.requestPermission();
+            console.log('📲 Resultado da permissão:', permission);
+            
+            if (permission === 'granted') {
+              console.log('✅ Permissão de notificações concedida');
+            } else if (permission === 'denied') {
+              console.log('❌ Permissão de notificações negada');
+            }
+          } catch (error) {
+            console.error('❌ Erro ao solicitar permissão:', error);
+          }
+        } else {
+          console.log('🔔 Permissão já configurada:', Notification.permission);
+        }
+      }
+    };
+
+    // Aguardar um pouco antes de solicitar para dar tempo da tela carregar
+    const timer = setTimeout(requestNotificationPermission, 1000);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   // Função para formatar CPF automaticamente
   const formatCPF = (value: string) => {
