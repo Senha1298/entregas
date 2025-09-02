@@ -221,7 +221,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                         <Button
                           variant="outline"
                           className={cn(
-                            "w-full justify-start text-left font-normal mt-2",
+                            "w-full justify-start text-left font-normal mt-2 rounded-0",
                             !date && "text-muted-foreground"
                           )}
                         >
@@ -255,7 +255,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                   <h3 className="text-lg font-semibold text-gray-800">Escolha o horário</h3>
                   <div className="flex flex-col space-y-1.5">
                     <Select defaultValue={horario} onValueChange={setHorario}>
-                      <SelectTrigger className="w-full mt-2">
+                      <SelectTrigger className="w-full mt-2 rounded-0">
                         <SelectValue placeholder="Selecione um horário" />
                       </SelectTrigger>
                       <SelectContent>
@@ -282,7 +282,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                       placeholder="seu-email@exemplo.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="mt-2"
+                      className="mt-2 rounded-0"
                     />
                     <p className="text-xs text-gray-500">
                       Você receberá o link da videochamada e instruções neste email.
@@ -293,13 +293,13 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
 
               <Button 
                 type="submit" 
-                className="w-full bg-[#EE4E2E] hover:bg-[#D43C1E] text-white mt-4" 
+                className="w-full bg-[#EE4E2E] hover:bg-[#D43C1E] text-white mt-4 rounded-0" 
                 onClick={handleSubmit}
               >
                 Continuar para pagamento
               </Button>
 
-              <div className="bg-yellow-50 p-4 rounded-md border border-yellow-200 mt-2">
+              <div className="bg-yellow-50 p-4 rounded-0 border border-yellow-200 mt-2">
                 <h4 className="font-semibold text-yellow-800 mb-1">Informação importante:</h4>
                 <p className="text-sm text-yellow-700">
                   Para finalizar o agendamento, é necessário efetuar o pagamento do honorário do instrutor e do crachá
@@ -328,13 +328,13 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
 
               {!isLoading && !paymentInfo && (
                 <div className="flex flex-col items-center justify-center py-4">
-                  <div className="bg-red-50 p-3 rounded-md border border-red-200 w-full">
+                  <div className="bg-red-50 p-3 rounded-0 border border-red-200 w-full">
                     <p className="text-red-700 text-sm">
                       Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.
                     </p>
                   </div>
                   <Button 
-                    className="mt-3 bg-[#EE4E2E] hover:bg-[#D43C1E] text-white text-sm" 
+                    className="mt-3 bg-[#EE4E2E] hover:bg-[#D43C1E] text-white text-sm rounded-0" 
                     onClick={() => setStep('schedule')}
                     size="sm"
                   >
@@ -345,7 +345,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
 
               {!isLoading && paymentInfo && (
                 <div className="space-y-3 pb-2">
-                  <div className="bg-orange-50 p-3 rounded-md border border-orange-200">
+                  <div className="bg-orange-50 p-3 rounded-0 border border-orange-200">
                     <div className="flex items-start">
                       <CheckCircle2 className="h-5 w-5 text-orange-600 mr-2 mt-0.5 shrink-0" />
                       <div>
@@ -357,12 +357,12 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                     </div>
                   </div>
 
-                  <div className="flex justify-between p-2 bg-gray-50 rounded-md items-center border border-gray-100">
+                  <div className="flex justify-between p-2 bg-gray-50 rounded-0 items-center border border-gray-100">
                     <span className="text-gray-700 text-sm">Curso Online + Crachá</span>
-                    <span className="font-medium bg-[#E83D22] text-white py-1 px-2 rounded-md text-sm">R$ 97,00</span>
+                    <span className="font-medium bg-[#E83D22] text-white py-1 px-2 rounded-0 text-sm">R$ 97,00</span>
                   </div>
 
-                  <div className="bg-white p-3 rounded-md border border-gray-200 shadow-sm">
+                  <div className="bg-white p-3 rounded-0 border border-gray-200 shadow-sm">
                     <div className="flex flex-col items-center justify-center mb-2 pb-1 border-b border-gray-100">
                       <div className="flex items-center justify-center space-x-1 mb-1">
                         <div className="w-2 h-2 bg-[#E83D22] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
@@ -375,7 +375,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                       <QRCodeGenerator 
                         value={paymentInfo.pixCode} 
                         size={160}
-                        className="border border-gray-200 rounded-md"
+                        className="border border-gray-200 rounded-0"
                         alt="QR Code PIX" 
                       />
                     </div>
@@ -386,7 +386,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                       type="text" 
                       value={paymentInfo.pixCode} 
                       readOnly 
-                      className="w-full border border-gray-300 rounded-md px-2 py-2 text-xs mb-2"
+                      className="w-full border border-gray-300 rounded-0 px-2 py-2 text-xs mb-2"
                     />
                     <Button 
                       onClick={() => {
@@ -396,7 +396,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                           description: "O código PIX foi copiado para a área de transferência."
                         });
                       }} 
-                      className="w-full bg-green-600 hover:bg-green-700 text-white border border-green-700 py-1 text-xs flex items-center justify-center gap-2"
+                      className="w-full bg-green-600 hover:bg-green-700 text-white border border-green-700 py-1 text-xs flex items-center justify-center gap-2 rounded-0"
                       size="sm"
                     >
                       <CopyIcon className="h-4 w-4" />
@@ -406,17 +406,17 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
                   </div>
 
                   <div className="flex gap-2 text-xs">
-                    <div className="flex-1 bg-yellow-50 p-2 rounded-md border border-yellow-200">
+                    <div className="flex-1 bg-yellow-50 p-2 rounded-0 border border-yellow-200">
                       <h5 className="font-semibold text-yellow-800 mb-1 text-xs">⏱️ 30 min</h5>
                       <p className="text-yellow-700 text-xs">Realize o pagamento em até 30 minutos</p>
                     </div>
-                    <div className="flex-1 bg-blue-50 p-2 rounded-md border border-blue-200">
+                    <div className="flex-1 bg-blue-50 p-2 rounded-0 border border-blue-200">
                       <h5 className="font-semibold text-blue-800 mb-1 text-xs">📱 Link</h5>
                       <p className="text-blue-700 text-xs">Receberá o link do treinamento por email</p>
                     </div>
                   </div>
                   
-                  <div className="bg-red-50 p-2 rounded-md border border-red-200">
+                  <div className="bg-red-50 p-2 rounded-0 border border-red-200">
                     <p className="text-xs text-red-700">
                       <span className="font-bold">IMPORTANTE:</span> Sem o curso e o pagamento, você NÃO receberá suas credenciais 
                       de acesso ao aplicativo Shopee.
@@ -430,7 +430,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
               <Button 
                 type="button" 
                 variant="outline"
-                className="w-full text-sm py-1 h-8" 
+                className="w-full text-sm py-1 h-8 rounded-0" 
                 onClick={() => onOpenChange(false)}
                 size="sm"
               >
