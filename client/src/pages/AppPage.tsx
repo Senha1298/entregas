@@ -111,6 +111,23 @@ export default function AppPage() {
           .rounded-0 {
             border-radius: 2px !important;
           }
+          /* Efeito 3D para ícones */
+          .icon-3d {
+            text-shadow: 
+              1px 1px 2px rgba(0,0,0,0.3),
+              2px 2px 4px rgba(0,0,0,0.2),
+              3px 3px 6px rgba(0,0,0,0.1);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            transform: perspective(100px) rotateX(5deg);
+            transition: all 0.2s ease;
+          }
+          .icon-3d:hover {
+            transform: perspective(100px) rotateX(0deg) scale(1.1);
+            text-shadow: 
+              2px 2px 4px rgba(0,0,0,0.4),
+              3px 3px 6px rgba(0,0,0,0.3),
+              4px 4px 8px rgba(0,0,0,0.2);
+          }
         `}</style>
       </Helmet>
       <div className="bg-[#fafbfc] min-h-screen flex flex-col justify-between sora relative" style={{maxWidth:'430px',margin:'0 auto',boxShadow:'0 0 24px 0 rgba(0,0,0,0.08)',height:'100vh'}}>
@@ -123,7 +140,7 @@ export default function AppPage() {
           </div>
           <div>
             <button aria-label="Abrir notificações" className="relative focus:outline-none" onClick={openModal}>
-              <i className="fas fa-bell text-white text-xl"></i>
+              <i className="fas fa-bell text-white text-xl icon-3d"></i>
               <span className="absolute -top-1 -right-1 bg-white text-[#f55a1e] text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border border-[#f55a1e]" style={{padding:0}}>
                 1
               </span>
@@ -516,15 +533,15 @@ export default function AppPage() {
         {/* Bottom Navigation */}
         <div className="fixed bottom-0 left-0 w-full bg-white flex justify-between items-center h-[70px] z-30 sora" style={{maxWidth:'430px'}}>
           <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition" onClick={() => showPage('home')}>
-            <i className={`fas fa-home text-[#f55a1e] text-2xl ${currentPage !== 'home' ? 'opacity-40' : ''}`}></i>
+            <i className={`fas fa-home text-[#f55a1e] text-2xl icon-3d ${currentPage !== 'home' ? 'opacity-40' : ''}`}></i>
             <span className={`text-[#f55a1e] text-base font-medium mt-1 sora ${currentPage !== 'home' ? 'opacity-40' : ''}`}>Início</span>
           </div>
           <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition" onClick={() => showPage('entregas')}>
-            <i className={`fas fa-box text-[#f55a1e] text-2xl ${currentPage !== 'entregas' ? 'opacity-40' : ''}`}></i>
+            <i className={`fas fa-box text-[#f55a1e] text-2xl icon-3d ${currentPage !== 'entregas' ? 'opacity-40' : ''}`}></i>
             <span className={`text-[#f55a1e] text-base font-medium mt-1 sora ${currentPage !== 'entregas' ? 'opacity-40' : ''}`}>Entregas</span>
           </div>
           <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition" onClick={() => showPage('saldo')}>
-            <i className={`fas fa-wallet text-[#f55a1e] text-2xl ${currentPage !== 'saldo' ? 'opacity-40' : ''}`}></i>
+            <i className={`fas fa-wallet text-[#f55a1e] text-2xl icon-3d ${currentPage !== 'saldo' ? 'opacity-40' : ''}`}></i>
             <span className={`text-[#f55a1e] text-base font-medium mt-1 sora ${currentPage !== 'saldo' ? 'opacity-40' : ''}`}>Saldo</span>
           </div>
         </div>
