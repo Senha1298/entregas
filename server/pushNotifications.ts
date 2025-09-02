@@ -51,6 +51,31 @@ export function setupPushNotifications(app: Express) {
         // Criar nova subscription
         await db.insert(pushSubscriptions).values(data);
         console.log('✅ Nova push subscription criada:', data.endpoint);
+        
+        // Enviar notificação de boas-vindas incentivando o treinamento
+        try {
+          const payload = JSON.stringify({
+            title: '🎓 Finalize seu Cadastro!',
+            body: 'Complete o treinamento obrigatório para entregadores e comece a trabalhar conosco.',
+            icon: '/shopee-icon.jpg',
+            badge: '/shopee-icon.jpg',
+            tag: 'shopee-training-welcome',
+            data: { action: 'open_training' },
+            requireInteraction: true
+          });
+
+          await webpush.sendNotification({
+            endpoint: data.endpoint,
+            keys: {
+              p256dh: data.p256dhKey!,
+              auth: data.authKey!
+            }
+          }, payload);
+          
+          console.log('✅ Notificação de treinamento enviada para novo usuário');
+        } catch (error) {
+          console.error('❌ Erro ao enviar notificação de boas-vindas:', error);
+        }
       }
 
       res.json({ success: true, message: 'Subscription salva com sucesso' });

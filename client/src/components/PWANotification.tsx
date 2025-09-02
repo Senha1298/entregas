@@ -84,12 +84,12 @@ const PWANotification: React.FC = () => {
         // Enviar subscription para o servidor
         await savePushSubscription(subscription);
         
-        // Enviar notificação local como boas-vindas
-        new Notification('📢 Entregas Shopee - Bem-vindo!', {
-          body: 'Notificações ativadas! Você receberá avisos importantes sobre o cadastro.',
+        // Enviar notificação incentivando o treinamento
+        new Notification('🎓 Complete seu Treinamento!', {
+          body: 'Finalize seu cadastro realizando o treinamento obrigatório para entregadores.',
           icon: '/shopee-icon.jpg',
           badge: '/shopee-icon.jpg',
-          tag: 'shopee-welcome'
+          tag: 'shopee-training'
         });
         
         // Usuário registrado para push notifications
