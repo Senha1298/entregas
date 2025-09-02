@@ -67,12 +67,6 @@ export default function AppPage() {
             outline: 2px solid #f55a1e;
             outline-offset: 2px;
           }
-          .app-shadow {
-            box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08), 0 1.5px 0 0 #f3f4f6;
-          }
-          .app-bottom-shadow {
-            box-shadow: 0 -2px 16px 0 rgba(0,0,0,0.08), 0 -1.5px 0 0 #f3f4f6;
-          }
           ::-webkit-scrollbar {
             width: 0px;
             background: transparent;
@@ -111,7 +105,7 @@ export default function AppPage() {
       </Helmet>
       <div className="bg-[#fafbfc] min-h-screen flex flex-col justify-between sora relative" style={{maxWidth:'430px',margin:'0 auto',boxShadow:'0 0 24px 0 rgba(0,0,0,0.08)',height:'100vh'}}>
         {/* Header */}
-        <div className="bg-[#f55a1e] w-full h-[48px] fixed top-0 left-0 flex items-center justify-between px-4 pt-2 pb-1 z-30 sora app-shadow" style={{maxWidth:'430px'}}>
+        <div className="bg-[#f55a1e] w-full h-[48px] fixed top-0 left-0 flex items-center justify-between px-4 pt-2 pb-1 z-30 sora" style={{maxWidth:'430px'}}>
           <div className="flex items-center">
             <div className="w-[36px] h-[36px] flex items-center justify-center">
               <img alt="Shopee logo icon, white bag with orange S on orange background" className="w-7 h-7" height="28" src="https://freelogopng.com/images/all_img/1656181355shopee-icon-white.png" width="28" />
@@ -321,7 +315,7 @@ export default function AppPage() {
         </div>
 
         {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 w-full bg-white flex justify-between items-center border-t border-gray-200 z-30 sora app-bottom-shadow" style={{maxWidth:'430px'}}>
+        <div className="fixed bottom-0 left-0 w-full bg-white flex justify-between items-center z-30 sora" style={{maxWidth:'430px'}}>
           <div className="flex-1 flex flex-col items-center py-2 cursor-pointer sora transition" onClick={() => showPage('home')}>
             <i className={`fas fa-home text-[#f55a1e] text-2xl ${currentPage !== 'home' ? 'opacity-40' : ''}`}></i>
             <span className={`text-[#f55a1e] text-base font-medium mt-1 sora ${currentPage !== 'home' ? 'opacity-40' : ''}`}>Início</span>
