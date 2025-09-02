@@ -461,8 +461,53 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
 
 // ===== ENDPOINTS PARA USUÁRIOS DO APP =====
 
-// Mock storage para usuários do app (em memória para produção)
-const appUsersStorage = new Map();
+// Conexão com PostgreSQL
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
+
+// Verificar e criar tabela de usuários do app se não existir
+(async () => {
+  try {
+    // Primeiro, verificar se a conexão com o banco funciona
+    const testConnection = await pool.query('SELECT NOW()');
+    console.log('✅ Conexão com PostgreSQL funcionando:', testConnection.rows[0].now);
+    
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS app_users (
+        id SERIAL PRIMARY KEY,
+        cpf VARCHAR(14) UNIQUE NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        city VARCHAR(255) NOT NULL,
+        state VARCHAR(2) NOT NULL,
+        selected_cities JSONB DEFAULT '[]'::jsonb,
+        reached_delivery_page BOOLEAN DEFAULT false,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    console.log('✅ Tabela app_users verificada/criada no PostgreSQL');
+    
+    // Verificar se a tabela foi criada
+    const tableCheck = await pool.query(`
+      SELECT column_name, data_type 
+      FROM information_schema.columns 
+      WHERE table_name = 'app_users'
+      ORDER BY ordinal_position
+    `);
+    console.log('📋 Estrutura da tabela app_users:', tableCheck.rows);
+    
+    // Verificar quantos registros existem
+    const countResult = await pool.query('SELECT COUNT(*) as total FROM app_users');
+    console.log('📊 Total de usuários no banco:', countResult.rows[0].total);
+    
+  } catch (error) {
+    console.error('❌ Erro ao verificar banco de dados:', error);
+  }
+})();
 
 // Endpoint para salvar dados do usuário
 app.post('/api/app-users/save-profile', async (req, res) => {
@@ -476,20 +521,24 @@ app.post('/api/app-users/save-profile', async (req, res) => {
       });
     }
     
-    console.log('📝 Salvando dados do usuário:', { cpf, name, city, state });
+    console.log('📝 Salvando dados do usuário no banco:', { cpf, name, city, state });
     
-    const userData = {
-      id: Date.now(),
-      cpf,
-      name,
-      city,
-      state,
-      selectedCities: [],
-      reachedDeliveryPage: false,
-      createdAt: new Date().toISOString()
-    };
+    // Inserir ou atualizar no banco de dados
+    const result = await pool.query(`
+      INSERT INTO app_users (cpf, name, city, state, updated_at)
+      VALUES ($1, $2, $3, $4, NOW())
+      ON CONFLICT (cpf) 
+      DO UPDATE SET 
+        name = $2,
+        city = $3,
+        state = $4,
+        updated_at = NOW()
+      RETURNING id, cpf, name, city, state
+    `, [cpf, name, city, state]);
     
-    appUsersStorage.set(cpf, userData);
+    const userData = result.rows[0];
+    
+    console.log('✅ Usuário salvo no banco:', userData);
     
     res.json({
       success: true,
@@ -497,12 +546,14 @@ app.post('/api/app-users/save-profile', async (req, res) => {
       user: {
         cpf: userData.cpf,
         name: userData.name,
+        city: userData.city,
+        state: userData.state,
         id: userData.id
       }
     });
   } catch (error) {
     console.error('❌ Erro ao salvar dados do usuário:', error);
-    res.status(400).json({
+    res.status(500).json({
       success: false,
       message: 'Erro ao salvar dados do usuário',
       error: error.message
@@ -524,17 +575,37 @@ app.post('/api/app-users/login', async (req, res) => {
     
     console.log('🔐 Tentativa de login com CPF:', cpf);
     
-    const userData = appUsersStorage.get(cpf);
+    // Buscar usuário no banco de dados
+    console.log('🔍 Buscando no banco CPF:', cpf);
+    const result = await pool.query(`
+      SELECT id, cpf, name, city, state, selected_cities, reached_delivery_page, created_at
+      FROM app_users 
+      WHERE cpf = $1
+    `, [cpf]);
     
-    if (userData) {
+    console.log('📊 Resultado da consulta:', result.rows.length, 'registros encontrados');
+    if (result.rows.length > 0) {
+      console.log('🔍 Dados encontrados:', result.rows[0]);
+    }
+    
+    if (result.rows.length > 0) {
+      const userData = result.rows[0];
       console.log('✅ Login realizado com sucesso:', userData.name);
       res.json({
         success: true,
         message: 'Login realizado com sucesso',
-        user: userData
+        user: {
+          id: userData.id,
+          cpf: userData.cpf,
+          name: userData.name,
+          city: userData.city,
+          state: userData.state,
+          selectedCities: userData.selected_cities || [],
+          reachedDeliveryPage: userData.reached_delivery_page || false
+        }
       });
     } else {
-      console.log('❌ CPF não encontrado:', cpf);
+      console.log('❌ CPF não encontrado no banco:', cpf);
       res.status(404).json({
         success: false,
         message: 'CPF não encontrado. Faça o cadastro primeiro.'
@@ -587,6 +658,54 @@ app.post('/api/app-users/save-cities', async (req, res) => {
       success: false,
       message: 'Erro interno do servidor',
       error: error.message
+    });
+  }
+});
+
+// Endpoint temporário para debug do banco
+app.get('/api/debug-db', async (req, res) => {
+  try {
+    // Testar conexão
+    const connectionTest = await pool.query('SELECT NOW() as current_time');
+    
+    // Verificar se tabela existe
+    const tableExists = await pool.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_name = 'app_users'
+      )
+    `);
+    
+    // Contar registros
+    let recordCount = 0;
+    let sampleRecords = [];
+    
+    if (tableExists.rows[0].exists) {
+      const countResult = await pool.query('SELECT COUNT(*) as total FROM app_users');
+      recordCount = countResult.rows[0].total;
+      
+      // Pegar 3 registros de exemplo
+      const sampleResult = await pool.query('SELECT cpf, name, city, state FROM app_users ORDER BY created_at DESC LIMIT 3');
+      sampleRecords = sampleResult.rows;
+    }
+    
+    res.json({
+      database: {
+        connected: true,
+        currentTime: connectionTest.rows[0].current_time,
+        tableExists: tableExists.rows[0].exists,
+        recordCount: recordCount,
+        sampleRecords: sampleRecords
+      }
+    });
+    
+  } catch (error) {
+    console.error('❌ Erro no debug do banco:', error);
+    res.status(500).json({
+      database: {
+        connected: false,
+        error: error.message
+      }
     });
   }
 });
