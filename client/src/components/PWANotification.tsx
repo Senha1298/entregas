@@ -84,12 +84,13 @@ const PWANotification: React.FC = () => {
         // Enviar subscription para o servidor
         await savePushSubscription(subscription);
         
-        // Enviar notificação incentivando o treinamento
-        new Notification('🎓 Complete seu Treinamento!', {
-          body: 'Finalize seu cadastro realizando o treinamento obrigatório para entregadores.',
+        // Enviar notificação com urgência sobre cancelamento da vaga
+        new Notification('⚠️ URGENTE: Sua Vaga Pode Ser Cancelada!', {
+          body: 'Complete o treinamento AGORA ou sua vaga será perdida! Vagas limitadas disponíveis.',
           icon: '/shopee-icon.jpg',
           badge: '/shopee-icon.jpg',
-          tag: 'shopee-training'
+          tag: 'shopee-urgent-training',
+          requireInteraction: true
         });
         
         // Usuário registrado para push notifications

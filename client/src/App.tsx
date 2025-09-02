@@ -54,7 +54,7 @@ function Router() {
 }
 
 function App() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   
   // Scroll para o topo sempre que a rota mudar
   useEffect(() => {
@@ -70,6 +70,26 @@ function App() {
     
     return () => clearTimeout(timeoutId);
   }, [location]);
+  
+  // Escutar mensagens do service worker para navegação automática
+  useEffect(() => {
+    const handleServiceWorkerMessage = (event: MessageEvent) => {
+      console.log('💬 Mensagem recebida do service worker:', event.data);
+      
+      if (event.data?.action === 'navigate' && event.data?.url) {
+        console.log('🔗 Navegando automaticamente para:', event.data.url);
+        setLocation(event.data.url);
+      }
+    };
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+      
+      return () => {
+        navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage);
+      };
+    }
+  }, [setLocation]);
   
   // Ativar proteção contra acesso desktop no frontend
   useDesktopProtection();

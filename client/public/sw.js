@@ -172,30 +172,43 @@ self.addEventListener('push', (event) => {
   );
 });
 
-// Clique em notificação
+// Clique em notificação - redireciona para treinamento
 self.addEventListener('notificationclick', (event) => {
   console.log('👆 Notificação clicada:', event.notification);
   
   // Fechar a notificação
   event.notification.close();
   
-  // Abrir ou focar na janela do app
+  // Determinar URL de destino baseado no tipo de notificação
+  let targetUrl = '/app';
+  
+  if (event.notification.tag === 'shopee-training' || 
+      event.notification.tag === 'shopee-urgent-training' ||
+      event.notification.tag === 'shopee-training-welcome' ||
+      event.notification.tag === 'shopee-training-reminder') {
+    targetUrl = '/treinamento-app';
+    console.log('🎓 Redirecionando para página de treinamento');
+  }
+  
+  // Abrir ou focar na janela do app na página correta
   event.waitUntil(
     self.clients.matchAll({
       type: 'window',
       includeUncontrolled: true
     }).then((clientList) => {
-      // Se há uma janela aberta, focar nela
+      // Se há uma janela aberta, focar nela e navegar
       for (let i = 0; i < clientList.length; i++) {
         const client = clientList[i];
         if (client.url.includes(self.location.origin)) {
+          console.log('🔄 Focando janela existente e navegando para:', targetUrl);
+          client.postMessage({ action: 'navigate', url: targetUrl });
           return client.focus();
         }
       }
       
-      // Se não há janela aberta, abrir uma nova
+      // Se não há janela aberta, abrir uma nova na URL correta
       if (self.clients.openWindow) {
-        const targetUrl = event.notification.data?.url || '/';
+        console.log('🆕 Abrindo nova janela em:', targetUrl);
         return self.clients.openWindow(targetUrl);
       }
     })
