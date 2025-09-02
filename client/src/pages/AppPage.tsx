@@ -111,22 +111,21 @@ export default function AppPage() {
           .rounded-0 {
             border-radius: 2px !important;
           }
-          /* Efeito 3D para ícones */
+          /* Efeito 3D suave para ícones */
           .icon-3d {
             text-shadow: 
-              1px 1px 2px rgba(0,0,0,0.3),
-              2px 2px 4px rgba(0,0,0,0.2),
-              3px 3px 6px rgba(0,0,0,0.1);
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-            transform: perspective(100px) rotateX(5deg);
-            transition: all 0.2s ease;
+              0px 1px 1px rgba(255,255,255,0.8),
+              1px 1px 2px rgba(0,0,0,0.1);
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.08));
+            transform: translateY(-0.5px);
+            transition: all 0.15s ease;
           }
           .icon-3d:hover {
-            transform: perspective(100px) rotateX(0deg) scale(1.1);
+            transform: translateY(-1px) scale(1.05);
             text-shadow: 
-              2px 2px 4px rgba(0,0,0,0.4),
-              3px 3px 6px rgba(0,0,0,0.3),
-              4px 4px 8px rgba(0,0,0,0.2);
+              0px 1px 2px rgba(255,255,255,0.9),
+              1px 2px 3px rgba(0,0,0,0.12);
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));
           }
         `}</style>
       </Helmet>
