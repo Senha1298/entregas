@@ -358,82 +358,14 @@ async function desktopDetectionMiddleware(req: Request, res: Response, next: Nex
     
     await storage.createBannedIp(bannedIpData);
     
-    // Notificar os clientes WebSocket sobre o novo IP banido se houver conexões ativas
-    if (typeof connectedClients !== 'undefined' && connectedClients.length > 0) {
-      const ipInfo = {
-        ip,
-        userAgent: userAgent || 'Desconhecido',
-        device,
-        browserInfo,
-        platform,
-        location,
-        reason: device === "WhatsApp Web" 
-          ? `Tentativa de acesso via WhatsApp Web (${refererAnalysis})`
-          : `Tentativa de acesso via desktop (${refererAnalysis})`,
-        timestamp: new Date().toISOString()
-      };
-      
-      broadcastToAll({
-        type: 'ip_banned',
-        ip: ipInfo
-      });
-      
-      // Atualizar estatísticas de dispositivos
-      if (typeof deviceStats !== 'undefined') {
-        if (device.includes('WhatsApp Web')) {
-          deviceStats = deviceStats.map(stat => 
-            stat.type === 'WhatsApp Web' ? {...stat, count: stat.count + 1} : stat
-          );
-        } else if (device.includes('Desktop')) {
-          deviceStats = deviceStats.map(stat => 
-            stat.type === 'Desktop (Bloqueado)' ? {...stat, count: stat.count + 1} : stat
-          );
-        }
-        
-        // Broadcast das estatísticas atualizadas
-        broadcastToAll({
-          type: 'device_stats',
-          devices: deviceStats
-        });
-      }
-      
-      // Atualizar estatísticas de origens de acesso
-      if (typeof accessSources !== 'undefined') {
-        let source = "Outros";
-        if (referer.includes('whatsapp')) {
-          source = "WhatsApp";
-        } else if (referer.includes('facebook') || referer.includes('fb.com')) {
-          source = "Facebook";
-        } else if (referer.includes('instagram')) {
-          source = "Instagram";
-        } else if (referer.includes('google')) {
-          source = referer.includes('ads') ? "Google" : "Pesquisa Orgânica";
-        } else if (!referer) {
-          source = "Link Direto";
-        }
-        
-        accessSources = accessSources.map(item => 
-          item.source === source ? {...item, count: item.count + 1} : item
-        );
-        
-        // Broadcast das estatísticas atualizadas
-        broadcastToAll({
-          type: 'access_sources',
-          sources: accessSources
-        });
-      }
-    }
+    // WebSocket notifications desabilitadas temporariamente
+    console.log(`[IP BANIDO] ${ip} - ${device} - ${location}`);
   } else if (!existingBannedIp.isBanned) {
     // IP existe mas não está banido, atualizar para banido
     await storage.updateBannedIpStatus(ip, true);
     
-    // Notificar WebSocket se necessário
-    if (typeof connectedClients !== 'undefined' && connectedClients.length > 0) {
-      broadcastToAll({
-        type: 'dashboard_stats',
-        stats: await getDashboardStats()
-      });
-    }
+    // WebSocket notifications desabilitadas temporariamente
+    console.log(`[IP ATUALIZADO] ${ip} marcado como banido`);
   }
   
   console.log(`[BLOQUEIO] IP ${ip} banido por acesso via ${device}. Origem: ${refererAnalysis}, Navegador: ${browserInfo}, SO: ${platform}`);
@@ -911,7 +843,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Erro no proxy Pagnet:', error);
       return res.status(500).json({ 
-        error: error.message || 'Falha ao processar pagamento pelo proxy Pagnet'
+        error: error instanceof Error ? error.message : 'Erro desconhecido' || 'Falha ao processar pagamento pelo proxy Pagnet'
       });
     }
   });
@@ -1293,7 +1225,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Erro ao processar pagamento:', error);
       res.status(500).json({ 
-        error: error.message || 'Falha ao processar pagamento.'
+        error: error instanceof Error ? error.message : 'Erro desconhecido' || 'Falha ao processar pagamento.'
       });
     }
   });
@@ -1390,7 +1322,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Erro ao processar pagamento PIX:', error);
       res.status(500).json({ 
-        error: error.message || 'Falha ao processar pagamento PIX.'
+        error: error instanceof Error ? error.message : 'Erro desconhecido' || 'Falha ao processar pagamento PIX.'
       });
     }
   });
@@ -1589,7 +1521,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Erro ao processar pagamento de treinamento:', error);
       res.status(500).json({ 
-        error: error.message || 'Falha ao processar pagamento de treinamento.'
+        error: error instanceof Error ? error.message : 'Erro desconhecido' || 'Falha ao processar pagamento de treinamento.'
       });
     }
   });
@@ -1757,7 +1689,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Erro ao processar pagamento PIX:', error);
       res.status(500).json({ 
-        error: error.message || 'Falha ao processar pagamento PIX.'
+        error: error instanceof Error ? error.message : 'Erro desconhecido' || 'Falha ao processar pagamento PIX.'
       });
     }
   });
@@ -2241,7 +2173,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(400).json({ 
         success: false, 
         message: 'Erro ao salvar dados do usuário',
-        error: error.message 
+        error: error instanceof Error ? error.message : 'Erro desconhecido' 
       });
     }
   });
