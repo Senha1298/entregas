@@ -263,7 +263,7 @@ export default function AppPage() {
               </div>
             </div>
             {/* Section: Dicas rápidas */}
-            <div className="w-full max-w-[400px] mx-auto mt-8 px-4">
+            <div className="w-full max-w-[400px] mx-auto mt-8 px-4 mb-24">
               <h3 className="text-lg font-bold mb-2 text-[#f55a1e]">Dicas rápidas</h3>
               <div className="flex space-x-3 overflow-x-auto pb-2">
                 <div className="min-w-[140px] bg-white rounded-xl shadow p-3 flex flex-col items-center border border-[#f3f4f6]">
