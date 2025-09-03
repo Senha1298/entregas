@@ -8,6 +8,9 @@ interface EntregadorCrachaProps {
 }
 
 const EntregadorCracha: React.FC<EntregadorCrachaProps> = ({ nome, cpf, cidade, fotoUrl }) => {
+  console.log('🎫 [CRACHA] Dados recebidos no componente:', { nome, cpf, cidade, fotoUrl });
+  console.log('🎫 [CRACHA] Nome que será renderizado:', nome);
+  
   return (
     <div className="relative">
       <div className="absolute -top-9 left-1/2 transform -translate-x-1/2">

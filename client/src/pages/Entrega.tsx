@@ -223,7 +223,10 @@ const Entrega: React.FC = () => {
     
     // Definir os dados do usuário
     if (nomeUsuario && cpfUsuario) {
-      console.log("[ENTREGA] Definindo dados do usuário:", { nome: nomeUsuario, cpf: cpfUsuario });
+      console.log("[ENTREGA] ✅ DEFININDO dados do usuário:", { nome: nomeUsuario, cpf: cpfUsuario });
+      console.log("[ENTREGA] 📋 Nome que será exibido no crachá:", nomeUsuario);
+      console.log("[ENTREGA] 📋 CPF que será exibido no crachá:", cpfUsuario);
+      
       setDadosUsuario({
         nome: nomeUsuario,
         cpf: cpfUsuario
