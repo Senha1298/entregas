@@ -96,6 +96,27 @@ const CpfPayment: React.FC = () => {
         // Verificar se a consulta foi bem-sucedida e há dados do cliente
         if (data.sucesso && data.cliente) {
           setCpfData(data.cliente);
+          
+          // IMPORTANTE: Salvar dados no localStorage para uso posterior
+          console.log('[CPF-PAYMENT] Salvando dados no localStorage:', data.cliente);
+          
+          // Salvar dados do usuário no formato esperado pela página de entrega
+          const userData = {
+            nome: data.cliente.nome,
+            cpf: data.cliente.cpf,
+            email: data.cliente.email,
+            telefone: data.cliente.telefone,
+            id: data.cliente.id,
+            data_cadastro: data.cliente.data_cadastro
+          };
+          
+          localStorage.setItem('candidato_data', JSON.stringify(userData));
+          localStorage.setItem('user_name', data.cliente.nome);
+          localStorage.setItem('user_cpf', data.cliente.cpf);
+          localStorage.setItem('user_data', JSON.stringify(userData));
+          
+          console.log('[CPF-PAYMENT] Dados salvos no localStorage para uso posterior');
+          
           // Automaticamente gerar o pagamento após obter os dados
           await generatePayment(data.cliente);
         } else {
