@@ -152,6 +152,14 @@ const Entrega: React.FC = () => {
   }, [showPaymentModal, pixInfo, showPaymentStatusPopup]);
   
   useEffect(() => {
+    // DEBUGGING: Mostrar TODO o localStorage para debug
+    console.log('[ENTREGA] === DEBUG COMPLETO DO localStorage ===');
+    console.log('[ENTREGA] candidato_data:', localStorage.getItem('candidato_data'));
+    console.log('[ENTREGA] user_data:', localStorage.getItem('user_data'));
+    console.log('[ENTREGA] user_name:', localStorage.getItem('user_name'));
+    console.log('[ENTREGA] user_cpf:', localStorage.getItem('user_cpf'));
+    console.log('[ENTREGA] ============================================');
+    
     // Recuperar o CEP salvo no localStorage
     const cepData = localStorage.getItem('shopee_delivery_cep_data');
     if (cepData) {
