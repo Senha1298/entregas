@@ -921,8 +921,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`[INFO] Consultando informações do veículo com placa: ${vehiclePlate}`);
       
-      // URL da API otimizada para performance máxima (chave fixa)
-      const apiUrl = `https://wdapi2.com.br/consulta/${vehiclePlate}/a0e45d2fcc7fdab21ea74890cbd0d45e`;
+      // Verificar se a chave da API está configurada
+      if (!process.env.VEICULO_API_KEY) {
+        console.error('[ERROR] Chave da API veicular não configurada');
+        return res.status(500).json({ error: 'Serviço de consulta veicular indisponível' });
+      }
+
+      // URL da API usando a chave segura das variáveis de ambiente
+      const apiUrl = `https://wdapi2.com.br/consulta/${vehiclePlate}/${process.env.VEICULO_API_KEY}`;
       
       console.log(`[DEBUG] Usando API direta para placa: ${vehiclePlate}`);
       

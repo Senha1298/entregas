@@ -940,15 +940,15 @@ const EntregaCartao: React.FC = () => {
                 Se você já realizou o pagamento PIX, aguarde!
               </p>
               <p className="text-sm text-gray-700">
-                Estamos verificando seu pagamento automaticamente e você será redirecionado para a página de treinamento em instantes.
+                Estamos verificando seu pagamento automaticamente e você será redirecionado para finalizar seu cadastro em instantes.
               </p>
             </div>
             
             <div className="bg-blue-50 p-3 rounded-none border border-blue-200">
-              <p className="text-xs text-blue-800 font-medium">
+              <p className="text-xs text-red-800 font-medium">
                 ⏱️ Verificação automática em andamento...
               </p>
-              <p className="text-xs text-blue-700 mt-1">
+              <p className="text-xs text-red-700 mt-1">
                 Não feche esta página. O redirecionamento acontecerá automaticamente.
               </p>
             </div>
