@@ -91,26 +91,12 @@ const Recebedor: React.FC = () => {
                             className="absolute text-white font-bold text-lg tracking-wide"
                             style={{
                               bottom: '35px',
-                              left: '60px',
+                              left: '45px',
                               fontFamily: 'Courier New, Courier, monospace',
                               textShadow: '2px 2px 4px rgba(0,0,0,0.7)'
                             }}
                           >
                             {nomeCartao}
-                          </div>
-                          {/* Logo da Shopee no cartão */}
-                          <div 
-                            className="absolute"
-                            style={{
-                              top: '20px',
-                              right: '25px'
-                            }}
-                          >
-                            <img 
-                              src="https://www.pxpng.com/public/uploads/preview/-216310241286qlyqrcnms.png"
-                              alt="Shopee Logo"
-                              className="w-12 h-12"
-                            />
                           </div>
                         </div>
                       </div>
