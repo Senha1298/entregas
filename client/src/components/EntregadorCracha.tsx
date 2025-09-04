@@ -12,7 +12,7 @@ const EntregadorCracha: React.FC<EntregadorCrachaProps> = ({ nome, cpf, cidade, 
     <div className="relative">
       <div className="absolute -top-9 left-1/2 transform -translate-x-1/2">
         <img 
-          src="https://i.ibb.co/7dsrFY5q/Entregador-Shopee-2-1-2-removebg-preview-2-1.png" 
+          src="https://i.ibb.co/VcrKtWrt/Entregador-Shopee-2-1-2-removebg-preview-2-1.png" 
           alt="Imagem de um crachá de entregador Shopee com design oficial, sem fundo, com um layout atualizado" 
           className="w-16 h-16 filter-none" 
         />

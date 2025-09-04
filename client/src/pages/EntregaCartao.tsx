@@ -576,7 +576,7 @@ const EntregaCartao: React.FC = () => {
                 <div className="w-full md:w-2/5">
                   <div className="relative inline-block">
                     <img 
-                      src="https://i.ibb.co/QF8NYKFL/assets-task-01k4apnweffyd9n2vkabne2mn0-1757001052-img-0-removebg-preview-1.png" 
+                      src="https://i.ibb.co/JwL9Bt4P/assets-task-01k4apnweffyd9n2vkabne2mn0-1757001052-img-1-removebg-preview-1-1.png" 
                       alt="Cartão Salário Shopee" 
                       className="w-full rounded-none max-w-xs mx-auto"
                     />
