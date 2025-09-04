@@ -63,8 +63,8 @@ const Recebedor: React.FC = () => {
             <i className="fas fa-chevron-right text-3xl font-black" style={{color: 'white'}}></i>
           </div>
           <div className="leading-none">
-            <h1 className="text-base font-bold text-white mb-0">TRABALHE CONOSCO</h1>
-            <p className="text-white text-sm mt-0" style={{transform: 'translateY(-2px)'}}>HOME OFFICE → DADOS BANCÁRIOS</p>
+            <h1 className="text-base font-bold text-white mb-0">Motorista Parceiro</h1>
+            <p className="text-white text-sm mt-0" style={{transform: 'translateY(-2px)'}}>Shopee</p>
           </div>
         </div>
       </div>
