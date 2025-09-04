@@ -85,14 +85,13 @@ const Recebedor: React.FC = () => {
                           <img 
                             src="https://i.ibb.co/whdJtR90/assets-task-01jwsgn3epfdfbpr0dxkqhkwe2-1748908070-img-1-1.png" 
                             alt="Cartão Salário Shopee" 
-                            className="max-w-full w-80 h-auto rounded-2xl shadow-lg"
-                            style={{filter: 'hue-rotate(30deg) saturate(1.2)'}}
+                            className="max-w-full w-80 h-auto rounded-2xl"
                           />
                           <div 
                             className="absolute text-white font-bold text-lg tracking-wide"
                             style={{
                               bottom: '35px',
-                              left: '75px',
+                              left: '60px',
                               fontFamily: 'Courier New, Courier, monospace',
                               textShadow: '2px 2px 4px rgba(0,0,0,0.7)'
                             }}
