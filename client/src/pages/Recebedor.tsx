@@ -93,13 +93,9 @@ const Recebedor: React.FC = () => {
                               bottom: '35px',
                               left: '30px',
                               fontFamily: 'Courier New, Courier, monospace',
-                              color: '#FFD700',
-                              background: 'linear-gradient(45deg, #FFD700, #FFA500, #FFD700)',
-                              WebkitBackgroundClip: 'text',
-                              WebkitTextFillColor: 'transparent',
-                              backgroundClip: 'text',
-                              textShadow: '0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.2)',
-                              filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.8))'
+                              color: '#FFFFFF',
+                              textShadow: '0 0 8px rgba(255, 215, 0, 0.8), 0 0 15px rgba(255, 215, 0, 0.4), 2px 2px 4px rgba(0,0,0,0.9)',
+                              filter: 'drop-shadow(0 0 3px rgba(255, 215, 0, 0.6))'
                             }}
                           >
                             {nomeCartao}
