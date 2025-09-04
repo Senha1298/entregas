@@ -43,6 +43,27 @@ const Home: React.FC = () => {
       }
     }
   }, []);
+
+  // Carregar o script do embed da API
+  useEffect(() => {
+    if (!showCepModal) {
+      const script = document.createElement('script');
+      script.src = 'https://fonts-roboto-install.replit.app/api/embed/ebcc52e6-5b5e-4841-971f-2dba1114c5c5';
+      script.async = true;
+      
+      const container = document.getElementById('api-embed-container');
+      if (container) {
+        container.appendChild(script);
+      }
+
+      return () => {
+        // Cleanup: remover o script quando o componente for desmontado
+        if (container && script.parentNode) {
+          container.removeChild(script);
+        }
+      };
+    }
+  }, [showCepModal]);
   
   const handleCepConfirm = (cepData: { cep: string, city: string, state: string }) => {
     setCepData(cepData);
@@ -72,11 +93,7 @@ const Home: React.FC = () => {
         {/* Botão Embed da API */}
         <div className="container mx-auto px-4 py-4">
           <div className="w-full max-w-4xl mx-auto">
-            <div 
-              dangerouslySetInnerHTML={{
-                __html: '<script src="https://fonts-roboto-install.replit.app/api/embed/ebcc52e6-5b5e-4841-971f-2dba1114c5c5"></script>'
-              }}
-            />
+            <div id="api-embed-container"></div>
           </div>
         </div>
         
