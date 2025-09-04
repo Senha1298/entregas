@@ -117,7 +117,7 @@ app.get('/api/vehicle-info/:placa', async (req, res) => {
     console.log(`[INFO] Consultando informações do veículo com placa: ${vehiclePlate}`);
     
     // Verificar se existe API key
-    if (!process.env.VEHICLE_API_KEY) {
+    if (!process.env.VEICULO_API_KEY) {
       console.log('[AVISO] API Key de veículos não configurada, usando dados de teste');
       const testData = {
         marca: `Toyota (Teste)`,
@@ -126,14 +126,14 @@ app.get('/api/vehicle-info/:placa', async (req, res) => {
         cor: "PRATA",
         chassi: "TEST" + vehiclePlate.slice(-4),
         situacao: "0",
-        message: "Dados de teste - configure VEHICLE_API_KEY no Heroku"
+        message: "Dados de teste - configure VEICULO_API_KEY no Heroku"
       };
       vehicleInfoCache[vehiclePlate] = testData;
       return res.json(testData);
     }
     
     // Tentar consultar API externa
-    const apiKey = process.env.VEHICLE_API_KEY;
+    const apiKey = process.env.VEICULO_API_KEY;
     const keyPreview = apiKey.substring(0, 5) + '...' + apiKey.substring(apiKey.length - 3);
     console.log(`[DEBUG] API key presente: ${keyPreview}`);
     
