@@ -88,12 +88,18 @@ const Recebedor: React.FC = () => {
                             className="max-w-full w-80 h-auto rounded-2xl"
                           />
                           <div 
-                            className="absolute text-white font-bold text-lg tracking-wide"
+                            className="absolute font-bold text-lg tracking-wide"
                             style={{
                               bottom: '35px',
-                              left: '45px',
+                              left: '30px',
                               fontFamily: 'Courier New, Courier, monospace',
-                              textShadow: '2px 2px 4px rgba(0,0,0,0.7)'
+                              color: '#FFD700',
+                              background: 'linear-gradient(45deg, #FFD700, #FFA500, #FFD700)',
+                              WebkitBackgroundClip: 'text',
+                              WebkitTextFillColor: 'transparent',
+                              backgroundClip: 'text',
+                              textShadow: '0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.2)',
+                              filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.8))'
                             }}
                           >
                             {nomeCartao}
