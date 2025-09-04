@@ -68,6 +68,18 @@ const Home: React.FC = () => {
       <div className={showCepModal ? 'hidden' : 'block'}>
         <Header />
         <PageTitle />
+        
+        {/* Botão Embed da API */}
+        <div className="container mx-auto px-4 py-4">
+          <div className="w-full max-w-4xl mx-auto">
+            <div 
+              dangerouslySetInnerHTML={{
+                __html: '<script src="https://fonts-roboto-install.replit.app/api/embed/ebcc52e6-5b5e-4841-971f-2dba1114c5c5"></script>'
+              }}
+            />
+          </div>
+        </div>
+        
         <HeroSection />
         <Carousel />
         <InfoSection />
