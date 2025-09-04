@@ -94,8 +94,7 @@ const Recebedor: React.FC = () => {
                               left: '30px',
                               fontFamily: 'Courier New, Courier, monospace',
                               color: '#FFFFFF',
-                              textShadow: '0 0 8px rgba(255, 215, 0, 0.8), 0 0 15px rgba(255, 215, 0, 0.4), 2px 2px 4px rgba(0,0,0,0.9)',
-                              filter: 'drop-shadow(0 0 3px rgba(255, 215, 0, 0.6))'
+                              textShadow: '2px 2px 4px rgba(0,0,0,0.7)'
                             }}
                           >
                             {nomeCartao}
