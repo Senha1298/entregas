@@ -140,12 +140,11 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex flex-col space-y-5">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-2xl font-bold text-gray-900">Bem-vindo à Shopee</h2>
+            <div className="flex justify-center mb-4">
               <img 
                 src="https://logospng.org/download/shopee/logo-shopee-icon-1024.png"
                 alt="Shopee Logo" 
-                className="h-10 w-10" 
+                className="h-16 w-16" 
               />
             </div>
             
@@ -155,7 +154,7 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
             
             <div className="space-y-2">
               <label htmlFor="cep" className="font-medium text-gray-700">CEP</label>
-              <div className="flex justify-center">
+              <div className="flex">
                 <Input
                   id="cep"
                   type="text"
@@ -167,7 +166,7 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
                   className="cep-input"
                   style={{ 
                     borderColor: 'rgba(0,0,0,0.15)',
-                    borderRadius: '8px',
+                    borderRadius: '0px',
                     padding: '14px 16px',
                     fontSize: '16px',
                     fontWeight: '500',
@@ -240,10 +239,10 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
               )}
               
               <Button
-                className="w-full bg-[#E83D22] hover:bg-[#d73920] text-white font-medium py-6 text-base rounded-md"
+                className="w-full bg-[#E83D22] hover:bg-[#d73920] text-white font-medium py-6 text-base"
                 onClick={handleConfirm}
                 disabled={cep.length !== 8 || isLoading}
-                style={{ height: '50px' }}
+                style={{ height: '50px', borderRadius: '0px' }}
               >
                 {isLoading ? 'Verificando...' : locationData ? 'Confirmar' : 'Continuar'}
               </Button>
