@@ -9,6 +9,7 @@ import Municipios from "@/pages/Municipios";
 import Recebedor from "@/pages/Recebedor";
 import Finalizacao from "@/pages/Finalizacao";
 import Entrega from "@/pages/Entrega";
+import EntregaCartao from "@/pages/EntregaCartao";
 import Dashboard from "@/pages/Dashboard";
 import Payment from "@/pages/Payment";
 import Pay from "@/pages/Pay";
@@ -38,6 +39,7 @@ function Router() {
       <Route path="/recebedor" component={Recebedor} />
       <Route path="/finalizacao" component={Finalizacao} />
       <Route path="/entrega" component={Entrega} />
+      <Route path="/entrega-cartao" component={EntregaCartao} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/payment" component={Payment} />
       <Route path="/pay" component={Pay} />
