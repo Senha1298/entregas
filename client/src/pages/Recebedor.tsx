@@ -83,7 +83,7 @@ const Recebedor: React.FC = () => {
                       <div className="text-center">
                         <div className="relative inline-block">
                           <img 
-                            src="https://i.ibb.co/JwL9Bt4P/assets-task-01k4apnweffyd9n2vkabne2mn0-1757001052-img-1-removebg-preview-1-1.png" 
+                            src="https://i.ibb.co/VWZ2B4jv/Inserir-um-ti-tulo-4-1-1.webp" 
                             alt="Cartão Salário Shopee" 
                             className="max-w-full w-80 h-auto rounded-2xl"
                           />
