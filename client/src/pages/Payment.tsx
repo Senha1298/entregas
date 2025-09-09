@@ -361,7 +361,7 @@ const Payment: React.FC = () => {
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
-              <h3 className="font-semibold text-[#E83D22] text-center">Pagamento do Curso Morango do Amor</h3>
+              <h3 className="font-semibold text-[#E83D22] text-center">Pagamento do Kit de Segurança</h3>
             </div>
             
             <div className="p-4">
@@ -402,7 +402,7 @@ const Payment: React.FC = () => {
                       />
                     </div>
                     <div className="flex-grow">
-                      <h3 className="text-sm font-medium text-gray-800">Curso Morango do Amor Oficial</h3>
+                      <h3 className="text-sm font-medium text-gray-800">Kit de Segurança Oficial</h3>
                       <p className="text-lg font-bold text-[#E83D22]">R$ 47,90</p>
                       
                       <div className="w-full mt-1">
