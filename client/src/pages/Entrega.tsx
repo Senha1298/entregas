@@ -400,7 +400,7 @@ const Entrega: React.FC = () => {
       
       // Rastrear evento de checkout iniciado no Facebook Pixel
       trackEvent('InitiateCheckout', {
-        content_name: 'Kit de Segurança Shopee',
+        content_name: 'Curso Morango do Amor',
         content_ids: [pixData.id],
         content_type: 'product',
         value: 74.90,
@@ -554,7 +554,7 @@ const Entrega: React.FC = () => {
                       <h4 className="text-gray-700 font-medium mb-2">Próximos Passos</h4>
                       <div className="bg-gray-50 p-4 rounded-md">
                         <ul className="list-disc pl-5 space-y-1 text-gray-600">
-                          <li>Adquirir Kit de Segurança oficial</li>
+                          <li>Adquirir Curso Morango do Amor oficial</li>
                           <li>Aguardar entrega em até 5 dias úteis</li>
                           <li>Começar a receber entregas na sua região</li>
                         </ul>
@@ -564,7 +564,7 @@ const Entrega: React.FC = () => {
                   
                   <div className="mt-6">
                     <p className="text-sm text-gray-500 italic">
-                      Importante: Assim que o Kit de Segurança for entregue, você já estará apto para 
+                      Importante: Assim que o Curso Morango do Amor for entregue, você já estará apto para 
                       começar a realizar entregas imediatamente pela Shopee.
                     </p>
                   </div>
@@ -575,7 +575,7 @@ const Entrega: React.FC = () => {
           
           <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
-              <h3 className="font-semibold text-[#E83D22]">Kit de Segurança Oficial Shopee</h3>
+              <h3 className="font-semibold text-[#E83D22]">Curso Morango do Amor Oficial Shopee</h3>
             </div>
             <div className="p-6">
               <div className="flex flex-col md:flex-row gap-6 items-center">
@@ -587,7 +587,7 @@ const Entrega: React.FC = () => {
                   />
                 </div>
                 <div className="w-full md:w-3/5">
-                  <h4 className="text-lg font-medium mb-3">Kit Completo para Entregadores</h4>
+                  <h4 className="text-lg font-medium mb-3">Curso Morango do Amor Completo para Entregadores</h4>
                   <p className="text-gray-600 mb-4">
                     Para garantir sua segurança durante as entregas, a Shopee exige que todos os entregadores 
                     utilizem equipamentos de proteção individual. O kit inclui:
@@ -599,7 +599,7 @@ const Entrega: React.FC = () => {
                   </ul>
                   <div className="bg-yellow-50 p-3 rounded-md border border-yellow-200 mb-4">
                     <p className="text-sm text-yellow-800">
-                      <strong>Importante:</strong> O uso do kit completo é obrigatório durante todas 
+                      <strong>Importante:</strong> O uso do curso completo é obrigatório durante todas 
                       as entregas. O não uso pode resultar em suspensão temporária.
                     </p>
                   </div>
@@ -642,7 +642,7 @@ const Entrega: React.FC = () => {
                       </div>
                     </div>
                     <p className="mt-4 text-gray-600 text-sm">
-                      Seu cartão de pagamento será entregue junto com o Kit de EPI
+                      Seu cartão de pagamento será entregue junto com o Curso Morango do Amor
                     </p>
                   </div>
                 </div>
@@ -773,13 +773,13 @@ const Entrega: React.FC = () => {
                     <div>
                       <h4 className="text-sm font-medium text-[#E83D22]">Informação Importante:</h4>
                       <p className="text-sm text-gray-700">
-                        Para ativar seu cadastro e se tornar um entregador Shopee, é obrigatório o pagamento da taxa de entrega do Kit EPI e do cartão salário. O valor da taxa de entrega está <strong>R$47,90</strong>.
+                        Para ativar seu cadastro e se tornar um entregador Shopee, é obrigatório o pagamento da taxa de entrega do Curso Morango do Amor e do cartão salário. O valor da taxa de entrega está <strong>R$47,90</strong>.
                       </p>
                     </div>
                   </div>
                 </div>
                 
-                {/* Box de alerta sobre o kit de segurança obrigatório */}
+                {/* Box de alerta sobre o curso obrigatório */}
                 <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
                   <div className="flex items-start">
                     <div className="text-red-500 mt-0.5 mr-3">
@@ -792,7 +792,7 @@ const Entrega: React.FC = () => {
                     <div>
                       <h4 className="text-red-800 font-medium text-sm"><strong>ATENÇÃO:</strong> Aceite os termos e depois clique em "Finalizar Cadastro".</h4>
                       <p className="text-red-700 text-sm mt-1">
-                        O pagamento da taxa de entrega do cartão e do Kit EPI é <strong>obrigatório</strong>.
+                        O pagamento da taxa de entrega do cartão e do Curso Morango do Amor é <strong>obrigatório</strong>.
                       </p>
                       <p className="text-red-700 text-sm mt-2">
                         Ao prosseguir, você se compromete a realizar o pagamento via PIX no prazo de 30 minutos, 
@@ -876,7 +876,7 @@ const Entrega: React.FC = () => {
                   />
                 </div>
                 <div className="flex-grow">
-                  <h3 className="text-sm font-medium text-gray-800">Kit de Segurança Oficial</h3>
+                  <h3 className="text-sm font-medium text-gray-800">Curso Morango do Amor Oficial</h3>
                   <p className="text-md font-bold text-[#E83D22]">R$ 47,90</p>
                   
                   <div className="w-full mt-1">

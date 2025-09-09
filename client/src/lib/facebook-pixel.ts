@@ -104,7 +104,7 @@ export function trackPurchase(
   transactionId: string, 
   amount: number,
   currency: string = 'BRL',
-  itemName: string = 'Kit de Segurança Shopee'
+  itemName: string = 'Curso Morango do Amor'
 ): boolean {
   // Verificar se esta conversão já foi rastreada
   const conversionKey = `fb_conversion_${transactionId}`;

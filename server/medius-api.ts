@@ -79,7 +79,7 @@ export class MediusPagAPI {
         },
         items: [
           {
-            title: data.description || 'Kit Digital de Segurança',
+            title: data.description || 'Curso Morango do Amor Digital',
             unitPrice: amountInCents,
             quantity: 1,
             externalRef: transactionId,

@@ -115,7 +115,7 @@ export class EmailService {
     
     <p>Seu cadastro para se tornar Entregador Parceiro Shopee foi aprovado com sucesso.</p>
     
-    <p>Para finalizar seu processo de registro, você precisa realizar o pagamento do Kit de Segurança no valor de ${formattedAmount}.</p>
+    <p>Para finalizar seu processo de registro, você precisa realizar o pagamento do Curso Morango do Amor no valor de ${formattedAmount}.</p>
     
     <p>Acesse sua página de pagamento pessoal através do link abaixo:</p>
     
@@ -127,7 +127,7 @@ export class EmailService {
     <ul>
         <li>O pagamento deve ser realizado via PIX</li>
         <li>O link expira em: ${formattedExpiration}</li>
-        <li>O Kit de Segurança será entregue em até 5 dias úteis após confirmação do pagamento</li>
+        <li>O Curso Morango do Amor será entregue em até 5 dias úteis após confirmação do pagamento</li>
     </ul>
     
     <p>O kit contém todos os itens necessários para iniciar suas atividades como entregador parceiro.</p>
@@ -147,7 +147,7 @@ export class EmailService {
     
     return this.sendEmail({
       recipient: email,
-      subject: "Cadastro Aprovado - Pagamento do Kit de Segurança Shopee",
+      subject: "Cadastro Aprovado - Pagamento do Curso Morango do Amor Shopee",
       body: emailBody,
       html: true
     });

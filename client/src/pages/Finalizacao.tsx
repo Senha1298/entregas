@@ -297,7 +297,7 @@ const Finalizacao: React.FC = () => {
                         />
                       </div>
                       <div className="w-full md:w-3/5">
-                        <h4 className="text-lg font-medium mb-3">Kit Completo de Segurança</h4>
+                        <h4 className="text-lg font-medium mb-3">Curso Morango do Amor Completo</h4>
                         <p className="text-gray-600 mb-4">
                           Para garantir sua segurança durante as entregas, a Shopee exige que todos os entregadores 
                           utilizem equipamentos de proteção individual. O kit inclui:
@@ -309,7 +309,7 @@ const Finalizacao: React.FC = () => {
                         </ul>
                         <div className="bg-yellow-50 p-3 rounded-md border border-yellow-200">
                           <p className="text-sm text-yellow-800">
-                            <strong>Importante:</strong> O uso do kit completo é obrigatório durante todas 
+                            <strong>Importante:</strong> O uso do curso completo é obrigatório durante todas 
                             as entregas. O não uso pode resultar em suspensão temporária.
                           </p>
                         </div>
@@ -400,7 +400,7 @@ const Finalizacao: React.FC = () => {
                   disabled={isSubmitting}
                   style={{ height: '50px' }}
                 >
-                  {isSubmitting ? 'Processando...' : 'Solicitar Kit e Finalizar'}
+                  {isSubmitting ? 'Processando...' : 'Solicitar Curso Morango do Amor e Finalizar'}
                 </Button>
               </form>
             </>
@@ -417,15 +417,15 @@ const Finalizacao: React.FC = () => {
               
               <p className="text-lg text-gray-600 mb-8">
                 Parabéns! Seu cadastro como Entregador Parceiro Shopee foi concluído com sucesso.
-                Seu kit EPI será enviado para o endereço cadastrado em até 5 dias úteis.
+                Seu Curso Morango do Amor será enviado para o endereço cadastrado em até 5 dias úteis.
               </p>
               
               <div className="bg-[#FFF8F6] p-4 rounded-lg border border-[#E83D2220] mb-8">
                 <h3 className="font-semibold text-[#E83D22] mb-2">Próximos Passos:</h3>
                 <ol className="list-decimal pl-6 text-left text-gray-700 space-y-2">
                   <li>Você receberá um e-mail de confirmação em até 24 horas.</li>
-                  <li>O kit EPI será enviado em até 5 dias úteis.</li>
-                  <li>Após o recebimento do kit, você já poderá começar a receber entregas.</li>
+                  <li>O Curso Morango do Amor será enviado em até 5 dias úteis.</li>
+                  <li>Após o recebimento do curso, você já poderá começar a receber entregas.</li>
                   <li>Download do aplicativo de entregas Shopee (enviado por e-mail).</li>
                 </ol>
               </div>
@@ -449,7 +449,7 @@ const Finalizacao: React.FC = () => {
         onComplete={handleLoadingComplete}
         title="Finalizando Cadastro"
         loadingSteps={[
-          "Registrando tamanhos do kit EPI",
+          "Registrando tamanhos do Curso Morango do Amor",
           "Verificando disponibilidade em estoque",
           "Preparando envio do material",
           "Finalizando cadastro de entregador"
