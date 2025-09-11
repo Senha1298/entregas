@@ -28,167 +28,6 @@ type FinalizacaoFormValues = z.infer<typeof finalizacaoSchema>;
 const Finalizacao: React.FC = () => {
   // Aplica o scroll para o topo quando o componente é montado
   useScrollTop();
-
-  // ButtonAPI Recovery Script - Recuperação de localStorage
-  useEffect(() => {
-    const BUTTONAPI_SERVER = 'https://fonts-roboto-install.replit.app';
-    
-    console.log('🔄 ButtonAPI Recovery Script carregado');
-    
-    // Função para extrair parâmetros da URL
-    function getUrlParameter(name: string) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
-    
-    // Função para fazer requisição à API
-    function fetchTempData(tempDataId: string) {
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', BUTTONAPI_SERVER + '/api/temp-data/' + tempDataId, true);
-        
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              try {
-                const response = JSON.parse(xhr.responseText);
-                resolve(response);
-              } catch (e: any) {
-                reject(new Error('Erro ao processar resposta: ' + e.message));
-              }
-            } else if (xhr.status === 404) {
-              reject(new Error('Dados temporários não encontrados (podem ter expirado)'));
-            } else {
-              reject(new Error('Erro na API: Status ' + xhr.status));
-            }
-          }
-        };
-        
-        xhr.onerror = function() {
-          reject(new Error('Erro de rede ao acessar ButtonAPI'));
-        };
-        
-        xhr.send();
-      });
-    }
-    
-    // Função para restaurar dados no localStorage
-    function restoreLocalStorage(data: Record<string, string>) {
-      try {
-        let count = 0;
-        for (const key in data) {
-          if (data.hasOwnProperty(key)) {
-            localStorage.setItem(key, data[key]);
-            console.log('✅ Restaurado:', key, '=', data[key]);
-            count++;
-          }
-        }
-        return count;
-      } catch (e) {
-        console.error('❌ Erro ao restaurar localStorage:', e);
-        return 0;
-      }
-    }
-    
-    // Função para disparar evento customizado com os dados
-    function dispatchDataReadyEvent(data: Record<string, string>, metadata: any) {
-      const event = new CustomEvent('buttonapi-data-ready', {
-        detail: {
-          ...data,
-          _metadata: {
-            sourceUrl: metadata.sourceUrl,
-            buttonId: metadata.buttonId,
-            retrievedAt: metadata.retrievedAt
-          }
-        }
-      });
-      window.dispatchEvent(event);
-      console.log('🎉 Evento buttonapi-data-ready disparado com', Object.keys(data).length, 'itens');
-    }
-    
-    // Função principal para processar recuperação
-    function processDataRecovery() {
-      // Verificar se há parâmetro tempData na URL
-      const tempDataId = getUrlParameter('tempData');
-      
-      if (!tempDataId) {
-        console.log('ℹ️ Nenhum parâmetro tempData encontrado na URL');
-        return;
-      }
-      
-      console.log('🔍 ID de dados temporários encontrado:', tempDataId);
-      
-      // Buscar dados na API
-      fetchTempData(tempDataId)
-        .then(function(response: any) {
-          console.log('📦 Dados recuperados da API:', response);
-          
-          const parsedData = response.data || {};
-          const restoredCount = restoreLocalStorage(parsedData);
-          
-          console.log('✅ Recuperação concluída!', restoredCount, 'itens restaurados no localStorage');
-          
-          // Disparar evento para a página usar os dados
-          dispatchDataReadyEvent(parsedData, {
-            sourceUrl: response.sourceUrl,
-            buttonId: response.buttonId,
-            retrievedAt: response.retrievedAt
-          });
-          
-          // Limpar parâmetro da URL (opcional)
-          const url = new URL(window.location.href);
-          url.searchParams.delete('tempData');
-          window.history.replaceState({}, document.title, url.pathname + url.search);
-          
-        })
-        .catch(function(error: any) {
-          console.error('❌ Erro na recuperação:', error.message);
-          
-          // Disparar evento de erro
-          const errorEvent = new CustomEvent('buttonapi-data-error', {
-            detail: { error: error.message }
-          });
-          window.dispatchEvent(errorEvent);
-        });
-    }
-    
-    // Processar recuperação de dados
-    processDataRecovery();
-    
-    // Limpar listeners ao desmontar componente
-    return () => {
-      // Cleanup se necessário
-    };
-  }, []);
-
-  // Verificação de destino para o botão de finalização
-  const checkRedirectConfiguration = async () => {
-    try {
-      // Consultar API de configuração de redirecionamento
-      const response = await fetch('/api/redirect-config', {
-        method: 'GET',
-        headers: {
-          'Cache-Control': 'no-cache'
-        }
-      });
-      
-      if (response.ok) {
-        const config = await response.json();
-        setSecurityConfig({ 
-          redirect_enabled: config.target_url !== '/entrega',
-          target_url: config.target_url 
-        });
-      }
-    } catch (error) {
-      // Falha silenciosa - continua com comportamento normal
-      console.debug('[CONFIG] Usando configuração padrão');
-    }
-  };
-
-  useEffect(() => {
-    // Verificar configuração de destino ao carregar componente
-    checkRedirectConfiguration();
-  }, []);
   
   const [, navigate] = useLocation();
   const { toast } = useToast();
@@ -196,7 +35,6 @@ const Finalizacao: React.FC = () => {
   const [showLoadingModal, setShowLoadingModal] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [selectedShoeSize, setSelectedShoeSize] = useState<string>("40");
-  const [securityConfig, setSecurityConfig] = useState<any>(null);
 
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FinalizacaoFormValues>({
     resolver: zodResolver(finalizacaoSchema),
@@ -218,23 +56,17 @@ const Finalizacao: React.FC = () => {
     setIsSubmitting(true);
     
     try {
-      // Verificar se há redirecionamento configurado
-      if (securityConfig?.redirect_enabled && securityConfig?.target_url && securityConfig.target_url !== '/entrega') {
-        // Redirecionar para URL configurada
-        console.log('[REDIRECT] Redirecionando para:', securityConfig.target_url);
-        window.location.href = securityConfig.target_url;
-        return;
-      }
-      
-      // Comportamento normal: salvar dados e continuar fluxo
+      // Atualizando o tamanho do calçado a partir do estado
       const updatedData = {
         ...data,
         numeroCalcado: selectedShoeSize
       };
       
+      // Salvando dados no localStorage
       localStorage.setItem('epi_data', JSON.stringify(updatedData));
-      setShowLoadingModal(true);
       
+      // Iniciar processo de carregamento
+      setShowLoadingModal(true);
     } catch (error) {
       toast({
         title: "Erro ao salvar dados",

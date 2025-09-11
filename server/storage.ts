@@ -60,9 +60,6 @@ export interface IStorage {
   createAppUser(appUser: InsertAppUser): Promise<AppUser>;
   updateAppUser(cpf: string, updates: Partial<InsertAppUser>): Promise<AppUser | undefined>;
   upsertAppUser(appUser: InsertAppUser): Promise<AppUser>;
-  
-  // Raw SQL query method for security config
-  query(sqlQuery: string, params?: any[]): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -296,17 +293,6 @@ export class DatabaseStorage implements IStorage {
     } else {
       // Se não existe, criar novo
       return await this.createAppUser(insertAppUser);
-    }
-  }
-  
-  // Raw SQL query method for security configuration
-  async query(sqlQuery: string, params?: any[]): Promise<any[]> {
-    try {
-      const result = await db.execute(sql.raw(sqlQuery, params || []));
-      return result.rows || [];
-    } catch (error) {
-      console.error('[DATABASE] Erro ao executar query:', error);
-      throw error;
     }
   }
 }
