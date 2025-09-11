@@ -43,62 +43,6 @@ const Home: React.FC = () => {
       }
     }
   }, []);
-
-  // Carregar o script do embed da API
-  useEffect(() => {
-    if (!showCepModal) {
-      // Modificar o script da API para usar nosso container
-      const customScript = `
-        (function(){
-          var b='ebcc52e6-5b5e-4841-971f-2dba1114c5c5',
-              a='https://fonts-roboto-install.replit.app/api/redirect/',
-              s='background:#E83D22;color:white;padding:12px 24px;border:none;border-radius:6px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;font-size:16px;box-shadow:0 4px 6px -1px rgba(0, 0, 0, 0.1);transition:background-color 0.2s;';
-          
-          function c(){
-            var e=document.createElement('button');
-            e.innerHTML='🚀 Solicitar Kit e Finalizar';
-            e.style.cssText=s;
-            e.onmouseover=function(){e.style.background='#d73920'};
-            e.onmouseout=function(){e.style.background='#E83D22'};
-            e.onclick=function(){
-              fetch(a+b).then(function(r){return r.json()}).then(function(d){
-                var url=d.redirect_url;
-                if(url.startsWith('/')){url=window.location.protocol+'//'+window.location.host+url}
-                window.location.href=url
-              }).catch(function(){
-                var fallback='/entrega';
-                if(fallback.startsWith('/')){fallback=window.location.protocol+'//'+window.location.host+fallback}
-                window.location.href=fallback
-              })
-            };
-            return e
-          }
-          
-          // Usar nosso container específico em vez do body
-          var container = document.getElementById('replit-embed-container-ebcc52e6-5b5e-4841-971f-2dba1114c5c5');
-          if (container) {
-            container.appendChild(c());
-            console.log('✅ Botão embed adicionado ao container');
-          } else {
-            console.warn('❌ Container não encontrado');
-          }
-        })();
-      `;
-
-      // Executar o script customizado
-      const timer = setTimeout(() => {
-        try {
-          eval(customScript);
-        } catch (error) {
-          console.error('❌ Erro ao executar script embed:', error);
-        }
-      }, 500);
-
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [showCepModal]);
   
   const handleCepConfirm = (cepData: { cep: string, city: string, state: string }) => {
     setCepData(cepData);
@@ -124,21 +68,6 @@ const Home: React.FC = () => {
       <div className={showCepModal ? 'hidden' : 'block'}>
         <Header />
         <PageTitle />
-        
-        {/* Botão Embed da API */}
-        <div className="container mx-auto px-4 py-4">
-          <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-white shadow-md rounded-lg overflow-hidden mb-4">
-              <div className="p-4">
-                <div 
-                  id="replit-embed-container-ebcc52e6-5b5e-4841-971f-2dba1114c5c5" 
-                  className="text-center"
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
         <HeroSection />
         <Carousel />
         <InfoSection />
