@@ -1037,17 +1037,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Criar objeto de resposta formatado
+      // Criar objeto de resposta formatado com campos extras
       const responseData = {
         MARCA: vehicleData.MARCA || vehicleData.marca || "Não informado",
         MODELO: vehicleData.MODELO || vehicleData.modelo || "Não informado",
+        SUBMODELO: vehicleData.SUBMODELO || vehicleData.submodelo || null,
+        VERSAO: vehicleData.VERSAO || vehicleData.versao || null,
         marca: vehicleData.MARCA || vehicleData.marca || "Não informado",
         modelo: vehicleData.MODELO || vehicleData.modelo || "Não informado",
         ano: vehicleData.ano || vehicleData.anoModelo || "Não informado",
         anoModelo: vehicleData.anoModelo || vehicleData.ano || "Não informado",
+        anoFabricacao: vehicleData.extra?.ano_fabricacao || vehicleData.ano || "Não informado",
         chassi: vehicleData.chassi || "Não informado",
         cor: vehicleData.cor || "Não informado",
-        placa: vehiclePlate
+        codigoSituacao: vehicleData.codigoSituacao || "0",
+        data: vehicleData.data || new Date().toISOString(),
+        placa: vehiclePlate,
+        extra: vehicleData.extra || {}
       };
       
       // Guardar no cache
@@ -1066,6 +1072,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
         details: errorMessage,
         timestamp: new Date().toISOString()
       });
+    }
+  });
+
+  // Endpoint para limpar cache de veículos
+  app.delete('/api/clear-cache', (req, res) => {
+    try {
+      const vehicleInfoCache = {};
+      console.log('[CACHE] Cache de veículos limpo');
+      res.json({ success: true, message: 'Cache limpo com sucesso' });
+    } catch (error) {
+      console.error('[CACHE] Erro ao limpar cache:', error);
+      res.status(500).json({ error: 'Erro ao limpar cache' });
+    }
+  });
+
+  // Endpoint para limpar cache de veículo específico
+  app.delete('/api/clear-cache/:placa', (req, res) => {
+    try {
+      const { placa } = req.params;
+      const vehiclePlate = placa.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+      
+      if (vehicleInfoCache[vehiclePlate]) {
+        delete vehicleInfoCache[vehiclePlate];
+        console.log(`[CACHE] Cache da placa ${vehiclePlate} limpo`);
+        res.json({ success: true, message: `Cache da placa ${vehiclePlate} limpo` });
+      } else {
+        res.json({ success: true, message: `Placa ${vehiclePlate} não estava em cache` });
+      }
+    } catch (error) {
+      console.error('[CACHE] Erro ao limpar cache da placa:', error);
+      res.status(500).json({ error: 'Erro ao limpar cache da placa' });
     }
   });
 

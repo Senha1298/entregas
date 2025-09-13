@@ -133,8 +133,12 @@ export function VehicleInfoBox({ licensePlate, onChange, className = '' }: Vehic
             <span className="ml-1 text-gray-800">{vehicleInfo.MODELO || vehicleInfo.modelo || "Não informado"}</span>
           </div>
           <div>
-            <span className="font-medium text-gray-600">Ano:</span>
-            <span className="ml-1 text-gray-800">{vehicleInfo.ano || "Não informado"}</span>
+            <span className="font-medium text-gray-600">Ano Modelo:</span>
+            <span className="ml-1 text-gray-800">{vehicleInfo.anoModelo || vehicleInfo.ano || "Não informado"}</span>
+          </div>
+          <div>
+            <span className="font-medium text-gray-600">Ano Fabricação:</span>
+            <span className="ml-1 text-gray-800">{vehicleInfo.anoFabricacao || vehicleInfo.ano || "Não informado"}</span>
           </div>
           <div>
             <span className="font-medium text-gray-600">Cor:</span>
