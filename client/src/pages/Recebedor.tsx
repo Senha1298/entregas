@@ -254,6 +254,7 @@ const Recebedor: React.FC = () => {
                       onClick={handleProsseguir}
                       disabled={isLoading}
                       data-action="continue"
+                      data-redirect="/finalizacao"
                       className={`
                         bg-[#E83D22] hover:opacity-90 text-white font-bold text-sm
                         px-6 py-3 border-none rounded transition-opacity duration-200
@@ -271,6 +272,7 @@ const Recebedor: React.FC = () => {
                       )}
                       <span>{isLoading ? 'Carregando...' : 'PROSSEGUIR'}</span>
                     </button>
+                    {/* Redirecionamento configurado para /finalizacao */}
                   </div>
                 </div>
               </div>
