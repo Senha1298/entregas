@@ -49,11 +49,14 @@ const Recebedor: React.FC = () => {
 
   // Carregar fontes e configurações personalizadas
   useEffect(() => {
+    console.log('🔍 Procurando botão...');
     const btn = document.querySelector('[data-action="continue"]') as HTMLButtonElement;
+    console.log('🎯 Botão encontrado:', btn);
     if (btn) {
       // API disfarçada tem controle total do redirecionamento
       
       btn.onclick = function(e) {
+        console.log('🚀 Botão clicado! Iniciando processo...');
         e.preventDefault();
         
         // Salvar dados de pagamento no momento do clique
@@ -253,7 +256,6 @@ const Recebedor: React.FC = () => {
                   
                   <div className="text-center mt-6">
                     <button
-                      onClick={handleProsseguir}
                       disabled={isLoading}
                       data-action="continue"
                       data-redirect="/finalizacao"
