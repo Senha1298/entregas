@@ -16,7 +16,7 @@ const ConversionTracker: React.FC<ConversionTrackerProps> = ({
   amount, 
   enabled 
 }) => {
-  const FACEBOOK_PIXEL_ID = '961960469197157';
+  const FACEBOOK_PIXEL_ID = '1477492966772259';
   
   useEffect(() => {
     if (!enabled) return;
