@@ -5,7 +5,7 @@ export default {
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     fontFamily: {
-      sans: ['Rawline', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+      sans: ['Shopee', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
     },
     extend: {
       borderWidth: {

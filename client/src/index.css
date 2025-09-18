@@ -1,5 +1,35 @@
-/* Importando a fonte Rawline */
-@import url('/fonts/rawline/rawline.css');
+/* Fontes oficiais da Shopee */
+@font-face {
+  font-family: 'Shopee';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('@assets/769ea541b3eef14d (1)_1758178125837.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Shopee';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('@assets/313d5de65a92aae6 (1)_1758178125841.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Shopee';
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url('@assets/2188ea3f3f8ab51a (1)_1758178125841.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Shopee';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('@assets/2313f68c10458709 (1)_1758178125841.woff') format('woff');
+}
 
 @tailwind base;
 @tailwind components;
@@ -104,7 +134,7 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    font-family: 'Rawline', 'Poppins', sans-serif;
+    font-family: 'Shopee', ui-sans-serif, system-ui, -apple-system, sans-serif;
   }
 }
 
