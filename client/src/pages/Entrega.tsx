@@ -883,16 +883,17 @@ const Entrega: React.FC = () => {
                 </div>
               </div>
               
-              {/* Status de pagamento com spinner */}
-              <div className="flex items-center justify-center gap-2 py-1">
-                <div className="text-[#E83D22] animate-spin">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              {/* Tempo restante - movido para cima */}
+              <div className="bg-[#fff3e6] border-[#E83D22] border p-2 rounded-md mt-4 w-[85%] mx-auto flex-shrink-0">
+                <div className="flex items-center justify-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#E83D22]">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12,6 12,12 16,14"></polyline>
                   </svg>
+                  <p className="text-xs text-[#E83D22] font-semibold">
+                    PIX expira em: {formatTime(timeLeft)}
+                  </p>
                 </div>
-                <p className="text-xs text-gray-600 font-medium">
-                  Aguardando pagamento PIX...
-                </p>
               </div>
               
               {/* Logo PIX */}
@@ -929,7 +930,7 @@ const Entrega: React.FC = () => {
                   </Button>
                 </div>
                 
-                <div className="mt-2">
+                <div className="mt-1">
                   <Button
                     onClick={copiarCodigoPix}
                     className="bg-[#E83D22] hover:bg-[#d73920] text-white font-medium py-1 w-full text-xs rounded-[3px] shadow-md transform active:translate-y-0.5 transition-transform"
@@ -944,26 +945,10 @@ const Entrega: React.FC = () => {
                   </Button>
                 </div>
                 
-                {/* Tempo restante */}
-                <div className="bg-[#fff3e6] border-[#E83D22] border p-2 rounded-md mt-2 w-[75%] mx-auto">
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="text-[#E83D22]">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                      </svg>
-                    </div>
-                    <div className="flex flex-col">
-                      <p className="text-xs text-gray-700 font-medium">
-                        PIX expira em <span className="text-[#E83D22] font-bold">{formatTime(timeLeft)}</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </div>
               
               {/* QR Code */}
-              <div className="flex flex-col justify-center py-2 flex-grow">
+              <div className="flex flex-col justify-center py-1 flex-grow">
                 <div className="flex flex-col items-center justify-center">
                   <QRCodeGenerator 
                     value={pixInfo.pixCode} 
