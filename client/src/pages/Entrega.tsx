@@ -937,7 +937,7 @@ const Entrega: React.FC = () => {
                 </p>
                 <div className="relative">
                   <div 
-                    className="bg-gray-50 p-2 rounded-md border border-gray-200 text-xs text-gray-600 break-all pr-8 max-h-[70px] overflow-y-auto"
+                    className="bg-gray-50 p-2 rounded-md border border-gray-200 text-xs text-gray-600 break-all pr-8 max-h-[45px] overflow-y-auto"
                   >
                     {pixInfo.pixCode}
                   </div>
