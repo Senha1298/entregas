@@ -7,6 +7,15 @@ export default {
     fontFamily: {
       sans: ['Shopee', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
     },
+    fontWeight: {
+      'light': '300',
+      'normal': '400',
+      'medium': '500',
+      'semibold': '600',
+      'bold': '700',
+      'extrabold': '800',
+      'black': '900',
+    },
     extend: {
       borderWidth: {
         '3': '3px',
