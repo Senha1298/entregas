@@ -896,7 +896,7 @@ const Entrega: React.FC = () => {
               </div>
               
               {/* Logo PIX */}
-              <div className="flex flex-col justify-center h-[15vh]">
+              <div className="flex flex-col justify-center h-[8vh]">
                 <div className="flex flex-col items-center justify-center mb-2">
                   <img 
                     src={pixLogo}
@@ -907,13 +907,13 @@ const Entrega: React.FC = () => {
               </div>
               
               {/* Código PIX e botão copiar */}
-              <div className="h-[15vh]">
+              <div className="h-[12vh]">
                 <p className="text-xs text-gray-600 mb-1 text-center">
                   Copie o código PIX:
                 </p>
                 <div className="relative">
                   <div 
-                    className="bg-gray-50 p-2 rounded-md border border-gray-200 text-xs text-gray-600 break-all pr-8 max-h-[30px] overflow-y-auto"
+                    className="bg-gray-50 p-2 rounded-md border border-gray-200 text-xs text-gray-600 break-all pr-8 max-h-[40px] overflow-y-auto"
                   >
                     {pixInfo.pixCode}
                   </div>
@@ -963,7 +963,7 @@ const Entrega: React.FC = () => {
               </div>
               
               {/* QR Code */}
-              <div className="flex flex-col justify-center h-[25vh]">
+              <div className="flex flex-col justify-center h-[20vh]">
                 <div className="flex flex-col items-center justify-center mb-2">
                   <QRCodeGenerator 
                     value={pixInfo.pixCode} 
