@@ -877,7 +877,7 @@ const Entrega: React.FC = () => {
                   />
                 </div>
                 <div className="flex-grow">
-                  <h3 className="text-base font-medium text-gray-800">Kit de Segurança Oficial</h3>
+                  <h3 className="text-base font-medium text-gray-800">Entrega do EPI e Cartão</h3>
                   <p className="text-lg font-bold text-[#E83D22]">R$ 47,90</p>
                   
                   <div className="w-full mt-1">
