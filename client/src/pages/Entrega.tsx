@@ -844,26 +844,26 @@ const Entrega: React.FC = () => {
           }
         }}
       >
-        <DialogContent className="!fixed !top-0 !left-1/2 !transform !-translate-x-1/2 !translate-y-0 sm:max-w-md !h-[100vh] !max-h-screen overflow-y-auto !p-0 relative [&>button]:hidden !z-50 !bg-white shadow-lg border-none !rounded-none">
+        <DialogContent className="!fixed !top-0 !left-1/2 !transform !-translate-x-1/2 !translate-y-0 sm:max-w-md !h-[100vh] !max-h-screen overflow-y-auto !p-0 relative [&>button]:hidden !z-50 !bg-white shadow-lg border-none !rounded-none flex flex-col">
           {/* O botão X foi removido usando CSS: [&>button]:hidden */}
           
           {/* Faixa fixa laranja com logo da Shopee */}
-          <div className="bg-[#EE4E2E] px-4 py-2 flex justify-center items-center w-full">
+          <div className="bg-[#EE4E2E] px-4 py-2 flex justify-center items-center w-full h-12 flex-shrink-0">
             <img 
               src={shopeeLogoWhite} 
               alt="Shopee Logo" 
-              className="h-5"
+              className="h-7"
             />
           </div>
           
-          <div className="p-2">
+          <div className="p-2 flex-1">
           
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-8">
+            <div className="flex flex-col items-center justify-center py-8 min-h-[400px]">
               <div className="text-[#E83D22]">
                 <Spinner size="lg" />
               </div>
-              <p className="mt-4 text-gray-600">Gerando QR Code para pagamento...</p>
+              <p className="mt-4 text-gray-600 text-sm">Gerando QR Code para pagamento...</p>
             </div>
           ) : pixInfo ? (
             <div className="space-y-3">
