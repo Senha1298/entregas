@@ -70,8 +70,8 @@ const Home: React.FC = () => {
         <PageTitle />
         <HeroSection />
         <Carousel />
-        <InfoSection />
         <JobOpeningsSection />
+        <InfoSection />
         <BenefitsSection />
         <FAQSection />
         <CTASection />
