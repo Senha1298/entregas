@@ -136,48 +136,27 @@
     @apply font-sans antialiased bg-background text-foreground;
     font-family: 'Shopee', ui-sans-serif, system-ui, -apple-system, sans-serif;
   }
-}
-
-/* Força os pesos corretos da fonte Shopee - FORA DO LAYER para maior especificidade */
-.font-normal, .font-normal * {
-  font-weight: 400 !important;
-}
-
-.font-medium, .font-medium * {
-  font-weight: 500 !important;
-}
-
-.font-semibold, .font-semibold * {
-  font-weight: 600 !important;
-}
-
-.font-bold, .font-bold * {
-  font-weight: 700 !important;
-}
-
-.font-black, .font-black * {
-  font-weight: 900 !important;
-}
-
-/* Aplicação específica nos elementos das páginas problema */
-h1.font-bold, h3.font-semibold, h4.font-medium, p.font-medium, span.font-bold {
-  font-weight: var(--font-weight) !important;
-}
-
-h1.font-bold {
-  --font-weight: 700;
-}
-
-h3.font-semibold {
-  --font-weight: 600;
-}
-
-h4.font-medium, p.font-medium {
-  --font-weight: 500;
-}
-
-span.font-bold {
-  --font-weight: 700;
+  
+  /* Força os pesos corretos da fonte Shopee */
+  .font-normal {
+    font-weight: 400 !important;
+  }
+  
+  .font-medium {
+    font-weight: 500 !important;
+  }
+  
+  .font-semibold {
+    font-weight: 600 !important;
+  }
+  
+  .font-bold {
+    font-weight: 700 !important;
+  }
+  
+  .font-black {
+    font-weight: 900 !important;
+  }
 }
 
 /* Shopee Custom Styles */
