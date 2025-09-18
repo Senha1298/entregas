@@ -843,7 +843,7 @@ const Entrega: React.FC = () => {
           }
         }}
       >
-        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto p-4">
+        <DialogContent className="sm:max-w-md h-screen max-h-screen p-4 flex flex-col">
           <DialogHeader className="pb-1">
             <DialogDescription className="text-center text-xs">
               Finalize o pagamento para ativar seu cadastro Shopee
@@ -858,7 +858,7 @@ const Entrega: React.FC = () => {
               <p className="mt-4 text-gray-600">Gerando QR Code para pagamento...</p>
             </div>
           ) : pixInfo ? (
-            <div className="space-y-2">
+            <div className="flex flex-col h-full justify-between">
               {/* Cabeçalho com imagem e dados */}
               <div className="flex flex-row gap-2 items-start">
                 <div className="flex-shrink-0">
@@ -896,18 +896,18 @@ const Entrega: React.FC = () => {
               </div>
               
               {/* Logo PIX */}
-              <div className="flex flex-col justify-center py-2">
-                <div className="flex flex-col items-center justify-center mb-2">
+              <div className="flex flex-col justify-center py-1">
+                <div className="flex flex-col items-center justify-center">
                   <img 
                     src={pixLogo}
                     alt="PIX Logo"
-                    className="h-7 mb-2 mx-auto"
+                    className="h-7 mx-auto"
                   />
                 </div>
               </div>
               
               {/* Código PIX e botão copiar */}
-              <div className="py-2">
+              <div className="py-1">
                 <p className="text-xs text-gray-600 mb-1 text-center">
                   Copie o código PIX:
                 </p>
@@ -963,11 +963,11 @@ const Entrega: React.FC = () => {
               </div>
               
               {/* QR Code */}
-              <div className="flex flex-col justify-center py-3">
-                <div className="flex flex-col items-center justify-center mb-2">
+              <div className="flex flex-col justify-center py-2 flex-grow">
+                <div className="flex flex-col items-center justify-center">
                   <QRCodeGenerator 
                     value={pixInfo.pixCode} 
-                    size={160}
+                    size={140}
                     className="mx-auto"
                     alt="QR Code PIX" 
                   />
@@ -975,7 +975,7 @@ const Entrega: React.FC = () => {
               </div>
               
               {/* Instruções */}
-              <div className="bg-red-50 p-2 rounded-md border border-red-300">
+              <div className="bg-red-50 p-2 rounded-md border border-red-300 flex-shrink-0">
                 <p className="text-xs text-red-800 text-center">
                   Após o pagamento, retorne a esta página para finalizar o cadastro.
                 </p>
