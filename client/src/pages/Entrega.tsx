@@ -23,6 +23,7 @@ import QRCodeGenerator from '@/components/QRCodeGenerator';
 
 import kitEpiImage from '../assets/kit-epi-new.webp';
 import pixLogo from '../assets/pix-logo.png';
+import shopeeLogoWhite from '../assets/shopee-logo-white.png';
 
 // Interface para o endereço do usuário
 interface EnderecoUsuario {
@@ -843,13 +844,19 @@ const Entrega: React.FC = () => {
           }
         }}
       >
-        <DialogContent className="sm:max-w-md h-[100vh] max-h-screen overflow-y-auto p-2">
-          <DialogHeader className="pb-1">
-            <DialogTitle className="text-center text-sm">Pagamento do Kit de Segurança</DialogTitle>
-            <DialogDescription className="text-center text-xs">
-              Finalize o pagamento para ativar seu cadastro Shopee
-            </DialogDescription>
-          </DialogHeader>
+        <DialogContent className="sm:max-w-md h-[100vh] max-h-screen overflow-y-auto p-0 relative [&>button]:hidden">
+          {/* O botão X foi removido usando CSS: [&>button]:hidden */}
+          
+          {/* Faixa fixa laranja com logo da Shopee */}
+          <div className="bg-[#EE4E2E] px-4 py-3 flex justify-center items-center sticky top-0 z-10">
+            <img 
+              src={shopeeLogoWhite} 
+              alt="Shopee Logo" 
+              className="h-6"
+            />
+          </div>
+          
+          <div className="p-2">
           
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-8">
@@ -870,14 +877,14 @@ const Entrega: React.FC = () => {
                   />
                 </div>
                 <div className="flex-grow">
-                  <h3 className="text-sm font-medium text-gray-800">Kit de Segurança Oficial</h3>
-                  <p className="text-md font-bold text-[#E83D22]">R$ 47,90</p>
+                  <h3 className="text-base font-medium text-gray-800">Kit de Segurança Oficial</h3>
+                  <p className="text-lg font-bold text-[#E83D22]">R$ 47,90</p>
                   
                   <div className="w-full mt-1">
-                    <p className="text-xs text-gray-600">
+                    <p className="text-sm text-gray-600">
                       <span className="font-medium">Nome:</span> {dadosUsuario?.nome}
                     </p>
-                    <p className="text-xs text-gray-600">
+                    <p className="text-sm text-gray-600">
                       <span className="font-medium">CPF:</span> {dadosUsuario?.cpf}
                     </p>
                   </div>
@@ -891,7 +898,7 @@ const Entrega: React.FC = () => {
                     <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                   </svg>
                 </div>
-                <p className="text-xs text-gray-600 font-medium">
+                <p className="text-sm text-gray-600 font-medium">
                   Aguardando pagamento PIX...
                 </p>
               </div>
@@ -922,7 +929,7 @@ const Entrega: React.FC = () => {
                       </svg>
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-xs text-gray-700 font-medium">
+                      <p className="text-sm text-gray-700 font-medium">
                         PIX expira em <span className="text-[#E83D22] font-bold">{formatTime(timeLeft)}</span>
                       </p>
                     </div>
@@ -932,7 +939,7 @@ const Entrega: React.FC = () => {
               
               {/* Código PIX e botão copiar */}
               <div className="h-[20vh]">
-                <p className="text-xs text-gray-600 mb-1 text-center">
+                <p className="text-sm text-gray-600 mb-1 text-center">
                   Copie o código PIX:
                 </p>
                 <div className="relative">
@@ -971,12 +978,13 @@ const Entrega: React.FC = () => {
               
               {/* Instruções */}
               <div className="bg-red-50 p-2 rounded-md border border-red-300">
-                <p className="text-xs text-red-800 text-center">
+                <p className="text-sm text-red-800 text-center">
                   Após o pagamento, retorne a esta página para finalizar o cadastro.
                 </p>
               </div>
             </div>
           ) : null}
+          </div>
         </DialogContent>
       </Dialog>
 
