@@ -138,11 +138,6 @@
   }
 }
 
-/* Reset global para remover heranças problemáticas */
-* {
-  font-weight: inherit;
-}
-
 /* Força os pesos corretos da fonte Shopee com máxima especificidade */
 .font-normal {
   font-weight: 400 !important;
@@ -161,7 +156,7 @@
 }
 
 .font-black {
-  font-weight: 900 !important;
+  font-weight: 700 !important; /* Usando 700 em vez de 900 já que não temos peso 900 */
 }
 
 /* Override específico para elementos que estão aparecendo invertidos */
@@ -185,9 +180,18 @@ span[class*="font-bold"] {
   font-weight: 700 !important;
 }
 
-/* Garantir que elementos sem classes de fonte não tenham peso forçado */
+/* Garantir que elementos sem classes de fonte não tenham peso forçado e preservar semânticos */
 h1:not([class*="font-"]), h3:not([class*="font-"]), h4:not([class*="font-"]), p:not([class*="font-"]) {
   font-weight: 400;
+}
+
+/* Preservar elementos semânticos */
+strong, b {
+  font-weight: 700 !important;
+}
+
+em, i {
+  font-style: italic;
 }
 
 /* Shopee Custom Styles */
