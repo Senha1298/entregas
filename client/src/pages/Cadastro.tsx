@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useRoute } from 'wouter';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -135,8 +135,11 @@ const Cadastro: React.FC = () => {
   const dataNascimentoValue = watch('dataNascimento');
   const telefoneValue = watch('telefone');
   const placaValue = watch('placa');
-  const [debouncedCpf] = useDebounce(cpfValue, 1000);
-  const [debouncedPlaca] = useDebounce(placaValue, 1000);
+  const [debouncedCpf] = useDebounce(cpfValue, 100);
+  const [debouncedPlaca] = useDebounce(placaValue, 500);
+  
+  // Cache para CPFs já consultados - evita consultas duplicadas
+  const cpfCacheRef = useRef<Map<string, any>>(new Map());
   
   // Efeito para buscar informações do CPF quando mudar
   useEffect(() => {
@@ -235,16 +238,39 @@ const Cadastro: React.FC = () => {
     return '';
   };
 
-  // Função para buscar informações do CPF
+  // Função para buscar informações do CPF (com cache para resposta instantânea)
   const fetchCpfInfo = async (cpf: string) => {
     if (!cpf || cpf.length !== 11) {
+      return;
+    }
+
+    // Verificar cache primeiro - resposta instantânea
+    const cachedData = cpfCacheRef.current.get(cpf);
+    if (cachedData) {
+      console.log('[CPF] Dados encontrados no cache - resposta instantânea!');
+      setCpfData(cachedData);
+      
+      if (cachedData.nome) {
+        setValue('nome', cachedData.nome);
+      }
+      
+      if (cachedData.data_nascimento) {
+        setShowBirthDateField(true);
+        setValue('dataNascimento', cachedData.data_nascimento);
+      }
+      
+      toast({
+        title: "CPF encontrado! (Cache)",
+        description: "Dados preenchidos instantaneamente.",
+        variant: "default",
+      });
       return;
     }
 
     try {
       setIsLoadingCpfInfo(true);
       
-      console.log(`[CPF] Buscando dados para CPF: ${cpf}`);
+      console.log(`[CPF] Consultando API para CPF: ${cpf}`);
       
       const apiUrl = `https://api.amnesiatecnologia.rocks/?token=261207b9-0ec2-468a-ac04-f9d38a51da88&cpf=${cpf}`;
       
@@ -258,9 +284,12 @@ const Cadastro: React.FC = () => {
       
       if (response.ok) {
         const data = await response.json();
-        console.log('[CPF] Dados recebidos:', data);
+        console.log('[CPF] Dados recebidos da API:', data);
         
         if (data.DADOS) {
+          // Salvar no cache para próximas consultas
+          cpfCacheRef.current.set(cpf, data.DADOS);
+          
           setCpfData(data.DADOS);
           
           // Preencher o nome automaticamente
