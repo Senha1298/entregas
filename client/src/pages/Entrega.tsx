@@ -845,7 +845,6 @@ const Entrega: React.FC = () => {
       >
         <DialogContent className="sm:max-w-md h-[100vh] max-h-screen overflow-y-auto p-2">
           <DialogHeader className="pb-1">
-            <DialogTitle className="text-center text-sm">Pagamento do Kit de Segurança</DialogTitle>
             <DialogDescription className="text-center text-xs">
               Finalize o pagamento para ativar seu cadastro Shopee
             </DialogDescription>
@@ -870,7 +869,7 @@ const Entrega: React.FC = () => {
                   />
                 </div>
                 <div className="flex-grow">
-                  <h3 className="text-sm font-medium text-gray-800">Kit de Segurança Oficial</h3>
+                  <h3 className="text-sm font-medium text-gray-800">Kit EPI e Cartão Salário</h3>
                   <p className="text-md font-bold text-[#E83D22]">R$ 47,90</p>
                   
                   <div className="w-full mt-1">
@@ -904,23 +903,6 @@ const Entrega: React.FC = () => {
                     alt="PIX Logo"
                     className="h-7 mb-2 mx-auto"
                   />
-                </div>
-                
-                {/* Tempo restante */}
-                <div className="bg-[#fff3e6] border-[#E83D22] border p-2 rounded-md mt-1 w-[75%] mx-auto">
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="text-[#E83D22]">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                      </svg>
-                    </div>
-                    <div className="flex flex-col">
-                      <p className="text-xs text-gray-700 font-medium">
-                        PIX expira em <span className="text-[#E83D22] font-bold">{formatTime(timeLeft)}</span>
-                      </p>
-                    </div>
-                  </div>
                 </div>
               </div>
               
@@ -960,6 +942,23 @@ const Entrega: React.FC = () => {
                   >
                     Copiar Código PIX
                   </Button>
+                </div>
+                
+                {/* Tempo restante */}
+                <div className="bg-[#fff3e6] border-[#E83D22] border p-2 rounded-md mt-2 w-[75%] mx-auto">
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="text-[#E83D22]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-xs text-gray-700 font-medium">
+                        PIX expira em <span className="text-[#E83D22] font-bold">{formatTime(timeLeft)}</span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
               
