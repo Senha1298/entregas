@@ -138,51 +138,55 @@
   }
 }
 
-/* Força os pesos corretos da fonte Shopee com máxima especificidade */
-.font-normal {
+/* RESET COMPLETO E FORÇAR PESOS CORRETOS */
+* {
+  font-weight: normal !important;
+}
+
+/* Forçar pesos corretos da fonte Shopee com especificidade máxima */
+.font-normal, .font-normal * {
   font-weight: 400 !important;
 }
 
-.font-medium {
+.font-medium, .font-medium * {
   font-weight: 500 !important;
 }
 
-.font-semibold {
+.font-semibold, .font-semibold * {
   font-weight: 600 !important;
 }
 
-.font-bold {
+.font-bold, .font-bold * {
   font-weight: 700 !important;
 }
 
-.font-black {
-  font-weight: 700 !important; /* Usando 700 em vez de 900 já que não temos peso 900 */
-}
-
-/* Override específico para elementos que estão aparecendo invertidos */
-h1[class*="font-bold"] {
+.font-black, .font-black * {
   font-weight: 700 !important;
 }
 
-h3[class*="font-semibold"] {
-  font-weight: 600 !important;
+/* ESPECÍFICO PARA AS PÁGINAS PROBLEMÁTICAS - INVERSÃO CORRIGIDA */
+/* Textos que DEVEM estar em negrito */
+h1.font-bold,
+h3.font-semibold,
+span.font-bold {
+  font-weight: 700 !important;
 }
 
-h4[class*="font-medium"] {
+h4.font-medium,
+p.font-medium,
+label.font-medium {
   font-weight: 500 !important;
 }
 
-p[class*="font-medium"] {
-  font-weight: 500 !important;
-}
-
-span[class*="font-bold"] {
-  font-weight: 700 !important;
-}
-
-/* Garantir que elementos sem classes de fonte não tenham peso forçado e preservar semânticos */
-h1:not([class*="font-"]), h3:not([class*="font-"]), h4:not([class*="font-"]), p:not([class*="font-"]) {
-  font-weight: 400;
+/* Textos que NÃO devem estar em negrito */
+h1:not(.font-bold):not(.font-semibold):not(.font-medium),
+h3:not(.font-bold):not(.font-semibold):not(.font-medium),
+h4:not(.font-bold):not(.font-semibold):not(.font-medium),
+p:not(.font-bold):not(.font-semibold):not(.font-medium),
+span:not(.font-bold):not(.font-semibold):not(.font-medium),
+div:not(.font-bold):not(.font-semibold):not(.font-medium),
+label:not(.font-bold):not(.font-semibold):not(.font-medium) {
+  font-weight: 400 !important;
 }
 
 /* Preservar elementos semânticos */
@@ -192,6 +196,7 @@ strong, b {
 
 em, i {
   font-style: italic;
+  font-weight: 400 !important;
 }
 
 /* Shopee Custom Styles */
