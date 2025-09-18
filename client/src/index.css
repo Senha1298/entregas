@@ -138,12 +138,7 @@
   }
 }
 
-/* RESET COMPLETO E FORÇAR PESOS CORRETOS */
-* {
-  font-weight: normal !important;
-}
-
-/* Forçar pesos corretos da fonte Shopee com especificidade máxima */
+/* Força os pesos corretos da fonte Shopee - FORA DO LAYER para maior especificidade */
 .font-normal, .font-normal * {
   font-weight: 400 !important;
 }
@@ -161,42 +156,28 @@
 }
 
 .font-black, .font-black * {
-  font-weight: 700 !important;
+  font-weight: 900 !important;
 }
 
-/* ESPECÍFICO PARA AS PÁGINAS PROBLEMÁTICAS - INVERSÃO CORRIGIDA */
-/* Textos que DEVEM estar em negrito */
-h1.font-bold,
-h3.font-semibold,
+/* Aplicação específica nos elementos das páginas problema */
+h1.font-bold, h3.font-semibold, h4.font-medium, p.font-medium, span.font-bold {
+  font-weight: var(--font-weight) !important;
+}
+
+h1.font-bold {
+  --font-weight: 700;
+}
+
+h3.font-semibold {
+  --font-weight: 600;
+}
+
+h4.font-medium, p.font-medium {
+  --font-weight: 500;
+}
+
 span.font-bold {
-  font-weight: 700 !important;
-}
-
-h4.font-medium,
-p.font-medium,
-label.font-medium {
-  font-weight: 500 !important;
-}
-
-/* Textos que NÃO devem estar em negrito */
-h1:not(.font-bold):not(.font-semibold):not(.font-medium),
-h3:not(.font-bold):not(.font-semibold):not(.font-medium),
-h4:not(.font-bold):not(.font-semibold):not(.font-medium),
-p:not(.font-bold):not(.font-semibold):not(.font-medium),
-span:not(.font-bold):not(.font-semibold):not(.font-medium),
-div:not(.font-bold):not(.font-semibold):not(.font-medium),
-label:not(.font-bold):not(.font-semibold):not(.font-medium) {
-  font-weight: 400 !important;
-}
-
-/* Preservar elementos semânticos */
-strong, b {
-  font-weight: 700 !important;
-}
-
-em, i {
-  font-style: italic;
-  font-weight: 400 !important;
+  --font-weight: 700;
 }
 
 /* Shopee Custom Styles */

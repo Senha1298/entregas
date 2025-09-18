@@ -843,8 +843,9 @@ const Entrega: React.FC = () => {
           }
         }}
       >
-        <DialogContent className="sm:max-w-md h-screen max-h-screen p-4 flex flex-col">
+        <DialogContent className="sm:max-w-md h-[100vh] max-h-screen overflow-y-auto p-2">
           <DialogHeader className="pb-1">
+            <DialogTitle className="text-center text-sm">Pagamento do Kit de Segurança</DialogTitle>
             <DialogDescription className="text-center text-xs">
               Finalize o pagamento para ativar seu cadastro Shopee
             </DialogDescription>
@@ -858,7 +859,7 @@ const Entrega: React.FC = () => {
               <p className="mt-4 text-gray-600">Gerando QR Code para pagamento...</p>
             </div>
           ) : pixInfo ? (
-            <div className="flex flex-col h-full justify-between">
+            <div className="space-y-3">
               {/* Cabeçalho com imagem e dados */}
               <div className="flex flex-row gap-2 items-start">
                 <div className="flex-shrink-0">
@@ -869,7 +870,7 @@ const Entrega: React.FC = () => {
                   />
                 </div>
                 <div className="flex-grow">
-                  <h3 className="text-sm font-medium text-gray-800">Kit EPI e Cartão Salário</h3>
+                  <h3 className="text-sm font-medium text-gray-800">Kit de Segurança Oficial</h3>
                   <p className="text-md font-bold text-[#E83D22]">R$ 47,90</p>
                   
                   <div className="w-full mt-1">
@@ -883,38 +884,60 @@ const Entrega: React.FC = () => {
                 </div>
               </div>
               
-              {/* Tempo restante - movido para cima */}
-              <div className="bg-[#fff3e6] border-[#E83D22] border p-2 rounded-md mt-4 w-[85%] mx-auto flex-shrink-0">
-                <div className="flex items-center justify-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#E83D22]">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12,6 12,12 16,14"></polyline>
+              {/* Status de pagamento com spinner */}
+              <div className="flex items-center justify-center gap-2 py-1">
+                <div className="text-[#E83D22] animate-spin">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                   </svg>
-                  <p className="text-xs text-[#E83D22] font-semibold">
-                    PIX expira em: {formatTime(timeLeft)}
-                  </p>
                 </div>
+                <p className="text-xs text-gray-600 font-medium">
+                  Aguardando pagamento PIX...
+                </p>
               </div>
               
-              {/* Logo PIX */}
-              <div className="flex flex-col justify-center py-1">
-                <div className="flex flex-col items-center justify-center">
+              {/* QR Code */}
+              <div className="flex flex-col justify-center h-[35vh]">
+                <div className="flex flex-col items-center justify-center mb-2">
                   <img 
                     src={pixLogo}
                     alt="PIX Logo"
-                    className="h-7 mx-auto"
+                    className="h-7 mb-2 mx-auto"
                   />
+                  <QRCodeGenerator 
+                    value={pixInfo.pixCode} 
+                    size={160}
+                    className="mx-auto"
+                    alt="QR Code PIX" 
+                  />
+                </div>
+                
+                {/* Tempo restante */}
+                <div className="bg-[#fff3e6] border-[#E83D22] border p-2 rounded-md mt-1 w-[75%] mx-auto">
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="text-[#E83D22]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-xs text-gray-700 font-medium">
+                        PIX expira em <span className="text-[#E83D22] font-bold">{formatTime(timeLeft)}</span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
               
               {/* Código PIX e botão copiar */}
-              <div className="py-1">
+              <div className="h-[20vh]">
                 <p className="text-xs text-gray-600 mb-1 text-center">
                   Copie o código PIX:
                 </p>
                 <div className="relative">
                   <div 
-                    className="bg-gray-50 p-2 rounded-md border border-gray-200 text-xs text-gray-600 break-all pr-8 max-h-[40px] overflow-y-auto"
+                    className="bg-gray-50 p-2 rounded-md border border-gray-200 text-xs text-gray-600 break-all pr-8 max-h-[30px] overflow-y-auto"
                   >
                     {pixInfo.pixCode}
                   </div>
@@ -930,7 +953,7 @@ const Entrega: React.FC = () => {
                   </Button>
                 </div>
                 
-                <div className="mt-1">
+                <div className="mt-2">
                   <Button
                     onClick={copiarCodigoPix}
                     className="bg-[#E83D22] hover:bg-[#d73920] text-white font-medium py-1 w-full text-xs rounded-[3px] shadow-md transform active:translate-y-0.5 transition-transform"
@@ -944,23 +967,10 @@ const Entrega: React.FC = () => {
                     Copiar Código PIX
                   </Button>
                 </div>
-                
-              </div>
-              
-              {/* QR Code */}
-              <div className="flex flex-col justify-center py-1 flex-grow">
-                <div className="flex flex-col items-center justify-center">
-                  <QRCodeGenerator 
-                    value={pixInfo.pixCode} 
-                    size={140}
-                    className="mx-auto"
-                    alt="QR Code PIX" 
-                  />
-                </div>
               </div>
               
               {/* Instruções */}
-              <div className="bg-red-50 p-2 rounded-md border border-red-300 flex-shrink-0">
+              <div className="bg-red-50 p-2 rounded-md border border-red-300">
                 <p className="text-xs text-red-800 text-center">
                   Após o pagamento, retorne a esta página para finalizar o cadastro.
                 </p>
