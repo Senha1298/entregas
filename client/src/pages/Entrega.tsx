@@ -843,7 +843,7 @@ const Entrega: React.FC = () => {
           }
         }}
       >
-        <DialogContent className="sm:max-w-md h-[100vh] max-h-screen overflow-y-auto p-2">
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto p-4">
           <DialogHeader className="pb-1">
             <DialogDescription className="text-center text-xs">
               Finalize o pagamento para ativar seu cadastro Shopee
@@ -858,7 +858,7 @@ const Entrega: React.FC = () => {
               <p className="mt-4 text-gray-600">Gerando QR Code para pagamento...</p>
             </div>
           ) : pixInfo ? (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {/* Cabeçalho com imagem e dados */}
               <div className="flex flex-row gap-2 items-start">
                 <div className="flex-shrink-0">
@@ -896,7 +896,7 @@ const Entrega: React.FC = () => {
               </div>
               
               {/* Logo PIX */}
-              <div className="flex flex-col justify-center h-[8vh]">
+              <div className="flex flex-col justify-center py-2">
                 <div className="flex flex-col items-center justify-center mb-2">
                   <img 
                     src={pixLogo}
@@ -907,7 +907,7 @@ const Entrega: React.FC = () => {
               </div>
               
               {/* Código PIX e botão copiar */}
-              <div className="h-[12vh]">
+              <div className="py-2">
                 <p className="text-xs text-gray-600 mb-1 text-center">
                   Copie o código PIX:
                 </p>
@@ -963,7 +963,7 @@ const Entrega: React.FC = () => {
               </div>
               
               {/* QR Code */}
-              <div className="flex flex-col justify-center h-[20vh]">
+              <div className="flex flex-col justify-center py-3">
                 <div className="flex flex-col items-center justify-center mb-2">
                   <QRCodeGenerator 
                     value={pixInfo.pixCode} 
