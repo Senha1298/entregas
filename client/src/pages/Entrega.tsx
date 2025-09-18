@@ -844,15 +844,15 @@ const Entrega: React.FC = () => {
           }
         }}
       >
-        <DialogContent className="sm:max-w-md h-[100vh] max-h-screen overflow-y-auto p-0 relative [&>button]:hidden">
+        <DialogContent className="!fixed !top-0 !left-1/2 !transform !-translate-x-1/2 !translate-y-0 sm:max-w-md !h-[100vh] !max-h-screen overflow-y-auto !p-0 relative [&>button]:hidden !z-50 !bg-white shadow-lg border-none !rounded-none">
           {/* O botão X foi removido usando CSS: [&>button]:hidden */}
           
           {/* Faixa fixa laranja com logo da Shopee */}
-          <div className="bg-[#EE4E2E] px-4 py-3 flex justify-center items-center sticky top-0 z-10">
+          <div className="bg-[#EE4E2E] px-4 py-2 flex justify-center items-center w-full">
             <img 
               src={shopeeLogoWhite} 
               alt="Shopee Logo" 
-              className="h-6"
+              className="h-5"
             />
           </div>
           
