@@ -683,7 +683,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Rota proxy para PIX com sistema duplo de gateways (Pagnet + Medius Pag)
+  // Rota proxy para PIX com sistema multiplo de gateways (Pagnet + Medius Pag + 4mpagamentos)
   app.post('/api/proxy/for4payments/pix', async (req, res) => {
     try {
       // Verificar qual gateway usar baseado na variável de ambiente

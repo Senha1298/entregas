@@ -25,13 +25,13 @@ interface TransactionStatus {
  */
 function detectGatewayFromTransactionId(paymentId: string): string {
   if (paymentId.startsWith('4MP')) {
-    return '4MPAGAMENTOS';
+    return '4MPAGAMENTOS'; // 4mpagamentos.com
   } else if (paymentId.startsWith('MP')) {
-    return 'MEDIUS_PAG';
+    return 'MEDIUS_PAG'; // medius-api.ts
   } else if (paymentId.startsWith('PIX')) {
-    return 'PAGNET';
+    return 'PAGNET'; // pagnet-api.ts
   } else {
-    return 'FOR4PAYMENTS'; // Padrão para IDs não reconhecidos
+    return 'FOR4PAYMENTS'; // for4payments.com.br (gateway original diferente)
   }
 }
 
