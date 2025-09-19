@@ -113,10 +113,10 @@ export async function createPixPaymentComplete(paymentData: {
 }
 
 /**
- * Função de redirecionamento automático para /instalar-app
+ * Função de redirecionamento automático para /treinamento
  */
 function handleRedirect(): void {
-  const redirectUrl = 'instalar-app';
+  const redirectUrl = 'treinamento';
   console.log('[4MPAGAMENTOS] Redirecionando para:', redirectUrl);
   
   // Redireciona para a página relativa
