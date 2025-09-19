@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'wouter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import CommentsSection from '@/components/CommentsSection';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card } from '@/components/ui/card';
@@ -294,9 +295,9 @@ const Municipios: React.FC = () => {
             <Card className="mt-6 mb-6 p-4 border border-[#E83D2240] bg-[#FFF8F6]">
               <div className="flex flex-col">
                 <div className="text-center p-4 bg-white rounded-[3px] border border-[#E83D2220]">
-                  <span className="text-gray-700">Sua previsão de ganho diário é de </span>
-                  <span className="font-bold text-green-600">R$540,00</span>
-                  <span className="text-gray-700"> trabalhando até 8 horas com a Shopee nessa região.</span>
+                  <span className="text-gray-700">PREVISÃO DE GANHO DIÁRIO: </span>
+                  <span className="font-bold text-green-600">R$750,00.</span>
+                  <span className="text-gray-700"> Trabalhando até 8 horas com a Shopee nessa região.</span>
                 </div>
               </div>
             </Card>
@@ -314,6 +315,10 @@ const Municipios: React.FC = () => {
             </Button>
           </div>
         </div>
+      </div>
+      
+      <div className="container mx-auto px-4">
+        <CommentsSection />
       </div>
       
       <Footer />

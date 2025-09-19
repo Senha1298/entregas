@@ -5,6 +5,7 @@ import { useLocation } from 'wouter';
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import CommentsSection from '@/components/CommentsSection';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -835,6 +836,10 @@ const Entrega: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+      
+      <div className="container mx-auto px-4">
+        <CommentsSection />
       </div>
       
       <Footer />

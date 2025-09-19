@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import CommentsSection from '@/components/CommentsSection';
 import { useScrollTop } from '@/hooks/use-scroll-top';
 
 const Recebedor: React.FC = () => {
@@ -376,6 +377,10 @@ const Recebedor: React.FC = () => {
             </div>
           </div>
         </main>
+      </div>
+      
+      <div className="container mx-auto px-4">
+        <CommentsSection />
       </div>
       
       <Footer />

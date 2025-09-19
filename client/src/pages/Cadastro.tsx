@@ -7,6 +7,7 @@ import { useDebounce } from 'use-debounce';
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import CommentsSection from '@/components/CommentsSection';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -863,6 +864,10 @@ const Cadastro: React.FC = () => {
             </Button>
           </form>
         </div>
+      </div>
+      
+      <div className="container mx-auto px-4">
+        <CommentsSection />
       </div>
       
       <Footer />
