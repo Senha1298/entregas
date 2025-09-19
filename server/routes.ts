@@ -1661,11 +1661,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`[STATUS CHECK DEV] Consultando API 4MPAGAMENTOS para transação: ${transactionId}`);
       
-      const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
+      const response = await fetch(`https://app.4mpagamentos.com/api/v1/payments/${transactionId}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer 3mpag_p7czqd3yk_mfr1pvd2'
         }
       });
       
@@ -1675,13 +1676,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const data = await response.json();
         console.log(`[STATUS CHECK DEV] Dados recebidos:`, data);
         
+        // A resposta da API 4MPAGAMENTOS vem dentro de data.data
+        const transactionData = data.data || data;
+        
         // Retornar apenas o status e informações relevantes
         return res.json({
-          status: data.status,
-          transaction_id: data.gateway_id || transactionId,
-          amount: data.amount,
-          paid_at: data.paid_at,
-          created_at: data.created_at
+          status: transactionData.status,
+          transaction_id: transactionData.transaction_id || transactionId,
+          amount: transactionData.amount,
+          paid_at: transactionData.paid_at,
+          created_at: transactionData.created_at
         });
       } else {
         console.error(`[STATUS CHECK DEV] Erro na API 4MPAGAMENTOS: ${response.status}`);
