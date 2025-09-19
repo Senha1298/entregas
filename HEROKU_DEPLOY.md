@@ -1,60 +1,66 @@
 # Deploy no Heroku - Shopee Delivery Partners
 
-## ✅ SOLUÇÃO FINAL: Build + Static
+## ✅ SOLUÇÃO ATUALIZADA: Pipeline de Build Unificado
 
 ### Por que essa abordagem é melhor?
-❌ **Proxy era complexo**: Criava dependências, timeouts, erros de conexão
-✅ **Build + Static é simples**: Funciona como qualquer deploy tradicional
-✅ **Mais confiável**: Sem processos externos ou dependências
-✅ **Mais rápido**: Arquivos servidos estaticamente com cache
+✅ **Build unificado**: Usa o mesmo pipeline do desenvolvimento
+✅ **Código real**: Todas as APIs e funcionalidades da aplicação real
+✅ **Segurança**: Configurações de IP e proxy adequadas para produção
+✅ **Confiável**: Sem duplicação de código ou configurações conflitantes
 
 ### Como funciona
-1. **Servidor inicia** imediatamente na porta do Heroku
-2. **APIs funcionam** desde o primeiro momento
-3. **Build da aplicação React** roda em background
-4. **Página de loading** elegante enquanto build não termina
-5. **Aplicação React** servida estaticamente após build completo
+1. **Build do frontend**: Vite (com config do Heroku) compila React para `dist/public`
+2. **Build do backend**: ESBuild compila TypeScript para `dist/index.js`
+3. **Servidor inicia**: Express serve frontend e APIs compiladas
+4. **Todas as funcionalidades**: IP blocking, WebSocket, push notifications funcionam
+
+### Comando de Build
+```bash
+vite build --config vite.heroku.config.js && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+```
 
 ### Arquivos da solução
-- `heroku-simple-production.cjs` - Servidor que faz build e serve estático
-- `Procfile` - Comando: `web: node heroku-simple-production.cjs`
+- `package-heroku.json` - Package.json específico para Heroku com todas as dependências
+- `Procfile.fullstack` - Comando: `web: node dist/index.js`
+- `vite.heroku.config.js` - Configuração do Vite para produção
 - `app.json` - Configuração do Heroku
 
 ### Comandos para deploy
 ```bash
-# Adicionar arquivos
-git add heroku-simple-production.cjs Procfile
+# Usar o package específico do Heroku (se necessário)
+cp package-heroku.json package.json
+
+# Usar o Procfile correto
+cp Procfile.fullstack Procfile
 
 # Commit
-git commit -m "Deploy: Build + static server (sem proxy)"
+git commit -m "Deploy: Pipeline de build unificado"
 
 # Push para Heroku
 git push heroku main
 ```
 
-### APIs incluídas
-- `GET /health` - Status do servidor e build
-- `GET /api/regions` - Estados do Brasil com vagas
-- `GET /api/vehicle-info/:placa` - Consulta de veículo
-- `GET /api/check-ip-status` - Verificação de IP
-- `POST /api/payments/create-pix` - Pagamentos PIX
+### APIs incluídas (TODAS funcionais)
+- `GET /api/regions` - Regiões reais do sistema
+- `GET /api/vehicle-info/:placa` - Consulta real de veículo
+- `GET /api/check-ip-status` - Verificação de IP com proteção real
+- `POST /api/payments/create-pix` - Sistema de pagamentos completo
+- `POST /api/push-subscriptions` - Sistema de notificações push
+- `WebSocket` - Comunicação em tempo real
+- **E todas as outras APIs da aplicação**
 
 ### Resultado
 Após deploy, você terá:
-- ✅ Aplicação React completa igual ao Replit
-- ✅ Todas as páginas funcionando (cadastro, selfie, pagamento)
+- ✅ Aplicação React completa **idêntica** ao Replit
+- ✅ **Todas** as páginas e funcionalidades
+- ✅ Sistema de proteção de IP funcional
+- ✅ Sistema de notificações push
+- ✅ WebSocket para comunicação em tempo real
 - ✅ Performance otimizada com build de produção
-- ✅ APIs mockadas funcionais
-- ✅ Cache de arquivos estáticos
-- ✅ Página de loading elegante durante build
+- ✅ Todas as APIs reais (não mocks)
 
-### Logs esperados no deploy
-```
-🚀 Iniciando servidor Heroku Simples...
-✅ Servidor rodando na porta 45729
-📦 Iniciando build em background...
-🏗️ Iniciando build do frontend...
-Build: ...
-✅ Build concluído com sucesso!
-🎉 Aplicação pronta! Frontend buildado com sucesso.
-```
+### Configurações de Segurança
+- ✅ Trust proxy configurado para Heroku
+- ✅ IP blocking funcional em produção
+- ✅ CORS configurado para produção
+- ✅ Cabeçalhos de segurança aplicados

@@ -9,6 +9,9 @@ import { storage } from "./storage";
 
 const app = express();
 
+// Configuração de trust proxy para Heroku
+app.set('trust proxy', 1);
+
 // Configuração de CORS para permitir requisições cross-origin
 setupCors(app);
 
