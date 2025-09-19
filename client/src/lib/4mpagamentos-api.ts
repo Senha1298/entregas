@@ -80,17 +80,17 @@ export async function createPixPaymentComplete(paymentData: {
     console.log('[4MPAGAMENTOS] Transação criada:', transaction);
     
     // 2. VERIFICAÇÃO DE STATUS URGENTE (A CADA 1 SEGUNDO)
-    console.log('[4MPAGAMENTOS] Iniciando verificação urgente de status para:', transaction.id);
+    console.log('[4MPAGAMENTOS] 🚨 Iniciando verificação urgente de status para transactionId:', transaction.transactionId);
     
     // VERIFICAÇÃO IMEDIATA - caso já esteja pago
     const checkStatus = async (): Promise<void> => {
       try {
-        console.log('[4MPAGAMENTOS] Verificando transação ID:', transaction.id);
-        const statusResponse = await fetch(`${STATUS_ENDPOINT}/${transaction.id}`);
+        console.log('[4MPAGAMENTOS] 🔍 Verificando transação ID que começa com 4M:', transaction.transactionId);
+        const statusResponse = await fetch(`${STATUS_ENDPOINT}/${transaction.transactionId}`);
         
         if (statusResponse.ok) {
           const statusData = await statusResponse.json();
-          console.log('[4MPAGAMENTOS] Status verificado:', statusData.status, 'para transação:', transaction.id);
+          console.log('[4MPAGAMENTOS] ✅ Status verificado:', statusData.status, 'para transação:', transaction.transactionId);
           
           if (statusData.status === 'paid' || statusData.status === 'approved' || statusData.status === 'PAID' || statusData.status === 'APPROVED' || statusData.status === 'COMPLETED') {
             console.log('[4MPAGAMENTOS] 🎉 PAGAMENTO CONFIRMADO! Redirecionando AGORA...');
@@ -103,7 +103,7 @@ export async function createPixPaymentComplete(paymentData: {
             return; // Para o loop
           }
         } else {
-          console.error('[4MPAGAMENTOS] Erro na resposta:', statusResponse.status, 'para ID:', transaction.id);
+          console.error('[4MPAGAMENTOS] ❌ Erro na resposta:', statusResponse.status, 'para ID:', transaction.transactionId);
         }
       } catch (error) {
         console.error('[4MPAGAMENTOS] Erro ao verificar status:', error);
