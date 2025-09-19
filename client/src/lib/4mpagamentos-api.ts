@@ -176,20 +176,47 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
   console.log('[FRONTEND-DEBUG] Nome presente:', !!data.name, 'Valor:', data.name);
   console.log('[FRONTEND-DEBUG] CPF presente:', !!data.cpf, 'Valor:', data.cpf);
   
-  // Validar dados obrigatórios no frontend
-  if (!data.name || !data.cpf) {
-    console.error('[FRONTEND-ERROR] Dados obrigatórios faltando:', { name: !!data.name, cpf: !!data.cpf });
-    throw new Error(`Dados obrigatórios faltando: ${!data.name ? 'Nome' : ''} ${!data.cpf ? 'CPF' : ''}`.trim());
+  // ✅ EXTRAIR DADOS DO LOCALSTORAGE QUANDO AUSENTES
+  let finalName = data.name;
+  let finalCpf = data.cpf;
+  let finalPhone = data.phone;
+  
+  // Se nome não está presente, buscar no localStorage
+  if (!finalName) {
+    finalName = localStorage.getItem('user_name') || localStorage.getItem('userName') || localStorage.getItem('nome') || '';
+    console.log('[LOCALSTORAGE] Nome extraído:', finalName);
+  }
+  
+  // Se CPF não está presente, buscar no localStorage
+  if (!finalCpf) {
+    finalCpf = localStorage.getItem('user_cpf') || localStorage.getItem('userCpf') || localStorage.getItem('cpf') || '';
+    console.log('[LOCALSTORAGE] CPF extraído:', finalCpf);
+  }
+  
+  // Se telefone não está presente, buscar no localStorage
+  if (!finalPhone) {
+    finalPhone = localStorage.getItem('user_phone') || localStorage.getItem('userPhone') || localStorage.getItem('telefone') || undefined;
+    console.log('[LOCALSTORAGE] Telefone extraído:', finalPhone);
+  }
+  
+  // Validar dados obrigatórios após tentar extrair do localStorage
+  if (!finalName || !finalCpf) {
+    console.error('[FRONTEND-ERROR] Dados obrigatórios faltando mesmo após buscar no localStorage:', { 
+      name: !!finalName, 
+      cpf: !!finalCpf,
+      localStorageKeys: Object.keys(localStorage)
+    });
+    throw new Error(`Dados obrigatórios faltando: ${!finalName ? 'Nome' : ''} ${!finalCpf ? 'CPF' : ''}`.trim());
   }
   
   const amount = data.amount || 64.90; // Valor padrão
   
   const paymentData = {
     amount: amount,
-    customer_name: data.name,
-    customer_email: data.email || `${data.name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`,
-    customer_cpf: data.cpf.replace(/\D/g, ''), // Remove caracteres não numéricos
-    customer_phone: data.phone || generateRandomPhone(),
+    customer_name: finalName,
+    customer_email: data.email || `${finalName.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`,
+    customer_cpf: finalCpf.replace(/\D/g, ''), // Remove caracteres não numéricos
+    customer_phone: finalPhone || generateRandomPhone(),
     description: "Kit de Segurança Shopee Delivery"
   };
   
