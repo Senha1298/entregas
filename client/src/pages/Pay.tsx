@@ -180,7 +180,7 @@ const Pay: React.FC = () => {
           </div>
 
           <div className="bg-[#FFF3CD] border border-[#FFEEBA] rounded-sm p-3 mb-4 text-center">
-            <p className="text-[#856404]">Realize o pagamento de <strong>R$47,90</strong> para receber o Uniforme de Segurança e ativar seu cadastro.</p>
+            <p className="text-[#856404]">Realize o pagamento de <strong>R$64,90</strong> para receber o Uniforme de Segurança e ativar seu cadastro.</p>
           </div>
 
           <div className="mb-4">
