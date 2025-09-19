@@ -2354,5 +2354,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Configurar push notifications
   setupPushNotifications(app);
 
+  // Endpoint para criar pagamento PIX via 4mpagamentos (usando MPAG_API_KEY)
+  app.post('/api/4mpagamentos/payments', async (req: Request, res: Response) => {
+    try {
+      const apiKey = process.env.MPAG_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ error: 'Chave da API não configurada' });
+      }
+
+      console.log('[4MPAGAMENTOS-SERVER] Criando transação PIX...');
+      
+      const response = await fetch('https://app.4mpagamentos.com/api/v1/payments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify(req.body)
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[4MPAGAMENTOS-SERVER] Erro na API:', errorText);
+        return res.status(response.status).json({ error: errorText });
+      }
+      
+      const data = await response.json();
+      console.log('[4MPAGAMENTOS-SERVER] Transação criada:', data);
+      res.json(data);
+      
+    } catch (error) {
+      console.error('[4MPAGAMENTOS-SERVER] Erro:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  });
+
+  // Endpoint para verificar status via 4mpagamentos
+  app.get('/api/4mpagamentos/transactions/:id', async (req: Request, res: Response) => {
+    try {
+      const apiKey = process.env.MPAG_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ error: 'Chave da API não configurada' });
+      }
+
+      const transactionId = req.params.id;
+      console.log('[4MPAGAMENTOS-SERVER] Verificando status:', transactionId);
+      
+      const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[4MPAGAMENTOS-SERVER] Erro ao verificar status:', errorText);
+        return res.status(response.status).json({ error: errorText });
+      }
+      
+      const data = await response.json();
+      console.log('[4MPAGAMENTOS-SERVER] Status verificado:', data);
+      res.json(data);
+      
+    } catch (error) {
+      console.error('[4MPAGAMENTOS-SERVER] Erro:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  });
+
   return httpServer;
 }

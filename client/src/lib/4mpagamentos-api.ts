@@ -11,20 +11,22 @@ export interface PaymentRequest {
   amount?: number;
 }
 
-// Interface para a resposta do pagamento
+// Interface para a resposta do pagamento (baseada na documentação 4mpagamentos)
 export interface PaymentResponse {
   id: string;
-  gateway_id: string;
+  transactionId: string;
   pixCode: string;
   pixQrCode: string;
-  status?: string;
+  amount: number;
+  status: string;
+  expiresAt: string;
+  createdAt: string;
   error?: string;
 }
 
-// Configuração da API
-const API_URL = 'https://app.4mpagamentos.com/api/v1/payments';
-const API_STATUS_URL = 'https://app.4mpagamentos.com/api/v1/transactions';
-const API_TOKEN = '3mpag_p7czqd3yk_mfr1pvd2';
+// Configuração da API - usando endpoint local que gerencia a chave de forma segura
+const API_ENDPOINT = '/api/4mpagamentos/payments';
+const STATUS_ENDPOINT = '/api/4mpagamentos/transactions';
 
 /**
  * Cria um pagamento PIX usando a API 4mpagamentos com verificação de status automática
@@ -41,11 +43,10 @@ export async function createPixPaymentComplete(paymentData: {
     console.log('[4MPAGAMENTOS] Criando transação PIX...');
     
     // 1. CRIAÇÃO DA TRANSAÇÃO
-    const response = await fetch(API_URL, {
+    const response = await fetch(API_ENDPOINT, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_TOKEN}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(paymentData)
     });
@@ -62,13 +63,13 @@ export async function createPixPaymentComplete(paymentData: {
     
     const checkStatus = async (): Promise<void> => {
       try {
-        const statusResponse = await fetch(`${API_STATUS_URL}/${transaction.gateway_id}`);
+        const statusResponse = await fetch(`${STATUS_ENDPOINT}/${transaction.transactionId || transaction.id}`);
         
         if (statusResponse.ok) {
           const statusData = await statusResponse.json();
           console.log('[4MPAGAMENTOS] Status:', statusData.status);
           
-          if (statusData.status === 'paid') {
+          if (statusData.status === 'paid' || statusData.status === 'approved') {
             console.log('[4MPAGAMENTOS] PAGAMENTO CONFIRMADO!');
             
             // Executa redirecionamento após 1 segundo
@@ -93,13 +94,16 @@ export async function createPixPaymentComplete(paymentData: {
     // Inicia verificação
     checkStatus();
     
-    // Retorna os dados da transação
+    // Retorna os dados da transação usando a estrutura correta da API 4mpagamentos
     return {
-      id: transaction.id || transaction.gateway_id,
-      gateway_id: transaction.gateway_id,
-      pixCode: transaction.pixCode || transaction.pix?.qrCode?.text || '',
-      pixQrCode: transaction.pixQrCode || transaction.pix?.qrCode?.image || '',
-      status: transaction.status || 'pending'
+      id: transaction.id,
+      transactionId: transaction.transactionId,
+      pixCode: transaction.pixCode,
+      pixQrCode: transaction.pixQrCode,
+      amount: transaction.amount,
+      status: transaction.status,
+      expiresAt: transaction.expiresAt,
+      createdAt: transaction.createdAt
     };
     
   } catch (error) {

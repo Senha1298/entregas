@@ -383,8 +383,9 @@ const Entrega: React.FC = () => {
       
       console.log('Pagamento processado com sucesso:', pixData);
       
-      // Verificar se recebemos todos os dados necessários
-      if (!pixData.pixCode || !pixData.id) {
+      // Verificar se recebemos todos os dados necessários da API 4mpagamentos
+      if (!pixData.pixCode || !pixData.id || !pixData.transactionId) {
+        console.error('[ENTREGA] Resposta incompleta da API:', pixData);
         throw new Error('Resposta incompleta da API de pagamento');
       }
       
