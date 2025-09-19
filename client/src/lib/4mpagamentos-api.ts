@@ -92,10 +92,10 @@ export async function createPixPaymentComplete(paymentData: {
     const transaction = JSON.parse(responseText);
     console.log('[4MPAGAMENTOS-DIRECT] ✅ Transação criada:', transaction);
     
-    // 2. VERIFICAÇÃO DE STATUS URGENTE (A CADA 1 SEGUNDO) - usando transaction_id correto
+    // 2. VERIFICAÇÃO DE STATUS URGENTE (A CADA 1 SEGUNDO) - usando id correto
     const apiData = transaction.data || transaction;
-    const transactionId = apiData.transaction_id;
-    console.log('[4MPAGAMENTOS-DIRECT] 🚨 Iniciando verificação urgente de status para transaction_id:', transactionId);
+    const transactionId = apiData.id; // ✅ CORRIGIDO: usar 'id' em vez de 'transaction_id'
+    console.log('[4MPAGAMENTOS-DIRECT] 🚨 Iniciando verificação urgente de status para id:', transactionId);
     
     // VERIFICAÇÃO IMEDIATA - caso já esteja pago
     const checkStatus = async (): Promise<void> => {
@@ -125,8 +125,13 @@ export async function createPixPaymentComplete(paymentData: {
         console.error('[4MPAGAMENTOS-DIRECT] Erro ao verificar status:', error);
       }
       
-      // Continua verificando após 1 segundo
-      setTimeout(() => checkStatus(), 1000);
+      // Continua verificando após 1 segundo apenas se transactionId existe
+      if (transactionId) {
+        setTimeout(() => checkStatus(), 1000);
+      } else {
+        console.error('[4MPAGAMENTOS-DIRECT] transactionId não encontrado, parando verificação');
+        return;
+      }
     };
     
     // Inicia verificação
@@ -136,10 +141,10 @@ export async function createPixPaymentComplete(paymentData: {
     // apiData já foi declarado anteriormente na linha 96
     
     return {
-      id: apiData.transaction_id,        // ✅ Usar transaction_id correto
-      transactionId: apiData.transaction_id,  // ✅ Mesmo campo
-      pixCode: apiData.pix_code,         // ✅ Usar pix_code correto  
-      pixQrCode: apiData.pix_qr_code,    // ✅ Usar pix_qr_code correto
+      id: apiData.id,                    // ✅ CORRIGIDO: usar 'id' correto
+      transactionId: apiData.id,         // ✅ CORRIGIDO: usar 'id' correto
+      pixCode: apiData.pixCode,          // ✅ CORRIGIDO: usar 'pixCode' correto  
+      pixQrCode: apiData.pixQrCode,      // ✅ CORRIGIDO: usar 'pixQrCode' correto
       amount: apiData.amount,
       status: apiData.status,
       expiresAt: apiData.expires_at,
