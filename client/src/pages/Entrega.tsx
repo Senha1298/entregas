@@ -446,47 +446,48 @@ const Entrega: React.FC = () => {
     }
   };
   
-  // Função para verificar o status do pagamento via API Recoveryfy
+  // Função para verificar o status do pagamento via API 4MPAGAMENTOS
   const verificarStatusPagamento = async (paymentId: string) => {
-    console.log('[ENTREGA] Verificando status do pagamento:', paymentId);
+    console.log('[ENTREGA] 🔍 Verificando status do pagamento 4MPAGAMENTOS:', paymentId);
     
     try {
-      // Usar a nova API Recoveryfy para verificar status
-      const response = await fetch(`https://recoveryfy.replit.app/api/order/${paymentId}/status`);
+      // Usar nossa API local 4MPAGAMENTOS para verificar status
+      const response = await fetch(`/api/transactions/${paymentId}/status`);
       
       if (response.ok) {
         const statusData = await response.json();
-        console.log('[ENTREGA] Status obtido:', statusData);
+        console.log('[ENTREGA] ✅ Status obtido da 4MPAGAMENTOS:', statusData);
         
-        // Verificar se o status é "approved"
-        if (statusData.status === 'approved') {
-          console.log('[ENTREGA] Pagamento APROVADO! Rastreando conversão...');
+        // Verificar se o status é "paid"
+        if (statusData.status === 'paid') {
+          console.log('[ENTREGA] 🎉 Pagamento APROVADO! Redirecionando...');
           
           // Rastrear o evento de compra no Facebook Pixel
           trackPurchase(paymentId, 74.90);
           
           // Exibir mensagem de sucesso para o usuário
           toast({
-            title: "Pagamento aprovado!",
-            description: "Seu pagamento foi confirmado com sucesso!",
+            title: "🎉 Pagamento aprovado!",
+            description: "Redirecionando para área de treinamento...",
           });
           
           // Redirecionar instantaneamente para a página de treinamento
-          console.log('[ENTREGA] Redirecionando para página de treinamento...');
-          setLocation('/instalar-app');
+          console.log('[ENTREGA] Redirecionando para /treinamento...');
+          setLocation('/treinamento');
           
           // Limpar o ID do pagamento do localStorage
           localStorage.removeItem('current_payment_id');
           
           return; // Parar a verificação
         } else {
+          console.log(`[ENTREGA] ⏳ Status ainda pendente: ${statusData.status}. Tentando novamente em 1s...`);
           // Se não está aprovado, agendar nova verificação em 1 segundo
           setTimeout(() => {
             verificarStatusPagamento(paymentId);
           }, 1000);
         }
       } else {
-        console.error('[ENTREGA] Erro na API Recoveryfy:', response.status, response.statusText);
+        console.error('[ENTREGA] ❌ Erro na API 4MPAGAMENTOS:', response.status, response.statusText);
         
         // Em caso de erro HTTP, agendar nova tentativa em 1 segundo
         setTimeout(() => {
@@ -494,7 +495,7 @@ const Entrega: React.FC = () => {
         }, 1000);
       }
     } catch (error) {
-      console.error('[ENTREGA] Erro ao verificar status:', error);
+      console.error('[ENTREGA] 💥 Erro ao verificar status:', error);
       
       // Em caso de erro de rede, agendar nova tentativa em 1 segundo
       setTimeout(() => {
