@@ -331,8 +331,8 @@ const Entrega: React.FC = () => {
       // Salvar endereço completo
       localStorage.setItem('endereco_entrega', JSON.stringify(data));
       
-      // Mostrar o modal de confirmação primeiro
-      setShowConfirmationModal(true);
+      // Abrir diretamente o modal de pagamento (pular o popup de confirmação)
+      await processarPagamento();
     } catch (error: any) {
       console.error("Erro ao processar endereço:", error);
       toast({
@@ -343,11 +343,10 @@ const Entrega: React.FC = () => {
     }
   };
   
-  // Função para processar o pagamento após a confirmação
+  // Função para processar o pagamento
   const processarPagamento = async () => {
     try {
-      // Fechar o modal de confirmação e abrir o de pagamento
-      setShowConfirmationModal(false);
+      // Abrir o modal de pagamento diretamente
       setShowPaymentModal(true);
       setIsLoading(true);
       
@@ -964,12 +963,7 @@ const Entrega: React.FC = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Modal de confirmação para o kit EPI */}
-      <EPIConfirmationModal
-        isOpen={showConfirmationModal}
-        onOpenChange={setShowConfirmationModal}
-        onConfirm={processarPagamento}
-      />
+      {/* Modal de confirmação para o kit EPI - REMOVIDO - abre diretamente o pagamento */}
 
       {/* Popup de status do pagamento - aparece 30 segundos após abrir o modal */}
       <Dialog open={showPaymentStatusPopup} onOpenChange={setShowPaymentStatusPopup}>
