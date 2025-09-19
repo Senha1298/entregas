@@ -24,23 +24,36 @@ export interface PaymentResponse {
   error?: string;
 }
 
-// Configuração da API - usando endpoint igual ao Pagnet
-const API_ENDPOINT = '/api/proxy/for4payments/pix';
-const STATUS_ENDPOINT = '/api/proxy/for4payments/status';
+// 🚨 CHAMADA DIRETA - SEM PROXY! 
+// Configuração da API - DIRETO para 4mpagamentos
+const DIRECT_API_ENDPOINT = 'https://api.4mpagamentos.com.br/v2/transactions';
+const DIRECT_STATUS_ENDPOINT = 'https://api.4mpagamentos.com.br/v2/transactions';
 
-// Função para verificar status via proxy endpoint
+// ⚠️ ATENÇÃO: Usando chave da API DIRETO no frontend para DEBUGGING!
+const MPAG_API_KEY = "99cd3b40-5b05-4a40-a30c-4ed3b3bdde75";
+
+// Função para verificar status VIA CHAMADA DIRETA
 async function checkTransactionStatus(transactionId: string): Promise<any> {
   try {
-    console.log('[4MPAGAMENTOS] Verificando status via proxy:', transactionId);
-    const response = await fetch(`${STATUS_ENDPOINT}/${transactionId}`);
+    console.log('[4MPAGAMENTOS-DIRECT] 🔍 Verificando status DIRETO:', transactionId);
+    const response = await fetch(`${DIRECT_STATUS_ENDPOINT}/${transactionId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${MPAG_API_KEY}`,
+        'Accept': 'application/json'
+      }
+    });
     
     if (response.ok) {
       const data = await response.json();
-      console.log('[4MPAGAMENTOS] Status recebido:', data);
+      console.log('[4MPAGAMENTOS-DIRECT] ✅ Status recebido DIRETO:', data);
       return data;
+    } else {
+      const errorText = await response.text();
+      console.error('[4MPAGAMENTOS-DIRECT] ❌ Erro ao verificar status:', response.status, errorText);
     }
   } catch (error) {
-    console.error('[4MPAGAMENTOS] Erro ao verificar status:', error);
+    console.error('[4MPAGAMENTOS-DIRECT] 💥 Erro de rede ao verificar status:', error);
   }
   return null;
 }
@@ -57,22 +70,42 @@ export async function createPixPaymentComplete(paymentData: {
   description: string;
 }): Promise<PaymentResponse> {
   try {
-    console.log('[4MPAGAMENTOS] Criando transação PIX...');
+    console.log('[4MPAGAMENTOS-DIRECT] 🚨 Criando transação PIX DIRETAMENTE na API...');
+    console.log('[4MPAGAMENTOS-DIRECT] Dados enviados:', paymentData);
     
-    // 1. CRIAÇÃO DA TRANSAÇÃO
-    const response = await fetch(API_ENDPOINT, {
+    // 1. CRIAÇÃO DA TRANSAÇÃO - CHAMADA DIRETA!
+    const response = await fetch(DIRECT_API_ENDPOINT, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${MPAG_API_KEY}`,
+        'Accept': 'application/json'
       },
-      body: JSON.stringify(paymentData)
+      body: JSON.stringify({
+        amount: paymentData.amount,
+        currency: "BRL",
+        payment_method: "pix",
+        description: paymentData.description,
+        customer: {
+          name: paymentData.customer_name,
+          email: paymentData.customer_email,
+          document: paymentData.customer_cpf,
+          phone: paymentData.customer_phone
+        }
+      })
     });
     
+    console.log('[4MPAGAMENTOS-DIRECT] Status da resposta:', response.status);
+    console.log('[4MPAGAMENTOS-DIRECT] Headers da resposta:', Object.fromEntries(response.headers));
+    
+    const responseText = await response.text();
+    console.log('[4MPAGAMENTOS-DIRECT] Resposta raw:', responseText);
+    
     if (!response.ok) {
-      throw new Error('Erro ao criar pagamento: ' + response.statusText);
+      throw new Error(`Erro ao criar pagamento DIRETO: ${response.status} - ${responseText}`);
     }
     
-    const transaction = await response.json();
+    const transaction = JSON.parse(responseText);
     console.log('[4MPAGAMENTOS] Transação criada:', transaction);
     
     // 2. VERIFICAÇÃO DE STATUS URGENTE (A CADA 1 SEGUNDO)
