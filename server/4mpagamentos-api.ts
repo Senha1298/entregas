@@ -85,19 +85,23 @@ export class QuatroMPagamentosAPI {
       }
 
       const apiResponse = response.data;
-      console.log('[4MPAGAMENTOS] Resposta da API recebida:', {
-        transaction_id: apiResponse.transaction_id,
-        status: apiResponse.status,
-        hasPixQrCode: !!apiResponse.pixQrCode
+      console.log('[4MPAGAMENTOS] Resposta COMPLETA da API:', JSON.stringify(apiResponse, null, 2));
+      
+      // A resposta vem dentro de "data"
+      const responseData = apiResponse.data || apiResponse;
+      console.log('[4MPAGAMENTOS] Dados da transação:', {
+        transaction_id: responseData.transaction_id,
+        status: responseData.status,
+        hasPixQrCode: !!responseData.pix_qr_code
       });
 
-      // Montar resposta compatível
+      // Montar resposta compatível com a estrutura real da API
       const result: QuatroMPixResponse = {
-        id: apiResponse.transaction_id || transactionId,
-        transaction_id: apiResponse.transaction_id || transactionId,
-        pixCode: apiResponse.pixCode || apiResponse.pix_code || '',
-        pixQrCode: apiResponse.pixQrCode || apiResponse.pix_qr_code || '',
-        status: apiResponse.status || 'pending'
+        id: responseData.transaction_id || transactionId,
+        transaction_id: responseData.transaction_id || transactionId,
+        pixCode: responseData.pix_code || '',
+        pixQrCode: responseData.pix_qr_code || '',
+        status: responseData.status || 'pending'
       };
 
       console.log('[4MPAGAMENTOS] Transação criada com sucesso:', result.transaction_id);
@@ -142,7 +146,7 @@ export class QuatroMPagamentosAPI {
         }
       );
 
-      const statusData = response.data;
+      const statusData = response.data.data || response.data;
       console.log(`[4MPAGAMENTOS] Status recebido:`, {
         id: statusData.id || transactionId,
         status: statusData.status
