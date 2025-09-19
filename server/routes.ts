@@ -1659,22 +1659,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Verificar se o token está configurado
-      if (!process.env.FOUR_M_PAG_BEARER_TOKEN) {
-        console.error('ERRO: FOUR_M_PAG_BEARER_TOKEN não configurada');
-        return res.status(500).json({
-          error: 'Serviço de verificação de pagamento não configurado.'
-        });
-      }
-      
       console.log(`[STATUS CHECK DEV] Consultando API 4MPAGAMENTOS para transação: ${transactionId}`);
       
       const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.FOUR_M_PAG_BEARER_TOKEN}`
+          'Content-Type': 'application/json'
         }
       });
       
