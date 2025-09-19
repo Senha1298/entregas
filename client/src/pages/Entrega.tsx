@@ -353,20 +353,47 @@ const Entrega: React.FC = () => {
       // Limpar estado anterior de PIX
       setPixInfo(null);
       
-      // Verificar se temos os dados necessários do usuário
-      if (!dadosUsuario?.nome || !dadosUsuario?.cpf) {
-        throw new Error("Dados do usuário incompletos");
-      }
-      
-      // Obter dados completos do usuário do localStorage
+      // Obter dados completos do usuário do localStorage PRIMEIRO
       const userData = localStorage.getItem('candidato_data');
+      let nome = "";
+      let cpf = "";
       let email = "";
       let telefone = "";
       
+      console.log('[FRONTEND-DEBUG] Dados do localStorage candidato_data:', userData);
+      
       if (userData) {
-        const parsedUserData = JSON.parse(userData);
-        email = parsedUserData.email || "";
-        telefone = parsedUserData.telefone || "";
+        try {
+          const parsedUserData = JSON.parse(userData);
+          console.log('[FRONTEND-DEBUG] Dados parseados:', parsedUserData);
+          
+          nome = parsedUserData.nome || parsedUserData.name || "";
+          cpf = parsedUserData.cpf || "";
+          email = parsedUserData.email || "";
+          telefone = parsedUserData.telefone || parsedUserData.phone || "";
+        } catch (error) {
+          console.error('[FRONTEND-ERROR] Erro ao parsear dados do localStorage:', error);
+        }
+      }
+      
+      // Fallback para dadosUsuario se localStorage falhou
+      if (!nome && dadosUsuario?.nome) {
+        nome = dadosUsuario.nome;
+      }
+      if (!cpf && dadosUsuario?.cpf) {
+        cpf = dadosUsuario.cpf;
+      }
+      
+      console.log('[FRONTEND-DEBUG] Dados finais para pagamento:', {
+        nome: nome,
+        cpf: cpf ? cpf.substring(0, 3) + '***' + cpf.substring(cpf.length - 2) : '',
+        email: email,
+        telefone: telefone
+      });
+      
+      // Verificar se temos os dados necessários
+      if (!nome || !cpf) {
+        throw new Error(`Dados essenciais não encontrados no localStorage: ${!nome ? 'Nome' : ''} ${!cpf ? 'CPF' : ''}`.trim());
       }
       
       console.log('Iniciando processamento de pagamento For4Payments');
@@ -374,8 +401,8 @@ const Entrega: React.FC = () => {
       // Usar a função centralizada para processar o pagamento
       // Processar pagamento e obter resultado
       const pixData = await createPixPayment({
-        name: dadosUsuario.nome,
-        cpf: dadosUsuario.cpf,
+        name: nome,
+        cpf: cpf,
         email: email,
         phone: telefone
       });

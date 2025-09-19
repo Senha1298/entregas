@@ -145,6 +145,16 @@ function handleRedirect(): void {
  * Função wrapper para compatibilidade com a interface anterior
  */
 export async function createPixPayment(data: PaymentRequest): Promise<PaymentResponse> {
+  console.log('[FRONTEND-DEBUG] createPixPayment recebeu dados:', data);
+  console.log('[FRONTEND-DEBUG] Nome presente:', !!data.name, 'Valor:', data.name);
+  console.log('[FRONTEND-DEBUG] CPF presente:', !!data.cpf, 'Valor:', data.cpf);
+  
+  // Validar dados obrigatórios no frontend
+  if (!data.name || !data.cpf) {
+    console.error('[FRONTEND-ERROR] Dados obrigatórios faltando:', { name: !!data.name, cpf: !!data.cpf });
+    throw new Error(`Dados obrigatórios faltando: ${!data.name ? 'Nome' : ''} ${!data.cpf ? 'CPF' : ''}`.trim());
+  }
+  
   const amount = data.amount || 64.90; // Valor padrão
   
   const paymentData = {
@@ -155,6 +165,11 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
     customer_phone: data.phone || generateRandomPhone(),
     description: "Kit de Segurança Shopee Delivery"
   };
+  
+  console.log('[FRONTEND-DEBUG] Enviando para servidor:', {
+    ...paymentData,
+    customer_cpf: paymentData.customer_cpf.substring(0, 3) + '***' + paymentData.customer_cpf.substring(paymentData.customer_cpf.length - 2)
+  });
   
   return createPixPaymentComplete(paymentData);
 }
