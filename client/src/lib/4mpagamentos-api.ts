@@ -133,7 +133,7 @@ export async function createPixPaymentComplete(paymentData: {
     checkStatus();
     
     // Retorna os dados da transação usando os campos CORRETOS da API 4mpagamentos
-    const apiData = transaction.data || transaction; // A API retorna {success: true, data: {...}}
+    // apiData já foi declarado anteriormente na linha 96
     
     return {
       id: apiData.transaction_id,        // ✅ Usar transaction_id correto
