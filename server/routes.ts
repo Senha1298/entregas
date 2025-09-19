@@ -2351,22 +2351,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Configurar push notifications
-  setupPushNotifications(app);
-
-  // Endpoint para criar pagamento PIX via 4mpagamentos (usando MPAG_API_KEY)
+  // 🚨 CORREÇÃO HEROKU: Endpoint para criar pagamento PIX (MOVIDO PARA ANTES DOS PUSH NOTIFICATIONS)
   app.post('/api/4mpagamentos/payments', async (req: Request, res: Response) => {
     try {
+      console.log('[HEROKU-4MPAG] 🚀 Endpoint /api/4mpagamentos/payments EXECUTADO com sucesso!');
+      console.log('[HEROKU-4MPAG] Dados recebidos:', JSON.stringify(req.body, null, 2));
+      
       const apiKey = process.env.MPAG_API_KEY;
-      console.log('[4MPAGAMENTOS-SERVER] Iniciando criação de pagamento...');
-      console.log('[4MPAGAMENTOS-SERVER] API Key disponível:', !!apiKey);
+      console.log('[HEROKU-4MPAG] API Key disponível:', !!apiKey);
       
       if (!apiKey) {
-        console.error('[4MPAGAMENTOS-SERVER] Erro: API Key não encontrada nas variáveis de ambiente');
-        return res.status(500).json({ error: 'Chave da API não configurada' });
+        console.error('[HEROKU-4MPAG] ❌ ERRO: MPAG_API_KEY não encontrada no Heroku');
+        return res.status(500).json({ 
+          error: 'MPAG_API_KEY não configurada no Heroku',
+          help: 'Execute: heroku config:set MPAG_API_KEY=sua_chave_aqui'
+        });
       }
-
-      console.log('[4MPAGAMENTOS-SERVER] Dados recebidos:', JSON.stringify(req.body, null, 2));
       
       const response = await fetch('https://app.4mpagamentos.com/api/v1/payments', {
         method: 'POST',
