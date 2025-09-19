@@ -683,22 +683,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Rota proxy para PIX usando 4mpagamentos
+  // Rota proxy para PIX com sistema duplo de gateways (Pagnet + Medius Pag)
   app.post('/api/proxy/for4payments/pix', async (req, res) => {
     try {
-      console.log('[4MPAGAMENTOS] Usando gateway 4MPAGAMENTOS');
-      console.log('[DEBUG-HEROKU] Request headers:', req.headers);
-      console.log('[DEBUG-HEROKU] Request body raw:', req.body);
-      console.log('[DEBUG-HEROKU] Request body type:', typeof req.body);
-      console.log('[DEBUG-HEROKU] Request body keys:', Object.keys(req.body || {}));
+      // Verificar qual gateway usar baseado na variável de ambiente
+      const gatewayChoice = process.env.GATEWAY_CHOICE || 'PAGNET';
       
-      // Processar os dados recebidos - USAR OS NOMES CORRETOS DO FRONTEND!
-      const { customer_name: name, customer_cpf: cpf, customer_email: email, customer_phone: phone, amount = 64.90, description = "Kit de Segurança Shopee Delivery" } = req.body;
+      console.log(`[GATEWAY] Usando gateway: ${gatewayChoice}`);
       
-      console.log('[DEBUG-HEROKU] Extracted values:', { name, cpf, email, phone, amount });
+      // Processar os dados recebidos
+      const { name, cpf, email, phone, amount = 64.90, description = "Kit de Segurança Shopee Delivery" } = req.body;
       
       if (!name || !cpf) {
-        console.log('[ERROR-HEROKU] Validation failed - Name or CPF missing:', { name: !!name, cpf: !!cpf });
         return res.status(400).json({ error: 'Nome e CPF são obrigatórios' });
       }
       
@@ -707,56 +703,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       let result: any = null;
       
-      // Usar 4mpagamentos exclusivamente
-      if (!process.env.MPAG_API_KEY) {
-        console.error('ERRO: MPAG_API_KEY não configurada');
-        return res.status(500).json({
-          error: 'Gateway 4mpagamentos não configurado. Configure a chave de API.',
+      if (gatewayChoice === 'MEDIUS_PAG') {
+        // Usar Medius Pag
+        if (!process.env.MEDIUS_PAG_SECRET_KEY) {
+          console.error('ERRO: MEDIUS_PAG_SECRET_KEY não configurada');
+          return res.status(500).json({
+            error: 'Gateway Medius Pag não configurado. Configure a chave secreta.',
+          });
+        }
+        
+        console.log('Iniciando proxy para Medius Pag...');
+        console.log('Enviando requisição para Medius Pag API via proxy...', {
+          name: name,
+          cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`
         });
-      }
-      
-      console.log('[4MPAGAMENTOS] Iniciando proxy para 4mpagamentos...');
-      console.log('[4MPAGAMENTOS] Enviando requisição para 4mpagamentos API via proxy...', {
-        name: name,
-        cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`
-      });
-      
-      // Fazer requisição direta para 4mpagamentos
-      const response = await fetch('https://app.4mpagamentos.com/api/v1/payments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.MPAG_API_KEY}`
-        },
-        body: JSON.stringify({
-          amount: amount.toString(), // ✅ CORRIGIDO: API 4mpagamentos espera string
+        
+        // Importar e usar a API Medius Pag
+        const { MediusPagAPI } = await import('./medius-api');
+        const mediusAPI = new MediusPagAPI(process.env.MEDIUS_PAG_SECRET_KEY);
+        
+        // Criar transação PIX usando Medius Pag
+        const mediusResult = await mediusAPI.createPixTransaction({
           customer_name: name,
           customer_email: userEmail,
           customer_cpf: cpf,
           customer_phone: phone,
+          amount: amount,
           description: description
-        })
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[4MPAGAMENTOS] Erro na API externa:', errorText);
-        return res.status(response.status).json({ error: errorText });
+        });
+        
+        // Converter resposta da Medius Pag para formato compatível
+        result = {
+          success: true,
+          transaction_id: mediusResult.id,
+          pix_code: mediusResult.pixCode,
+          status: mediusResult.status,
+          emailSent: false
+        };
+        
+      } else {
+        // Usar Pagnet (padrão)
+        if (!process.env.PAGNET_PUBLIC_KEY || !process.env.PAGNET_SECRET_KEY) {
+          console.error('ERRO: PAGNET_PUBLIC_KEY ou PAGNET_SECRET_KEY não configuradas');
+          return res.status(500).json({
+            error: 'Gateway Pagnet não configurado. Configure as chaves de API Pagnet.',
+          });
+        }
+        
+        console.log('Iniciando proxy para Pagnet...');
+        console.log('Enviando requisição para Pagnet API via proxy...', {
+          name: name,
+          cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`
+        });
+        
+        // Importar e usar a API Pagnet
+        const { createPagnetAPI } = await import('./pagnet-api');
+        const pagnetAPI = createPagnetAPI();
+        
+        // Criar transação PIX usando Pagnet
+        result = await pagnetAPI.createPixTransaction(
+          {
+            nome: name,
+            cpf: cpf,
+            email: userEmail,
+            phone: phone
+          },
+          amount,
+          phone
+        );
       }
       
-      const responseData = await response.json();
-      console.log('[4MPAGAMENTOS] Resposta da API externa:', responseData);
-      
-      // Converter resposta da 4mpagamentos para formato compatível
-      result = {
-        success: true,
-        transaction_id: responseData.data.transaction_id,
-        pix_code: responseData.data.pix_code,
-        status: responseData.data.status,
-        emailSent: false
-      };
-      
-      console.log('Resposta do gateway 4MPAGAMENTOS recebida pelo proxy');
+      console.log(`Resposta do gateway ${gatewayChoice} recebida pelo proxy`);
       
       // Se a resposta foi bem-sucedida e temos os dados do PIX, enviar email
       if (result.success && result.pix_code) {
@@ -818,71 +835,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         return res.status(200).json(compatibleResponse);
       } else {
-        // Retornar erro da 4mpagamentos
+        // Retornar erro da Pagnet
         return res.status(400).json({
           error: result.error || 'Erro desconhecido na criação do pagamento'
         });
       }
     } catch (error: any) {
-      console.error('[4MPAGAMENTOS] Erro no proxy:', error);
+      console.error('Erro no proxy Pagnet:', error);
       return res.status(500).json({ 
-        error: error instanceof Error ? error.message : 'Erro desconhecido' || 'Falha ao processar pagamento pelo proxy 4mpagamentos'
+        error: error instanceof Error ? error.message : 'Erro desconhecido' || 'Falha ao processar pagamento pelo proxy Pagnet'
       });
     }
   });
-
-  // Endpoint para verificar status de transação 4mpagamentos
-  app.get('/api/proxy/for4payments/status/:transactionId', async (req, res) => {
-    try {
-      const { transactionId } = req.params;
-      console.log('[4MPAGAMENTOS] Verificando status da transação:', transactionId);
-
-      if (!process.env.MPAG_API_KEY) {
-        return res.status(500).json({
-          error: 'Gateway 4mpagamentos não configurado'
-        });
-      }
-
-      // Consultar status na API da 4mpagamentos
-      const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.MPAG_API_KEY}`
-        }
-      });
-
-      if (!response.ok) {
-        return res.status(404).json({
-          error: 'Transação não encontrada',
-          transactionId: transactionId
-        });
-      }
-
-      const data = await response.json();
-      console.log('[4MPAGAMENTOS] Status recebido:', data);
-
-      // Formatar resposta compatível
-      const status = data.data?.status || data.status || 'pending';
-      const isPaid = status === 'paid' || status === 'approved' || status === 'completed';
-
-      res.json({
-        transactionId,
-        status,
-        isPaid,
-        shouldRedirect: isPaid,
-        redirectTo: '/treinamento',
-        data: data.data || data
-      });
-
-    } catch (error: any) {
-      console.error('[4MPAGAMENTOS] Erro ao verificar status:', error);
-      res.status(500).json({
-        error: 'Erro interno do servidor',
-        message: error.message
-      });
-    }
-  });
-
   // Rota para obter todos os estados
   app.get('/api/states', async (req, res) => {
     try {
@@ -2387,8 +2351,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-
-
+  // Configurar push notifications
+  setupPushNotifications(app);
 
   return httpServer;
 }

