@@ -687,11 +687,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/proxy/for4payments/pix', async (req, res) => {
     try {
       console.log('[4MPAGAMENTOS] Usando gateway 4MPAGAMENTOS');
+      console.log('[DEBUG-HEROKU] Request headers:', req.headers);
+      console.log('[DEBUG-HEROKU] Request body raw:', req.body);
+      console.log('[DEBUG-HEROKU] Request body type:', typeof req.body);
+      console.log('[DEBUG-HEROKU] Request body keys:', Object.keys(req.body || {}));
       
       // Processar os dados recebidos
       const { name, cpf, email, phone, amount = 64.90, description = "Kit de Segurança Shopee Delivery" } = req.body;
       
+      console.log('[DEBUG-HEROKU] Extracted values:', { name, cpf, email, phone, amount });
+      
       if (!name || !cpf) {
+        console.log('[ERROR-HEROKU] Validation failed - Name or CPF missing:', { name: !!name, cpf: !!cpf });
         return res.status(400).json({ error: 'Nome e CPF são obrigatórios' });
       }
       
