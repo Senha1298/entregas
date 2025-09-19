@@ -2438,6 +2438,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${apiKey}`
         }
       });
@@ -2454,6 +2455,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
     } catch (error) {
       console.error('[4MPAGAMENTOS-SERVER] Erro:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  });
+
+  // CORREÇÃO URGENTE: Endpoint para verificar se transação específica está paga e redirecionar
+  app.get('/api/4mpagamentos/check-paid/:id', async (req: Request, res: Response) => {
+    try {
+      const apiKey = process.env.MPAG_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ error: 'Chave da API não configurada' });
+      }
+
+      const transactionId = req.params.id;
+      console.log('[4MPAGAMENTOS-URGENT] 🚨 Verificação URGENTE para transação:', transactionId);
+      
+      const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+      
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('[4MPAGAMENTOS-URGENT] 📋 Resposta completa da API:', responseData);
+        
+        // Extrai dados seguindo estrutura da 4mpagamentos API
+        const data = responseData.success ? responseData.data : responseData;
+        const status = data.status || responseData.status;
+        
+        console.log('[4MPAGAMENTOS-URGENT] ✅ Status processado:', status, 'para ID:', transactionId);
+        
+        const isPaid = status === 'paid' || status === 'approved' || status === 'PAID' || status === 'APPROVED' || status === 'COMPLETED' || status === 'confirmed';
+        
+        if (isPaid) {
+          console.log('[4MPAGAMENTOS-URGENT] 🎉 TRANSAÇÃO PAGA! Deve redirecionar para /treinamento');
+        }
+        
+        res.json({ 
+          transactionId: transactionId,
+          status: status, 
+          isPaid: isPaid,
+          shouldRedirect: isPaid,
+          redirectTo: '/treinamento',
+          paidAt: data.paid_at || data.confirmed_at,
+          message: isPaid ? 'Pagamento confirmado! Redirecionando...' : 'Aguardando pagamento',
+          rawData: responseData
+        });
+      } else {
+        console.log('[4MPAGAMENTOS-URGENT] ❌ Transação não encontrada:', transactionId);
+        res.json({ 
+          transactionId: transactionId,
+          status: 'not_found', 
+          isPaid: false,
+          shouldRedirect: false,
+          message: 'Transação não encontrada'
+        });
+      }
+      
+    } catch (error: any) {
+      console.error('[4MPAGAMENTOS-URGENT] Erro:', error.message);
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
   });

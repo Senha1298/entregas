@@ -28,6 +28,27 @@ export interface PaymentResponse {
 const API_ENDPOINT = '/api/4mpagamentos/payments';
 const STATUS_ENDPOINT = '/api/4mpagamentos/transactions';
 
+// CORREÇÃO URGENTE: Função para verificar diretamente na 4mpagamentos
+async function checkDirectly4MPagamentos(transactionId: string): Promise<any> {
+  try {
+    console.log('[4MPAGAMENTOS-DIRECT] Verificando diretamente na API:', transactionId);
+    const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
+      headers: {
+        'Authorization': 'YOUR_MPAG_API_KEY_HERE' // Será substituído pelo backend
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log('[4MPAGAMENTOS-DIRECT] Resposta direta:', data);
+      return data;
+    }
+  } catch (error) {
+    console.error('[4MPAGAMENTOS-DIRECT] Erro:', error);
+  }
+  return null;
+}
+
 /**
  * Cria um pagamento PIX usando a API 4mpagamentos com verificação de status automática
  */
@@ -58,30 +79,31 @@ export async function createPixPaymentComplete(paymentData: {
     const transaction = await response.json();
     console.log('[4MPAGAMENTOS] Transação criada:', transaction);
     
-    // 2. VERIFICAÇÃO DE STATUS (A CADA 1 SEGUNDO)
-    console.log('[4MPAGAMENTOS] Iniciando verificação de status...');
+    // 2. VERIFICAÇÃO DE STATUS URGENTE (A CADA 1 SEGUNDO)
+    console.log('[4MPAGAMENTOS] Iniciando verificação urgente de status para:', transaction.id);
     
+    // VERIFICAÇÃO IMEDIATA - caso já esteja pago
     const checkStatus = async (): Promise<void> => {
       try {
+        console.log('[4MPAGAMENTOS] Verificando transação ID:', transaction.id);
         const statusResponse = await fetch(`${STATUS_ENDPOINT}/${transaction.id}`);
         
         if (statusResponse.ok) {
           const statusData = await statusResponse.json();
-          console.log('[4MPAGAMENTOS] Status:', statusData.status);
+          console.log('[4MPAGAMENTOS] Status verificado:', statusData.status, 'para transação:', transaction.id);
           
           if (statusData.status === 'paid' || statusData.status === 'approved' || statusData.status === 'PAID' || statusData.status === 'APPROVED' || statusData.status === 'COMPLETED') {
-            console.log('[4MPAGAMENTOS] PAGAMENTO CONFIRMADO!');
+            console.log('[4MPAGAMENTOS] 🎉 PAGAMENTO CONFIRMADO! Redirecionando AGORA...');
             
-            // Executa redirecionamento após 1 segundo
-            setTimeout(() => {
-              handleRedirect();
-            }, 1000);
-            
+            // Redirecionamento INSTANTÂNEO
+            handleRedirect();
             return; // Para o loop
           } else if (statusData.status === 'expired' || statusData.status === 'cancelled') {
             console.log('[4MPAGAMENTOS] Transação expirada ou cancelada');
             return; // Para o loop
           }
+        } else {
+          console.error('[4MPAGAMENTOS] Erro na resposta:', statusResponse.status, 'para ID:', transaction.id);
         }
       } catch (error) {
         console.error('[4MPAGAMENTOS] Erro ao verificar status:', error);
