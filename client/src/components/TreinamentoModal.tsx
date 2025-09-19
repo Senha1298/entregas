@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useRef } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -69,6 +69,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
   const [isLoading, setIsLoading] = useState(false);
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const pollingRef = useRef<number | null>(null);
 
   // Desabilita datas no passado, finais de semana e feriados
   const disabledDays = (date: Date) => {
@@ -147,6 +148,93 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
       setIsLoading(false);
     }
   };
+
+  // Função para verificar o status do pagamento via backend
+  const checkPaymentStatus = async (transactionId: string) => {
+    try {
+      console.log(`[POLLING] Verificando status da transação: ${transactionId}`);
+      
+      // Fazer requisição para nossa rota de backend que acessa a API 4MPAGAMENTOS
+      const response = await fetch(`/api/transactions/${transactionId}/status`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`[POLLING] Status recebido:`, data);
+        
+        // Verificar se o status é "paid"
+        if (data.status === 'paid') {
+          console.log(`[POLLING] 🎉 Pagamento confirmado! Redirecionando para /treinamento`);
+          
+          // Parar o polling
+          if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+            pollingRef.current = null;
+          }
+          
+          // Mostrar notificação de sucesso
+          toast({
+            title: "🎉 Pagamento confirmado!",
+            description: "Redirecionando para a área de treinamento...",
+            variant: "default"
+          });
+          
+          // Fechar o modal
+          onOpenChange(false);
+          
+          // Redirecionar para /treinamento após um breve delay
+          setTimeout(() => {
+            setLocation('/treinamento');
+          }, 1000);
+          
+          return true; // Pagamento confirmado
+        }
+      } else {
+        console.log(`[POLLING] Erro ao verificar status: ${response.status}`);
+        // Não mostrar erro para o usuário, apenas continuar tentando
+      }
+    } catch (error) {
+      console.error('[POLLING] Erro ao verificar status do pagamento:', error);
+      // Não mostrar erro para o usuário, apenas continuar tentando
+    }
+    
+    return false; // Pagamento ainda pendente
+  };
+
+  // Efeito para iniciar o polling quando há um pagamento
+  useEffect(() => {
+    if (paymentInfo?.id && step === 'payment') {
+      console.log(`[POLLING] Iniciando polling para transação: ${paymentInfo.id}`);
+      
+      // Iniciar polling a cada 1 segundo
+      pollingRef.current = window.setInterval(() => {
+        checkPaymentStatus(paymentInfo.id);
+      }, 1000);
+      
+      // Cleanup function
+      return () => {
+        if (pollingRef.current) {
+          console.log('[POLLING] Parando polling');
+          clearInterval(pollingRef.current);
+          pollingRef.current = null;
+        }
+      };
+    }
+  }, [paymentInfo?.id, step]);
+
+  // Cleanup ao fechar o modal
+  useEffect(() => {
+    if (!open && pollingRef.current) {
+      console.log('[POLLING] Modal fechado, parando polling');
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
+  }, [open]);
 
   const handleSubmit = () => {
     if (!date) {
