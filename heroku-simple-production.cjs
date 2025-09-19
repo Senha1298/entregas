@@ -357,7 +357,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       
       console.log('✅ Transação Medius Pag criada com sucesso:', transactionId);
       
-    } else if (gatewayChoice === 'FOR4PAYMENTS') {
+    } else if (gatewayChoice === 'FOR4PAYMENTS' || gatewayChoice === '4MPAGAMENTOS') {
       // USAR 4MPAGAMENTOS
       if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
         console.error('ERRO: FOR4PAYMENTS_SECRET_KEY não configurada no Heroku');

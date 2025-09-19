@@ -1,0 +1,256 @@
+2025-09-19T18:52:26.415079+00:00 app[web.29]: 2025-09-19T18:52:26.414Z - GET /assets/kit-epi-new-Du3wJUxp.webp
+2025-09-19T18:52:26.415502+00:00 app[web.53]: 2025-09-19T18:52:26.415Z - GET /fonts/rawline/rawline-500.woff2
+2025-09-19T18:52:26.415427+00:00 app[web.21]: 2025-09-19T18:52:26.415Z - GET /api/check-ip-status
+2025-09-19T18:52:26.414727+00:00 app[web.19]: 2025-09-19T18:52:26.414Z - GET /fonts/rawline/rawline-600.woff2
+2025-09-19T18:52:26.415703+00:00 app[web.69]: 2025-09-19T18:52:26.415Z - GET /fonts/rawline/rawline-700.woff2
+2025-09-19T18:52:26.420740+00:00 app[web.10]: 2025-09-19T18:52:26.420Z - GET /fonts/rawline/rawline-400i.woff2
+2025-09-19T18:52:26.426059+00:00 app[web.7]: 2025-09-19T18:52:26.425Z - POST /api/app-users/reached-delivery
+2025-09-19T18:52:26.505233+00:00 app[web.72]: 2025-09-19T18:52:26.504Z - GET /?fbclid=IwZXh0bgNhZW0BMABhZGlkAasoniAHkLUBHvzAydFq46VOXat3umIFmNX7YwT1Uv3JJ1pdAQDckN6j9UuQdJEDowp2XENZ_aem_sE7eTnFOZFdZaSZ5Hr9G9g&utm_medium=paid&utm_source=fb&utm_id=120234474513020629&utm_content=120234474513050629&utm_term=120234474513040629&utm_campaign=120234474513020629
+2025-09-19T18:52:26.792535+00:00 heroku[router]: at=info method=GET path="/assets/index-BXiE8lBK.js" host=shopee.cadastroentregadores.com request_id=33559d80-8b5a-c558-1ea3-d328734e9382 fwd="177.130.237.29" dyno=web.32 connect=0ms service=70ms status=200 bytes=397447 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:26.723642+00:00 app[web.32]: 2025-09-19T18:52:26.723Z - GET /assets/index-BXiE8lBK.js
+2025-09-19T18:52:27.628434+00:00 heroku[router]: at=info method=GET path="/icon-192x192.png" host=shopee.cadastroentregadores.com request_id=5819c748-b9db-b305-c2fc-3c5790a874e0 fwd="170.84.159.252" dyno=web.41 connect=0ms service=6ms status=200 bytes=303063 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:27.623846+00:00 app[web.41]: 2025-09-19T18:52:27.623Z - GET /icon-192x192.png
+2025-09-19T18:52:28.083337+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=5c637a92-b940-f923-9c03-f08d341de940 fwd="177.130.237.29" dyno=web.54 connect=0ms service=1ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:28.082645+00:00 app[web.54]: 2025-09-19T18:52:28.082Z - GET /api/check-ip-status
+2025-09-19T18:52:29.181895+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=8bd3494a-16a8-8ae1-94fa-f90a62ee0a93 fwd="177.56.161.30" dyno=web.28 connect=0ms service=7ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:29.178301+00:00 app[web.28]: 2025-09-19T18:52:29.178Z - GET /api/check-ip-status
+2025-09-19T18:52:31.188152+00:00 heroku[router]: at=info method=GET path="/sw.js" host=shopee.cadastroentregadores.com request_id=2e177a76-04cd-44da-5ce3-225039bcba5e fwd="177.130.237.29" dyno=web.55 connect=0ms service=6ms status=200 bytes=2410 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:31.296479+00:00 heroku[router]: at=info method=GET path="/entrega?fbclid=IwVERTSAM6hbpleHRuA2FlbQEwAGFkaWQBqyekAPjfvgEeeOkLIpomN6CFhIDx369EgcBqgoZRrRPQsJOXCY46mp-Yy3ryvdROX3uXJOA_aem_V8UULYmsSL0cKVemzxxmFA&utm_source=fb&utm_medium=paid&utm_campaign=120233400366500126&utm_term=120233400366560126&utm_content=120233400366550126&utm_id=120233400366500126&sfnsn=wiwspwa" host=shopee.cadastroentregadores.com request_id=e291a14d-6c59-d91c-a841-5dd0ace51076 fwd="186.219.145.113" dyno=web.20 connect=0ms service=5ms status=200 bytes=2753 protocol=http1.1 tls=true tls_version=tls1.3
+2025-09-19T18:52:31.183927+00:00 app[web.55]: 2025-09-19T18:52:31.183Z - GET /sw.js
+2025-09-19T18:52:31.461269+00:00 heroku[router]: at=info method=GET path="/apple-touch-icon.png" host=shopee.cadastroentregadores.com request_id=c27d6500-cc13-a464-0ba7-09583ea87e19 fwd="186.219.145.113" dyno=web.68 connect=0ms service=5ms status=200 bytes=303063 protocol=http1.1 tls=true tls_version=tls1.3
+2025-09-19T18:52:31.293706+00:00 app[web.20]: 2025-09-19T18:52:31.293Z - GET /entrega?fbclid=IwVERTSAM6hbpleHRuA2FlbQEwAGFkaWQBqyekAPjfvgEeeOkLIpomN6CFhIDx369EgcBqgoZRrRPQsJOXCY46mp-Yy3ryvdROX3uXJOA_aem_V8UULYmsSL0cKVemzxxmFA&utm_source=fb&utm_medium=paid&utm_campaign=120233400366500126&utm_term=120233400366560126&utm_content=120233400366550126&utm_id=120233400366500126&sfnsn=wiwspwa
+2025-09-19T18:52:31.456620+00:00 app[web.68]: 2025-09-19T18:52:31.456Z - GET /apple-touch-icon.png
+2025-09-19T18:52:32.259906+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=shopee.cadastroentregadores.com request_id=ac1360fe-2e15-2d38-a68f-4d3bbcd03d94 fwd="186.219.145.113" dyno=web.37 connect=0ms service=22ms status=200 bytes=284400 protocol=http1.1 tls=true tls_version=tls1.3
+2025-09-19T18:52:32.241460+00:00 app[web.37]: 2025-09-19T18:52:32.241Z - GET /favicon.ico
+2025-09-19T18:52:32.851957+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=7e1c3483-14b3-dd4b-7be4-6a95e6e135f4 fwd="177.87.14.155" dyno=web.26 connect=0ms service=7ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:32.848569+00:00 app[web.26]: 2025-09-19T18:52:32.848Z - GET /api/check-ip-status
+2025-09-19T18:52:36.669280+00:00 heroku[router]: at=info method=GET path="/apple-app-site-association" host=shopee.cadastroentregadores.com request_id=f336ca98-d0c3-0fe0-067f-8bc13f5f6ad1 fwd="69.171.249.113" dyno=web.53 connect=0ms service=4ms status=200 bytes=8009 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:36.740110+00:00 heroku[router]: at=info method=GET path="/.well-known/assetlinks.json" host=shopee.cadastroentregadores.com request_id=b04f6c2c-1f7f-648d-05b6-d5e5ff07b9fc fwd="69.171.249.14" dyno=web.33 connect=1ms service=4ms status=200 bytes=8009 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:36.666238+00:00 app[web.53]: 2025-09-19T18:52:36.666Z - GET /apple-app-site-association
+2025-09-19T18:52:36.736542+00:00 app[web.33]: 2025-09-19T18:52:36.736Z - GET /.well-known/assetlinks.json
+2025-09-19T18:51:45.167591+00:00 app[api]: Release v64 created by user tammimuhlsteinpros@hotmail.com
+2025-09-19T18:52:42.344301+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=6a86b999-0b52-95e7-356d-89151cb8a083 fwd="177.220.182.122" dyno=web.79 connect=0ms service=7ms status=200 bytes=118 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:51:45.167591+00:00 app[api]: Deploy 8709a518 by user tammimuhlsteinpros@hotmail.com
+2025-09-19T18:52:42.340683+00:00 app[web.79]: 2025-09-19T18:52:42.340Z - GET /api/check-ip-status
+2025-09-19T18:51:49.000000+00:00 app[api]: Build succeeded
+2025-09-19T18:52:44.279120+00:00 heroku[router]: at=info method=POST path="/api/app-users/save-cities" host=shopee.cadastroentregadores.com request_id=30510063-42f8-6068-37a5-3efbb8c5afb6 fwd="191.189.19.161" dyno=web.26 connect=0ms service=245ms status=400 bytes=62 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:44.277999+00:00 app[web.26]: 2025-09-19T18:52:44.277Z - POST /api/app-users/save-cities
+2025-09-19T18:52:45.965168+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=b34ddfe0-7b24-3b7a-e1da-d147dad22fae fwd="189.110.66.194" dyno=web.9 connect=0ms service=4ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:45.962337+00:00 app[web.9]: 2025-09-19T18:52:45.962Z - GET /api/check-ip-status
+2025-09-19T18:52:46.764137+00:00 heroku[router]: at=info method=GET path="/91498538991" host=shopee.acesso.inc request_id=b2e5a342-2a62-15e7-9db7-4e3bac8d8adb fwd="45.177.194.37" dyno=web.21 connect=0ms service=4ms status=200 bytes=2668 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:46.760931+00:00 app[web.21]: 2025-09-19T18:52:46.760Z - GET /91498538991
+2025-09-19T18:52:47.028434+00:00 heroku[router]: at=info method=GET path="/assets/index-BXiE8lBK.js" host=shopee.acesso.inc request_id=aad6a5bc-298d-d779-efe5-82ca7def3ca9 fwd="45.177.194.37" dyno=web.30 connect=0ms service=57ms status=200 bytes=397447 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:46.976160+00:00 app[web.30]: 2025-09-19T18:52:46.974Z - GET /assets/index-BXiE8lBK.js
+2025-09-19T18:52:48.223364+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=a7fa2605-66c8-326a-0cf7-ca239022b1a7 fwd="201.87.252.51" dyno=web.40 connect=0ms service=7ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:48.220035+00:00 app[web.40]: 2025-09-19T18:52:48.219Z - GET /api/check-ip-status
+2025-09-19T18:52:48.626193+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.acesso.inc request_id=65ec8e43-2a65-f94d-a4ba-448a8aa8efcf fwd="45.177.194.37" dyno=web.45 connect=0ms service=1ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:48.625469+00:00 app[web.45]: 2025-09-19T18:52:48.625Z - GET /api/check-ip-status
+2025-09-19T18:52:49.103802+00:00 heroku[router]: at=info method=GET path="/screenshot-mobile.png" host=shopee.acesso.inc request_id=621c1ea3-a1ca-d0d0-a148-e54d1c65cd64 fwd="45.177.194.37" dyno=web.37 connect=0ms service=5ms status=200 bytes=2668 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:49.099249+00:00 app[web.37]: 2025-09-19T18:52:49.099Z - GET /screenshot-mobile.png
+2025-09-19T18:52:51.744369+00:00 heroku[router]: at=info method=GET path="/sw.js" host=shopee.acesso.inc request_id=3c6ae736-e94e-3ec6-15d7-38b772b713cb fwd="45.177.194.37" dyno=web.68 connect=0ms service=5ms status=200 bytes=2410 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:51.816240+00:00 heroku[router]: at=info method=POST path="/api/push-subscriptions" host=shopee.acesso.inc request_id=76f79713-0c05-d2b2-a413-d66d6daa5808 fwd="45.177.194.37" dyno=web.11 connect=0ms service=152ms status=200 bytes=59 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:51.670942+00:00 app[web.11]: 2025-09-19T18:52:51.670Z - POST /api/push-subscriptions
+2025-09-19T18:52:51.815435+00:00 app[web.11]: 🔄 Push subscription atualizada: https://fcm.googleapis.com/fcm/send/e-3EQFnRxe0:AP...
+2025-09-19T18:52:51.740116+00:00 app[web.68]: 2025-09-19T18:52:51.739Z - GET /sw.js
+2025-09-19T18:52:52.137509+00:00 app[web.24]: 2025-09-19T18:52:52.137Z - POST /api/proxy/for4payments/pix
+2025-09-19T18:52:52.138201+00:00 app[web.24]: [GATEWAY PROD] Usando gateway: 4MPAGAMENTOS
+2025-09-19T18:52:52.138514+00:00 app[web.24]: Dados recebidos: { name: 'LAUDENIR ANTONIO FURLAN', cpf: '914***91', amount: 64.9 }
+2025-09-19T18:52:52.138557+00:00 app[web.24]: Iniciando transação Pagnet no Heroku...
+2025-09-19T18:52:52.138687+00:00 app[web.24]: Enviando payload para Pagnet API...
+2025-09-19T18:52:52.487271+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=8b9d5bfd-ac42-3d33-9149-25f1d596eedc fwd="186.209.23.136" dyno=web.76 connect=0ms service=8ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:52.674152+00:00 heroku[router]: at=info method=GET path="/assets/shopee-moto-g9ZTW-iH.webp" host=shopee.cadastroentregadores.com request_id=2ba05d2b-2a37-c906-9390-c027ca122598 fwd="177.87.14.155" dyno=web.17 connect=0ms service=5ms status=200 bytes=142564 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:52.677977+00:00 heroku[router]: at=info method=GET path="/assets/shopee-cars-BEd8cnmS.webp" host=shopee.cadastroentregadores.com request_id=5b0586cf-f256-b519-0b81-976fb43af752 fwd="177.87.14.155" dyno=web.62 connect=0ms service=10ms status=200 bytes=140702 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:52.483450+00:00 app[web.76]: 2025-09-19T18:52:52.483Z - GET /api/check-ip-status
+2025-09-19T18:52:52.670097+00:00 app[web.17]: 2025-09-19T18:52:52.669Z - GET /assets/shopee-moto-g9ZTW-iH.webp
+2025-09-19T18:52:52.671429+00:00 app[web.62]: 2025-09-19T18:52:52.671Z - GET /assets/shopee-cars-BEd8cnmS.webp
+2025-09-19T18:52:53.339071+00:00 heroku[router]: at=info method=POST path="/api/proxy/for4payments/pix" host=shopee.acesso.inc request_id=53d5c865-28a2-c7ff-f0be-8e2c9bc51534 fwd="45.177.194.37" dyno=web.24 connect=0ms service=1208ms status=200 bytes=502 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:53.334455+00:00 app[web.24]: Response status da Pagnet: 200
+2025-09-19T18:52:53.337506+00:00 app[web.24]: Response data da Pagnet: {
+2025-09-19T18:52:53.337506+00:00 app[web.24]:   "id": 18890440,
+2025-09-19T18:52:53.337507+00:00 app[web.24]:   "tenantId": "c3025a97-5887-4de6-94ba-b042e52e227b",
+2025-09-19T18:52:53.337508+00:00 app[web.24]:   "companyId": 21065,
+2025-09-19T18:52:53.337508+00:00 app[web.24]:   "amount": 6490,
+2025-09-19T18:52:53.337508+00:00 app[web.24]:   "currency": "BRL",
+2025-09-19T18:52:53.337509+00:00 app[web.24]:   "paymentMethod": "pix",
+2025-09-19T18:52:53.337509+00:00 app[web.24]:   "status": "waiting_payment",
+2025-09-19T18:52:53.337509+00:00 app[web.24]:   "installments": 1,
+2025-09-19T18:52:53.337509+00:00 app[web.24]:   "paidAt": null,
+2025-09-19T18:52:53.337510+00:00 app[web.24]:   "paidAmount": 0,
+2025-09-19T18:52:53.337510+00:00 app[web.24]:   "refundedAt": null,
+2025-09-19T18:52:53.337510+00:00 app[web.24]:   "refundedAmount": 0,
+2025-09-19T18:52:53.337510+00:00 app[web.24]:   "redirectUrl": null,
+2025-09-19T18:52:53.337510+00:00 app[web.24]:   "returnUrl": null,
+2025-09-19T18:52:53.337511+00:00 app[web.24]:   "postbackUrl": null,
+2025-09-19T18:52:53.337511+00:00 app[web.24]:   "metadata": null,
+2025-09-19T18:52:53.337511+00:00 app[web.24]:   "ip": null,
+2025-09-19T18:52:53.337512+00:00 app[web.24]:   "externalRef": null,
+2025-09-19T18:52:53.337512+00:00 app[web.24]:   "secureId": "2d126a90-0eb3-4b8a-b9d9-cb8c4a365115",
+2025-09-19T18:52:53.337512+00:00 app[web.24]:   "secureUrl": "2d126a90-0eb3-4b8a-b9d9-cb8c4a365115",
+2025-09-19T18:52:53.337513+00:00 app[web.24]:   "createdAt": "2025-09-19T18:52:53.233Z",
+2025-09-19T18:52:53.337513+00:00 app[web.24]:   "updatedAt": "2025-09-19T18:52:53.233Z",
+2025-09-19T18:52:53.337513+00:00 app[web.24]:   "payer": null,
+2025-09-19T18:52:53.337513+00:00 app[web.24]:   "traceable": false,
+2025-09-19T18:52:53.337513+00:00 app[web.24]:   "authorizationCode": null,
+2025-09-19T18:52:53.337513+00:00 app[web.24]:   "basePrice": null,
+2025-09-19T18:52:53.337514+00:00 app[web.24]:   "interestRate": null,
+2025-09-19T18:52:53.337514+00:00 app[web.24]:   "items": [
+2025-09-19T18:52:53.337514+00:00 app[web.24]:     {
+2025-09-19T18:52:53.337514+00:00 app[web.24]:       "title": "Kit de Segurança Shopee",
+2025-09-19T18:52:53.337515+00:00 app[web.24]:       "quantity": 1,
+2025-09-19T18:52:53.337515+00:00 app[web.24]:       "tangible": false,
+2025-09-19T18:52:53.337515+00:00 app[web.24]:       "unitPrice": 6490,
+2025-09-19T18:52:53.337515+00:00 app[web.24]:       "externalRef": ""
+2025-09-19T18:52:53.337515+00:00 app[web.24]:     }
+2025-09-19T18:52:53.337516+00:00 app[web.24]:   ],
+2025-09-19T18:52:53.337516+00:00 app[web.24]:   "customer": {
+2025-09-19T18:52:53.337516+00:00 app[web.24]:     "id": 19268078,
+2025-09-19T18:52:53.337516+00:00 app[web.24]:     "name": "LAUDENIR ANTONIO FURLAN",
+2025-09-19T18:52:53.337517+00:00 app[web.24]:     "email": "adefurlan@yahoo.vom.br",
+2025-09-19T18:52:53.337517+00:00 app[web.24]:     "phone": "5549933007695",
+2025-09-19T18:52:53.337517+00:00 app[web.24]:     "birthdate": null,
+2025-09-19T18:52:53.337517+00:00 app[web.24]:     "createdAt": "2025-09-18T23:53:20.161Z",
+2025-09-19T18:52:53.337517+00:00 app[web.24]:     "externalRef": null,
+2025-09-19T18:52:53.337518+00:00 app[web.24]:     "document": {
+2025-09-19T18:52:53.337518+00:00 app[web.24]:       "type": "cpf",
+2025-09-19T18:52:53.337518+00:00 app[web.24]:       "number": "91498538991"
+2025-09-19T18:52:53.337518+00:00 app[web.24]:     },
+2025-09-19T18:52:53.337518+00:00 app[web.24]:     "address": null
+2025-09-19T18:52:53.337518+00:00 app[web.24]:   },
+2025-09-19T18:52:53.337519+00:00 app[web.24]:   "fee": {
+2025-09-19T18:52:53.337519+00:00 app[web.24]:     "netAmount": 6440,
+2025-09-19T18:52:53.337519+00:00 app[web.24]:     "estimatedFee": 50,
+2025-09-19T18:52:53.337519+00:00 app[web.24]:     "fixedAmount": 50,
+2025-09-19T18:52:53.337519+00:00 app[web.24]:     "spreadPercent": 0,
+2025-09-19T18:52:53.337519+00:00 app[web.24]:     "currency": "BRL"
+2025-09-19T18:52:53.337519+00:00 app[web.24]:   },
+2025-09-19T18:52:53.337520+00:00 app[web.24]:   "splits": [
+2025-09-19T18:52:53.337520+00:00 app[web.24]:     {
+2025-09-19T18:52:53.337520+00:00 app[web.24]:       "amount": 6490,
+2025-09-19T18:52:53.337520+00:00 app[web.24]:       "netAmount": 6440,
+2025-09-19T18:52:53.337520+00:00 app[web.24]:       "recipientId": 21065,
+2025-09-19T18:52:53.337520+00:00 app[web.24]:       "chargeProcessingFee": false
+2025-09-19T18:52:53.337521+00:00 app[web.24]:     }
+2025-09-19T18:52:53.337521+00:00 app[web.24]:   ],
+2025-09-19T18:52:53.337521+00:00 app[web.24]:   "refunds": [],
+2025-09-19T18:52:53.337521+00:00 app[web.24]:   "pix": {
+2025-09-19T18:52:53.337524+00:00 app[web.24]:     "qrcode": "00020126860014br.gov.bcb.pix2564pix.ecomovi.com.br/qr/v3/at/6b207d76-07b8-4ba5-b23b-f091bfd9ba4d5204000053039865802BR5925TIGERPAY_SOLUCAO_EM_INVES6009SAO_PAULO62070503***63049A2A",
+2025-09-19T18:52:53.337524+00:00 app[web.24]:     "end2EndId": null,
+2025-09-19T18:52:53.337524+00:00 app[web.24]:     "receiptUrl": null,
+2025-09-19T18:52:53.337524+00:00 app[web.24]:     "expirationDate": "2025-09-22"
+2025-09-19T18:52:53.337524+00:00 app[web.24]:   },
+2025-09-19T18:52:53.337525+00:00 app[web.24]:   "boleto": null,
+2025-09-19T18:52:53.337525+00:00 app[web.24]:   "card": null,
+2025-09-19T18:52:53.337525+00:00 app[web.24]:   "refusedReason": null,
+2025-09-19T18:52:53.337525+00:00 app[web.24]:   "shipping": null,
+2025-09-19T18:52:53.337525+00:00 app[web.24]:   "delivery": null,
+2025-09-19T18:52:53.337525+00:00 app[web.24]:   "threeDS": null
+2025-09-19T18:52:53.337526+00:00 app[web.24]: }
+2025-09-19T18:52:53.337559+00:00 app[web.24]: Transaction ID extraído: 18890440
+2025-09-19T18:52:53.337574+00:00 app[web.24]: PIX Code extraído: ENCONTRADO
+2025-09-19T18:52:53.337618+00:00 app[web.24]: ✅ Transação Pagnet criada com sucesso: 18890440
+2025-09-19T18:52:53.337637+00:00 app[web.24]: Enviando resposta para frontend: {
+2025-09-19T18:52:53.337637+00:00 app[web.24]:   "id": 18890440,
+2025-09-19T18:52:53.337638+00:00 app[web.24]:   "pixCode": "00020126860014br.gov.bcb.pix2564pix.ecomovi.com.br/qr/v3/at/6b207d76-07b8-4ba5-b23b-f091bfd9ba4d5204000053039865802BR5925TIGERPAY_SOLUCAO_EM_INVES6009SAO_PAULO62070503***63049A2A",
+2025-09-19T18:52:53.337641+00:00 app[web.24]:   "pixQrCode": "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=00020126860014br.gov.bcb.pix2564pix.ecomovi.com.br%2Fqr%2Fv3%2Fat%2F6b207d76-07b8-4ba5-b23b-f091bfd9ba4d5204000053039865802BR5925TIGERPAY_SOLUCAO_EM_INVES6009SAO_PAULO62070503***63049A2A",
+2025-09-19T18:52:53.337641+00:00 app[web.24]:   "status": "pending",
+2025-09-19T18:52:53.337641+00:00 app[web.24]:   "emailSent": false
+2025-09-19T18:52:53.337642+00:00 app[web.24]: }
+2025-09-19T18:52:54.722151+00:00 heroku[router]: at=info method=POST path="/api/push-subscriptions" host=shopee.acesso.inc request_id=7edad695-f40d-a154-3447-afe9ae5b4083 fwd="45.177.194.37" dyno=web.38 connect=0ms service=130ms status=200 bytes=59 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:54.601098+00:00 app[web.38]: 2025-09-19T18:52:54.600Z - POST /api/push-subscriptions
+2025-09-19T18:52:54.719076+00:00 app[web.38]: 🔄 Push subscription atualizada: https://fcm.googleapis.com/fcm/send/e-3EQFnRxe0:AP...
+2025-09-19T18:52:54.912081+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=70684abe-0cf6-5903-fbfc-9199dafdf900 fwd="186.219.145.113" dyno=web.51 connect=0ms service=9ms status=200 bytes=118 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:54.908243+00:00 app[web.51]: 2025-09-19T18:52:54.907Z - GET /api/check-ip-status
+2025-09-19T18:52:57.726361+00:00 heroku[router]: at=info method=GET path="/finalizacao" host=shopee.cadastroentregadores.com request_id=c704e1d4-9594-e3ff-61e6-0540438cb80f fwd="186.209.23.136" dyno=web.25 connect=0ms service=11ms status=200 bytes=2668 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:57.917637+00:00 heroku[router]: at=info method=GET path="/assets/index-Df8EuAtx.css" host=shopee.cadastroentregadores.com request_id=ee4446a6-e510-026d-ca00-2309574d6146 fwd="186.209.23.136" dyno=web.59 connect=0ms service=15ms status=200 bytes=15022 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:57.948807+00:00 heroku[router]: at=info method=GET path="/assets/index-BXiE8lBK.js" host=shopee.cadastroentregadores.com request_id=a1140e76-d9cf-dad7-b510-1827c61fe2a5 fwd="186.209.23.136" dyno=web.35 connect=0ms service=46ms status=200 bytes=397447 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:57.718448+00:00 app[web.25]: 2025-09-19T18:52:57.718Z - GET /finalizacao
+2025-09-19T18:52:57.906777+00:00 app[web.59]: 2025-09-19T18:52:57.906Z - GET /assets/index-Df8EuAtx.css
+2025-09-19T18:52:57.906401+00:00 app[web.35]: 2025-09-19T18:52:57.906Z - GET /assets/index-BXiE8lBK.js
+2025-09-19T18:52:58.344696+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=f6d48d79-8c0e-807f-3ac5-8d06aa4575af fwd="186.219.189.66" dyno=web.34 connect=0ms service=6ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:58.341567+00:00 app[web.34]: 2025-09-19T18:52:58.341Z - GET /api/check-ip-status
+2025-09-19T18:52:58.659824+00:00 heroku[router]: at=info method=GET path="/assets/kit-epi-new-Du3wJUxp.webp" host=shopee.cadastroentregadores.com request_id=f435fd92-229c-c836-7efe-b5ea8f6cacf3 fwd="186.209.23.136" dyno=web.47 connect=0ms service=5ms status=200 bytes=48216 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:58.665269+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=78f2f376-b71b-f107-eb2b-6cdb006fbb1b fwd="186.209.23.136" dyno=web.43 connect=0ms service=8ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:58.845559+00:00 heroku[router]: at=info method=GET path="/screenshot-mobile.png" host=shopee.cadastroentregadores.com request_id=be9dfbaf-540f-5006-f86b-c0e647b89b36 fwd="186.219.189.66" dyno=web.17 connect=0ms service=4ms status=200 bytes=2668 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:58.877661+00:00 heroku[router]: at=info method=GET path="/sw.js" host=shopee.cadastroentregadores.com request_id=641306ce-a5a6-373b-b5b2-2baaafdbf9db fwd="186.209.23.136" dyno=web.7 connect=0ms service=7ms status=200 bytes=2410 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:52:58.655417+00:00 app[web.47]: 2025-09-19T18:52:58.655Z - GET /assets/kit-epi-new-Du3wJUxp.webp
+2025-09-19T18:52:58.661220+00:00 app[web.43]: 2025-09-19T18:52:58.660Z - GET /api/check-ip-status
+2025-09-19T18:52:58.841933+00:00 app[web.17]: 2025-09-19T18:52:58.841Z - GET /screenshot-mobile.png
+2025-09-19T18:52:58.871338+00:00 app[web.7]: 2025-09-19T18:52:58.871Z - GET /sw.js
+2025-09-19T18:53:00.552974+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.acesso.inc request_id=5271997d-7bda-c57f-4996-205703be1cfc fwd="45.177.194.37" dyno=web.33 connect=0ms service=2ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:00.551131+00:00 app[web.33]: 2025-09-19T18:53:00.551Z - GET /api/check-ip-status
+2025-09-19T18:53:00.998173+00:00 heroku[router]: at=info method=GET path="/sw.js" host=shopee.cadastroentregadores.com request_id=ce1781a9-f845-2b02-2c89-957571f84cf1 fwd="186.219.189.66" dyno=web.32 connect=0ms service=5ms status=200 bytes=2410 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:00.995064+00:00 app[web.32]: 2025-09-19T18:53:00.994Z - GET /sw.js
+2025-09-19T18:53:02.429565+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=ce783ba0-ba7e-7b76-051c-97a21c9a5da4 fwd="170.84.159.252" dyno=web.15 connect=0ms service=1ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:02.428732+00:00 app[web.15]: 2025-09-19T18:53:02.428Z - GET /api/check-ip-status
+2025-09-19T18:53:03.173209+00:00 heroku[router]: at=info method=POST path="/api/proxy/for4payments/pix" host=shopee.cadastroentregadores.com request_id=f4173cf7-51d3-1b40-7d7f-4179730f4160 fwd="170.84.159.252" dyno=web.41 connect=0ms service=15ms status=400 bytes=41 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:03.169755+00:00 app[web.41]: 2025-09-19T18:53:03.169Z - POST /api/proxy/for4payments/pix
+2025-09-19T18:53:03.173348+00:00 app[web.41]: [GATEWAY PROD] Usando gateway: 4MPAGAMENTOS
+2025-09-19T18:53:04.242992+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=6d09f23c-f69c-f7a2-6f2b-5ea07d1c95b8 fwd="209.14.146.230" dyno=web.37 connect=0ms service=3ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:04.240707+00:00 app[web.37]: 2025-09-19T18:53:04.240Z - GET /api/check-ip-status
+2025-09-19T18:53:08.644523+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=78c96eb9-bc68-af42-6878-d3c4a6b6e58a fwd="177.54.192.240" dyno=web.77 connect=0ms service=4ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:08.641715+00:00 app[web.77]: 2025-09-19T18:53:08.641Z - GET /api/check-ip-status
+2025-09-19T18:53:10.738036+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.acesso.inc request_id=84549185-0fe6-1575-271a-da34f0960d58 fwd="189.96.229.10" dyno=web.30 connect=0ms service=3ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:10.735863+00:00 app[web.30]: 2025-09-19T18:53:10.735Z - GET /api/check-ip-status
+2025-09-19T18:53:15.437252+00:00 heroku[router]: at=info method=GET path="/?utm_medium=paid&utm_source=ig&utm_id=120233400366510126&utm_content=120233400366580126&utm_term=120233400366490126&utm_campaign=120233400366510126&fbclid=PAb21jcAM6F8BleHRuA2FlbQEwAGFkaWQBqyekAObeXgGn10pO00rOoiohjbF8QTetEDjJqOlN7kSzbe1uKko1LcsI1AGS7cjlHZeS5HI_aem_w-605p8DWRTobNIX22C11Q" host=shopee.cadastroentregadores.com request_id=1f618886-be05-d97e-13ee-f54147600690 fwd="45.7.116.213" dyno=web.22 connect=0ms service=7ms status=200 bytes=2668 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:15.432697+00:00 app[web.22]: 2025-09-19T18:53:15.432Z - GET /?utm_medium=paid&utm_source=ig&utm_id=120233400366510126&utm_content=120233400366580126&utm_term=120233400366490126&utm_campaign=120233400366510126&fbclid=PAb21jcAM6F8BleHRuA2FlbQEwAGFkaWQBqyekAObeXgGn10pO00rOoiohjbF8QTetEDjJqOlN7kSzbe1uKko1LcsI1AGS7cjlHZeS5HI_aem_w-605p8DWRTobNIX22C11Q
+2025-09-19T18:53:15.740249+00:00 heroku[router]: at=info method=GET path="/assets/index-Df8EuAtx.css" host=shopee.cadastroentregadores.com request_id=35ff580f-b3f5-802f-34d8-c17402d8a4fb fwd="45.7.116.213" dyno=web.4 connect=0ms service=8ms status=200 bytes=15022 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:15.772212+00:00 heroku[router]: at=info method=GET path="/assets/index-BXiE8lBK.js" host=shopee.cadastroentregadores.com request_id=362ea913-0b4a-0b40-616a-a5f7f3a8d945 fwd="45.7.116.213" dyno=web.62 connect=0ms service=40ms status=200 bytes=397447 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:15.732747+00:00 app[web.62]: 2025-09-19T18:53:15.732Z - GET /assets/index-BXiE8lBK.js
+2025-09-19T18:53:15.733382+00:00 app[web.4]: 2025-09-19T18:53:15.733Z - GET /assets/index-Df8EuAtx.css
+2025-09-19T18:53:16.239013+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=f9c6a9ba-2e16-15b5-8079-8daa8c149077 fwd="45.226.117.200" dyno=web.2 connect=0ms service=2ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:16.250395+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=39a36f9b-2e17-c92a-f541-0f1dca2afba1 fwd="191.189.19.161" dyno=web.43 connect=0ms service=2ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:16.238151+00:00 app[web.2]: 2025-09-19T18:53:16.238Z - GET /api/check-ip-status
+2025-09-19T18:53:16.249439+00:00 app[web.43]: 2025-09-19T18:53:16.249Z - GET /api/check-ip-status
+2025-09-19T18:53:18.842630+00:00 heroku[router]: at=info method=GET path="/fonts/rawline/rawline-500.woff2" host=shopee.cadastroentregadores.com request_id=67287be1-8b3c-7abd-bead-e98c25b54c5c fwd="45.7.116.213" dyno=web.69 connect=0ms service=3ms status=200 bytes=80524 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:18.843399+00:00 heroku[router]: at=info method=GET path="/fonts/rawline/rawline-900.woff2" host=shopee.cadastroentregadores.com request_id=c6e5f9c1-19fc-681e-400f-9d916253e21e fwd="45.7.116.213" dyno=web.23 connect=0ms service=4ms status=200 bytes=79992 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:18.843137+00:00 heroku[router]: at=info method=GET path="/fonts/rawline/rawline-600.woff2" host=shopee.cadastroentregadores.com request_id=3abfe9c4-1ad3-3240-fce6-95c22524c325 fwd="45.7.116.213" dyno=web.66 connect=0ms service=3ms status=200 bytes=83564 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:18.844945+00:00 heroku[router]: at=info method=GET path="/screenshot-mobile.png" host=shopee.cadastroentregadores.com request_id=2c3b0739-150d-d3b7-753c-2048cdd3c70a fwd="45.7.116.213" dyno=web.46 connect=0ms service=4ms status=200 bytes=2668 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:18.847919+00:00 heroku[router]: at=info method=GET path="/fonts/rawline/rawline-400.woff2" host=shopee.cadastroentregadores.com request_id=ba7f45e3-c1e8-4708-cc9d-56a6f603b9d5 fwd="45.7.116.213" dyno=web.75 connect=0ms service=8ms status=200 bytes=81280 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:18.842896+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=7a165852-fa75-5503-7cf8-8f0f0e9b5be5 fwd="45.7.116.213" dyno=web.42 connect=0ms service=2ms status=200 bytes=115 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:18.842571+00:00 heroku[router]: at=info method=GET path="/fonts/rawline/rawline-700.woff2" host=shopee.cadastroentregadores.com request_id=49fea2cc-6c92-ae89-2c15-f14c310922ef fwd="45.7.116.213" dyno=web.21 connect=0ms service=3ms status=200 bytes=82580 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:18.840224+00:00 app[web.66]: 2025-09-19T18:53:18.840Z - GET /fonts/rawline/rawline-600.woff2
+2025-09-19T18:53:18.840331+00:00 app[web.69]: 2025-09-19T18:53:18.840Z - GET /fonts/rawline/rawline-500.woff2
+2025-09-19T18:53:18.840075+00:00 app[web.21]: 2025-09-19T18:53:18.839Z - GET /fonts/rawline/rawline-700.woff2
+2025-09-19T18:53:18.841415+00:00 app[web.46]: 2025-09-19T18:53:18.841Z - GET /screenshot-mobile.png
+2025-09-19T18:53:18.840909+00:00 app[web.42]: 2025-09-19T18:53:18.840Z - GET /api/check-ip-status
+2025-09-19T18:53:18.841248+00:00 app[web.75]: 2025-09-19T18:53:18.841Z - GET /fonts/rawline/rawline-400.woff2
+2025-09-19T18:53:18.840599+00:00 app[web.23]: 2025-09-19T18:53:18.840Z - GET /fonts/rawline/rawline-900.woff2
+2025-09-19T18:53:21.038839+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=d838ff85-aa26-671e-c656-a206558c7d5f fwd="201.29.37.12" dyno=web.22 connect=0ms service=3ms status=200 bytes=115 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:21.036097+00:00 app[web.22]: 2025-09-19T18:53:21.035Z - GET /api/check-ip-status
+2025-09-19T18:53:21.446413+00:00 heroku[router]: at=info method=POST path="/api/push-subscriptions" host=shopee.cadastroentregadores.com request_id=afb41d9d-3df9-f099-f2bb-7268bf61cf44 fwd="45.7.116.213" dyno=web.4 connect=0ms service=124ms status=200 bytes=59 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:21.579087+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=b6156d88-7ae8-c774-6d75-041dbe231287 fwd="177.50.42.171" dyno=web.80 connect=0ms service=3ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:21.329376+00:00 app[web.4]: 2025-09-19T18:53:21.329Z - POST /api/push-subscriptions
+2025-09-19T18:53:21.444654+00:00 app[web.4]: ✅ Nova push subscription criada: https://fcm.googleapis.com/fcm/send/dLAGdZzvQVg:AP...
+2025-09-19T18:53:21.638238+00:00 heroku[router]: at=info method=POST path="/api/app-users/reached-delivery" host=shopee.cadastroentregadores.com request_id=8ff32d3d-2412-c900-7ecf-db0e172240b2 fwd="186.209.23.136" dyno=web.71 connect=0ms service=9ms status=404 bytes=75 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:21.641477+00:00 heroku[router]: at=info method=GET path="/fonts/rawline/rawline-400i.woff2" host=shopee.cadastroentregadores.com request_id=ab8a17e3-4a20-efa6-29f2-6e53282947cd fwd="186.209.23.136" dyno=web.1 connect=0ms service=5ms status=200 bytes=85084 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:21.576715+00:00 app[web.80]: 2025-09-19T18:53:21.576Z - GET /api/check-ip-status
+2025-09-19T18:53:21.636748+00:00 app[web.71]: 2025-09-19T18:53:21.636Z - POST /api/app-users/reached-delivery
+2025-09-19T18:53:21.636444+00:00 app[web.1]: 2025-09-19T18:53:21.636Z - GET /fonts/rawline/rawline-400i.woff2
+2025-09-19T18:53:22.036264+00:00 heroku[router]: at=info method=GET path="/sw.js" host=shopee.cadastroentregadores.com request_id=f9ecdb2d-4279-5899-7160-248f82cb7671 fwd="45.7.116.213" dyno=web.58 connect=0ms service=6ms status=200 bytes=2410 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:22.031608+00:00 app[web.58]: 2025-09-19T18:53:22.031Z - GET /sw.js
+2025-09-19T18:53:22.712986+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.acesso.inc request_id=318dc4f2-ca9b-b68f-4785-ab771eca56cb fwd="189.96.229.10" dyno=web.13 connect=0ms service=4ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:22.710372+00:00 app[web.13]: 2025-09-19T18:53:22.710Z - GET /api/check-ip-status
+2025-09-19T18:53:24.463974+00:00 heroku[router]: at=info method=POST path="/api/push-subscriptions" host=shopee.cadastroentregadores.com request_id=59303b6a-5c17-3448-7092-8889cd6139ee fwd="45.7.116.213" dyno=web.23 connect=0ms service=134ms status=200 bytes=59 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:24.337339+00:00 app[web.23]: 2025-09-19T18:53:24.337Z - POST /api/push-subscriptions
+2025-09-19T18:53:24.462248+00:00 app[web.23]: 🔄 Push subscription atualizada: https://fcm.googleapis.com/fcm/send/dLAGdZzvQVg:AP...
+2025-09-19T18:53:26.300963+00:00 heroku[router]: at=info method=GET path="/assets/shopee-moto-g9ZTW-iH.webp" host=shopee.cadastroentregadores.com request_id=518bd80e-81f0-0551-3580-94641c69cdb4 fwd="177.220.182.122" dyno=web.12 connect=0ms service=3ms status=200 bytes=142564 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:26.310435+00:00 heroku[router]: at=info method=GET path="/assets/shopee-cars-BEd8cnmS.webp" host=shopee.cadastroentregadores.com request_id=df42c175-76f6-1495-bbb7-448cb5a42f23 fwd="177.220.182.122" dyno=web.50 connect=0ms service=13ms status=200 bytes=140702 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:26.298600+00:00 app[web.12]: 2025-09-19T18:53:26.298Z - GET /assets/shopee-moto-g9ZTW-iH.webp
+2025-09-19T18:53:26.303122+00:00 app[web.50]: 2025-09-19T18:53:26.302Z - GET /assets/shopee-cars-BEd8cnmS.webp
+2025-09-19T18:53:30.172006+00:00 heroku[router]: at=info method=GET path="/recebedor" host=shopee.cadastroentregadores.com request_id=e29c96b9-3b86-a049-16ce-a6cadbaa1db5 fwd="45.226.117.200" dyno=web.26 connect=0ms service=7ms status=200 bytes=2668 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:30.356630+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=8bd947e6-ded6-139f-9d42-1c75dbbfe435 fwd="45.7.116.213" dyno=web.30 connect=0ms service=1ms status=200 bytes=115 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:30.165706+00:00 app[web.26]: 2025-09-19T18:53:30.165Z - GET /recebedor
+2025-09-19T18:53:30.601029+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=753f2cab-ecca-4f8e-521a-8939ac536576 fwd="45.226.117.200" dyno=web.81 connect=0ms service=4ms status=200 bytes=117 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:30.355867+00:00 app[web.30]: 2025-09-19T18:53:30.355Z - GET /api/check-ip-status
+2025-09-19T18:53:30.598258+00:00 app[web.81]: 2025-09-19T18:53:30.598Z - GET /api/check-ip-status
+2025-09-19T18:53:32.541134+00:00 heroku[router]: at=info method=GET path="/sw.js" host=shopee.cadastroentregadores.com request_id=4290a3d0-892f-14b6-6d61-b44fd41f871a fwd="45.226.117.200" dyno=web.42 connect=0ms service=4ms status=200 bytes=2410 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:32.537575+00:00 app[web.42]: 2025-09-19T18:53:32.537Z - GET /sw.js
+2025-09-19T18:53:38.255039+00:00 heroku[router]: at=info method=POST path="/api/app-users/save-cities" host=shopee.cadastroentregadores.com request_id=6eef9ed3-393c-eb2c-5b64-0f858ae4e5c5 fwd="177.56.161.30" dyno=web.39 connect=0ms service=7ms status=400 bytes=62 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:38.254170+00:00 app[web.39]: 2025-09-19T18:53:38.254Z - POST /api/app-users/save-cities
+2025-09-19T18:53:40.329965+00:00 heroku[router]: at=info method=GET path="/api/check-ip-status" host=shopee.cadastroentregadores.com request_id=7e761f46-62e1-94c4-6822-61347656a1ca fwd="177.56.161.30" dyno=web.55 connect=0ms service=2ms status=200 bytes=116 protocol=http2.0 tls=true tls_version=tls1.3
+2025-09-19T18:53:40.328183+00:00 app[web.55]: 2025-09-19T18:53:40.328Z - GET /api/check-ip-status
+2025-09-19T18:53:41.754912+00:00 app[web.79]: 2025-09-19T18:53:41.754Z - GET /api/vehicle-info/MYX0455
+2025-09-19T18:53:41.755538+00:00 app[web.79]: [INFO] Consultando informações do veículo com placa: MYX0455
+2025-09-19T18:53:41.755581+00:00 app[web.79]: [DEBUG] API key presente: a0e45...45e
+2025-09-19T18:53:41.755670+00:00 app[web.79]: [DEBUG] Tentando consulta direta com chave na URL
+2025-09-19T18:53:42.394815+00:00 heroku[router]: at=info method=GET path="/api/vehicle-info/MYX0455" host=shopee.cadastroentregadores.com request_id=f5aa4d10-6d32-39cd-7a6e-99a3b0fa03df fwd="177.87.14.155" dyno=web.79 connect=0ms service=641ms status=200 bytes=1071 protocol=http2.0 tls=true tls_version=tls1.3
