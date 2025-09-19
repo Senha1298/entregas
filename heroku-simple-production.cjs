@@ -298,8 +298,9 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       }
       
       // Extrair dados do PIX da resposta 4Mpagamentos
-      const transactionId = responseData.id || responseData.transaction_id;
-      const pixCode = responseData.pixCode || responseData.pix_code || '';
+      const dataObj = responseData.data || responseData;
+      const transactionId = dataObj.transaction_id || dataObj.id;
+      const pixCode = dataObj.pix_code || dataObj.pixCode || '';
       
       console.log('Transaction ID extraído (4M):', transactionId);
       console.log('PIX Code extraído (4M):', pixCode ? 'ENCONTRADO' : 'NÃO ENCONTRADO');
@@ -310,7 +311,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       }
       
       // Gerar QR Code URL
-      const pixQrCode = responseData.pixQrCode || `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
+      const pixQrCode = dataObj.pix_qr_code || responseData.pixQrCode || `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
       
       pixResponse = {
         id: transactionId,
