@@ -369,7 +369,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       console.log('Iniciando transação 4mpagamentos no Heroku...');
       
       // Integração direta com 4mpagamentos API
-      const for4paymentsUrl = 'https://api.4mpagamentos.com/v1/pix';
+      const for4paymentsUrl = 'https://app.4mpagamentos.com/v1/pix';
       const secretKey = process.env.FOR4PAYMENTS_SECRET_KEY;
       
       // Usar CPF real do usuário
