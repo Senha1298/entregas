@@ -741,6 +741,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
           emailSent: false
         };
         
+      } else if (gatewayChoice === '4MPAGAMENTOS') {
+        // Usar 4mpagamentos
+        console.log('Iniciando proxy para 4mpagamentos...');
+        console.log('Enviando requisição para 4mpagamentos API via proxy...', {
+          name: name,
+          cpf: `${cpf.substring(0, 3)}***${cpf.substring(cpf.length - 2)}`
+        });
+        
+        // Importar e usar a API 4mpagamentos
+        const { createQuatroMPagamentosAPI } = await import('./4mpagamentos-api');
+        const quatroMAPI = createQuatroMPagamentosAPI();
+        
+        // Criar transação PIX usando 4mpagamentos
+        const quatroMResult = await quatroMAPI.createPixTransaction({
+          customer_name: name,
+          customer_email: userEmail,
+          customer_cpf: cpf,
+          customer_phone: phone,
+          amount: amount,
+          description: description
+        });
+        
+        // Converter resposta da 4mpagamentos para formato compatível
+        result = {
+          success: true,
+          transaction_id: quatroMResult.transaction_id,
+          pix_code: quatroMResult.pixCode,
+          status: quatroMResult.status,
+          emailSent: false
+        };
+        
       } else {
         // Usar Pagnet (padrão)
         if (!process.env.PAGNET_PUBLIC_KEY || !process.env.PAGNET_SECRET_KEY) {

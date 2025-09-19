@@ -19,18 +19,109 @@ interface TransactionStatus {
 }
 
 /**
- * Verifica o status de uma transação na For4Payments
- * @param paymentId ID da transação na For4Payments
+ * Detecta qual gateway foi usado baseado no ID da transação
+ * @param paymentId ID da transação
+ * @returns Gateway utilizado
+ */
+function detectGatewayFromTransactionId(paymentId: string): string {
+  if (paymentId.startsWith('4MP')) {
+    return '4MPAGAMENTOS';
+  } else if (paymentId.startsWith('MP')) {
+    return 'MEDIUS_PAG';
+  } else if (paymentId.startsWith('PIX')) {
+    return 'PAGNET';
+  } else {
+    return 'FOR4PAYMENTS'; // Padrão para IDs não reconhecidos
+  }
+}
+
+/**
+ * Verifica o status de uma transação usando o gateway apropriado
+ * @param paymentId ID da transação
  * @returns Dados do status da transação
  */
 export async function checkTransactionStatus(paymentId: string): Promise<TransactionStatus | null> {
+  const gateway = detectGatewayFromTransactionId(paymentId);
+  
+  console.log(`[MONITOR] Detectado gateway: ${gateway} para transação: ${paymentId}`);
+  
+  switch (gateway) {
+    case '4MPAGAMENTOS':
+      return await check4MpagamentosStatus(paymentId);
+    case 'MEDIUS_PAG':
+      return await checkMediusPagStatus(paymentId);
+    case 'PAGNET':
+      return await checkPagnetStatus(paymentId);
+    default:
+      return await checkFor4PaymentsStatus(paymentId);
+  }
+}
+
+/**
+ * Verifica o status de uma transação no 4mpagamentos
+ */
+async function check4MpagamentosStatus(paymentId: string): Promise<TransactionStatus | null> {
+  try {
+    console.log(`[MONITOR] Verificando status no 4mpagamentos: ${paymentId}`);
+    
+    const { createQuatroMPagamentosAPI } = await import('./4mpagamentos-api');
+    const quatroMAPI = createQuatroMPagamentosAPI();
+    
+    const statusData = await quatroMAPI.checkTransactionStatus(paymentId);
+    
+    return {
+      id: statusData.id,
+      status: statusData.status,
+      amount: statusData.amount,
+      customer: statusData.customer,
+      approvedAt: statusData.approvedAt,
+      rejectedAt: statusData.rejectedAt
+    };
+  } catch (error: any) {
+    console.error('[MONITOR] Erro ao verificar status no 4mpagamentos:', error.message);
+    return null;
+  }
+}
+
+/**
+ * Verifica o status de uma transação na Medius Pag
+ */
+async function checkMediusPagStatus(paymentId: string): Promise<TransactionStatus | null> {
+  try {
+    console.log(`[MONITOR] Verificando status na Medius Pag: ${paymentId}`);
+    // Implementação para Medius Pag pode ser adicionada aqui se necessário
+    return null;
+  } catch (error: any) {
+    console.error('[MONITOR] Erro ao verificar status na Medius Pag:', error.message);
+    return null;
+  }
+}
+
+/**
+ * Verifica o status de uma transação na Pagnet
+ */
+async function checkPagnetStatus(paymentId: string): Promise<TransactionStatus | null> {
+  try {
+    console.log(`[MONITOR] Verificando status na Pagnet: ${paymentId}`);
+    // Implementação para Pagnet pode ser adicionada aqui se necessário
+    return null;
+  } catch (error: any) {
+    console.error('[MONITOR] Erro ao verificar status na Pagnet:', error.message);
+    return null;
+  }
+}
+
+/**
+ * Verifica o status de uma transação na For4Payments (método original)
+ */
+async function checkFor4PaymentsStatus(paymentId: string): Promise<TransactionStatus | null> {
   try {
     if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
       console.error('[MONITOR] Chave de API For4Payments não configurada');
       return null;
     }
 
-    console.log(`[MONITOR] Verificando status da transação: ${paymentId}`);
+    console.log(`[MONITOR] Verificando status na For4Payments: ${paymentId}`);
     
     const response = await axios.get(
       `https://app.for4payments.com.br/api/v1/transaction.getPayment?id=${paymentId}`,
@@ -49,7 +140,7 @@ export async function checkTransactionStatus(paymentId: string): Promise<Transac
     
     return null;
   } catch (error: any) {
-    console.error('[MONITOR] Erro ao verificar status da transação:', error.message);
+    console.error('[MONITOR] Erro ao verificar status na For4Payments:', error.message);
     if (error.response) {
       console.error('[MONITOR] Detalhes do erro:', error.response.data);
     }
