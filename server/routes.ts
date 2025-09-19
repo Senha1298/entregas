@@ -692,7 +692,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('[DEBUG-HEROKU] Request body type:', typeof req.body);
       console.log('[DEBUG-HEROKU] Request body keys:', Object.keys(req.body || {}));
       
-      // Processar os dados recebidos
+      // Processar os dados recebidos - API 4mpagamentos espera amount como STRING!
       const { name, cpf, email, phone, amount = 64.90, description = "Kit de Segurança Shopee Delivery" } = req.body;
       
       console.log('[DEBUG-HEROKU] Extracted values:', { name, cpf, email, phone, amount });
@@ -729,7 +729,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'Authorization': `Bearer ${process.env.MPAG_API_KEY}`
         },
         body: JSON.stringify({
-          amount: amount,
+          amount: amount.toString(), // ✅ CORRIGIDO: API 4mpagamentos espera string
           customer_name: name,
           customer_email: userEmail,
           customer_cpf: cpf,

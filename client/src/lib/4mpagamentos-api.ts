@@ -24,25 +24,15 @@ export interface PaymentResponse {
   error?: string;
 }
 
-// 🚨 CHAMADA DIRETA - SEM PROXY! 
-// Configuração da API - DIRETO para 4mpagamentos (CORRIGIDA!)
-const DIRECT_API_ENDPOINT = 'https://app.4mpagamentos.com/api/v1/payments';
-const DIRECT_STATUS_ENDPOINT = 'https://app.4mpagamentos.com/api/v1/transactions';
+// ✅ VOLTA PARA PROXY - MAS COM DADOS CORRETOS!
+const API_ENDPOINT = '/api/proxy/for4payments/pix';
+const STATUS_ENDPOINT = '/api/proxy/for4payments/status';
 
-// Usar a chave correta do environment
-const MPAG_API_KEY = "3mpag_p7czqd3yk_mfr1pvd2";
-
-// Função para verificar status VIA CHAMADA DIRETA (usando gateway_id correto)
+// Função para verificar status via proxy (usando gateway_id correto)
 async function checkTransactionStatus(transactionId: string): Promise<any> {
   try {
-    console.log('[4MPAGAMENTOS-DIRECT] 🔍 Verificando status DIRETO:', transactionId);
-    const response = await fetch(`${DIRECT_STATUS_ENDPOINT}/${transactionId}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${MPAG_API_KEY}`,
-        'Accept': 'application/json'
-      }
-    });
+    console.log('[4MPAGAMENTOS] 🔍 Verificando status via proxy:', transactionId);
+    const response = await fetch(`${STATUS_ENDPOINT}/${transactionId}`);
     
     if (response.ok) {
       const data = await response.json();
@@ -73,16 +63,14 @@ export async function createPixPaymentComplete(paymentData: {
     console.log('[4MPAGAMENTOS-DIRECT] 🚨 Criando transação PIX DIRETAMENTE na API...');
     console.log('[4MPAGAMENTOS-DIRECT] Dados enviados:', paymentData);
     
-    // 1. CRIAÇÃO DA TRANSAÇÃO - CHAMADA DIRETA!
-    const response = await fetch(DIRECT_API_ENDPOINT, {
+    // 1. CRIAÇÃO DA TRANSAÇÃO - VIA PROXY (usando dados corretos!)
+    const response = await fetch(API_ENDPOINT, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${MPAG_API_KEY}`,
-        'Accept': 'application/json'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        amount: paymentData.amount,
+        amount: paymentData.amount.toString(), // ✅ CORRIGIDO: Converte para string
         customer_name: paymentData.customer_name,
         customer_email: paymentData.customer_email,
         customer_cpf: paymentData.customer_cpf,
@@ -110,13 +98,8 @@ export async function createPixPaymentComplete(paymentData: {
     // VERIFICAÇÃO IMEDIATA - caso já esteja pago
     const checkStatus = async (): Promise<void> => {
       try {
-        console.log('[4MPAGAMENTOS-DIRECT] 🔍 Verificando transação gateway_id:', transaction.gateway_id);
-        const statusResponse = await fetch(`${DIRECT_STATUS_ENDPOINT}/${transaction.gateway_id}`, {
-          headers: {
-            'Authorization': `Bearer ${MPAG_API_KEY}`,
-            'Accept': 'application/json'
-          }
-        });
+        console.log('[4MPAGAMENTOS] 🔍 Verificando transação gateway_id:', transaction.gateway_id);
+        const statusResponse = await fetch(`${STATUS_ENDPOINT}/${transaction.gateway_id}`);
         
         if (statusResponse.ok) {
           const statusData = await statusResponse.json();
