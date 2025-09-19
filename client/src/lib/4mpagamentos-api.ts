@@ -24,9 +24,9 @@ export interface PaymentResponse {
   error?: string;
 }
 
-// Configuração da API - usando endpoint local que gerencia a chave de forma segura
-const API_ENDPOINT = '/api/4mpagamentos/payments';
-const STATUS_ENDPOINT = '/api/4mpagamentos/transactions';
+// Configuração da API - usando endpoint igual ao Pagnet
+const API_ENDPOINT = '/api/proxy/for4payments/pix';
+const STATUS_ENDPOINT = '/api/proxy/for4payments/status';
 
 // CORREÇÃO URGENTE: Função para verificar diretamente na 4mpagamentos
 async function checkDirectly4MPagamentos(transactionId: string): Promise<any> {
