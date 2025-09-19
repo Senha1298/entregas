@@ -1645,6 +1645,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rota para verificar status de transação 4MPAGAMENTOS
+  app.get('/api/transactions/:id/status', async (req, res) => {
+    console.log('🔍 [DEV] Verificando status da transação:', req.params.id);
+    
+    try {
+      const transactionId = req.params.id;
+      
+      // Verificar se é uma transação 4MPAGAMENTOS (começa com "4M")
+      if (!transactionId.startsWith('4M')) {
+        return res.status(400).json({
+          error: 'ID de transação inválido. Deve começar com 4M.'
+        });
+      }
+      
+      // Verificar se o token está configurado
+      if (!process.env.FOUR_M_PAG_BEARER_TOKEN) {
+        console.error('ERRO: FOUR_M_PAG_BEARER_TOKEN não configurada');
+        return res.status(500).json({
+          error: 'Serviço de verificação de pagamento não configurado.'
+        });
+      }
+      
+      console.log(`[STATUS CHECK DEV] Consultando API 4MPAGAMENTOS para transação: ${transactionId}`);
+      
+      const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.FOUR_M_PAG_BEARER_TOKEN}`
+        }
+      });
+      
+      console.log(`[STATUS CHECK DEV] Status da resposta: ${response.status}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`[STATUS CHECK DEV] Dados recebidos:`, data);
+        
+        // Retornar apenas o status e informações relevantes
+        return res.json({
+          status: data.status,
+          transaction_id: data.gateway_id || transactionId,
+          amount: data.amount,
+          paid_at: data.paid_at,
+          created_at: data.created_at
+        });
+      } else {
+        console.error(`[STATUS CHECK DEV] Erro na API 4MPAGAMENTOS: ${response.status}`);
+        const errorData = await response.text();
+        console.error(`[STATUS CHECK DEV] Resposta de erro:`, errorData);
+        
+        return res.status(response.status).json({
+          error: 'Erro ao consultar status da transação',
+          details: errorData
+        });
+      }
+      
+    } catch (error) {
+      console.error('[STATUS CHECK DEV] Erro ao verificar status:', error);
+      return res.status(500).json({
+        error: 'Erro interno ao verificar status da transação',
+        details: error.message
+      });
+    }
+  });
+
   app.post('/api/payments/pix-python', async (req, res) => {
     try {
       // Validar dados da requisição
