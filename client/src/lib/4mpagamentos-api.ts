@@ -63,13 +63,13 @@ export async function createPixPaymentComplete(paymentData: {
     
     const checkStatus = async (): Promise<void> => {
       try {
-        const statusResponse = await fetch(`${STATUS_ENDPOINT}/${transaction.transactionId || transaction.id}`);
+        const statusResponse = await fetch(`${STATUS_ENDPOINT}/${transaction.id}`);
         
         if (statusResponse.ok) {
           const statusData = await statusResponse.json();
           console.log('[4MPAGAMENTOS] Status:', statusData.status);
           
-          if (statusData.status === 'paid' || statusData.status === 'approved') {
+          if (statusData.status === 'paid' || statusData.status === 'approved' || statusData.status === 'PAID' || statusData.status === 'APPROVED' || statusData.status === 'COMPLETED') {
             console.log('[4MPAGAMENTOS] PAGAMENTO CONFIRMADO!');
             
             // Executa redirecionamento após 1 segundo
