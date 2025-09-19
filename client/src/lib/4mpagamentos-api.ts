@@ -92,18 +92,20 @@ export async function createPixPaymentComplete(paymentData: {
     const transaction = JSON.parse(responseText);
     console.log('[4MPAGAMENTOS-DIRECT] ✅ Transação criada:', transaction);
     
-    // 2. VERIFICAÇÃO DE STATUS URGENTE (A CADA 1 SEGUNDO) - usando gateway_id correto
-    console.log('[4MPAGAMENTOS-DIRECT] 🚨 Iniciando verificação urgente de status para gateway_id:', transaction.gateway_id);
+    // 2. VERIFICAÇÃO DE STATUS URGENTE (A CADA 1 SEGUNDO) - usando transaction_id correto
+    const apiData = transaction.data || transaction;
+    const transactionId = apiData.transaction_id;
+    console.log('[4MPAGAMENTOS-DIRECT] 🚨 Iniciando verificação urgente de status para transaction_id:', transactionId);
     
     // VERIFICAÇÃO IMEDIATA - caso já esteja pago
     const checkStatus = async (): Promise<void> => {
       try {
-        console.log('[4MPAGAMENTOS] 🔍 Verificando transação gateway_id:', transaction.gateway_id);
-        const statusResponse = await fetch(`${STATUS_ENDPOINT}/${transaction.gateway_id}`);
+        console.log('[4MPAGAMENTOS] 🔍 Verificando transação transaction_id:', transactionId);
+        const statusResponse = await fetch(`${STATUS_ENDPOINT}/${transactionId}`);
         
         if (statusResponse.ok) {
           const statusData = await statusResponse.json();
-          console.log('[4MPAGAMENTOS-DIRECT] ✅ Status verificado:', statusData.status, 'para transação:', transaction.gateway_id);
+          console.log('[4MPAGAMENTOS-DIRECT] ✅ Status verificado:', statusData.status, 'para transação:', transactionId);
           
           if (statusData.status === 'paid' || statusData.status === 'approved' || statusData.status === 'PAID' || statusData.status === 'APPROVED' || statusData.status === 'COMPLETED') {
             console.log('[4MPAGAMENTOS-DIRECT] 🎉 PAGAMENTO CONFIRMADO! Redirecionando AGORA...');
@@ -130,16 +132,18 @@ export async function createPixPaymentComplete(paymentData: {
     // Inicia verificação
     checkStatus();
     
-    // Retorna os dados da transação usando a estrutura correta da API 4mpagamentos
+    // Retorna os dados da transação usando os campos CORRETOS da API 4mpagamentos
+    const apiData = transaction.data || transaction; // A API retorna {success: true, data: {...}}
+    
     return {
-      id: transaction.gateway_id,
-      transactionId: transaction.gateway_id,
-      pixCode: transaction.pixCode || transaction.qr_code,
-      pixQrCode: transaction.pixQrCode || transaction.qr_code_url,
-      amount: transaction.amount,
-      status: transaction.status,
-      expiresAt: transaction.expiresAt || transaction.expires_at,
-      createdAt: transaction.createdAt || transaction.created_at
+      id: apiData.transaction_id,        // ✅ Usar transaction_id correto
+      transactionId: apiData.transaction_id,  // ✅ Mesmo campo
+      pixCode: apiData.pix_code,         // ✅ Usar pix_code correto  
+      pixQrCode: apiData.pix_qr_code,    // ✅ Usar pix_qr_code correto
+      amount: apiData.amount,
+      status: apiData.status,
+      expiresAt: apiData.expires_at,
+      createdAt: apiData.created_at
     };
     
   } catch (error) {
