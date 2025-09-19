@@ -243,7 +243,86 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
     
     let pixResponse = null;
     
-    if (gatewayChoice === 'MEDIUS_PAG') {
+    if (gatewayChoice === '4MPAGAMENTOS') {
+      // USAR 4MPAGAMENTOS
+      if (!process.env.FOUR_M_PAG_BEARER_TOKEN) {
+        console.error('ERRO: FOUR_M_PAG_BEARER_TOKEN não configurada no Heroku');
+        return res.status(500).json({
+          error: 'Gateway 4Mpagamentos não configurado. Configure o bearer token no Heroku.',
+        });
+      }
+      
+      console.log('Iniciando transação 4Mpagamentos no Heroku...');
+      
+      // Integração direta com 4Mpagamentos API
+      const quatroMUrl = 'https://app.4mpagamentos.com/api/v1/payments';
+      const bearerToken = process.env.FOUR_M_PAG_BEARER_TOKEN;
+      
+      // Usar CPF real do usuário
+      const customerCpf = cpf.replace(/[^0-9]/g, '');
+      console.log(`[4MPAGAMENTOS PROD] Usando CPF do usuário: ${customerCpf.substring(0, 3)}***${customerCpf.substring(customerCpf.length - 2)}`);
+      
+      const payload = {
+        amount: amount.toString(), // 4M API espera string
+        customer_name: name,
+        customer_email: userEmail,
+        customer_cpf: customerCpf,
+        customer_phone: (phone || '11999999999').replace(/[^0-9]/g, ''),
+        description: description || "Kit de Segurança Shopee Delivery"
+      };
+      
+      console.log('Enviando payload para 4Mpagamentos API:', JSON.stringify(payload, null, 2));
+      
+      const fetch = (await import('node-fetch')).default;
+      const response = await fetch(quatroMUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      console.log('Response status da 4Mpagamentos:', response.status);
+      
+      const responseData = await response.json();
+      console.log('Response data da 4Mpagamentos:', JSON.stringify(responseData, null, 2));
+      
+      if (!response.ok) {
+        console.error('Erro da 4Mpagamentos API:', response.status, responseData);
+        return res.status(500).json({
+          error: 'Erro ao processar pagamento via 4Mpagamentos. Tente novamente.',
+          details: responseData.message || 'Erro desconhecido'
+        });
+      }
+      
+      // Extrair dados do PIX da resposta 4Mpagamentos
+      const transactionId = responseData.id || responseData.transaction_id;
+      const pixCode = responseData.pixCode || responseData.pix_code || '';
+      
+      console.log('Transaction ID extraído (4M):', transactionId);
+      console.log('PIX Code extraído (4M):', pixCode ? 'ENCONTRADO' : 'NÃO ENCONTRADO');
+      
+      if (!pixCode) {
+        console.error('PIX code não encontrado na resposta da 4Mpagamentos. Resposta completa:', responseData);
+        return res.status(500).json({ error: 'Erro ao gerar código PIX via 4Mpagamentos' });
+      }
+      
+      // Gerar QR Code URL
+      const pixQrCode = responseData.pixQrCode || `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
+      
+      pixResponse = {
+        id: transactionId,
+        pixCode: pixCode,
+        pixQrCode: pixQrCode,
+        status: 'pending',
+        emailSent: false
+      };
+      
+      console.log('✅ Transação 4Mpagamentos criada com sucesso:', transactionId);
+      
+    } else if (gatewayChoice === 'MEDIUS_PAG') {
       // USAR MEDIUS PAG
       if (!process.env.MEDIUS_PAG_SECRET_KEY) {
         console.error('ERRO: MEDIUS_PAG_SECRET_KEY não configurada no Heroku');
