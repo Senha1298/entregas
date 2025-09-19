@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Spinner } from '@/components/ui/spinner';
 import { useScrollTop } from '@/hooks/use-scroll-top';
 import { API_BASE_URL } from '../lib/api-config';
-import { createPixPayment } from '../lib/payments-api';
+import { createPixPayment } from '../lib/4mpagamentos-api';
 import { initFacebookPixel, trackEvent, trackPurchase, checkPaymentStatus } from '../lib/facebook-pixel';
 import EPIConfirmationModal from '@/components/EPIConfirmationModal';
 import EntregadorCracha from '@/components/EntregadorCracha';
@@ -93,10 +93,7 @@ const Entrega: React.FC = () => {
     // Verificar se há um pagamento em andamento
     const currentPaymentId = localStorage.getItem('current_payment_id');
     if (currentPaymentId) {
-      console.log('[ENTREGA] Encontrado pagamento em andamento:', currentPaymentId);
-      setTimeout(() => {
-        verificarStatusPagamento(currentPaymentId);
-      }, 1000);
+      console.log('[ENTREGA] Encontrado pagamento em andamento (gerenciado pela API 4mpagamentos):', currentPaymentId);
     }
   }, []);
   
@@ -403,17 +400,15 @@ const Entrega: React.FC = () => {
         content_name: 'Kit de Segurança Shopee',
         content_ids: [pixData.id],
         content_type: 'product',
-        value: 74.90,
+        value: 64.90,
         currency: 'BRL'
       });
       
       // Armazenar ID da transação para verificação posterior
       localStorage.setItem('current_payment_id', pixData.id);
       
-      // Iniciar verificação de status imediatamente
-      setTimeout(() => {
-        verificarStatusPagamento(pixData.id);
-      }, 1000);
+      // A nova API da 4mpagamentos já inicia verificação automática de status
+      console.log('[ENTREGA] Sistema de verificação de status automático iniciado pela API 4mpagamentos');
       
     } catch (error: any) {
       console.error("Erro ao processar pagamento:", error);
@@ -446,62 +441,7 @@ const Entrega: React.FC = () => {
     }
   };
   
-  // Função para verificar o status do pagamento via API Recoveryfy
-  const verificarStatusPagamento = async (paymentId: string) => {
-    console.log('[ENTREGA] Verificando status do pagamento:', paymentId);
-    
-    try {
-      // Usar a nova API Recoveryfy para verificar status
-      const response = await fetch(`https://recoveryfy.replit.app/api/order/${paymentId}/status`);
-      
-      if (response.ok) {
-        const statusData = await response.json();
-        console.log('[ENTREGA] Status obtido:', statusData);
-        
-        // Verificar se o status é "approved"
-        if (statusData.status === 'approved') {
-          console.log('[ENTREGA] Pagamento APROVADO! Rastreando conversão...');
-          
-          // Rastrear o evento de compra no Facebook Pixel
-          trackPurchase(paymentId, 74.90);
-          
-          // Exibir mensagem de sucesso para o usuário
-          toast({
-            title: "Pagamento aprovado!",
-            description: "Seu pagamento foi confirmado com sucesso!",
-          });
-          
-          // Redirecionar instantaneamente para a página de treinamento
-          console.log('[ENTREGA] Redirecionando para página de treinamento...');
-          setLocation('/instalar-app');
-          
-          // Limpar o ID do pagamento do localStorage
-          localStorage.removeItem('current_payment_id');
-          
-          return; // Parar a verificação
-        } else {
-          // Se não está aprovado, agendar nova verificação em 1 segundo
-          setTimeout(() => {
-            verificarStatusPagamento(paymentId);
-          }, 1000);
-        }
-      } else {
-        console.error('[ENTREGA] Erro na API Recoveryfy:', response.status, response.statusText);
-        
-        // Em caso de erro HTTP, agendar nova tentativa em 1 segundo
-        setTimeout(() => {
-          verificarStatusPagamento(paymentId);
-        }, 1000);
-      }
-    } catch (error) {
-      console.error('[ENTREGA] Erro ao verificar status:', error);
-      
-      // Em caso de erro de rede, agendar nova tentativa em 1 segundo
-      setTimeout(() => {
-        verificarStatusPagamento(paymentId);
-      }, 1000);
-    }
-  };
+  // NOTA: Função removida - A nova API da 4mpagamentos gerencia verificação de status automaticamente
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
