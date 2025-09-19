@@ -692,8 +692,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('[DEBUG-HEROKU] Request body type:', typeof req.body);
       console.log('[DEBUG-HEROKU] Request body keys:', Object.keys(req.body || {}));
       
-      // Processar os dados recebidos - API 4mpagamentos espera amount como STRING!
-      const { name, cpf, email, phone, amount = 64.90, description = "Kit de Segurança Shopee Delivery" } = req.body;
+      // Processar os dados recebidos - USAR OS NOMES CORRETOS DO FRONTEND!
+      const { customer_name: name, customer_cpf: cpf, customer_email: email, customer_phone: phone, amount = 64.90, description = "Kit de Segurança Shopee Delivery" } = req.body;
       
       console.log('[DEBUG-HEROKU] Extracted values:', { name, cpf, email, phone, amount });
       
