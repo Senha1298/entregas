@@ -2358,11 +2358,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/4mpagamentos/payments', async (req: Request, res: Response) => {
     try {
       const apiKey = process.env.MPAG_API_KEY;
+      console.log('[4MPAGAMENTOS-SERVER] Iniciando criação de pagamento...');
+      console.log('[4MPAGAMENTOS-SERVER] API Key disponível:', !!apiKey);
+      
       if (!apiKey) {
+        console.error('[4MPAGAMENTOS-SERVER] Erro: API Key não encontrada nas variáveis de ambiente');
         return res.status(500).json({ error: 'Chave da API não configurada' });
       }
 
-      console.log('[4MPAGAMENTOS-SERVER] Criando transação PIX...');
+      console.log('[4MPAGAMENTOS-SERVER] Dados recebidos:', JSON.stringify(req.body, null, 2));
       
       const response = await fetch('https://app.4mpagamentos.com/api/v1/payments', {
         method: 'POST',
@@ -2373,19 +2377,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
         body: JSON.stringify(req.body)
       });
       
+      console.log('[4MPAGAMENTOS-SERVER] Status da resposta da API:', response.status);
+      console.log('[4MPAGAMENTOS-SERVER] Headers da resposta:', JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2));
+      
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('[4MPAGAMENTOS-SERVER] Erro na API:', errorText);
+        console.error('[4MPAGAMENTOS-SERVER] Erro na API externa:', errorText);
         return res.status(response.status).json({ error: errorText });
       }
       
       const data = await response.json();
-      console.log('[4MPAGAMENTOS-SERVER] Transação criada:', data);
-      res.json(data);
+      console.log('[4MPAGAMENTOS-SERVER] Resposta da API externa:', JSON.stringify(data, null, 2));
       
-    } catch (error) {
-      console.error('[4MPAGAMENTOS-SERVER] Erro:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
+      // Validar se a resposta tem os campos necessários
+      const hasValidData = data.success && data.data && data.data.id && data.data.pix_code;
+      
+      if (!hasValidData) {
+        console.error('[4MPAGAMENTOS-SERVER] Resposta inválida da API externa:', data);
+        return res.status(500).json({ 
+          error: 'Resposta inválida da API externa',
+          received_data: data
+        });
+      }
+      
+      // Mapear campos da resposta da 4mpagamentos para o formato esperado pelo frontend
+      const mappedData = {
+        id: data.data.id,
+        transactionId: data.data.transaction_id,
+        pixCode: data.data.pix_code,
+        pixQrCode: data.data.pix_qr_code,
+        amount: parseFloat(data.data.amount),
+        status: data.data.status,
+        expiresAt: data.data.expires_at,
+        createdAt: data.data.created_at
+      };
+      
+      console.log('[4MPAGAMENTOS-SERVER] ✅ Transação criada com sucesso:', mappedData);
+      res.json(mappedData);
+      
+    } catch (error: any) {
+      console.error('[4MPAGAMENTOS-SERVER] Erro interno:', error.message || error);
+      console.error('[4MPAGAMENTOS-SERVER] Stack trace:', error.stack);
+      res.status(500).json({ 
+        error: 'Erro interno do servidor',
+        details: error.message 
+      });
     }
   });
 
