@@ -16,7 +16,7 @@ export function RedirecionarPago() {
     // Função para verificar se a transação está paga e redirecionar
     const checkAndRedirect = async () => {
       try {
-        const response = await fetch(`/api/4mpagamentos/check-paid/${transactionId}`);
+        const response = await fetch(`/api/proxy/for4payments/status/${transactionId}`);
         const data = await response.json();
         
         console.log('[REDIRECIONAMENTO-URGENTE] Resposta da API:', data);

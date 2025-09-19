@@ -28,23 +28,19 @@ export interface PaymentResponse {
 const API_ENDPOINT = '/api/proxy/for4payments/pix';
 const STATUS_ENDPOINT = '/api/proxy/for4payments/status';
 
-// CORREÇÃO URGENTE: Função para verificar diretamente na 4mpagamentos
-async function checkDirectly4MPagamentos(transactionId: string): Promise<any> {
+// Função para verificar status via proxy endpoint
+async function checkTransactionStatus(transactionId: string): Promise<any> {
   try {
-    console.log('[4MPAGAMENTOS-DIRECT] Verificando diretamente na API:', transactionId);
-    const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
-      headers: {
-        'Authorization': 'YOUR_MPAG_API_KEY_HERE' // Será substituído pelo backend
-      }
-    });
+    console.log('[4MPAGAMENTOS] Verificando status via proxy:', transactionId);
+    const response = await fetch(`${STATUS_ENDPOINT}/${transactionId}`);
     
     if (response.ok) {
       const data = await response.json();
-      console.log('[4MPAGAMENTOS-DIRECT] Resposta direta:', data);
+      console.log('[4MPAGAMENTOS] Status recebido:', data);
       return data;
     }
   } catch (error) {
-    console.error('[4MPAGAMENTOS-DIRECT] Erro:', error);
+    console.error('[4MPAGAMENTOS] Erro ao verificar status:', error);
   }
   return null;
 }

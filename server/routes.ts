@@ -823,6 +823,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // Endpoint para verificar status de transação 4mpagamentos
+  app.get('/api/proxy/for4payments/status/:transactionId', async (req, res) => {
+    try {
+      const { transactionId } = req.params;
+      console.log('[4MPAGAMENTOS] Verificando status da transação:', transactionId);
+
+      if (!process.env.MPAG_API_KEY) {
+        return res.status(500).json({
+          error: 'Gateway 4mpagamentos não configurado'
+        });
+      }
+
+      // Consultar status na API da 4mpagamentos
+      const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.MPAG_API_KEY}`
+        }
+      });
+
+      if (!response.ok) {
+        return res.status(404).json({
+          error: 'Transação não encontrada',
+          transactionId: transactionId
+        });
+      }
+
+      const data = await response.json();
+      console.log('[4MPAGAMENTOS] Status recebido:', data);
+
+      // Formatar resposta compatível
+      const status = data.data?.status || data.status || 'pending';
+      const isPaid = status === 'paid' || status === 'approved' || status === 'completed';
+
+      res.json({
+        transactionId,
+        status,
+        isPaid,
+        shouldRedirect: isPaid,
+        redirectTo: '/treinamento',
+        data: data.data || data
+      });
+
+    } catch (error: any) {
+      console.error('[4MPAGAMENTOS] Erro ao verificar status:', error);
+      res.status(500).json({
+        error: 'Erro interno do servidor',
+        message: error.message
+      });
+    }
+  });
+
   // Rota para obter todos os estados
   app.get('/api/states', async (req, res) => {
     try {
