@@ -357,6 +357,95 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       
       console.log('✅ Transação Medius Pag criada com sucesso:', transactionId);
       
+    } else if (gatewayChoice === 'FOR4PAYMENTS') {
+      // USAR 4MPAGAMENTOS
+      if (!process.env.FOR4PAYMENTS_SECRET_KEY) {
+        console.error('ERRO: FOR4PAYMENTS_SECRET_KEY não configurada no Heroku');
+        return res.status(500).json({
+          error: 'Gateway 4mpagamentos não configurado. Configure a chave secreta no Heroku.',
+        });
+      }
+      
+      console.log('Iniciando transação 4mpagamentos no Heroku...');
+      
+      // Integração direta com 4mpagamentos API
+      const for4paymentsUrl = 'https://api.4mpagamentos.com/v1/pix';
+      const secretKey = process.env.FOR4PAYMENTS_SECRET_KEY;
+      
+      // Usar CPF real do usuário
+      const customerCpf = cpf.replace(/[^0-9]/g, '');
+      console.log(`[4MPAGAMENTOS PROD] Usando CPF do usuário: ${customerCpf.substring(0, 3)}***${customerCpf.substring(customerCpf.length - 2)}`);
+      
+      const amountFloat = parseFloat(amount.toString());
+      
+      // Payload para 4mpagamentos
+      const payload = {
+        amount: amountFloat,
+        customer_name: name,
+        customer_email: userEmail,
+        customer_cpf: customerCpf,
+        customer_phone: (phone || '11999999999').replace(/[^0-9]/g, ''),
+        description: description || 'Kit de Segurança Shopee Delivery'
+      };
+      
+      console.log('Enviando payload para 4mpagamentos API:', JSON.stringify({
+        ...payload,
+        customer_cpf: `${customerCpf.substring(0, 3)}***${customerCpf.substring(customerCpf.length - 2)}`
+      }, null, 2));
+      
+      // Fazer requisição para 4mpagamentos
+      const fetch = (await import('node-fetch')).default;
+      const response = await fetch(for4paymentsUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${secretKey}`,
+          'User-Agent': 'ShopeeDeliveryApp/1.0'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      console.log('Response status da 4mpagamentos:', response.status);
+      
+      const responseData = await response.json();
+      console.log('Response data da 4mpagamentos:', JSON.stringify(responseData, null, 2));
+      
+      if (!response.ok) {
+        console.error('Erro da 4mpagamentos API:', response.status, responseData);
+        return res.status(500).json({
+          error: 'Erro ao processar pagamento. Tente novamente.',
+          details: responseData.message || 'Erro desconhecido'
+        });
+      }
+      
+      // Extrair dados do PIX da resposta 4mpagamentos
+      const transactionId = responseData.id || responseData.gateway_id;
+      const pixCode = responseData.pix_code || responseData.pixCode || '';
+      let pixQrCode = responseData.pix_qr_code || responseData.pixQrCode || '';
+      
+      console.log('Transaction ID extraído (4mpagamentos):', transactionId);
+      console.log('PIX Code extraído (4mpagamentos):', pixCode ? 'ENCONTRADO' : 'NÃO ENCONTRADO');
+      
+      if (!pixCode) {
+        console.error('PIX code não encontrado na resposta da 4mpagamentos. Resposta completa:', responseData);
+        return res.status(500).json({ error: 'Erro ao gerar código PIX via 4mpagamentos' });
+      }
+      
+      // Gerar QR Code URL se não veio
+      if (!pixQrCode) {
+        pixQrCode = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(pixCode)}`;
+      }
+      
+      pixResponse = {
+        id: transactionId,
+        pixCode: pixCode,
+        pixQrCode: pixQrCode,
+        status: 'pending',
+        emailSent: false
+      };
+      
+      console.log('✅ Transação 4mpagamentos criada com sucesso:', transactionId);
+      
     } else {
       // USAR PAGNET (PADRÃO)
       if (!process.env.PAGNET_PUBLIC_KEY || !process.env.PAGNET_SECRET_KEY) {
