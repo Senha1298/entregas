@@ -57,7 +57,7 @@ export class QuatroMPagamentosAPI {
 
       // Payload conforme documentação 4mpagamentos
       const payload = {
-        amount: data.amount,
+        amount: data.amount.toString(), // API espera string, não number
         customer_name: data.customer_name,
         customer_email: data.customer_email,
         customer_cpf: customerCpf,
