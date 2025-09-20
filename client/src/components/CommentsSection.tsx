@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Heart, MessageCircle, ChevronUp, ChevronDown } from 'lucide-react';
+import { Heart, MessageCircle } from 'lucide-react';
 
 interface Comment {
   id: number;
@@ -260,18 +260,7 @@ const comments: Comment[] = [
 ];
 
 function CommentsSection() {
-  const [expandedComments, setExpandedComments] = useState<Set<number>>(new Set());
   const [likedComments, setLikedComments] = useState<Set<number>>(new Set());
-
-  const toggleComment = (commentId: number) => {
-    const newExpanded = new Set(expandedComments);
-    if (newExpanded.has(commentId)) {
-      newExpanded.delete(commentId);
-    } else {
-      newExpanded.add(commentId);
-    }
-    setExpandedComments(newExpanded);
-  };
 
   const toggleLike = (commentId: number) => {
     const newLiked = new Set(likedComments);
@@ -284,7 +273,7 @@ function CommentsSection() {
   };
 
   const renderComment = (comment: Comment, isReply = false) => (
-    <div key={comment.id} className={`${isReply ? 'ml-12 mt-3' : 'mb-4'} ${isReply ? 'bg-gray-50 rounded-lg p-3' : ''}`}>
+    <div key={comment.id} className={`${isReply ? 'ml-12 mt-4' : 'mb-8'} ${isReply ? 'bg-gray-50 rounded-lg p-3' : ''}`}>
       <div className="flex gap-3">
         <div className="w-10 h-10 bg-gray-300 rounded-full overflow-hidden flex-shrink-0">
           <img 
@@ -315,21 +304,14 @@ function CommentsSection() {
               {comment.likes + (likedComments.has(comment.id) ? 1 : 0)}
             </button>
             {comment.replies && comment.replies.length > 0 && (
-              <button 
-                onClick={() => toggleComment(comment.id)}
-                className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 transition-colors"
-              >
+              <span className="flex items-center gap-1 text-xs text-gray-500">
                 <MessageCircle className="w-4 h-4" />
                 {comment.replies.length} {comment.replies.length === 1 ? 'resposta' : 'respostas'}
-                {expandedComments.has(comment.id) ? 
-                  <ChevronUp className="w-3 h-3" /> : 
-                  <ChevronDown className="w-3 h-3" />
-                }
-              </button>
+              </span>
             )}
           </div>
-          {comment.replies && expandedComments.has(comment.id) && (
-            <div className="mt-3">
+          {comment.replies && (
+            <div className="mt-4">
               {comment.replies.map(reply => renderComment(reply, true))}
             </div>
           )}
@@ -345,7 +327,7 @@ function CommentsSection() {
         <span className="text-lg font-semibold text-gray-900">Comentários dos Entregadores</span>
       </div>
       
-      <div className="space-y-1">
+      <div className="space-y-4">
         {comments.map(comment => renderComment(comment))}
       </div>
     </div>
