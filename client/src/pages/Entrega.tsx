@@ -1010,7 +1010,7 @@ const Entrega: React.FC = () => {
                     className="w-8 h-8"
                   />
                 </button>
-                <p className="text-xs text-gray-600 font-medium mt-2 text-center whitespace-nowrap">
+                <p className="text-[10px] text-gray-600 font-medium mt-2 text-center whitespace-nowrap">
                   Precisa de ajuda?
                 </p>
               </div>
