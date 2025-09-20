@@ -46,6 +46,8 @@ const Pay = () => {
   const [cliente, setCliente] = useState<Cliente | null>(null);
   const [transacoes, setTransacoes] = useState<Transacao[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentData, setPaymentData] = useState<any>(null);
   
   // Referência para o input do código PIX
   const [pixCode, setPixCode] = useState<string>('000201010212268500...');
@@ -55,7 +57,7 @@ const Pay = () => {
   const [copiedFeedback, setCopiedFeedback] = useState(false);
 
   const copyPixCode = useCallback(() => {
-    const codeToCopy = cliente?.pixCode || pixCode;
+    const codeToCopy = paymentData?.pix_code || cliente?.pixCode || pixCode;
     if (codeToCopy) {
       // Garantir que todo o código seja copiado, mesmo que seja longo
       navigator.clipboard.writeText(codeToCopy)
@@ -74,7 +76,47 @@ const Pay = () => {
           alert('Erro ao copiar código. Tente selecionar o código manualmente.');
         });
     }
-  }, [cliente, pixCode]);
+  }, [paymentData, cliente, pixCode]);
+
+  // Função para gerar nova transação PIX
+  const generatePixPayment = useCallback(async (clienteData: Cliente) => {
+    try {
+      setPaymentLoading(true);
+      
+      const response = await fetch('/api/proxy/for4payments/pix', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: clienteData.nome,
+          cpf: clienteData.cpf,
+          email: clienteData.email,
+          phone: clienteData.telefone,
+          amount: 64.90,
+          description: 'Kit de Segurança Shopee Delivery'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao gerar pagamento PIX');
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setPaymentData(result);
+        setPixCode(result.pix_code);
+      } else {
+        throw new Error(result.error || 'Erro ao gerar pagamento PIX');
+      }
+    } catch (error) {
+      console.error('Erro ao gerar pagamento PIX:', error);
+      setError('Erro ao gerar pagamento PIX. Tente novamente.');
+    } finally {
+      setPaymentLoading(false);
+    }
+  }, []);
 
   // Efeito para buscar os dados do cliente
   useEffect(() => {
@@ -92,11 +134,13 @@ const Pay = () => {
           }
           return response.json();
         })
-        .then((data: ApiResponse) => {
+        .then(async (data: ApiResponse) => {
           if (data.sucesso && data.cliente) {
             setCliente(data.cliente);
             setTransacoes(data.transacoes || []);
-            setPixCode(data.cliente.pixCode || '000201010212268500...');
+            
+            // Gerar nova transação PIX usando os dados do cliente
+            await generatePixPayment(data.cliente);
           } else {
             setError('Cliente não encontrado');
           }
@@ -167,8 +211,10 @@ const Pay = () => {
       <header className="bg-white py-2 px-4 flex items-center rounded-b-sm">
         <a href="#" className="text-[#EF4444] text-xl"></a>
         <div className="flex-grow flex items-center justify-center">
-          <div className="spinner mr-2"></div>
-          <h1 className="text-lg font-normal text-center text-[#10172A]">Aguardando pagamento...</h1>
+          {(loading || paymentLoading) && <div className="spinner mr-2"></div>}
+          <h1 className="text-lg font-normal text-center text-[#10172A]">
+            {loading ? 'Carregando dados...' : paymentLoading ? 'Gerando pagamento...' : 'Aguardando pagamento...'}
+          </h1>
         </div>
       </header>
 
@@ -195,12 +241,12 @@ const Pay = () => {
           </div>
 
           {/* QR Code Section */}
-          {(cliente?.pixCode || pixCode) && (
+          {(paymentData?.pix_code || cliente?.pixCode || pixCode) && !paymentLoading && (
             <div className="mb-4 text-center">
               <p className="text-[#212121] mb-2">QR Code PIX</p>
               <div className="flex justify-center bg-white p-4 rounded border">
                 <QRCodeSVG 
-                  value={cliente?.pixCode || pixCode} 
+                  value={paymentData?.pix_code || cliente?.pixCode || pixCode} 
                   size={200}
                   bgColor="#ffffff"
                   fgColor="#000000"
@@ -215,7 +261,7 @@ const Pay = () => {
             <div className="flex justify-center">
               <div className="w-full bg-[#F5F5F5] border border-[#E0E0E0] rounded mx-1">
                 <textarea 
-                  value={cliente ? cliente.pixCode : pixCode} 
+                  value={paymentData?.pix_code || (cliente ? cliente.pixCode : pixCode)} 
                   className="w-full h-[60px] text-[#737373] bg-transparent focus:outline-none text-left text-xs px-2 py-1 cursor-pointer resize-none overflow-auto" 
                   readOnly 
                   onClick={copyPixCode}
