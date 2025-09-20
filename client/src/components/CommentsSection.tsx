@@ -259,7 +259,7 @@ const comments: Comment[] = [
   }
 ];
 
-export function CommentsSection() {
+function CommentsSection() {
   const [expandedComments, setExpandedComments] = useState<Set<number>>(new Set());
   const [likedComments, setLikedComments] = useState<Set<number>>(new Set());
 
@@ -351,3 +351,5 @@ export function CommentsSection() {
     </div>
   );
 }
+
+export default CommentsSection;
