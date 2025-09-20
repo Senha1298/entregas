@@ -17,28 +17,28 @@ interface Comment {
 
 const profileImages = {
   men: [
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t39.30808-6/502578848_9876083289153468_4046710841254946707_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/46115522_1110968849065045_2668519337702195200_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/125569600_4230737243609287_3967131514222108780_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/117642521_3162684067147368_6477709627897357665_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/35428326_2373982669285586_7798509717214461952_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/82386770_3090845140944454_8007982742089818112_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/75547436_2908388785856758_5796952577577623552_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/65609234_2620802747982031_5169823158906077184_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/53962593_2458064907589150_6077681926949396480_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/49624659_2364831386879070_2536106062458519552_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/40736434_2197065350322342_4334962648397144064_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/35690234_2084709888224556_2628262977493049344_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/29570513_1944398308922382_8442781012636508160_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/26168262_1851816718180542_6968623411892092928_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/19732284_1624388784257004_8134159068779081728_n.jpg"
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t39.30808-6/502578848_9876083289153468_4046710841254946707_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=LFEMzxoZFoUQ7kNvwHje1nN&_nc_oc=AdlIQ5_qkAKtqTEb1cXOJ0gTQjrRyexuxyCfFH_BVHx4-kdQQZx7GxDHpcQFImf8xAmLjj066-pDjQJ4RuXNdZHx&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=dRVTbSA9drGW8PdUHc80bw&oh=00_AfZXSwHhsx7nvq6cMV72XnDW-Lhd8NTzs5xfG_ABiRYI8Q&oe=68D3D4B4",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/46115522_1110968849065045_2668519337702195200_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=3i_O36Q3GsYQ7kNvwEj3U8s&_nc_oc=AdmRq4kSYPe8RuLcvPRu8KE6f26apB8mw17MezdWKrBw2s_ORT9EXC5P7nn_MYwiPPIFJu9Mt9O4ziAHnxRgZAiw&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=pOFwd8XTkUhgX4Uf87DIsg&oh=00_Afa5i3DVbOrAbYt_P_bX38JPNpZsoWxD5jA6riup7MJEnA&oe=68F54DE4",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/125569600_4230737243609287_3967131514222108780_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=XuLMqer6Og4Q7kNvwGiszVf&_nc_oc=Adl_t7x18YLrdqY6JL_R374jjNUBjYEK7u_GAqaP3XCqe20EwRll6k_no4bZB4o7YStufwgyvlBogDqUaIcH8oQF&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=Q6SfAK5Ml3h-qkgcoE8GTA&oh=00_AfakiyBt8aM0XVNjCK8jGbhHnEhtsZSrJEjJ7WyLdlU7vQ&oe=68F57157",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/117642521_3162684067147368_6477709627897357665_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=0h3AbnBa2-EQ7kNvwFIV59V&_nc_oc=AdlkzlsvsMZOneQ9t7yCxR50Lus8OBgF-E5rbhZxz-0gmX4_neQ8YpVVagaJ0ssqIA4pFySUdMQDxDLIhHK1nU1a&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=I-vMcViUbRvgaMNpiQv1sg&oh=00_AfaeTjAc0TxQRqgDl0Agr9eHF00_FAqIclVtmnoc6nj04g&oe=68F57230",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/35428326_2373982669285586_7798509717214461952_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=5Hg5b7XwUs4Q7kNvwFUKVGr&_nc_oc=Adlu1g8p2zUaXLGAa2tv4hOLYihDPejpxcMGqbJmPKGHZAT39aC6yQ1CW5Iy0MIlERwwmDbCFKK8vo5ead5HGGUX&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=hXFo28Ld721vOZOZxrUOeg&oh=00_AfbSA5IRx_OFGDQtbNnU2zjzxUYdxNUJ4C9wJFjnUPOHjw&oe=68F5671B",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/82386770_3090845140944454_8007982742089818112_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=WX-PfHnc8bkQ7kNvwFOhKZS&_nc_oc=Adjb78d8H_b7s8NKhKr2xT35QIxvdGNHCc1v8YWZoJzxFmGnbGp7xzT2fNQ8k_WGu9c&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=A_K0Rr8l8jKmZ3TH0wI6sg&oh=00_AfaQ_bBv_wMJ3JGb4UhAPpxs0qzR0iZP8SJ5oBWVvhLNJw&oe=68F5734A",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/75547436_2908388785856758_5796952577577623552_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=D2A5qK2SZzQQ7kNvwGN6PkV&_nc_oc=Adh8jJhnxZTMYQ8z1aFQQ2naDEPz2rUO0vRzAhR0HFxLs1WNLq67b9IgbOGr6Xj8Xxo&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=A4x4Rr8l8jKmZ3TH0wI6sg&oh=00_AfZ_xhYvQ_wMJ3JGb4UhAPpxs0qzR0iZP8SJ5oBWVvhLNw&oe=68F5734A",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/65609234_2620802747982031_5169823158906077184_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=R3C7qM4TZzQQ7kNvwGN6PkV&_nc_oc=Adh8jJhnxZTMYQ8z1aFQQ2naDEPz2rUO0vRzAhR0HFxLs1WNLq67b9IgbOGr6Xj8Xxo&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=B8x4Rr8l8jKmZ3TH0wI6sg&oh=00_AfZ_xhYvQ_wMJ3JGb4UhAPpxs0qzR0iZP8SJ5oBWVvhLNw&oe=68F5734A",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/53962593_2458064907589150_6077681926949396480_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=T5E9sO6VZzQQ7kNvwGN6PkV&_nc_oc=Adh8jJhnxZTMYQ8z1aFQQ2naDEPz2rUO0vRzAhR0HFxLs1WNLq67b9IgbOGr6Xj8Xxo&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=C9x4Rr8l8jKmZ3TH0wI6sg&oh=00_AfZ_xhYvQ_wMJ3JGb4UhAPpxs0qzR0iZP8SJ5oBWVvhLNw&oe=68F5734A",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/49624659_2364831386879070_2536106062458519552_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=U7G1rP8WZzQQ7kNvwGN6PkV&_nc_oc=Adh8jJhnxZTMYQ8z1aFQQ2naDEPz2rUO0vRzAhR0HFxLs1WNLq67b9IgbOGr6Xj8Xxo&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=D1x4Rr8l8jKmZ3TH0wI6sg&oh=00_AfZ_xhYvQ_wMJ3JGb4UhAPpxs0qzR0iZP8SJ5oBWVvhLNw&oe=68F5734A",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/40736434_2197065350322342_4334962648397144064_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=V9I3tQ0XZzQQ7kNvwGN6PkV&_nc_oc=Adh8jJhnxZTMYQ8z1aFQQ2naDEPz2rUO0vRzAhR0HFxLs1WNLq67b9IgbOGr6Xj8Xxo&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=E2x4Rr8l8jKmZ3TH0wI6sg&oh=00_AfZ_xhYvQ_wMJ3JGb4UhAPpxs0qzR0iZP8SJ5oBWVvhLNw&oe=68F5734A",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/35690234_2084709888224556_2628262977493049344_n.jpg?_nc_cat=113&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=X1K5uR2YZzQQ7kNvwGN6PkV&_nc_oc=Adh8jJhnxZTMYQ8z1aFQQ2naDEPz2rUO0vRzAhR0HFxLs1WNLq67b9IgbOGr6Xj8Xxo&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=F3x4Rr8l8jKmZ3TH0wI6sg&oh=00_AfZ_xhYvQ_wMJ3JGb4UhAPpxs0qzR0iZP8SJ5oBWVvhLNw&oe=68F5734A",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/29570513_1944398308922382_8442781012636508160_n.jpg?_nc_cat=115&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=Y3M7vS4ZZzQQ7kNvwGN6PkV&_nc_oc=Adh8jJhnxZTMYQ8z1aFQQ2naDEPz2rUO0vRzAhR0HFxLs1WNLq67b9IgbOGr6Xj8Xxo&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=G4x4Rr8l8jKmZ3TH0wI6sg&oh=00_AfZ_xhYvQ_wMJ3JGb4UhAPpxs0qzR0iZP8SJ5oBWVvhLNw&oe=68F5734A",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/26168262_1851816718180542_6968623411892092928_n.jpg?_nc_cat=117&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=Z5O9wT6aZzQQ7kNvwGN6PkV&_nc_oc=Adh8jJhnxZTMYQ8z1aFQQ2naDEPz2rUO0vRzAhR0HFxLs1WNLq67b9IgbOGr6Xj8Xxo&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=H5x4Rr8l8jKmZ3TH0wI6sg&oh=00_AfZ_xhYvQ_wMJ3JGb4UhAPpxs0qzR0iZP8SJ5oBWVvhLNw&oe=68F5734A",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/19732284_1624388784257004_8134159068779081728_n.jpg?_nc_cat=119&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=a7Q1xU8bZzQQ7kNvwGN6PkV&_nc_oc=Adh8jJhnxZTMYQ8z1aFQQ2naDEPz2rUO0vRzAhR0HFxLs1WNLq67b9IgbOGr6Xj8Xxo&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=I6x4Rr8l8jKmZ3TH0wI6sg&oh=00_AfZ_xhYvQ_wMJ3JGb4UhAPpxs0qzR0iZP8SJ5oBWVvhLNw&oe=68F5734A"
   ],
   women: [
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t39.30808-6/482135135_3865073400435738_6789123456789012345_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/123456789_1234567890123456_1234567890123456789_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/987654321_9876543210987654_9876543210987654321_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/456789123_4567891234567891_4567891234567891234_n.jpg",
-    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/789123456_7891234567891234_7891234567891234567_n.jpg"
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t39.30808-6/502578848_9876083289153468_4046710841254946707_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=LFEMzxoZFoUQ7kNvwHje1nN&_nc_oc=AdlIQ5_qkAKtqTEb1cXOJ0gTQjrRyexuxyCfFH_BVHx4-kdQQZx7GxDHpcQFImf8xAmLjj066-pDjQJ4RuXNdZHx&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=dRVTbSA9drGW8PdUHc80bw&oh=00_AfZXSwHhsx7nvq6cMV72XnDW-Lhd8NTzs5xfG_ABiRYI8Q&oe=68D3D4B4",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/46115522_1110968849065045_2668519337702195200_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=3i_O36Q3GsYQ7kNvwEj3U8s&_nc_oc=AdmRq4kSYPe8RuLcvPRu8KE6f26apB8mw17MezdWKrBw2s_ORT9EXC5P7nn_MYwiPPIFJu9Mt9O4ziAHnxRgZAiw&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=pOFwd8XTkUhgX4Uf87DIsg&oh=00_Afa5i3DVbOrAbYt_P_bX38JPNpZsoWxD5jA6riup7MJEnA&oe=68F54DE4",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/125569600_4230737243609287_3967131514222108780_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=XuLMqer6Og4Q7kNvwGiszVf&_nc_oc=Adl_t7x18YLrdqY6JL_R374jjNUBjYEK7u_GAqaP3XCqe20EwRll6k_no4bZB4o7YStufwgyvlBogDqUaIcH8oQF&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=Q6SfAK5Ml3h-qkgcoE8GTA&oh=00_AfakiyBt8aM0XVNjCK8jGbhHnEhtsZSrJEjJ7WyLdlU7vQ&oe=68F57157",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/117642521_3162684067147368_6477709627897357665_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=0h3AbnBa2-EQ7kNvwFIV59V&_nc_oc=AdlkzlsvsMZOneQ9t7yCxR50Lus8OBgF-E5rbhZxz-0gmX4_neQ8YpVVagaJ0ssqIA4pFySUdMQDxDLIhHK1nU1a&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=I-vMcViUbRvgaMNpiQv1sg&oh=00_AfaeTjAc0TxQRqgDl0Agr9eHF00_FAqIclVtmnoc6nj04g&oe=68F57230",
+    "https://scontent.fbsb20-1.fna.fbcdn.net/v/t1.6435-9/35428326_2373982669285586_7798509717214461952_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=5Hg5b7XwUs4Q7kNvwFUKVGr&_nc_oc=Adlu1g8p2zUaXLGAa2tv4hOLYihDPejpxcMGqbJmPKGHZAT39aC6yQ1CW5Iy0MIlERwwmDbCFKK8vo5ead5HGGUX&_nc_zt=23&_nc_ht=scontent.fbsb20-1.fna&_nc_gid=hXFo28Ld721vOZOZxrUOeg&oh=00_AfbSA5IRx_OFGDQtbNnU2zjzxUYdxNUJ4C9wJFjnUPOHjw&oe=68F5671B"
   ]
 };
 
@@ -277,24 +277,36 @@ const CommentsSection: React.FC = () => {
   const renderComment = (comment: Comment) => (
     <div key={comment.id} className={`${comment.isReply ? 'ml-8 border-l-2 border-gray-200 pl-4' : ''}`}>
       <div className="flex items-start space-x-3 mb-4">
-        {comment.profileImage ? (
-          <img 
-            src={comment.profileImage} 
-            alt={comment.name}
-            className="w-10 h-10 rounded-full object-cover"
-            onError={(e) => {
-              // Fallback to initials if image fails to load
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              const fallback = target.nextElementSibling as HTMLElement;
-              if (fallback) fallback.style.display = 'flex';
-            }}
-          />
-        ) : null}
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-          comment.gender === 'M' ? 'bg-blue-500' : 'bg-pink-500'
-        } ${comment.profileImage ? 'hidden' : ''}`}>
-          {comment.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+        <div className="relative w-10 h-10">
+          {comment.profileImage ? (
+            <>
+              <img 
+                src={comment.profileImage} 
+                alt={comment.name}
+                className="w-10 h-10 rounded-full object-cover"
+                onError={(e) => {
+                  // Hide image and show fallback
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const fallback = target.parentElement?.querySelector('.fallback-avatar') as HTMLElement;
+                  if (fallback) {
+                    fallback.style.display = 'flex';
+                  }
+                }}
+              />
+              <div className={`fallback-avatar w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                comment.gender === 'M' ? 'bg-blue-500' : 'bg-pink-500'
+              } absolute top-0 left-0 hidden`}>
+                {comment.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+              </div>
+            </>
+          ) : (
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+              comment.gender === 'M' ? 'bg-blue-500' : 'bg-pink-500'
+            }`}>
+              {comment.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+            </div>
+          )}
         </div>
         <div className="flex-1">
           <div className="bg-gray-50 rounded-lg p-3">
