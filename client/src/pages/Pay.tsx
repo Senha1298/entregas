@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { useRoute } from 'wouter';
 import { useScrollTop } from '@/hooks/use-scroll-top';
 import { QRCodeSVG } from 'qrcode.react';
+import { createPixPayment } from '@/lib/payments-api';
 
 interface Cliente {
   id: number;
@@ -78,41 +79,48 @@ const Pay = () => {
     }
   }, [paymentData, cliente, pixCode]);
 
-  // Função para gerar nova transação PIX
+  // Função para gerar nova transação PIX usando o mesmo sistema da página /entrega
   const generatePixPayment = useCallback(async (clienteData: Cliente) => {
     try {
       setPaymentLoading(true);
       
-      const response = await fetch('/api/proxy/for4payments/pix', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: clienteData.nome,
-          cpf: clienteData.cpf,
-          email: clienteData.email,
-          phone: clienteData.telefone,
-          amount: 64.90,
-          description: 'Kit de Segurança Shopee Delivery'
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro ao gerar pagamento PIX');
-      }
-
-      const result = await response.json();
+      console.log('Iniciando processamento de pagamento usando sistema da página /entrega');
       
-      if (result.success) {
-        setPaymentData(result);
-        setPixCode(result.pix_code);
-      } else {
-        throw new Error(result.error || 'Erro ao gerar pagamento PIX');
+      // Usar a função centralizada para processar o pagamento (mesma da página /entrega)
+      const pixData = await createPixPayment({
+        name: clienteData.nome,
+        cpf: clienteData.cpf,
+        email: clienteData.email,
+        phone: clienteData.telefone,
+        amount: 64.90
+      });
+      
+      console.log('Pagamento processado com sucesso:', pixData);
+      
+      // Verificar se recebemos todos os dados necessários (mesmo formato da página /entrega)
+      if (!pixData.pixCode || !pixData.id) {
+        throw new Error('Resposta incompleta da API de pagamento');
       }
-    } catch (error) {
-      console.error('Erro ao gerar pagamento PIX:', error);
-      setError('Erro ao gerar pagamento PIX. Tente novamente.');
+      
+      console.log('Dados válidos recebidos, atualizando estado...');
+      
+      // Definir os dados do PIX no estado (formato compatível)
+      setPaymentData({
+        success: true,
+        pix_code: pixData.pixCode,
+        transaction_id: pixData.id,
+        status: pixData.status || 'pending'
+      });
+      setPixCode(pixData.pixCode);
+      
+      console.log('PIX Info definido no estado:', pixData);
+      
+      // Armazenar ID da transação para verificação posterior (igual na página /entrega)
+      localStorage.setItem('current_payment_id', pixData.id);
+      
+    } catch (error: any) {
+      console.error('Erro ao processar pagamento:', error);
+      setError(error.message || 'Erro ao gerar pagamento PIX. Tente novamente.');
     } finally {
       setPaymentLoading(false);
     }
