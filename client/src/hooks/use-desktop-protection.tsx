@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect } from "react";
 import MobileDetect from "mobile-detect";
 import { ipService } from "@/lib/ip-service";
 
@@ -13,7 +13,7 @@ import { ipService } from "@/lib/ip-service";
  * 5. Persiste o bloqueio entre sessões e em múltiplos armazenamentos
  */
 export function useDesktopProtection() {
-  React.useEffect(() => {
+  useEffect(() => {
     // Verificação imediata no cliente através de localStorage/cookies
     // Isso ajuda a bloquear instantaneamente mesmo antes da resposta da API
     if (ipService.isLocallyBanned()) {

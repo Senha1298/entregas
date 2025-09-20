@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -93,8 +93,8 @@ function App() {
     }
   }, [setLocation]);
   
-  // Ativar proteção contra acesso desktop no frontend
-  useDesktopProtection();
+  // TEMPORARIAMENTE DESABILITADO - Proteção contra acesso desktop 
+  // useDesktopProtection();
   
   return (
     <TooltipProvider>

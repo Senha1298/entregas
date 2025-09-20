@@ -171,7 +171,7 @@ const comments: Comment[] = [
     message: "Trabalho das 8h às 17h e consigo fazer uns R$580 por dia. O bom é que você escolhe seus horários, tem flexibilidade total.",
     likes: 35,
     timeAgo: "13h",
-    profileImage: profileImages.men[9]
+    profileImage: profileImages.men[8]
   },
   {
     id: 15,
@@ -216,7 +216,7 @@ const comments: Comment[] = [
     message: "Fiz o cadastro mês passado e já estou fazendo uma média de R$640 por dia. O treinamento online é muito bom, ensina tudo direitinho.",
     likes: 38,
     timeAgo: "18h",
-    profileImage: profileImages.men[13]
+    profileImage: profileImages.men[12]
   },
   {
     id: 20,
