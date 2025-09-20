@@ -267,7 +267,7 @@ const Treinamento: FC = () => {
           }}
         >
           <img 
-            src="https://images.icon-icons.com/icons2/2592/PNG/512/whatsapp_logo_icon_154480.png"
+            src="https://logodownload.org/wp-content/uploads/2015/04/whatsapp-logo-icone.png"
             alt="WhatsApp"
             className="w-8 h-8"
           />
