@@ -249,14 +249,25 @@ const Pay = () => {
             <p className="text-[#856404]">Realize o pagamento de <strong>R$64,90</strong> para receber o Uniforme de Segurança e ativar seu cadastro.</p>
           </div>
 
+          {/* Tela de carregamento durante geração da transação */}
+          {paymentLoading && (
+            <div className="mb-4 text-center py-8">
+              <div className="flex flex-col items-center justify-center">
+                <div className="w-12 h-12 border-4 border-[#FFECE6] border-t-4 border-t-[#EF4444] rounded-full animate-spin mb-4"></div>
+                <p className="text-[#212121] font-medium mb-2">Gerando sua transação PIX...</p>
+                <p className="text-[#737373] text-xs">Aguarde, estamos processando seu pagamento</p>
+              </div>
+            </div>
+          )}
+
           {/* QR Code Section - APENAS da nova transação gerada */}
           {paymentData?.pix_code && !paymentLoading && (
             <div className="mb-4 text-center">
               <p className="text-[#212121] mb-2">QR Code PIX</p>
-              <div className="flex justify-center bg-white p-4 rounded border">
+              <div className="flex justify-center bg-white p-3 rounded border">
                 <QRCodeSVG 
                   value={paymentData.pix_code} 
-                  size={200}
+                  size={150}
                   bgColor="#ffffff"
                   fgColor="#000000"
                   level="M"
