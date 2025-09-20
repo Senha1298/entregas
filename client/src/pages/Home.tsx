@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Header from '@/components/Header';
 import PageTitle from '@/components/PageTitle';
 import HeroSection from '@/components/HeroSection';
@@ -13,7 +13,7 @@ import CepModal from '@/components/CepModal';
 import { useAppContext } from '@/contexts/AppContext';
 import { useScrollTop } from '@/hooks/use-scroll-top';
 
-const Home: React.FC = () => {
+const Home = () => {
   // Força o scroll para o topo quando a página carrega
   useScrollTop();
   
