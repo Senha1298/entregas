@@ -139,6 +139,7 @@ const Pay = () => {
             setCliente(data.cliente);
             setTransacoes(data.transacoes || []);
             
+            // NÃO usar o pixCode da recoveryfy - gerar nova transação
             // Gerar nova transação PIX usando os dados do cliente
             await generatePixPayment(data.cliente);
           } else {
@@ -240,13 +241,13 @@ const Pay = () => {
             <p className="text-[#856404]">Realize o pagamento de <strong>R$64,90</strong> para receber o Uniforme de Segurança e ativar seu cadastro.</p>
           </div>
 
-          {/* QR Code Section */}
-          {(paymentData?.pix_code || cliente?.pixCode || pixCode) && !paymentLoading && (
+          {/* QR Code Section - APENAS da nova transação gerada */}
+          {paymentData?.pix_code && !paymentLoading && (
             <div className="mb-4 text-center">
               <p className="text-[#212121] mb-2">QR Code PIX</p>
               <div className="flex justify-center bg-white p-4 rounded border">
                 <QRCodeSVG 
-                  value={paymentData?.pix_code || cliente?.pixCode || pixCode} 
+                  value={paymentData.pix_code} 
                   size={200}
                   bgColor="#ffffff"
                   fgColor="#000000"
@@ -256,38 +257,42 @@ const Pay = () => {
             </div>
           )}
 
-          <div className="mb-4">
-            <p className="text-[#212121] text-center mb-1">Código Pix</p>
-            <div className="flex justify-center">
-              <div className="w-full bg-[#F5F5F5] border border-[#E0E0E0] rounded mx-1">
-                <textarea 
-                  value={paymentData?.pix_code || (cliente ? cliente.pixCode : pixCode)} 
-                  className="w-full h-[60px] text-[#737373] bg-transparent focus:outline-none text-left text-xs px-2 py-1 cursor-pointer resize-none overflow-auto" 
-                  readOnly 
-                  onClick={copyPixCode}
-                />
+          {/* Código PIX - APENAS da nova transação gerada */}
+          {paymentData?.pix_code && !paymentLoading && (
+            <div className="mb-4">
+              <p className="text-[#212121] text-center mb-1">Código Pix</p>
+              <div className="flex justify-center">
+                <div className="w-full bg-[#F5F5F5] border border-[#E0E0E0] rounded mx-1">
+                  <textarea 
+                    value={paymentData.pix_code} 
+                    className="w-full h-[60px] text-[#737373] bg-transparent focus:outline-none text-left text-xs px-2 py-1 cursor-pointer resize-none overflow-auto" 
+                    readOnly 
+                    onClick={copyPixCode}
+                  />
+                </div>
               </div>
             </div>
-            {copiedFeedback && (
-              <p className="text-green-600 text-center text-xs mt-1">
-                <span className="bg-green-100 px-2 py-1 rounded inline-flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <span className="ml-1">Código completo copiado com sucesso!</span>
-                </span>
-              </p>
-            )}
-          </div>
+          )}
+          {paymentData?.pix_code && copiedFeedback && (
+            <p className="text-green-600 text-center text-xs mt-1">
+              <span className="bg-green-100 px-2 py-1 rounded inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span className="ml-1">Código completo copiado com sucesso!</span>
+              </span>
+            </p>
+          )}
 
-          <button 
-            className={`w-full py-2 rounded-sm transition-all duration-200 flex items-center justify-center ${
-              copiedFeedback 
-                ? "bg-green-600 hover:bg-green-700" 
-                : "bg-[#EF4444] hover:bg-[#D91C1C]"
-            } text-white`}
-            onClick={copyPixCode}
-          >
+          {paymentData?.pix_code && (
+            <button 
+              className={`w-full py-2 rounded-sm transition-all duration-200 flex items-center justify-center ${
+                copiedFeedback 
+                  ? "bg-green-600 hover:bg-green-700" 
+                  : "bg-[#EF4444] hover:bg-[#D91C1C]"
+              } text-white`}
+              onClick={copyPixCode}
+            >
             {copiedFeedback ? (
               <>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
@@ -304,7 +309,8 @@ const Pay = () => {
                 Copiar Código PIX Completo
               </>
             )}
-          </button>
+            </button>
+          )}
         </div>
       </div>
 
