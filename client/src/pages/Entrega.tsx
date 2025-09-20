@@ -989,6 +989,31 @@ const Entrega: React.FC = () => {
                   Após o pagamento, retorne a esta página para finalizar o cadastro.
                 </p>
               </div>
+              
+              {/* Botão flutuante do WhatsApp */}
+              <div className="fixed top-1/2 transform -translate-y-1/2 right-4 z-50 flex flex-col items-center">
+                <button
+                  onClick={() => {
+                    const phoneNumber = "15558332827";
+                    const message = "Olá, desejo finalizar meu cadastro como Entregador Shopee.";
+                    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                  }}
+                  className="bg-green-500 hover:bg-green-600 rounded-full p-3 shadow-lg transform transition-all duration-200 hover:scale-110 active:scale-95"
+                  style={{
+                    boxShadow: "0 4px 12px rgba(37, 211, 102, 0.4)"
+                  }}
+                >
+                  <img 
+                    src="https://images.icon-icons.com/icons2/2592/PNG/512/whatsapp_logo_icon_154480.png"
+                    alt="WhatsApp"
+                    className="w-8 h-8"
+                  />
+                </button>
+                <p className="text-xs text-gray-600 font-medium mt-2 text-center whitespace-nowrap">
+                  Precisa de ajuda?
+                </p>
+              </div>
             </div>
           ) : null}
         </DialogContent>
