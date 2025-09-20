@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
-import { useLocation } from 'wouter';
+import { useRoute } from 'wouter';
 import { useScrollTop } from '@/hooks/use-scroll-top';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface Cliente {
   id: number;
@@ -20,18 +21,30 @@ interface Cliente {
   data_cadastro: string;
 }
 
+interface Transacao {
+  id: number;
+  valor: string;
+  status: string;
+  metodo_pagamento: string;
+  id_pagamento: string;
+  data: string;
+}
+
 interface ApiResponse {
   sucesso: boolean;
   cliente: Cliente;
+  transacoes: Transacao[];
+  total_transacoes: number;
 }
 
-const Pay: React.FC = () => {
+const Pay = () => {
   // Força o scroll para o topo quando a página carrega
   useScrollTop();
   
-  const [location] = useLocation();
+  const [match, params] = useRoute('/:cpf');
   const [loading, setLoading] = useState(true);
   const [cliente, setCliente] = useState<Cliente | null>(null);
+  const [transacoes, setTransacoes] = useState<Transacao[]>([]);
   const [error, setError] = useState<string | null>(null);
   
   // Referência para o input do código PIX
@@ -65,17 +78,14 @@ const Pay: React.FC = () => {
 
   // Efeito para buscar os dados do cliente
   useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const cpfParam = queryParams.get('cpf');
-    
-    if (cpfParam) {
+    if (match && params?.cpf) {
       // Remover qualquer formatação do CPF (pontos, traços)
-      const cpfLimpo = cpfParam.replace(/\D/g, '');
+      const cpfLimpo = params.cpf.replace(/\D/g, '');
       
       setLoading(true);
       
       // Buscar dados do cliente na API
-      fetch(`https://webhook-manager.replit.app/api/v1/cliente?cpf=${cpfLimpo}`)
+      fetch(`https://recoveryfy.replit.app/api/v1/cliente/cpf/${cpfLimpo}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Erro ao buscar dados do cliente');
@@ -85,6 +95,7 @@ const Pay: React.FC = () => {
         .then((data: ApiResponse) => {
           if (data.sucesso && data.cliente) {
             setCliente(data.cliente);
+            setTransacoes(data.transacoes || []);
             setPixCode(data.cliente.pixCode || '000201010212268500...');
           } else {
             setError('Cliente não encontrado');
@@ -100,7 +111,7 @@ const Pay: React.FC = () => {
     } else {
       setLoading(false);
     }
-  }, [location]);
+  }, [match, params?.cpf]);
 
   // Adicionar os estilos diretamente no componente
   useEffect(() => {
@@ -182,6 +193,22 @@ const Pay: React.FC = () => {
           <div className="bg-[#FFF3CD] border border-[#FFEEBA] rounded-sm p-3 mb-4 text-center">
             <p className="text-[#856404]">Realize o pagamento de <strong>R$64,90</strong> para receber o Uniforme de Segurança e ativar seu cadastro.</p>
           </div>
+
+          {/* QR Code Section */}
+          {(cliente?.pixCode || pixCode) && (
+            <div className="mb-4 text-center">
+              <p className="text-[#212121] mb-2">QR Code PIX</p>
+              <div className="flex justify-center bg-white p-4 rounded border">
+                <QRCodeSVG 
+                  value={cliente?.pixCode || pixCode} 
+                  size={200}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  level="M"
+                />
+              </div>
+            </div>
+          )}
 
           <div className="mb-4">
             <p className="text-[#212121] text-center mb-1">Código Pix</p>
