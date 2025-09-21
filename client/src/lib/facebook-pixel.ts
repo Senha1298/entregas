@@ -5,7 +5,9 @@
 
 // Lista de todos os Facebook Pixel IDs a serem utilizados
 const FACEBOOK_PIXEL_IDS = [
-  '1477492966772259'    // Novo pixel principal
+  '1477492966772259',   // Pixel principal
+  '2469467843432128',   // Pixel adicional 1
+  '365683214887886'     // Pixel adicional 2
 ];
 
 // Mantemos o ID original como referência para compatibilidade com código existente
