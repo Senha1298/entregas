@@ -171,7 +171,7 @@ const Recebedor: React.FC = () => {
         console.log('❌ Erro ao salvar dados de pagamento:', e);
       }
       
-      // Cartão Salário Shopee - redirecionamento direto
+      // Cartão Salário Shopee - redireciona conforme API
       performRedirect();
     };
     
