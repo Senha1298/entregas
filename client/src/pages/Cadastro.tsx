@@ -525,6 +525,10 @@ const Cadastro: React.FC = () => {
         estado: cepData.state,
         cidade: cepData.city,
         cep: cepData.cep,
+        // Dados do veículo
+        placa: data.placa || '',
+        isRentedCar,
+        vehicleInfo: vehicleInfo || null,
       };
 
       console.log('[CADASTRO] Salvando dados do candidato:', candidatoData);
