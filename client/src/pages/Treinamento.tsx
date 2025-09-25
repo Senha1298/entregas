@@ -282,7 +282,7 @@ const Treinamento: FC = () => {
         <button
           onClick={() => {
             const phoneNumber = "15558373106";
-            const message = "Olá, desejo finalizar meu cadastro como Entregador Shopee.";
+            const message = "Desejo tirar dúvidas sobre o treinamento do Entregador Shopee.";
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
           }}
@@ -297,8 +297,8 @@ const Treinamento: FC = () => {
             className="w-8 h-8"
           />
         </button>
-        <p className="text-[10px] text-gray-600 font-medium mt-2 text-center" style={{whiteSpace: 'nowrap', width: 'max-content'}}>
-          Converse com um Gerente
+        <p className="text-[9px] text-gray-600 font-medium mt-1 text-center leading-none" style={{whiteSpace: 'nowrap', minWidth: 'max-content'}}>
+          Converse com um<br/>Gerente
         </p>
       </div>
     </div>
