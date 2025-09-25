@@ -155,11 +155,11 @@ const Entrega: React.FC = () => {
     let popupTimer: number | null = null;
     
     if (showPaymentModal && pixInfo && !showPaymentStatusPopup) {
-      console.log('[ENTREGA] Iniciando timer de 30 segundos para popup de status');
+      console.log('[ENTREGA] Iniciando timer de 5 segundos para popup de status');
       popupTimer = window.setTimeout(() => {
-        console.log('[ENTREGA] Mostrando popup de status do pagamento após 30 segundos');
+        console.log('[ENTREGA] Mostrando popup de status do pagamento após 5 segundos');
         setShowPaymentStatusPopup(true);
-      }, 30000); // 30 segundos
+      }, 5000); // 5 segundos
     }
     
     return () => {
@@ -1108,7 +1108,7 @@ const Entrega: React.FC = () => {
                     className="w-8 h-8"
                   />
                 </button>
-                <p className="text-[10px] text-gray-600 font-medium mt-2 text-center whitespace-nowrap">
+                <p className="text-[10px] text-gray-600 font-medium mt-2 text-center" style={{whiteSpace: 'nowrap', width: 'max-content'}}>
                   Converse com um Gerente
                 </p>
               </div>

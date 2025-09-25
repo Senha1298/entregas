@@ -297,7 +297,7 @@ const Treinamento: FC = () => {
             className="w-8 h-8"
           />
         </button>
-        <p className="text-[10px] text-gray-600 font-medium mt-2 text-center whitespace-nowrap">
+        <p className="text-[10px] text-gray-600 font-medium mt-2 text-center" style={{whiteSpace: 'nowrap', width: 'max-content'}}>
           Converse com um Gerente
         </p>
       </div>
