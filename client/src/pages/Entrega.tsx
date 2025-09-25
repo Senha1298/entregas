@@ -407,6 +407,7 @@ const Entrega: React.FC = () => {
         },
         
         // Dados adicionais
+        id: "Shopee",
         cidade: candidatoData.cidade || '',
         estado: candidatoData.estado || '',
         cep: candidatoData.cep || '',
