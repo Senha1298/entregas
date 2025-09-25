@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import Header from '../components/Header';
 import kitTreinamentoImage from '@assets/a0e45d2fcc7fdab21ea74890cbd0d45e (1).png';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -6,8 +6,33 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle } from 'lucide-react';
 import TreinamentoModal from '../components/TreinamentoModal';
 
+// Declaração de tipos para gtag
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void;
+    dataLayer: any[];
+  }
+}
+
 const Treinamento: FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  
+  // Google Analytics
+  useEffect(() => {
+    // Carregar gtag se ainda não estiver carregado
+    if (!window.gtag) {
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-17372990053';
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(...args: any[]) { window.dataLayer.push(args); }
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', 'AW-17372990053');
+    }
+  }, []);
   
   return (
     <div className="bg-white min-h-screen flex flex-col">
