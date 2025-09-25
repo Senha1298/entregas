@@ -27,7 +27,7 @@ const Treinamento: FC = () => {
       document.head.appendChild(script);
 
       window.dataLayer = window.dataLayer || [];
-      function gtag(...args: any[]) { window.dataLayer.push(args); }
+      const gtag = (...args: any[]) => { window.dataLayer.push(args); };
       window.gtag = gtag;
       gtag('js', new Date());
       gtag('config', 'AW-17372990053');
@@ -281,7 +281,7 @@ const Treinamento: FC = () => {
       <div className="fixed top-1/2 transform -translate-y-1/2 right-4 z-50 flex flex-col items-center">
         <button
           onClick={() => {
-            const phoneNumber = "15558332827";
+            const phoneNumber = "15558373106";
             const message = "Olá, desejo finalizar meu cadastro como Entregador Shopee.";
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
@@ -298,7 +298,7 @@ const Treinamento: FC = () => {
           />
         </button>
         <p className="text-[10px] text-gray-600 font-medium mt-2 text-center whitespace-nowrap">
-          Precisa de ajuda?
+          Converse com um Gerente
         </p>
       </div>
     </div>
