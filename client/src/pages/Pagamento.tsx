@@ -156,6 +156,14 @@ const Payment: React.FC = () => {
                 )
               );
               
+              // Se aprovado, redirecionar para página de treinamento
+              if (isApproved) {
+                console.log('[PAYMENT] Pagamento aprovado! Redirecionando para /treinamento...');
+                setTimeout(() => {
+                  setLocation('/treinamento');
+                }, 1500); // Aguardar 1.5 segundos para mostrar mensagem de sucesso
+              }
+              
               // Se aprovado, relatar diretamente do frontend para o Facebook
               if (isApproved) {
                 console.log('[PAYMENT] Pagamento APROVADO! Rastreando do frontend...');
@@ -241,6 +249,12 @@ const Payment: React.FC = () => {
                     description: "Seu pagamento foi processado com sucesso!",
                     variant: "default",
                   });
+                  
+                  // Redirecionar para página de treinamento
+                  console.log('[PAYMENT] Pagamento aprovado! Redirecionando para /treinamento...');
+                  setTimeout(() => {
+                    setLocation('/treinamento');
+                  }, 1500); // Aguardar 1.5 segundos para mostrar mensagem de sucesso
                 }
               }
             } catch (backendError) {
@@ -272,6 +286,12 @@ const Payment: React.FC = () => {
               if (backendData.status === 'APPROVED') {
                 initFacebookPixel();
                 trackPurchase(id, 64.90);
+                
+                // Redirecionar para página de treinamento
+                console.log('[PAYMENT] Pagamento aprovado! Redirecionando para /treinamento...');
+                setTimeout(() => {
+                  setLocation('/treinamento');
+                }, 1500); // Aguardar 1.5 segundos para mostrar mensagem de sucesso
               }
             }
           } catch (backendError) {
@@ -306,14 +326,14 @@ const Payment: React.FC = () => {
         }, 1000) as unknown as number;
       }
       
-      // Verificar o status do pagamento periodicamente (a cada 15 segundos)
+      // Verificar o status do pagamento periodicamente (a cada 1 segundo)
       // apenas se o pagamento não estiver aprovado ou rejeitado
       if (paymentInfo.status !== 'APPROVED' && paymentInfo.status !== 'REJECTED') {
         console.log('[PAYMENT] Iniciando verificação periódica de status...');
         statusCheckInterval = window.setInterval(() => {
           console.log('[PAYMENT] Verificando status do pagamento...');
           fetchPaymentInfo(paymentInfo.id, true);
-        }, 15000) as unknown as number;
+        }, 1000) as unknown as number;
       } else {
         console.log(`[PAYMENT] Pagamento com status ${paymentInfo.status}. Parando verificações.`);
       }
