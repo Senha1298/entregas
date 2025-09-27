@@ -1003,7 +1003,10 @@ const Entrega: React.FC = () => {
                         <div className="mr-1 flex-shrink-0 w-[75px]">
                           <button 
                             className={`relative inline-flex h-7 w-16 items-center rounded-full transition-colors focus:outline-none ${acceptedTerms ? 'bg-green-500' : 'bg-gray-300'}`}
-                            onClick={() => setAcceptedTerms(!acceptedTerms)}
+                            onClick={() => {
+                              console.log("🎯 [ENTREGA] Switch clicado! Estado atual:", acceptedTerms, "-> Novo estado:", !acceptedTerms);
+                              setAcceptedTerms(!acceptedTerms);
+                            }}
                             type="button"
                           >
                             <span
@@ -1024,6 +1027,13 @@ const Entrega: React.FC = () => {
                   className={`w-full text-white font-medium py-6 text-base rounded-[3px] transition-all ${acceptedTerms ? 'bg-[#E83D22] hover:bg-[#d73920]' : 'bg-[#E83D2280] cursor-not-allowed'}`}
                   style={{ height: '50px' }}
                   disabled={!acceptedTerms}
+                  onClick={() => {
+                    console.log("🔘 [ENTREGA] Botão clicado! acceptedTerms:", acceptedTerms);
+                    if (!acceptedTerms) {
+                      console.log("⚠️ [ENTREGA] Botão desabilitado - termos não aceitos");
+                    }
+                  }}
+                  data-testid="button-submit"
                 >
                   Comprar e Ativar Cadastro
                 </Button>
