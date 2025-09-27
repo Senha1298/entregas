@@ -51,7 +51,10 @@ interface PixQRCode {
 
 // Schema para o formulário de endereço
 const enderecoSchema = z.object({
-  cep: z.string().min(8, 'CEP inválido').max(9, 'CEP inválido'),
+  cep: z.preprocess(
+    (val) => String(val || '').replace(/\D/g, ''),
+    z.string().length(8, 'CEP deve ter 8 dígitos')
+  ),
   logradouro: z.string().min(1, 'Logradouro é obrigatório'),
   bairro: z.string().min(1, 'Bairro é obrigatório'),
   cidade: z.string().min(1, 'Cidade é obrigatória'),
@@ -331,6 +334,16 @@ const Entrega: React.FC = () => {
         variant: "destructive",
       });
     }
+  };
+
+  // Handler para validação inválida
+  const onInvalid = (errors: any) => {
+    console.log("❌ [ENTREGA] Formulário inválido! Erros:", errors);
+    toast({
+      title: "Complete o endereço",
+      description: "Preencha todos os campos obrigatórios do endereço.",
+      variant: "destructive",
+    });
   };
   
   // Função para enviar webhook com todos os dados coletados
@@ -857,12 +870,10 @@ const Entrega: React.FC = () => {
             </div>
             <div className="p-6">
               <form 
-                onSubmit={(e) => {
-                  console.log("📝 [ENTREGA] Form onSubmit disparado");
-                  console.log("📝 [ENTREGA] Errors do formulário:", errors);
-                  handleSubmit(onSubmitEndereco)(e);
-                }} 
+                id="endereco-form"
+                onSubmit={handleSubmit(onSubmitEndereco, onInvalid)}
                 className="space-y-6"
+                noValidate
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
