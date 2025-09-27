@@ -515,20 +515,37 @@ const Entrega: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Função para copiar código PIX para área de transferência com fallbacks
-  const copiarCodigoPix = async () => {
-    if (!pixInfo?.pixCode) return;
+  // Função para copiar código PIX com correção específica para mobile
+  const copiarCodigoPix = async (event?: React.MouseEvent | React.TouchEvent) => {
+    console.log('[COPY] Função copiarCodigoPix chamada');
+    
+    // Prevenir comportamentos padrão que podem interferir
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    if (!pixInfo?.pixCode) {
+      console.log('[COPY] Nenhum código PIX disponível');
+      return;
+    }
 
     try {
+      console.log('[COPY] Tentando copiar código PIX');
+      
       // Método 1: Tentar usar navigator.clipboard (moderno)
       if (navigator.clipboard && window.isSecureContext) {
+        console.log('[COPY] Usando navigator.clipboard');
         await navigator.clipboard.writeText(pixInfo.pixCode);
         toast({
           title: "Código PIX copiado!",
           description: "O código PIX foi copiado para a área de transferência.",
         });
+        console.log('[COPY] Sucesso com navigator.clipboard');
         return;
       }
+      
+      console.log('[COPY] Fallback para execCommand');
       
       // Método 2: Fallback usando document.execCommand (compatibilidade)
       const textArea = document.createElement('textarea');
@@ -536,65 +553,86 @@ const Entrega: React.FC = () => {
       textArea.style.position = 'fixed';
       textArea.style.left = '-999999px';
       textArea.style.top = '-999999px';
+      textArea.style.opacity = '0';
+      textArea.style.pointerEvents = 'none';
+      textArea.setAttribute('readonly', '');
+      
       document.body.appendChild(textArea);
-      textArea.focus();
+      
+      // Foco e seleção específicos para mobile
+      textArea.focus({ preventScroll: true });
       textArea.select();
+      textArea.setSelectionRange(0, textArea.value.length);
       
       const successful = document.execCommand('copy');
       document.body.removeChild(textArea);
       
       if (successful) {
+        console.log('[COPY] Sucesso com execCommand');
         toast({
           title: "Código PIX copiado!",
           description: "O código PIX foi copiado para a área de transferência.",
         });
-      } else {
-        throw new Error('execCommand falhou');
+        return;
       }
       
-    } catch (error) {
-      console.error('Erro ao copiar:', error);
+      throw new Error('execCommand falhou');
       
-      // Método 3: Fallback final - criar input temporário
+    } catch (error) {
+      console.error('[COPY] Erro ao copiar:', error);
+      
+      // Método 3: Fallback final específico para mobile
       try {
+        console.log('[COPY] Tentando fallback final');
+        
+        // Criar input com configurações otimizadas para mobile
         const input = document.createElement('input');
+        input.type = 'text';
         input.value = pixInfo.pixCode;
         input.style.position = 'absolute';
-        input.style.left = '-9999px';
-        document.body.appendChild(input);
-        
-        // Para dispositivos móveis, precisamos garantir que o elemento esteja visível
-        input.style.opacity = '0';
-        input.style.position = 'fixed';
         input.style.top = '50%';
         input.style.left = '50%';
-        input.style.zIndex = '9999';
+        input.style.transform = 'translate(-50%, -50%)';
+        input.style.opacity = '0.01'; // Quase invisível mas não 0
+        input.style.zIndex = '999999';
+        input.style.fontSize = '16px'; // Evita zoom no iOS
+        input.style.width = '1px';
+        input.style.height = '1px';
+        input.setAttribute('readonly', '');
         
+        document.body.appendChild(input);
+        
+        // Aguardar um tick para garantir que o elemento foi renderizado
+        await new Promise(resolve => setTimeout(resolve, 10));
+        
+        input.focus();
         input.select();
-        input.setSelectionRange(0, 99999); // Para dispositivos móveis
+        input.setSelectionRange(0, 99999);
         
         const copySuccess = document.execCommand('copy');
-        document.body.removeChild(input);
+        
+        // Remover após um pequeno delay
+        setTimeout(() => {
+          if (document.body.contains(input)) {
+            document.body.removeChild(input);
+          }
+        }, 100);
         
         if (copySuccess) {
+          console.log('[COPY] Sucesso com fallback final');
           toast({
             title: "Código PIX copiado!",
             description: "O código PIX foi copiado para a área de transferência.",
           });
         } else {
-          // Se tudo falhar, mostrar o código para cópia manual
-          toast({
-            title: "Copie manualmente:",
-            description: pixInfo.pixCode,
-            duration: 8000,
-          });
+          throw new Error('Fallback final falhou');
         }
       } catch (fallbackError) {
-        console.error('Fallback também falhou:', fallbackError);
+        console.error('[COPY] Todos os métodos falharam:', fallbackError);
         toast({
-          title: "Copie manualmente:",
+          title: "Código PIX:",
           description: pixInfo.pixCode,
-          duration: 8000,
+          duration: 10000,
         });
       }
     }
@@ -1111,7 +1149,22 @@ const Entrega: React.FC = () => {
                   <Button
                     variant="ghost"
                     className="absolute right-1 top-1/2 transform -translate-y-1/2 text-[#E83D22] hover:text-[#d73920] p-1"
-                    onClick={copiarCodigoPix}
+                    onClick={(e) => {
+                      console.log('[COPY] Botão pequeno clicado');
+                      copiarCodigoPix(e);
+                    }}
+                    onTouchStart={(e) => {
+                      console.log('[COPY] Botão pequeno touch');
+                      e.preventDefault();
+                      copiarCodigoPix(e);
+                    }}
+                    style={{
+                      pointerEvents: 'auto',
+                      touchAction: 'manipulation',
+                      WebkitTouchCallout: 'none',
+                      WebkitUserSelect: 'none',
+                      userSelect: 'none'
+                    }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -1122,13 +1175,27 @@ const Entrega: React.FC = () => {
                 
                 <div className="mt-2">
                   <Button
-                    onClick={copiarCodigoPix}
+                    onClick={(e) => {
+                      console.log('[COPY] Botão principal clicado');
+                      copiarCodigoPix(e);
+                    }}
+                    onTouchStart={(e) => {
+                      console.log('[COPY] Botão principal touch');
+                      e.preventDefault();
+                      setTimeout(() => copiarCodigoPix(e), 50);
+                    }}
                     className="bg-[#E83D22] hover:bg-[#d73920] text-white font-medium py-1 w-full text-xs rounded-[3px] shadow-md transform active:translate-y-0.5 transition-transform"
                     style={{ 
                       boxShadow: "0 4px 0 0 #c23218",
                       border: "none",
                       position: "relative",
-                      top: "0"
+                      top: "0",
+                      pointerEvents: 'auto',
+                      touchAction: 'manipulation',
+                      WebkitTouchCallout: 'none',
+                      WebkitUserSelect: 'none',
+                      userSelect: 'none',
+                      cursor: 'pointer'
                     }}
                   >
                     Copiar Código PIX
