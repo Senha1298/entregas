@@ -412,9 +412,6 @@ const Payment: React.FC = () => {
                         <p className="text-sm text-gray-600">
                           <span className="font-medium">CPF:</span> {cpf}
                         </p>
-                        <p className="text-sm text-gray-600">
-                          <span className="font-medium">Email:</span> {email}
-                        </p>
                       </div>
                     </div>
                   </div>
@@ -483,7 +480,7 @@ const Payment: React.FC = () => {
                         
                         <QRCodeGenerator 
                           value={paymentInfo?.pixCode || ''} 
-                          size={200}
+                          size={150}
                           className="mx-auto"
                           alt="QR Code PIX" 
                         />
@@ -526,6 +523,20 @@ const Payment: React.FC = () => {
                               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                             </svg>
+                          </Button>
+                        </div>
+                        
+                        {/* Botão laranja para copiar código PIX */}
+                        <div className="mt-3">
+                          <Button
+                            onClick={copiarCodigoPix}
+                            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-md transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copiar Código PIX
                           </Button>
                         </div>
                       </div>
