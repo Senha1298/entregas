@@ -83,6 +83,33 @@ const Payment: React.FC = () => {
       if (data.transaction?.customer_name) setName(data.transaction.customer_name);
       if (data.transaction?.customer_cpf) setCpf(data.transaction.customer_cpf);
       
+      // Se não conseguiu obter dados da API, buscar no localStorage
+      if (!data.transaction?.customer_name || !data.transaction?.customer_cpf) {
+        console.log('[PAYMENT] Dados incompletos da API, buscando no localStorage...');
+        
+        // Buscar dados do usuário do localStorage
+        const candidatoData = localStorage.getItem('candidato_data');
+        if (candidatoData) {
+          try {
+            const userData = JSON.parse(candidatoData);
+            console.log('[PAYMENT] Dados encontrados no localStorage:', userData);
+            
+            if (!data.transaction?.customer_name && userData.nome) {
+              setName(userData.nome);
+              console.log('[PAYMENT] Nome definido do localStorage:', userData.nome);
+            }
+            if (!data.transaction?.customer_cpf && userData.cpf) {
+              setCpf(userData.cpf);
+              console.log('[PAYMENT] CPF definido do localStorage:', userData.cpf.substring(0, 3) + '***' + userData.cpf.substring(userData.cpf.length - 2));
+            }
+          } catch (error) {
+            console.error('[PAYMENT] Erro ao parsear dados do localStorage:', error);
+          }
+        } else {
+          console.log('[PAYMENT] Nenhum dado encontrado no localStorage para candidato_data');
+        }
+      }
+      
       // Atualizar as informações básicas do pagamento
       setPaymentInfo({
         id: data.transaction?.gateway_id || id,
