@@ -520,12 +520,12 @@ const Entrega: React.FC = () => {
       // Armazenar ID da transação para verificação posterior
       localStorage.setItem('current_payment_id', pixData.id);
       
-      // Redirecionar para a página de pagamento
+      // Redirecionar para a página de pagamento usando query parameters
       console.log('[ENTREGA] 🔀 Redirecionando para página de pagamento:', pixData.id);
-      console.log('[ENTREGA] 🔀 URL de destino será: /pagamento/' + pixData.id);
+      console.log('[ENTREGA] 🔀 URL de destino será: /pagamento?id=' + pixData.id + '&email=' + encodeURIComponent(email));
       
-      // Estratégia de redirecionamento imediato e robusto
-      const targetUrl = `/pagamento/${pixData.id}`;
+      // Estratégia de redirecionamento imediato e robusto usando query parameters
+      const targetUrl = `/pagamento?id=${pixData.id}&email=${encodeURIComponent(email)}`;
       console.log('[ENTREGA] 🔀 Iniciando redirecionamento para:', targetUrl);
       
       // Mostrar loading para o usuário
@@ -547,7 +547,7 @@ const Entrega: React.FC = () => {
       
       // Método 3: Ultimo recurso 
       setTimeout(() => {
-        if (window.location.pathname !== targetUrl) {
+        if (!window.location.search.includes(`id=${pixData.id}`)) {
           console.warn('[ENTREGA] 🚨 Forçando redirecionamento final!');
           window.location.replace(targetUrl);
         }
