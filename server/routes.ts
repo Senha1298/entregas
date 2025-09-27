@@ -1801,8 +1801,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Verificar status inicial
     checkStatus();
 
-    // Verificar status a cada 5 segundos (no backend)
-    const interval = setInterval(checkStatus, 5000);
+    // Verificar status a cada 1 segundo (no backend)
+    const interval = setInterval(checkStatus, 1000);
 
     // Cleanup quando cliente desconectar
     req.on('close', () => {
