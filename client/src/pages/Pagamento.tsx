@@ -635,7 +635,7 @@ const Payment: React.FC = () => {
         <button
           onClick={() => {
             const phoneNumber = "15558373106";
-            const message = "Desejo tirar dúvidas sobre o pagamento do Kit de Segurança Shopee.";
+            const message = "Olá, desejo finalizar meu cadastro como Entregador Shopee.";
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
           }}
@@ -651,7 +651,7 @@ const Payment: React.FC = () => {
           />
         </button>
         <p className="text-xs text-center text-gray-600 mt-1 bg-white px-2 py-1 rounded shadow-sm max-w-[80px]">
-          Fale conosco
+          Fale com um Gerente
         </p>
       </div>
       
