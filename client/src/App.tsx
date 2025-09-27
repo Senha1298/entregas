@@ -21,6 +21,7 @@ import CpfPayment from "@/pages/CpfPayment";
 import InstallApp from "@/pages/InstallApp";
 import AdminPanel from "@/pages/AdminPanel";
 import AppPage from "@/pages/AppPage";
+import Pagamento from "@/pages/Pagamento";
 import { useAppContext } from "@/contexts/AppContext";
 import { useDesktopProtection } from "@/hooks/use-desktop-protection";
 import FacebookPixelInitializer from "@/components/FacebookPixelInitializer";
@@ -46,6 +47,7 @@ function Router() {
       <Route path="/treinamento" component={Treinamento} />
       <Route path="/treinamento-app" component={TreinamentoApp} />
       <Route path="/pagamento-instrutor" component={PagamentoInstrutor} />
+      <Route path="/pagamento/:transactionId?" component={Pagamento} />
       <Route path="/instalar-app" component={InstallApp} />
       <Route path="/admin" component={AdminPanel} />
       <Route path="/app" component={AppPage} />
