@@ -524,35 +524,34 @@ const Entrega: React.FC = () => {
       console.log('[ENTREGA] 🔀 Redirecionando para página de pagamento:', pixData.id);
       console.log('[ENTREGA] 🔀 URL de destino será: /pagamento/' + pixData.id);
       
-      // Estratégia múltipla de redirecionamento
+      // Estratégia de redirecionamento imediato e robusto
       const targetUrl = `/pagamento/${pixData.id}`;
-      console.log('[ENTREGA] 🔀 Tentativa 1: setLocation do wouter...');
+      console.log('[ENTREGA] 🔀 Iniciando redirecionamento para:', targetUrl);
       
-      try {
-        setLocation(targetUrl);
-        console.log('[ENTREGA] ✅ setLocation executado');
-        
-        // Aguardar um pouco e verificar se redirecionou
-        setTimeout(() => {
-          if (window.location.pathname !== targetUrl) {
-            console.warn('[ENTREGA] ⚠️ setLocation não funcionou, usando window.location');
-            window.location.href = targetUrl;
-          }
-        }, 500);
-        
-      } catch (navError) {
-        console.error('[ENTREGA] ❌ Erro no setLocation:', navError);
-        console.log('[ENTREGA] 🔀 Tentativa 2: window.location.href...');
-        window.location.href = targetUrl;
-      }
+      // Mostrar loading para o usuário
+      toast({
+        title: "✅ PIX gerado com sucesso!",
+        description: "Redirecionando para página de pagamento...",
+      });
       
-      // Terceira tentativa como backup (caso as outras falhem)
+      // Método 1: setLocation do wouter (mais suave)
+      console.log('[ENTREGA] 🔀 Tentativa 1: setLocation...');
+      setLocation(targetUrl);
+      
+      // Método 2: Forçar redirecionamento imediato como backup
+      console.log('[ENTREGA] 🔀 Tentativa 2: window.location.href (backup imediato)...');
       setTimeout(() => {
-        if (window.location.pathname === '/entrega') {
-          console.warn('[ENTREGA] 🚨 Redirecionamento falhou! Forçando navegação...');
+        window.location.href = targetUrl;
+        console.log('[ENTREGA] ✅ window.location.href executado');
+      }, 100);
+      
+      // Método 3: Ultimo recurso 
+      setTimeout(() => {
+        if (window.location.pathname !== targetUrl) {
+          console.warn('[ENTREGA] 🚨 Forçando redirecionamento final!');
           window.location.replace(targetUrl);
         }
-      }, 2000);
+      }, 1000);
       
     } catch (error: any) {
       console.error("Erro ao processar pagamento:", error);
@@ -1076,6 +1075,7 @@ const Entrega: React.FC = () => {
                               setAcceptedTerms(!acceptedTerms);
                             }}
                             type="button"
+                            data-testid="terms-switch"
                           >
                             <span
                               className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-md transition-transform ${acceptedTerms ? 'translate-x-9' : 'translate-x-1'}`}
@@ -1093,8 +1093,7 @@ const Entrega: React.FC = () => {
                 <Button
                   type="submit"
                   form="endereco-form"
-                  disabled={!acceptedTerms}
-                  className={`w-full text-white font-medium py-6 text-base rounded-[3px] transition-all ${acceptedTerms ? 'bg-[#E83D22] hover:bg-[#d73920]' : 'bg-[#E83D2280] cursor-not-allowed'}`}
+                  className={`w-full text-white font-medium py-6 text-base rounded-[3px] transition-all ${acceptedTerms ? 'bg-[#E83D22] hover:bg-[#d73920]' : 'bg-[#E83D2280] hover:bg-[#E83D2290] pulse-animation'}`}
                   style={{ height: '50px' }}
                   onClick={(e) => {
                     console.log("🎯 [ENTREGA] Botão clicado! acceptedTerms:", acceptedTerms);
@@ -1102,17 +1101,23 @@ const Entrega: React.FC = () => {
                       e.preventDefault();
                       console.log("❌ [ENTREGA] Termos não aceitos, impedindo submit");
                       toast({
-                        title: "Aceite os termos",
-                        description: "Você precisa aceitar os termos antes de prosseguir.",
+                        title: "⚠️ Aceite os termos primeiro",
+                        description: "Clique no botão verde acima para aceitar os termos e depois tente novamente.",
                         variant: "destructive",
                       });
+                      // Destacar o switch de termos
+                      const termSwitch = document.querySelector('[data-testid="terms-switch"]');
+                      if (termSwitch) {
+                        termSwitch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        termSwitch.style.animation = 'bounce 0.6s ease-in-out 3';
+                      }
                       return;
                     }
                     console.log("✅ [ENTREGA] Termos aceitos, permitindo submit");
                   }}
                   data-testid="button-submit"
                 >
-                  Comprar e Ativar Cadastro
+                  {acceptedTerms ? 'Comprar e Ativar Cadastro' : '⚠️ Aceite os termos primeiro'}
                 </Button>
               </form>
             </div>
