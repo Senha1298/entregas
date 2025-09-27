@@ -12,7 +12,9 @@ export const API_URLS = {
 };
 
 // URL base da API dependendo do ambiente
-export const API_BASE_URL = '';
+export const API_BASE_URL = typeof window !== 'undefined' 
+  ? window.location.origin 
+  : '';
 
 // Flag para debug
 const DEBUG = false;

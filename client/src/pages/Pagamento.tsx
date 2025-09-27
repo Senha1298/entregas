@@ -386,6 +386,53 @@ const Payment: React.FC = () => {
           eventSource.onerror = (error) => {
             console.error('[PAYMENT SSE] Erro na conexão:', error);
             eventSource?.close();
+            
+            // Fallback: se SSE falhar, usar polling tradicional
+            console.log('[PAYMENT SSE] Iniciando fallback com polling...');
+            const fallbackInterval = setInterval(async () => {
+              try {
+                const response = await fetch(`${API_BASE_URL}/api/transactions/${paymentInfo.id}/status`);
+                if (response.ok) {
+                  const data = await response.json();
+                  
+                  // Atualizar status
+                  setPaymentInfo(prev => {
+                    if (!prev) return prev;
+                    return {
+                      ...prev,
+                      status: data.status?.toUpperCase() || prev.status || 'PENDING'
+                    };
+                  });
+                  
+                  // Se aprovado, redirecionar
+                  if (data.status === 'paid' || data.status === 'approved') {
+                    clearInterval(fallbackInterval);
+                    
+                    toast({
+                      title: "✅ Pagamento Confirmado!",
+                      description: "Redirecionando para o treinamento...",
+                      variant: "default",
+                    });
+                    
+                    setPaymentInfo(prev => {
+                      if (!prev) return prev;
+                      return { ...prev, status: 'APPROVED' };
+                    });
+                    
+                    setTimeout(() => {
+                      setLocation('/treinamento');
+                    }, 1500);
+                  }
+                }
+              } catch (error) {
+                console.error('[PAYMENT FALLBACK] Erro no polling:', error);
+              }
+            }, 3000); // Polling a cada 3 segundos como fallback
+            
+            // Limpar fallback após 10 minutos
+            setTimeout(() => {
+              clearInterval(fallbackInterval);
+            }, 600000);
           };
           
         } catch (error) {

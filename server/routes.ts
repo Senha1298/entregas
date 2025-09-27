@@ -1740,7 +1740,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control'
+      'Access-Control-Allow-Headers': 'Cache-Control',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'X-Accel-Buffering': 'no' // Para Heroku/Nginx buffering
     });
 
     console.log(`[SSE] Cliente conectado para transação: ${transactionId}`);
