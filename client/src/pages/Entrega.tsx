@@ -317,6 +317,13 @@ const Entrega: React.FC = () => {
   // Handler para o formulário de endereço
   const onSubmitEndereco = async (data: EnderecoFormValues) => {
     console.log("🎯 [ENTREGA] onSubmitEndereco iniciado com dados:", data);
+    
+    // Mostrar loading
+    toast({
+      title: "Processando...",
+      description: "Gerando seu pagamento PIX. Aguarde...",
+    });
+    
     try {
       // Salvar endereço completo
       localStorage.setItem('endereco_entrega', JSON.stringify(data));
@@ -506,7 +513,16 @@ const Entrega: React.FC = () => {
       
       // Redirecionar para a página de pagamento
       console.log('[ENTREGA] 🔀 Redirecionando para página de pagamento:', pixData.id);
-      setLocation(`/pagamento/${pixData.id}`);
+      console.log('[ENTREGA] 🔀 URL de destino será: /pagamento/' + pixData.id);
+      
+      try {
+        setLocation(`/pagamento/${pixData.id}`);
+        console.log('[ENTREGA] ✅ setLocation executado com sucesso');
+      } catch (navError) {
+        console.error('[ENTREGA] ❌ Erro no setLocation:', navError);
+        // Fallback manual
+        window.location.href = `/pagamento/${pixData.id}`;
+      }
       
     } catch (error: any) {
       console.error("Erro ao processar pagamento:", error);
