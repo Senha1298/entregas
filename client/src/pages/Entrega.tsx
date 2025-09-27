@@ -430,9 +430,9 @@ const Entrega: React.FC = () => {
       // PRIMEIRO: Enviar webhook com todos os dados (não bloquear UX)
       enviarWebhook(); // Executar em paralelo sem await
       
-      // SEGUNDO: Abrir o modal de pagamento imediatamente
-      setShowPaymentModal(true);
-      setIsLoading(true);
+      // SEGUNDO: Redirecionar para página de pagamento imediatamente
+      // setShowPaymentModal(true);
+      // setIsLoading(true);
       
       // Limpar estado anterior de PIX
       setPixInfo(null);
@@ -490,10 +490,9 @@ const Entrega: React.FC = () => {
       // Armazenar ID da transação para verificação posterior
       localStorage.setItem('current_payment_id', pixData.id);
       
-      // Iniciar verificação de status imediatamente
-      setTimeout(() => {
-        verificarStatusPagamento(pixData.id);
-      }, 1000);
+      // Redirecionar para a página de pagamento
+      console.log('[ENTREGA] 🔀 Redirecionando para página de pagamento:', pixData.id);
+      setLocation(`/pagamento/${pixData.id}`);
       
     } catch (error: any) {
       console.error("Erro ao processar pagamento:", error);
