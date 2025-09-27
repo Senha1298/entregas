@@ -1046,11 +1046,13 @@ const Entrega: React.FC = () => {
                 
                 <Button
                   type="submit"
+                  form="endereco-form"
                   className={`w-full text-white font-medium py-6 text-base rounded-[3px] transition-all ${acceptedTerms ? 'bg-[#E83D22] hover:bg-[#d73920]' : 'bg-[#E83D2280] cursor-not-allowed'}`}
                   style={{ height: '50px' }}
                   disabled={!acceptedTerms}
                   onClick={() => {
                     console.log("🔘 [ENTREGA] Botão clicado! acceptedTerms:", acceptedTerms);
+                    console.log("🔘 [ENTREGA] Dados do formulário atuais:", Object.fromEntries(new FormData(document.getElementById('endereco-form') as HTMLFormElement)));
                     if (!acceptedTerms) {
                       console.log("⚠️ [ENTREGA] Botão desabilitado - termos não aceitos");
                     }
