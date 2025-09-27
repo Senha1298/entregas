@@ -60,13 +60,13 @@ const Payment: React.FC = () => {
     fetchPaymentInfo(id);
   }, []);
 
-  // Buscar informações de pagamento da API e priorizar verificação direta no frontend (Netlify)
+  // Buscar informações de pagamento da API usando o endpoint correto
   const fetchPaymentInfo = async (id: string, checkStatus: boolean = false) => {
     try {
       setIsLoading(true);
       
-      // Primeiro, obter os dados básicos do pagamento do backend
-      const url = `${API_BASE_URL}/api/payments/${id}`;
+      // Usar o endpoint de transações que está funcionando nos logs
+      const url = `${API_BASE_URL}/api/transactions/${id}/status`;
       const response = await fetch(url);
       
       if (!response.ok) {
@@ -79,19 +79,19 @@ const Payment: React.FC = () => {
         throw new Error(data.error);
       }
       
-      // Extrair nome e CPF das informações recuperadas
-      if (data.name) setName(data.name);
-      if (data.cpf) setCpf(data.cpf);
+      // Extrair nome e CPF das informações de transação
+      if (data.transaction?.customer_name) setName(data.transaction.customer_name);
+      if (data.transaction?.customer_cpf) setCpf(data.transaction.customer_cpf);
       
       // Atualizar as informações básicas do pagamento
       setPaymentInfo({
-        id: data.id,
-        pixCode: data.pixCode,
-        pixQrCode: data.pixQrCode,
-        status: data.status || 'PENDING',
-        approvedAt: data.approvedAt,
-        rejectedAt: data.rejectedAt,
-        facebookReported: data.facebookReported
+        id: data.transaction?.gateway_id || id,
+        pixCode: data.transaction?.pix_code || '',
+        pixQrCode: data.transaction?.pix_qr_code || '',
+        status: data.status?.toUpperCase() || 'PENDING',
+        approvedAt: data.transaction?.approved_at,
+        rejectedAt: data.transaction?.rejected_at,
+        facebookReported: data.transaction?.facebook_reported
       });
       
       // Se a verificação de status estiver ativada, verifica diretamente na For4Payments (frontend)
