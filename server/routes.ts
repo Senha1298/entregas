@@ -1691,13 +1691,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // A resposta pode vir tanto com data.data quanto diretamente no root
         const data = responseData.data || responseData;
         
-        // Retornar apenas o status e informações relevantes
+        // Retornar o status e informações relevantes incluindo dados do PIX
         return res.json({
           status: data.status,
           transaction_id: data.gateway_id || data.transaction_id || transactionId,
           amount: data.amount,
           paid_at: data.paid_at,
-          created_at: data.created_at
+          created_at: data.created_at,
+          transaction: {
+            gateway_id: data.gateway_id || data.transaction_id || transactionId,
+            customer_name: data.customer_name,
+            customer_cpf: data.customer_cpf,
+            customer_email: data.customer_email,
+            pix_code: data.pix_code,
+            pix_qr_code: data.pix_qr_code,
+            approved_at: data.paid_at,
+            rejected_at: null,
+            facebook_reported: false
+          }
         });
       } else {
         console.error(`[STATUS CHECK DEV] Erro na API 4MPAGAMENTOS: ${response.status}`);
