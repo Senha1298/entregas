@@ -451,19 +451,26 @@ const Entrega: React.FC = () => {
 
   // Função para processar o pagamento após a confirmação
   const processarPagamento = async () => {
+    console.log("🎯 [ENTREGA] processarPagamento INICIADO");
+    
     try {
+      console.log("🎯 [ENTREGA] Dados do usuário:", dadosUsuario);
+      
       // PRIMEIRO: Enviar webhook com todos os dados (não bloquear UX)
       enviarWebhook(); // Executar em paralelo sem await
+      console.log("✅ [ENTREGA] Webhook enviado");
       
       // SEGUNDO: Redirecionar para página de pagamento imediatamente
       // setShowPaymentModal(true);
       // setIsLoading(true);
       
-      
       // Verificar se temos os dados necessários do usuário
+      console.log("🎯 [ENTREGA] Verificando dados do usuário...");
       if (!dadosUsuario?.nome || !dadosUsuario?.cpf) {
+        console.error("❌ [ENTREGA] Dados do usuário incompletos:", { nome: dadosUsuario?.nome, cpf: dadosUsuario?.cpf });
         throw new Error("Dados do usuário incompletos");
       }
+      console.log("✅ [ENTREGA] Dados do usuário válidos");
       
       // Obter dados completos do usuário do localStorage
       const userData = localStorage.getItem('candidato_data');
@@ -476,7 +483,7 @@ const Entrega: React.FC = () => {
         telefone = parsedUserData.telefone || "";
       }
       
-      console.log('Iniciando processamento de pagamento For4Payments');
+      console.log('🎯 [ENTREGA] Iniciando processamento de pagamento For4Payments');
       
       // Usar a função centralizada para processar o pagamento
       // Processar pagamento e obter resultado
@@ -1063,15 +1070,22 @@ const Entrega: React.FC = () => {
                 <Button
                   type="submit"
                   form="endereco-form"
+                  disabled={!acceptedTerms}
                   className={`w-full text-white font-medium py-6 text-base rounded-[3px] transition-all ${acceptedTerms ? 'bg-[#E83D22] hover:bg-[#d73920]' : 'bg-[#E83D2280] cursor-not-allowed'}`}
                   style={{ height: '50px' }}
-                  disabled={!acceptedTerms}
-                  onClick={() => {
-                    console.log("🔘 [ENTREGA] Botão clicado! acceptedTerms:", acceptedTerms);
-                    console.log("🔘 [ENTREGA] Dados do formulário atuais:", Object.fromEntries(new FormData(document.getElementById('endereco-form') as HTMLFormElement)));
+                  onClick={(e) => {
+                    console.log("🎯 [ENTREGA] Botão clicado! acceptedTerms:", acceptedTerms);
                     if (!acceptedTerms) {
-                      console.log("⚠️ [ENTREGA] Botão desabilitado - termos não aceitos");
+                      e.preventDefault();
+                      console.log("❌ [ENTREGA] Termos não aceitos, impedindo submit");
+                      toast({
+                        title: "Aceite os termos",
+                        description: "Você precisa aceitar os termos antes de prosseguir.",
+                        variant: "destructive",
+                      });
+                      return;
                     }
+                    console.log("✅ [ENTREGA] Termos aceitos, permitindo submit");
                   }}
                   data-testid="button-submit"
                 >
