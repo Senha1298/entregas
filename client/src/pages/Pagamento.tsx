@@ -433,10 +433,10 @@ const Payment: React.FC = () => {
                       <p className="text-lg font-bold text-[#E83D22]">R$ 64,90</p>
                       
                       <div className="w-full mt-1">
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs text-gray-600">
                           <span className="font-medium">Nome:</span> {name}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs text-gray-600">
                           <span className="font-medium">CPF:</span> {cpf}
                         </p>
                       </div>
