@@ -63,7 +63,10 @@ const Payment: React.FC = () => {
   // Buscar informações de pagamento da API usando o endpoint correto
   const fetchPaymentInfo = async (id: string, checkStatus: boolean = false) => {
     try {
-      setIsLoading(true);
+      // Só mostrar loading na primeira busca, não nas verificações de status
+      if (!checkStatus) {
+        setIsLoading(true);
+      }
       
       // Usar o endpoint de transações que está funcionando nos logs
       const url = `${API_BASE_URL}/api/transactions/${id}/status`;
@@ -307,10 +310,9 @@ const Payment: React.FC = () => {
     }
   };
 
-  // Configurar o cronômetro e verificação periódica de status
+  // Configurar o cronômetro e Server-Sent Events para verificação de status
   useEffect(() => {
-    // Referência para o intervalo de verificação de status
-    let statusCheckInterval: number | null = null;
+    let eventSource: EventSource | null = null;
     
     if (paymentInfo) {
       // Configurar o cronômetro de contagem regressiva
@@ -326,23 +328,81 @@ const Payment: React.FC = () => {
         }, 1000) as unknown as number;
       }
       
-      // Verificar o status do pagamento periodicamente (a cada 1 segundo)
-      // apenas se o pagamento não estiver aprovado ou rejeitado
+      // Conectar ao Server-Sent Events para verificação em tempo real (BACKEND)
       if (paymentInfo.status !== 'APPROVED' && paymentInfo.status !== 'REJECTED') {
-        console.log('[PAYMENT] Iniciando verificação periódica de status...');
-        statusCheckInterval = window.setInterval(() => {
-          console.log('[PAYMENT] Verificando status do pagamento...');
-          fetchPaymentInfo(paymentInfo.id, true);
-        }, 1000) as unknown as number;
+        console.log('[PAYMENT] Conectando ao SSE para verificação em tempo real...');
+        
+        try {
+          eventSource = new EventSource(`${API_BASE_URL}/api/payments/${paymentInfo.id}/stream`);
+          
+          eventSource.onmessage = (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              console.log('[PAYMENT SSE] Evento recebido:', data);
+              
+              if (data.type === 'status') {
+                // Atualizar status sem fazer loading
+                setPaymentInfo(prev => {
+                  if (!prev) return prev;
+                  return {
+                    ...prev,
+                    status: data.status?.toUpperCase() || prev.status || 'PENDING'
+                  };
+                });
+              }
+              
+              if (data.type === 'approved') {
+                console.log('[PAYMENT SSE] Pagamento aprovado! Redirecionando...');
+                
+                // Mostrar mensagem de sucesso
+                toast({
+                  title: "\u2705 Pagamento Confirmado!",
+                  description: "Redirecionando para o treinamento...",
+                  variant: "default",
+                });
+                
+                // Atualizar status
+                setPaymentInfo(prev => {
+                  if (!prev) return prev;
+                  return {
+                    ...prev,
+                    status: 'APPROVED'
+                  };
+                });
+                
+                // Redirecionar após delay
+                setTimeout(() => {
+                  setLocation('/treinamento');
+                }, 1500);
+                
+                // Fechar conexão SSE
+                eventSource?.close();
+              }
+            } catch (error) {
+              console.error('[PAYMENT SSE] Erro ao processar evento:', error);
+            }
+          };
+          
+          eventSource.onerror = (error) => {
+            console.error('[PAYMENT SSE] Erro na conexão:', error);
+            eventSource?.close();
+          };
+          
+        } catch (error) {
+          console.error('[PAYMENT SSE] Erro ao conectar:', error);
+        }
       } else {
-        console.log(`[PAYMENT] Pagamento com status ${paymentInfo.status}. Parando verificações.`);
+        console.log(`[PAYMENT] Pagamento com status ${paymentInfo.status}. Não iniciando SSE.`);
       }
     }
     
-    // Limpar intervalos quando o componente for desmontado ou quando o status mudar
+    // Limpar conexões quando o componente for desmontado ou quando o status mudar
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
-      if (statusCheckInterval) clearInterval(statusCheckInterval);
+      if (eventSource) {
+        console.log('[PAYMENT SSE] Fechando conexão SSE...');
+        eventSource.close();
+      }
     };
   }, [paymentInfo?.id, paymentInfo?.status, timeLeft]);
   

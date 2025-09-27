@@ -1730,6 +1730,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Server-Sent Events para notificação de status de pagamento em tempo real
+  app.get('/api/payments/:id/stream', (req, res) => {
+    const transactionId = req.params.id;
+    
+    // Configurar SSE headers
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Cache-Control'
+    });
+
+    console.log(`[SSE] Cliente conectado para transação: ${transactionId}`);
+
+    // Manter referência da conexão para cleanup
+    const connectionId = Date.now();
+    
+    // Verificar status inicial
+    const checkStatus = async () => {
+      try {
+        if (!transactionId.startsWith('4M')) {
+          return;
+        }
+
+        const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 3mpag_p7czqd3yk_mfr1pvd2'
+          }
+        });
+
+        if (response.ok) {
+          const responseData = await response.json();
+          const data = responseData.data || responseData;
+          
+          // Enviar status via SSE
+          res.write(`data: ${JSON.stringify({ 
+            type: 'status', 
+            status: data.status,
+            transaction_id: data.gateway_id || transactionId,
+            amount: data.amount,
+            paid_at: data.paid_at 
+          })}\n\n`);
+
+          // Se aprovado, enviar evento especial e fechar conexão
+          if (data.status === 'paid' || data.status === 'approved') {
+            console.log(`[SSE] Pagamento aprovado para transação: ${transactionId}`);
+            res.write(`data: ${JSON.stringify({ 
+              type: 'approved', 
+              transaction_id: transactionId,
+              redirect_to: '/treinamento'
+            })}\n\n`);
+            
+            // Fechar conexão após aprovação
+            setTimeout(() => {
+              res.end();
+            }, 2000);
+            return;
+          }
+        }
+      } catch (error) {
+        console.error(`[SSE] Erro ao verificar status da transação ${transactionId}:`, error);
+      }
+    };
+
+    // Verificar status inicial
+    checkStatus();
+
+    // Verificar status a cada 5 segundos (no backend)
+    const interval = setInterval(checkStatus, 5000);
+
+    // Cleanup quando cliente desconectar
+    req.on('close', () => {
+      console.log(`[SSE] Cliente desconectado da transação: ${transactionId}`);
+      clearInterval(interval);
+    });
+
+    // Timeout após 10 minutos
+    setTimeout(() => {
+      console.log(`[SSE] Timeout da conexão para transação: ${transactionId}`);
+      clearInterval(interval);
+      res.end();
+    }, 600000); // 10 minutos
+  });
+
   app.post('/api/payments/pix-python', async (req, res) => {
     try {
       // Validar dados da requisição
