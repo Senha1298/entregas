@@ -626,8 +626,18 @@ const Entrega: React.FC = () => {
   };
   
   // Função para verificar o status do pagamento via API 4MPAGAMENTOS
-  const verificarStatusPagamento = async (paymentId: string) => {
-    console.log('[ENTREGA] 🔍 Verificando status do pagamento 4MPAGAMENTOS:', paymentId);
+  const verificarStatusPagamento = async (paymentId: string, tentativas: number = 0, maxTentativas: number = 30) => {
+    console.log(`[ENTREGA] 🔍 Verificando status do pagamento 4MPAGAMENTOS: ${paymentId} (tentativa ${tentativas + 1}/${maxTentativas})`);
+    
+    // Limite de tentativas para evitar loop infinito
+    if (tentativas >= maxTentativas) {
+      console.log('[ENTREGA] ⏰ Limite de tentativas atingido, parando verificação');
+      toast({
+        title: "Tempo esgotado",
+        description: "Não foi possível verificar o status do pagamento. Tente novamente mais tarde.",
+      });
+      return;
+    }
     
     try {
       // Usar nossa API local 4MPAGAMENTOS para verificar status
@@ -659,27 +669,27 @@ const Entrega: React.FC = () => {
           
           return; // Parar a verificação
         } else {
-          console.log(`[ENTREGA] ⏳ Status ainda pendente: ${statusData.status}. Tentando novamente em 1s...`);
-          // Se não está aprovado, agendar nova verificação em 1 segundo
+          console.log(`[ENTREGA] ⏳ Status ainda pendente: ${statusData.status}. Tentando novamente em 2s...`);
+          // Se não está aprovado, agendar nova verificação em 2 segundos
           setTimeout(() => {
-            verificarStatusPagamento(paymentId);
-          }, 1000);
+            verificarStatusPagamento(paymentId, tentativas + 1, maxTentativas);
+          }, 2000);
         }
       } else {
         console.error('[ENTREGA] ❌ Erro na API 4MPAGAMENTOS:', response.status, response.statusText);
         
-        // Em caso de erro HTTP, agendar nova tentativa em 1 segundo
+        // Em caso de erro HTTP, agendar nova tentativa em 3 segundos (mais devagar)
         setTimeout(() => {
-          verificarStatusPagamento(paymentId);
-        }, 1000);
+          verificarStatusPagamento(paymentId, tentativas + 1, maxTentativas);
+        }, 3000);
       }
     } catch (error) {
       console.error('[ENTREGA] 💥 Erro ao verificar status:', error);
       
-      // Em caso de erro de rede, agendar nova tentativa em 1 segundo
+      // Em caso de erro de rede, agendar nova tentativa em 3 segundos (mais devagar)
       setTimeout(() => {
-        verificarStatusPagamento(paymentId);
-      }, 1000);
+        verificarStatusPagamento(paymentId, tentativas + 1, maxTentativas);
+      }, 3000);
     }
   };
 
