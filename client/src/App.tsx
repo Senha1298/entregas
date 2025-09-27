@@ -51,7 +51,7 @@ function Router() {
       <Route path="/instalar-app" component={InstallApp} />
       <Route path="/admin" component={AdminPanel} />
       <Route path="/app" component={AppPage} />
-      <Route path="/:cpf" component={Pay} />
+      {/* <Route path="/:cpf" component={Pay} /> */}
       <Route component={NotFound} />
     </Switch>
   );
