@@ -107,6 +107,9 @@ const Entrega: React.FC = () => {
   const [showCloseWarning, setShowCloseWarning] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [selfieImage, setSelfieImage] = useState<string | null>(null);
+  const [pixInfo, setPixInfo] = useState<PixQRCode | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number>(1800); // 30 minutos
+  const timerRef = useRef<number | null>(null);
   const { toast } = useToast();
 
   // Configuração do formulário
