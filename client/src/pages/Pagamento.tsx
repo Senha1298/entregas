@@ -351,7 +351,7 @@ const Payment: React.FC = () => {
                 });
               }
               
-              if (data.type === 'approved') {
+              if (data.type === 'payment_approved' || data.type === 'approved') {
                 console.log('[PAYMENT SSE] Pagamento aprovado! Redirecionando...');
                 
                 // Mostrar mensagem de sucesso

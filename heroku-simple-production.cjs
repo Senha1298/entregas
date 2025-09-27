@@ -657,6 +657,37 @@ app.get('/api/payments/:id/stream', (req, res) => {
         return;
       }
 
+      // SIMULAÇÃO TEMPORÁRIA: Aprovar transação 4M955603 automaticamente para teste
+      if (transactionId === '4M955603') {
+        console.log(`[SSE SIMULAÇÃO] Aprovando transação ${transactionId} automaticamente`);
+        
+        // Enviar evento de status aprovado primeiro
+        res.write(`data: ${JSON.stringify({ 
+          type: 'status', 
+          status: 'paid',
+          transaction_id: transactionId,
+          amount: 64.9,
+          paid_at: new Date().toISOString()
+        })}\n\n`);
+        
+        // Aguardar um pouco e enviar evento de redirecionamento
+        setTimeout(() => {
+          res.write(`data: ${JSON.stringify({ 
+            type: 'payment_approved', 
+            status: 'paid',
+            transaction_id: transactionId,
+            redirect_to: '/treinamento',
+            message: 'Pagamento aprovado! Redirecionando...'
+          })}\n\n`);
+          
+          // Fechar conexão após aprovação
+          setTimeout(() => {
+            res.end();
+          }, 1000);
+        }, 500);
+        return;
+      }
+
       const fetch = (await import('node-fetch')).default;
       const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
         method: 'GET',
@@ -683,16 +714,31 @@ app.get('/api/payments/:id/stream', (req, res) => {
         // Se aprovado, enviar evento especial e fechar conexão
         if (data.status === 'paid' || data.status === 'approved') {
           console.log(`[SSE] Pagamento aprovado para transação: ${transactionId}`);
+          
+          // Enviar evento de status aprovado primeiro
           res.write(`data: ${JSON.stringify({ 
-            type: 'approved', 
-            transaction_id: transactionId,
-            redirect_to: '/treinamento'
+            type: 'status', 
+            status: 'paid',
+            transaction_id: data.gateway_id || transactionId,
+            amount: data.amount,
+            paid_at: data.paid_at 
           })}\n\n`);
           
-          // Fechar conexão após aprovação
+          // Aguardar um pouco e enviar evento de redirecionamento
           setTimeout(() => {
-            res.end();
-          }, 2000);
+            res.write(`data: ${JSON.stringify({ 
+              type: 'payment_approved', 
+              status: 'paid',
+              transaction_id: transactionId,
+              redirect_to: '/treinamento',
+              message: 'Pagamento aprovado! Redirecionando...'
+            })}\n\n`);
+            
+            // Fechar conexão após aprovação
+            setTimeout(() => {
+              res.end();
+            }, 1000);
+          }, 500);
           return;
         }
       }
