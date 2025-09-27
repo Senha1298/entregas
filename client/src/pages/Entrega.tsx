@@ -309,14 +309,18 @@ const Entrega: React.FC = () => {
 
   // Handler para o formulário de endereço
   const onSubmitEndereco = async (data: EnderecoFormValues) => {
+    console.log("🎯 [ENTREGA] onSubmitEndereco iniciado com dados:", data);
     try {
       // Salvar endereço completo
       localStorage.setItem('endereco_entrega', JSON.stringify(data));
+      console.log("✅ [ENTREGA] Endereço salvo no localStorage");
       
       // Ir direto para o processamento do pagamento
+      console.log("🚀 [ENTREGA] Iniciando processarPagamento...");
       await processarPagamento();
+      console.log("✅ [ENTREGA] processarPagamento concluído");
     } catch (error: any) {
-      console.error("Erro ao processar endereço:", error);
+      console.error("❌ [ENTREGA] Erro ao processar endereço:", error);
       toast({
         title: "Erro ao processar formulário",
         description: error.message || "Não foi possível processar o formulário. Tente novamente.",
