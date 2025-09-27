@@ -29,7 +29,7 @@ interface DadosUsuario {
 
 export default function Pagamento() {
   const [, setLocation] = useLocation();
-  const [match] = useRoute('/pagamento/:transactionId?');
+  const [match, params] = useRoute('/pagamento/:transactionId?');
   const { toast } = useToast();
   
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +37,12 @@ export default function Pagamento() {
   const [dadosUsuario, setDadosUsuario] = useState<DadosUsuario | null>(null);
   const [timeLeft, setTimeLeft] = useState(1800); // 30 minutos em segundos
   const [statusChecking, setStatusChecking] = useState(false);
+
+  // LOGS DE DEBUG PARA WOUTER
+  console.log('🎯 [PAGAMENTO] Componente Pagamento carregado!');
+  console.log('🎯 [PAGAMENTO] Match:', match);
+  console.log('🎯 [PAGAMENTO] Params:', params);
+  console.log('🎯 [PAGAMENTO] URL atual:', window.location.pathname);
 
   // Buscar dados do localStorage
   useEffect(() => {
@@ -49,15 +55,13 @@ export default function Pagamento() {
     }
 
     // Se temos transactionId na URL, buscar dados do PIX
-    if (match && typeof match === 'object' && 'params' in match) {
-      const transactionId = match.params.transactionId;
-      if (transactionId) {
-        buscarDadosTransacao(transactionId);
-      } else {
-        // Se não tem transactionId, redirecionar para entrega
-        setLocation('/entrega');
-      }
+    if (match && params && params.transactionId) {
+      const transactionId = params.transactionId;
+      console.log('🎯 [PAGAMENTO] TransactionId encontrado:', transactionId);
+      buscarDadosTransacao(transactionId);
     } else {
+      console.log('🎯 [PAGAMENTO] Sem transactionId, redirecionando para /entrega');
+      console.log('🎯 [PAGAMENTO] Match:', match, 'Params:', params);
       setLocation('/entrega');
     }
   }, [match]);
