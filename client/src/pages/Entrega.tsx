@@ -515,14 +515,88 @@ const Entrega: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Função para copiar código PIX para área de transferência
-  const copiarCodigoPix = () => {
-    if (pixInfo?.pixCode) {
-      navigator.clipboard.writeText(pixInfo.pixCode);
-      toast({
-        title: "Código PIX copiado!",
-        description: "O código PIX foi copiado para a área de transferência.",
-      });
+  // Função para copiar código PIX para área de transferência com fallbacks
+  const copiarCodigoPix = async () => {
+    if (!pixInfo?.pixCode) return;
+
+    try {
+      // Método 1: Tentar usar navigator.clipboard (moderno)
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(pixInfo.pixCode);
+        toast({
+          title: "Código PIX copiado!",
+          description: "O código PIX foi copiado para a área de transferência.",
+        });
+        return;
+      }
+      
+      // Método 2: Fallback usando document.execCommand (compatibilidade)
+      const textArea = document.createElement('textarea');
+      textArea.value = pixInfo.pixCode;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      if (successful) {
+        toast({
+          title: "Código PIX copiado!",
+          description: "O código PIX foi copiado para a área de transferência.",
+        });
+      } else {
+        throw new Error('execCommand falhou');
+      }
+      
+    } catch (error) {
+      console.error('Erro ao copiar:', error);
+      
+      // Método 3: Fallback final - criar input temporário
+      try {
+        const input = document.createElement('input');
+        input.value = pixInfo.pixCode;
+        input.style.position = 'absolute';
+        input.style.left = '-9999px';
+        document.body.appendChild(input);
+        
+        // Para dispositivos móveis, precisamos garantir que o elemento esteja visível
+        input.style.opacity = '0';
+        input.style.position = 'fixed';
+        input.style.top = '50%';
+        input.style.left = '50%';
+        input.style.zIndex = '9999';
+        
+        input.select();
+        input.setSelectionRange(0, 99999); // Para dispositivos móveis
+        
+        const copySuccess = document.execCommand('copy');
+        document.body.removeChild(input);
+        
+        if (copySuccess) {
+          toast({
+            title: "Código PIX copiado!",
+            description: "O código PIX foi copiado para a área de transferência.",
+          });
+        } else {
+          // Se tudo falhar, mostrar o código para cópia manual
+          toast({
+            title: "Copie manualmente:",
+            description: pixInfo.pixCode,
+            duration: 8000,
+          });
+        }
+      } catch (fallbackError) {
+        console.error('Fallback também falhou:', fallbackError);
+        toast({
+          title: "Copie manualmente:",
+          description: pixInfo.pixCode,
+          duration: 8000,
+        });
+      }
     }
   };
   
