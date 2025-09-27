@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Spinner } from '@/components/ui/spinner';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
 import kitEpiImage from '../assets/kit-epi-new.webp';
-import pixLogo from '@assets/pix-logo.png';
+import pixLogo from '../assets/pix-logo.png';
 
 interface PixInfo {
   pixCode: string;
