@@ -486,6 +486,8 @@ const Entrega: React.FC = () => {
       console.log('🎯 [ENTREGA] Iniciando processamento de pagamento For4Payments');
       
       // Usar a função centralizada para processar o pagamento
+      console.log('🎯 [ENTREGA] Chamando createPixPayment...');
+      
       // Processar pagamento e obter resultado
       const pixData = await createPixPayment({
         name: dadosUsuario.nome,
@@ -494,7 +496,7 @@ const Entrega: React.FC = () => {
         phone: telefone
       });
       
-      console.log('Pagamento processado com sucesso:', pixData);
+      console.log('🎯 [ENTREGA] Pagamento processado com sucesso:', pixData);
       
       // Verificar se recebemos todos os dados necessários
       if (!pixData.pixCode || !pixData.id) {
@@ -522,14 +524,35 @@ const Entrega: React.FC = () => {
       console.log('[ENTREGA] 🔀 Redirecionando para página de pagamento:', pixData.id);
       console.log('[ENTREGA] 🔀 URL de destino será: /pagamento/' + pixData.id);
       
+      // Estratégia múltipla de redirecionamento
+      const targetUrl = `/pagamento/${pixData.id}`;
+      console.log('[ENTREGA] 🔀 Tentativa 1: setLocation do wouter...');
+      
       try {
-        setLocation(`/pagamento/${pixData.id}`);
-        console.log('[ENTREGA] ✅ setLocation executado com sucesso');
+        setLocation(targetUrl);
+        console.log('[ENTREGA] ✅ setLocation executado');
+        
+        // Aguardar um pouco e verificar se redirecionou
+        setTimeout(() => {
+          if (window.location.pathname !== targetUrl) {
+            console.warn('[ENTREGA] ⚠️ setLocation não funcionou, usando window.location');
+            window.location.href = targetUrl;
+          }
+        }, 500);
+        
       } catch (navError) {
         console.error('[ENTREGA] ❌ Erro no setLocation:', navError);
-        // Fallback manual
-        window.location.href = `/pagamento/${pixData.id}`;
+        console.log('[ENTREGA] 🔀 Tentativa 2: window.location.href...');
+        window.location.href = targetUrl;
       }
+      
+      // Terceira tentativa como backup (caso as outras falhem)
+      setTimeout(() => {
+        if (window.location.pathname === '/entrega') {
+          console.warn('[ENTREGA] 🚨 Redirecionamento falhou! Forçando navegação...');
+          window.location.replace(targetUrl);
+        }
+      }, 2000);
       
     } catch (error: any) {
       console.error("Erro ao processar pagamento:", error);
