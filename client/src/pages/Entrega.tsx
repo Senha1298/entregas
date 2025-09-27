@@ -126,6 +126,10 @@ const Entrega: React.FC = () => {
     }
   });
 
+  // Log do estado do formulário para debug
+  console.log("🔍 [ENTREGA] Estado do formulário - errors:", errors);
+  console.log("🔍 [ENTREGA] acceptedTerms:", acceptedTerms);
+
   // Efeito para carregar dados iniciais
   // Efeito para controlar o cronômetro de 30 minutos
   useEffect(() => {
@@ -852,7 +856,14 @@ const Entrega: React.FC = () => {
               <h3 className="font-semibold text-[#E83D22]">Endereço para Entrega</h3>
             </div>
             <div className="p-6">
-              <form onSubmit={handleSubmit(onSubmitEndereco)} className="space-y-6">
+              <form 
+                onSubmit={(e) => {
+                  console.log("📝 [ENTREGA] Form onSubmit disparado");
+                  console.log("📝 [ENTREGA] Errors do formulário:", errors);
+                  handleSubmit(onSubmitEndereco)(e);
+                }} 
+                className="space-y-6"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="cep" className="block text-sm font-medium text-gray-700 mb-1">
