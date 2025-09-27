@@ -60,8 +60,13 @@ function Router() {
 function App() {
   const [location, setLocation] = useLocation();
   
+  // LOG DE DEBUG PARA ROTA
+  console.log('🎯 [APP] Localização atual:', location);
+  
   // Scroll para o topo sempre que a rota mudar
   useEffect(() => {
+    console.log('🎯 [APP] Mudança de rota detectada:', location);
+    
     // Forçar scroll para o topo imediatamente
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     
