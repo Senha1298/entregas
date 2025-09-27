@@ -630,6 +630,31 @@ const Payment: React.FC = () => {
         </div>
       </div>
       
+      {/* Botão flutuante do WhatsApp */}
+      <div className="fixed top-1/2 transform -translate-y-1/2 right-4 z-50 flex flex-col items-center">
+        <button
+          onClick={() => {
+            const phoneNumber = "15558373106";
+            const message = "Desejo tirar dúvidas sobre o pagamento do Kit de Segurança Shopee.";
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+          }}
+          className="bg-green-500 hover:bg-green-600 rounded-full p-3 shadow-lg transform transition-all duration-200 hover:scale-110 active:scale-95"
+          style={{
+            filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))"
+          }}
+        >
+          <img 
+            src="https://logodownload.org/wp-content/uploads/2015/04/whatsapp-logo-icone.png"
+            alt="WhatsApp"
+            className="w-8 h-8"
+          />
+        </button>
+        <p className="text-xs text-center text-gray-600 mt-1 bg-white px-2 py-1 rounded shadow-sm max-w-[80px]">
+          Fale conosco
+        </p>
+      </div>
+      
       <Footer />
     </div>
   );
