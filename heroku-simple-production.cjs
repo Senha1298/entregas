@@ -750,8 +750,8 @@ app.get('/api/payments/:id/stream', (req, res) => {
   // Verificar status inicial
   checkStatus();
 
-  // Verificar status a cada 1 segundo (no backend)
-  const interval = setInterval(checkStatus, 1000);
+  // Verificar status a cada 3 segundos (reduzido de 1s para diminuir carga)
+  const interval = setInterval(checkStatus, 3000);
 
   // Cleanup quando cliente desconectar
   req.on('close', () => {
@@ -759,12 +759,12 @@ app.get('/api/payments/:id/stream', (req, res) => {
     clearInterval(interval);
   });
 
-  // Timeout após 10 minutos
+  // Timeout após 25 segundos (limite do Heroku é 30s)
   setTimeout(() => {
     console.log(`[SSE] Timeout da conexão para transação: ${transactionId}`);
     clearInterval(interval);
     res.end();
-  }, 600000); // 10 minutos
+  }, 25000); // 25 segundos
 });
 
 // ===== ENDPOINTS PARA USUÁRIOS DO APP =====
@@ -897,6 +897,51 @@ app.post('/api/app-users/login', async (req, res) => {
     }
   } catch (error) {
     console.error('❌ Erro no endpoint de login:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: error.message
+    });
+  }
+});
+
+// Endpoint para marcar que usuário chegou na página de delivery (corrigindo 404)
+app.post('/api/app-users/reached-delivery', async (req, res) => {
+  try {
+    const { cpf } = req.body;
+    
+    if (!cpf) {
+      return res.status(400).json({
+        success: false,
+        message: 'CPF é obrigatório'
+      });
+    }
+    
+    console.log('📦 Marcando usuário como tendo visitado página de delivery:', cpf);
+    
+    // Atualizar no banco de dados
+    const result = await pool.query(`
+      UPDATE app_users 
+      SET reached_delivery_page = true, updated_at = NOW()
+      WHERE cpf = $1
+      RETURNING id, cpf, name, reached_delivery_page
+    `, [cpf]);
+    
+    if (result.rows.length > 0) {
+      console.log('✅ Usuário marcado como tendo visitado delivery:', result.rows[0]);
+      res.json({
+        success: true,
+        message: 'Usuário marcado como tendo visitado página de delivery',
+        user: result.rows[0]
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+  } catch (error) {
+    console.error('❌ Erro ao marcar visita à página de delivery:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',
