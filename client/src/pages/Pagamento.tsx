@@ -427,6 +427,36 @@ const Payment: React.FC = () => {
                     status: data.status?.toUpperCase() || prev.status || 'PENDING'
                   };
                 });
+                
+                // ✅ SE STATUS FOR PAID/APPROVED, REDIRECIONAR IMEDIATAMENTE!
+                if (data.status === 'paid' || data.status === 'approved' || data.status === 'PAID' || data.status === 'APPROVED') {
+                  console.log('[PAYMENT SSE] Status PAID detectado! Redirecionando...');
+                  
+                  // Mostrar mensagem de sucesso
+                  toast({
+                    title: "✅ Pagamento Confirmado!",
+                    description: "Redirecionando para o treinamento...",
+                    variant: "default",
+                  });
+                  
+                  // Atualizar status
+                  setPaymentInfo(prev => {
+                    if (!prev) return prev;
+                    return {
+                      ...prev,
+                      status: 'APPROVED'
+                    };
+                  });
+                  
+                  // Redirecionar após delay
+                  setTimeout(() => {
+                    setLocation('/treinamento');
+                  }, 1500);
+                  
+                  // Fechar conexão SSE
+                  eventSource?.close();
+                  return; // Parar processamento
+                }
               }
               
               if (data.type === 'payment_approved' || data.type === 'approved') {
