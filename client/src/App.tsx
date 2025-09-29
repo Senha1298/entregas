@@ -11,7 +11,6 @@ import Finalizacao from "@/pages/Finalizacao";
 import Entrega from "@/pages/Entrega";
 import EntregaCartao from "@/pages/EntregaCartao";
 import Dashboard from "@/pages/Dashboard";
-import Payment from "@/pages/Payment";
 import Pay from "@/pages/Pay";
 import Treinamento from "@/pages/Treinamento";
 import TreinamentoApp from "@/pages/TreinamentoApp";
@@ -42,7 +41,7 @@ function Router() {
       <Route path="/entrega" component={Entrega} />
       <Route path="/entrega-cartao" component={EntregaCartao} />
       <Route path="/dashboard" component={Dashboard} />
-      <Route path="/payment" component={Payment} />
+      <Route path="/payment" component={Pagamento} />
       <Route path="/pay" component={Pay} />
       <Route path="/treinamento" component={Treinamento} />
       <Route path="/treinamento-app" component={TreinamentoApp} />
