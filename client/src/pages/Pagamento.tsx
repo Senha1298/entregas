@@ -416,7 +416,8 @@ const Payment: React.FC = () => {
           eventSource.onmessage = (event) => {
             try {
               const data = JSON.parse(event.data);
-              console.log('[PAYMENT SSE] Evento recebido:', data);
+              console.log('🔥 [PAYMENT SSE] Evento recebido:', data);
+              console.log('🔥 [PAYMENT SSE] Tipo:', data.type, 'Status:', data.status);
               
               if (data.type === 'status') {
                 // Atualizar status sem fazer loading
@@ -430,7 +431,7 @@ const Payment: React.FC = () => {
                 
                 // ✅ SE STATUS FOR PAID/APPROVED, REDIRECIONAR IMEDIATAMENTE!
                 if (data.status === 'paid' || data.status === 'approved' || data.status === 'PAID' || data.status === 'APPROVED') {
-                  console.log('[PAYMENT SSE] Status PAID detectado! Redirecionando...');
+                  console.log('🚀🚀🚀 [PAYMENT SSE] STATUS PAID DETECTADO! REDIRECIONANDO AGORA...', data.status);
                   
                   // Mostrar mensagem de sucesso
                   toast({
@@ -458,7 +459,7 @@ const Payment: React.FC = () => {
               }
               
               if (data.type === 'payment_approved' || data.type === 'approved') {
-                console.log('[PAYMENT SSE] Pagamento aprovado! Redirecionando...');
+                console.log('🔥🔥🔥 [PAYMENT SSE] EVENTO APPROVED DETECTADO! Redirecionando...', data.type);
                 
                 // Mostrar mensagem de sucesso
                 toast({
