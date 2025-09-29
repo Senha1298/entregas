@@ -171,7 +171,7 @@ const Payment: React.FC = () => {
             
             // Track conversion no Facebook Pixel
             if (typeof trackPurchase === 'function') {
-              trackPurchase(64.90, 'BRL');
+              trackPurchase('64.90', 'BRL');
             }
             
             // Mostrar toast de sucesso
