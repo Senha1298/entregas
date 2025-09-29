@@ -1,5 +1,4 @@
 import { API_BASE_URL } from './api-config';
-import { createPixPaymentDirect } from './for4payments-direct';
 
 // Interface para os dados da solicitação de pagamento
 interface PaymentRequest {
@@ -28,22 +27,7 @@ interface PaymentResponse {
 export async function createPixPayment(data: PaymentRequest): Promise<PaymentResponse> {
   console.log(`Ambiente de execução: ${import.meta.env.PROD ? 'PRODUÇÃO' : 'DESENVOLVIMENTO'}`);
   
-  // Verificar se a chave da For4Payments está disponível no frontend
-  // (Isso acontecerá se a variável estiver configurada no Netlify)
-  const hasFor4PaymentKey = !!import.meta.env.VITE_FOR4PAYMENTS_SECRET_KEY;
-  
-  // Em produção, se tiver a chave, chama diretamente a API For4Payments
-  if (import.meta.env.PROD && hasFor4PaymentKey) {
-    console.log('Usando chamada direta para For4Payments API');
-    
-    try {
-      // Usar a implementação direta
-      return await createPixPaymentDirect(data);
-    } catch (error: any) {
-      console.error('Falha na chamada direta, tentando via Heroku:', error.message);
-      // Em caso de erro, tenta via backend Heroku
-    }
-  }
+  // SEGURANÇA: Sempre usar backend - nunca secrets no frontend
   
   // Chamar via backend (sempre usar URL relativa)
   const apiUrl = '/api/proxy/for4payments/pix';

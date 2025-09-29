@@ -185,183 +185,62 @@ const Payment: React.FC = () => {
         }, 2000);
       }
       
-      // Se a verificação de status estiver ativada, verifica diretamente na For4Payments (frontend)
+      // Verificação de status via backend (rota segura)
       if (checkStatus) {
-        console.log('[PAYMENT] Verificando status diretamente do frontend...');
+        console.log('[PAYMENT] Verificando status via backend...');
         
-        // Obter a chave de API For4Payments via variável de ambiente específica para frontend
-        // Esta variável deve ser configurada no arquivo .env com VITE_FOR4PAYMENTS_SECRET_KEY
-        const apiKey = import.meta.env.VITE_FOR4PAYMENTS_SECRET_KEY;
-        
-        if (apiKey) {
+        const statusCheck = async () => {
           try {
-            // Usar a nova função que verifica diretamente do frontend
-            const { success, data: statusData, approved } = await checkPaymentStatus(id, apiKey);
+            const response = await fetch(`${API_BASE_URL}/api/payments/${id}/check-status`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            });
             
-            if (success && statusData) {
-              console.log('[PAYMENT] Status obtido diretamente:', statusData);
-              
-              // Atualizar o status local
+            const result = await response.json();
+            
+            // Se o backend reportou conversão, atualizar estado
+            if (result.processed) {
+              // Marcar como aprovado localmente
               setPaymentInfo(prev => {
                 if (!prev) return prev;
                 return {
                   ...prev,
-                  status: statusData.status || prev.status || 'PENDING',
-                  approvedAt: statusData.approvedAt || prev.approvedAt,
-                  rejectedAt: statusData.rejectedAt || prev.rejectedAt
+                  status: 'APPROVED',
+                  approvedAt: new Date().toISOString(),
+                  facebookReported: true
                 };
               });
               
-              // Verificar se está aprovado usando o retorno 'approved' ou verificando o status
-              const isApproved = approved || (
-                statusData.status && 
-                ['APPROVED', 'approved', 'PAID', 'paid', 'COMPLETED', 'completed'].includes(
-                  statusData.status.toUpperCase()
-                )
-              );
+              // Inicializar Facebook Pixel e rastrear
+              initFacebookPixel();
+              trackPurchase(id, 64.90);
               
-              // Se aprovado, redirecionar para página de treinamento
-              if (isApproved) {
-                console.log('[PAYMENT] Pagamento aprovado! Redirecionando para /treinamento...');
-                setTimeout(() => {
-                  setLocation('/treinamento');
-                }, 1500); // Aguardar 1.5 segundos para mostrar mensagem de sucesso
-              }
+              // Redirecionar para página de treinamento
+              setTimeout(() => {
+                setLocation('/treinamento');
+              }, 1500);
               
-              // Se aprovado, relatar diretamente do frontend para o Facebook
-              if (isApproved) {
-                console.log('[PAYMENT] Pagamento APROVADO! Rastreando do frontend...');
-                
-                // Inicializar o Facebook Pixel e rastrear o evento explicitamente
-                initFacebookPixel();
-                
-                // Calcular o valor de forma robusta
-                let amount = 64.90; // Valor padrão
-                if (statusData.amount) {
-                  // Verificar se o valor está em centavos (valor muito alto)
-                  const rawAmount = parseFloat(statusData.amount);
-                  amount = rawAmount > 1000 ? rawAmount / 100 : rawAmount;
-                }
-                
-                // Rastrear a compra apenas uma vez
-                trackPurchase(id, amount);
-                
-                // Também notifica o backend para fins de registro
-                try {
-                  await fetch(`${API_BASE_URL}/api/payments/${id}/check-status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                  });
-                } catch (err) {
-                  console.warn('[PIXEL] Falha ao notificar backend, mas evento já foi enviado do frontend:', err);
-                }
-                
-                // Mostra um feedback adicional para o usuário através de um toast
-                toast({
-                  title: "Pagamento Confirmado",
-                  description: "Seu pagamento foi processado com sucesso!",
-                  variant: "default",
-                });
-              }
-            }
-          } catch (directError) {
-            console.error('[PAYMENT] Erro ao verificar status diretamente:', directError);
-            
-            // Se falhar a verificação direta, tentar via backend como fallback
-            try {
-              const backendCheckUrl = `${API_BASE_URL}/api/payments/${id}?check_status=true`;
-              const backendResponse = await fetch(backendCheckUrl);
-              if (backendResponse.ok) {
-                const backendData = await backendResponse.json();
-                
-                // Atualizar o estado com os dados do backend
-                setPaymentInfo(prev => {
-                  if (!prev) return prev;
-                  return {
-                    ...prev,
-                    status: backendData.status || prev.status || 'PENDING',
-                    approvedAt: backendData.approvedAt || prev.approvedAt,
-                    rejectedAt: backendData.rejectedAt || prev.rejectedAt,
-                    facebookReported: backendData.facebookReported || prev.facebookReported
-                  };
-                });
-                
-                // Lista de status que podem ser considerados "aprovados"
-                const approvedStatusList = ['APPROVED', 'approved', 'PAID', 'paid', 'COMPLETED', 'completed'];
-                
-                // Verificar se está aprovado
-                const isApproved = backendData.status && approvedStatusList.includes(backendData.status.toUpperCase());
-                
-                // Se aprovado via backend, relatar via frontend de qualquer forma
-                if (isApproved && !backendData.facebookReported) {
-                  console.log('[PAYMENT] Pagamento aprovado via backend. Rastreando do frontend...');
-                  initFacebookPixel();
-                  
-                  // Calcular o valor de forma robusta
-                  let amount = 64.90; // Valor padrão
-                  if (backendData.amount) {
-                    const rawAmount = parseFloat(backendData.amount);
-                    amount = rawAmount > 1000 ? rawAmount / 100 : rawAmount;
-                  }
-                  
-                  // trackPurchase já foi chamado anteriormente, evitando duplicata
-                  console.log('[PAYMENT] Pagamento aprovado via backend - conversão já rastreada');
-                  
-                  // Notificar o usuário
-                  toast({
-                    title: "Pagamento Confirmado",
-                    description: "Seu pagamento foi processado com sucesso!",
-                    variant: "default",
-                  });
-                  
-                  // Redirecionar para página de treinamento
-                  console.log('[PAYMENT] Pagamento aprovado! Redirecionando para /treinamento...');
-                  setTimeout(() => {
-                    setLocation('/treinamento');
-                  }, 1500); // Aguardar 1.5 segundos para mostrar mensagem de sucesso
-                }
-              }
-            } catch (backendError) {
-              console.error('[PAYMENT] Erro também no fallback:', backendError);
-            }
-          }
-        } else {
-          // Sem a chave API no frontend, fazemos a verificação via backend
-          console.log('[PAYMENT] Sem acesso à chave API no frontend, verificando via backend...');
-          const backendCheckUrl = `${API_BASE_URL}/api/payments/${id}?check_status=true`;
-          try {
-            const backendResponse = await fetch(backendCheckUrl);
-            if (backendResponse.ok) {
-              const backendData = await backendResponse.json();
-              
-              // Atualizar o estado com os dados do backend
-              setPaymentInfo(prev => {
-                if (!prev) return prev;
-                return {
-                  ...prev,
-                  status: backendData.status || prev.status || 'PENDING',
-                  approvedAt: backendData.approvedAt || prev.approvedAt,
-                  rejectedAt: backendData.rejectedAt || prev.rejectedAt,
-                  facebookReported: backendData.facebookReported || prev.facebookReported
-                };
+              toast({
+                title: "Pagamento Confirmado",
+                description: "Seu pagamento foi processado com sucesso!",
+                variant: "default",
               });
-              
-              // Se aprovado, garantir que o evento seja enviado do frontend
-              if (backendData.status === 'APPROVED') {
-                initFacebookPixel();
-                trackPurchase(id, 64.90);
-                
-                // Redirecionar para página de treinamento
-                console.log('[PAYMENT] Pagamento aprovado! Redirecionando para /treinamento...');
-                setTimeout(() => {
-                  setLocation('/treinamento');
-                }, 1500); // Aguardar 1.5 segundos para mostrar mensagem de sucesso
-              }
             }
-          } catch (backendError) {
-            console.error('[PAYMENT] Erro na verificação via backend:', backendError);
+          } catch (err) {
+            console.error('[PAYMENT] Erro ao verificar status via backend:', err);
           }
-        }
+        };
+        
+        // Executar a primeira verificação
+        statusCheck();
+        
+        // Configurar intervalo para verificações periódicas
+        const statusInterval = setInterval(statusCheck, 5000); // Verifica a cada 5 segundos
+        
+        // Limpar intervalo após 10 minutos (600 segundos)
+        setTimeout(() => {
+          clearInterval(statusInterval);
+        }, 600000);
       }
     } catch (error: any) {
       console.error('Erro ao recuperar informações de pagamento:', error);
