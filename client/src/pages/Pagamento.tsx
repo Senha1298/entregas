@@ -70,10 +70,21 @@ const Payment: React.FC = () => {
       }
       
       // Usar o endpoint de transações que está funcionando nos logs
-      const url = `${API_BASE_URL}/api/transactions/${id}/status`;
+      // ⚠️ CRÍTICO: Adicionar cache-busting para garantir resposta fresca
+      const cacheBuster = Date.now();
+      const url = `${API_BASE_URL}/api/transactions/${id}/status?t=${cacheBuster}`;
       console.log('[PAYMENT] Fazendo requisição para:', url);
       
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        },
+        cache: 'no-store' // Forçar não usar cache
+      });
       console.log('[PAYMENT] Status da resposta:', response.status);
       
       if (!response.ok) {
