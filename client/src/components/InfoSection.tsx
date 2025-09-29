@@ -1,28 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const InfoSection: React.FC = () => {
-  useEffect(() => {
-    // Carregamento correto do script do vídeo
-    if (!document.getElementById('vturb-player-script')) {
-      const script = document.createElement('script');
-      script.id = 'vturb-player-script';
-      script.src = "https://scripts.converteai.net/7f004cb4-ff4b-48f5-8be2-7f09adfd539d/players/68daaf50aac00b46e24fb98c/v4/player.js";
-      script.async = true;
-      document.head.appendChild(script);
-    }
-  }, []);
-
   return (
     <section className="container mx-auto px-4 py-8 text-[#555]">
-      <h2 className="text-xl font-semibold mb-4 border-b-2 border-gray-200 pb-2">Assista o vídeo abaixo para entender como funcionam as entregas na Shopee:</h2>
-      
-      {/* Vídeo Embed - Funcionando corretamente */}
-      <div className="mb-6">
-        <vturb-smartplayer 
-          id="vid-68daaf50aac00b46e24fb98c" 
-          style={{ display: 'block', margin: '0 auto', width: '100%' }}
-        />
-      </div>
+      <h2 className="text-xl font-semibold mb-4 border-b-2 border-gray-200 pb-2">Como funciona o Programa Motoristas Parceiros da Shopee?</h2>
       
       <p className="mb-6 leading-relaxed">O Programa de Motoristas Parceiros da Shopee é uma oportunidade para quem deseja ganhar uma renda extra realizando coletas, transferências ou entregas de pacotes. Com horários flexíveis e autonomia para organizar sua agenda, você escolhe quando e onde quer trabalhar.</p>
       
