@@ -323,11 +323,6 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       
       console.log('✅ Transação 4Mpagamentos criada com sucesso:', transactionId);
       
-      // 📝 Registrar transação para monitoramento de recuperação
-      if (global.registerTransaction) {
-        global.registerTransaction(transactionId);
-      }
-      
       // ✅ VERIFICAÇÃO DE STATUS A CADA 1 SEGUNDO - 4MPAGAMENTOS DIRETO
       const checkStatus4M = async () => {
         try {
@@ -1325,86 +1320,7 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-// 🔧 SISTEMA DE RECUPERAÇÃO DE TRANSAÇÕES PERDIDAS
-let knownTransactions = new Set();
-
-// Função para detectar e corrigir transações perdidas
-const recoverLostTransactions = async () => {
-  try {
-    console.log('🔍 [RECOVERY] Verificando transações perdidas...');
-    
-    // Verificar transações conhecidas que podem estar perdidas
-    for (const transactionId of knownTransactions) {
-      if (transactionId.startsWith('4M')) {
-        const fetch = (await import('node-fetch')).default;
-        const cacheBuster = Date.now() + Math.random();
-        
-        try {
-          const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}?cb=${cacheBuster}`, {
-            headers: {
-              'Authorization': 'Bearer 3mpag_p7czqd3yk_mfr1pvd2',
-              'Accept': 'application/json',
-              'Cache-Control': 'no-cache, no-store, must-revalidate'
-            }
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            if (data.status === 'paid') {
-              console.log(`🚨 [RECOVERY] Transação perdida detectada: ${transactionId} está PAGA!`);
-              
-              // Forçar envio de SSE para esta transação
-              global.sseClients = global.sseClients || {};
-              if (global.sseClients[transactionId]) {
-                global.sseClients[transactionId].forEach(client => {
-                  try {
-                    client.write(`data: ${JSON.stringify({
-                      type: 'approved',
-                      transaction_id: transactionId,
-                      redirect_to: '/treinamento',
-                      recovery: true
-                    })}\n\n`);
-                  } catch (err) {
-                    console.log(`[RECOVERY] Cliente desconectado: ${transactionId}`);
-                  }
-                });
-              }
-              
-              // Remover da lista de monitoramento
-              knownTransactions.delete(transactionId);
-            }
-          }
-        } catch (error) {
-          console.error(`[RECOVERY] Erro ao verificar ${transactionId}:`, error.message);
-        }
-      }
-    }
-  } catch (error) {
-    console.error('[RECOVERY] Erro no sistema de recuperação:', error);
-  }
-};
-
-// Registrar transação para monitoramento
-global.registerTransaction = (transactionId) => {
-  knownTransactions.add(transactionId);
-  console.log(`📝 [RECOVERY] Transação registrada para monitoramento: ${transactionId}`);
-};
-
-// Executar recuperação a cada 10 segundos
-setInterval(recoverLostTransactions, 10000);
-
-// 🚨 FORÇAR RECUPERAÇÃO DE TRANSAÇÕES CONHECIDAS PERDIDAS
-setTimeout(() => {
-  console.log('🚨 [MANUAL] Forçando registro de transações perdidas conhecidas...');
-  if (global.registerTransaction) {
-    // Adicionar transações que sabemos que estão perdidas
-    global.registerTransaction('4M164317');
-    global.registerTransaction('4M640018');
-    global.registerTransaction('4M595793');
-    global.registerTransaction('4M537233');
-    global.registerTransaction('4M156326');
-  }
-}, 5000);
+// ✅ Sistema de recovery removido - usando polling direto no frontend
 
 // Iniciar servidor
 app.listen(PORT, '0.0.0.0', () => {
@@ -1412,5 +1328,5 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🌐 Ambiente: ${process.env.NODE_ENV || 'production'}`);
   console.log(`🎯 Gateway escolhido: ${process.env.GATEWAY_CHOICE || 'PAGNET'}`);
   console.log(`📦 Servindo arquivos estáticos de: ${path.join(__dirname, 'dist/public')}`);
-  console.log(`🔧 Sistema de recuperação de transações ativo`);
+  console.log(`🚀 Polling de status via backend API ativo`);
 });
