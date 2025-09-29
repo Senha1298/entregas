@@ -323,47 +323,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       
       console.log('✅ Transação 4Mpagamentos criada com sucesso:', transactionId);
       
-      // ✅ VERIFICAÇÃO DE STATUS A CADA 1 SEGUNDO - 4MPAGAMENTOS DIRETO
-      const checkStatus4M = async () => {
-        try {
-          const fetch = (await import('node-fetch')).default;
-          // 🔥 CACHE-BUSTING AGRESSIVO para garantir dados frescos
-          const cacheBuster = Date.now() + Math.random();
-          const statusResponse = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}?cb=${cacheBuster}`, {
-            headers: {
-              'Authorization': 'Bearer 3mpag_p7czqd3yk_mfr1pvd2',
-              'Accept': 'application/json',
-              'Cache-Control': 'no-cache, no-store, must-revalidate',
-              'Pragma': 'no-cache',
-              'Expires': '0'
-            }
-          });
-          
-          if (statusResponse.ok) {
-            const statusData = await statusResponse.json();
-            console.log(`[4M-STATUS HEROKU] Status atual para ${transactionId}:`, statusData.status);
-            
-            if (statusData.status === 'paid') {
-              console.log(`🎉 PAGAMENTO CONFIRMADO VIA 4MPAGAMENTOS HEROKU! ${transactionId}`);
-              return statusData; // Para o loop
-            } else if (statusData.status !== 'pending') {
-              console.log(`[4M-STATUS HEROKU] Status final (não pending) para ${transactionId}:`, statusData.status);
-              return statusData; // Para o loop
-            }
-          }
-          
-          // Continua verificando a cada 1 segundo
-          setTimeout(checkStatus4M, 1000);
-        } catch (error) {
-          console.error(`[4M-STATUS HEROKU] Erro na verificação de ${transactionId}:`, error);
-          // Continua verificando mesmo com erro
-          setTimeout(checkStatus4M, 1000);
-        }
-      };
-      
-      // Iniciar verificação contínua
-      console.log(`[4M-STATUS HEROKU] Iniciando verificação contínua para ${transactionId}`);
-      checkStatus4M();
+      // ✅ Polling removido - frontend faz polling via /api/transactions/:id/status
       
     } else if (gatewayChoice === 'MEDIUS_PAG') {
       // USAR MEDIUS PAG
