@@ -164,6 +164,20 @@ const Payment: React.FC = () => {
         }
       }
       
+      // Se o pagamento já foi aprovado na primeira consulta, redirecionar automaticamente
+      if (!checkStatus && mappedStatus === 'APPROVED') {
+        console.log('[PAYMENT] Pagamento já aprovado! Redirecionando para /treinamento...');
+        
+        // Inicializar Facebook Pixel e rastrear
+        initFacebookPixel();
+        trackPurchase(id, 64.90);
+        
+        // Redirecionar após breve delay para mostrar status
+        setTimeout(() => {
+          setLocation('/treinamento');
+        }, 2000);
+      }
+      
       // Se a verificação de status estiver ativada, verifica diretamente na For4Payments (frontend)
       if (checkStatus) {
         console.log('[PAYMENT] Verificando status diretamente do frontend...');
