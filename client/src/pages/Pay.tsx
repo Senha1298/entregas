@@ -126,45 +126,45 @@ const Pay = () => {
     }
   }, []);
 
-  // ⚠️ FUNCIONALIDADE DE BUSCA DE CLIENTE DESABILITADA (endpoint não existe)
-  // useEffect(() => {
-  //   if (match && params?.cpf) {
-  //     // Remover qualquer formatação do CPF (pontos, traços)
-  //     const cpfLimpo = params.cpf.replace(/\D/g, '');
-  //     
-  //     setLoading(true);
-  //     
-  //     // Buscar dados do cliente na API
-  //     fetch(`https://recoveryfy.replit.app/api/v1/cliente/cpf/${cpfLimpo}`)
-  //       .then(response => {
-  //         if (!response.ok) {
-  //           throw new Error('Erro ao buscar dados do cliente');
-  //         }
-  //         return response.json();
-  //       })
-  //       .then(async (data: ApiResponse) => {
-  //         if (data.sucesso && data.cliente) {
-  //           setCliente(data.cliente);
-  //           setTransacoes(data.transacoes || []);
-  //           
-  //           // NÃO usar o pixCode da recoveryfy - gerar nova transação
-  //           // Gerar nova transação PIX usando os dados do cliente
-  //           await generatePixPayment(data.cliente);
-  //         } else {
-  //           setError('Cliente não encontrado');
-  //         }
-  //       })
-  //       .catch(err => {
-  //         console.error('Erro ao buscar cliente:', err);
-  //         setError('Erro ao buscar dados do cliente');
-  //       })
-  //       .finally(() => {
-  //         setLoading(false);
-  //       });
-  //   } else {
-  //     setLoading(false);
-  //   }
-  // }, [match, params?.cpf]);
+  // Efeito para buscar os dados do cliente
+  useEffect(() => {
+    if (match && params?.cpf) {
+      // Remover qualquer formatação do CPF (pontos, traços)
+      const cpfLimpo = params.cpf.replace(/\D/g, '');
+      
+      setLoading(true);
+      
+      // Buscar dados do cliente na API
+      fetch(`https://recoveryfy.replit.app/api/v1/cliente/cpf/${cpfLimpo}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erro ao buscar dados do cliente');
+          }
+          return response.json();
+        })
+        .then(async (data: ApiResponse) => {
+          if (data.sucesso && data.cliente) {
+            setCliente(data.cliente);
+            setTransacoes(data.transacoes || []);
+            
+            // NÃO usar o pixCode da recoveryfy - gerar nova transação
+            // Gerar nova transação PIX usando os dados do cliente
+            await generatePixPayment(data.cliente);
+          } else {
+            setError('Cliente não encontrado');
+          }
+        })
+        .catch(err => {
+          console.error('Erro ao buscar cliente:', err);
+          setError('Erro ao buscar dados do cliente');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, [match, params?.cpf]);
 
   // Adicionar os estilos diretamente no componente
   useEffect(() => {
