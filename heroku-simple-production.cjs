@@ -604,6 +604,7 @@ app.get('/api/transactions/:id/status', async (req, res) => {
           amount: data.amount || 64.9,
           customer_name: data.customer_name || '',
           customer_email: data.customer_email || '',
+          customer_cpf: data.customer_cpf || '', // ADICIONADO: CPF necessário para o frontend
           description: data.description || 'Kit de Segurança Shopee Delivery',
           pix_code: data.pix_code || '',
           pix_qr_code: data.pix_qr_code || '',
