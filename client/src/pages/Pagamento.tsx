@@ -60,6 +60,44 @@ const Payment: React.FC = () => {
     fetchPaymentInfo(id);
   }, []);
 
+  // VERIFICAÇÃO DE STATUS A CADA 1 SEGUNDO - 4MPAGAMENTOS DIRETO
+  const checkStatus4M = async (transactionId: string) => {
+    try {
+      const statusResponse = await fetch(`https://app.4mpagamentos.com/api/v1/payments/${transactionId}`, {
+        headers: {
+          'Authorization': 'Bearer 3mpag_p7czqd3yk_mfr1pvd2',
+          'Accept': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      });
+      
+      if (statusResponse.ok) {
+        const statusData = await statusResponse.json();
+        console.log('[4M-STATUS] Status atual:', statusData.status);
+        
+        if (statusData.status === 'paid') {
+          console.log('🎉 PAGAMENTO CONFIRMADO VIA 4MPAGAMENTOS!');
+          // Redireciona cliente
+          setTimeout(() => {
+            console.log('Redirecionando para /treinamento...');
+            setLocation('/treinamento');
+          }, 1000);
+          return statusData;
+        } else if (statusData.status !== 'pending') {
+          console.log('[4M-STATUS] Status final (não pending):', statusData.status);
+          return statusData; // Para o loop
+        }
+      }
+      
+      // Continua verificando a cada 1 segundo
+      setTimeout(() => checkStatus4M(transactionId), 1000);
+    } catch (error) {
+      console.error('[4M-STATUS] Erro na verificação:', error);
+      // Continua verificando mesmo com erro
+      setTimeout(() => checkStatus4M(transactionId), 1000);
+    }
+  };
+
   // Buscar informações de pagamento da API usando o endpoint correto
   const fetchPaymentInfo = async (id: string, checkStatus: boolean = false) => {
     try {
@@ -156,6 +194,12 @@ const Payment: React.FC = () => {
         if (!checkStatus) {
           setErrorMessage('Os códigos PIX não foram gerados ainda. Aguarde alguns instantes e recarregue a página.');
         }
+      }
+
+      // ✅ INICIAR VERIFICAÇÃO DE STATUS A CADA 1 SEGUNDO (SÓ NA PRIMEIRA CHAMADA)
+      if (!checkStatus) {
+        console.log('[4M-STATUS] Iniciando verificação contínua para transação:', id);
+        checkStatus4M(id);
       }
       
       // Se a verificação de status estiver ativada, verifica diretamente na For4Payments (frontend)
