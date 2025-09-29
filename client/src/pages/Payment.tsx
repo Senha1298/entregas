@@ -60,92 +60,39 @@ const Payment: React.FC = () => {
     fetchPaymentInfo(id);
   }, []);
 
-  // Buscar informações de pagamento da API usando o endpoint correto
+  // Buscar informações de pagamento da API e priorizar verificação direta no frontend (Netlify)
   const fetchPaymentInfo = async (id: string, checkStatus: boolean = false) => {
     try {
-      // Só mostrar loading na primeira busca, não nas verificações de status
-      if (!checkStatus) {
-        setIsLoading(true);
-        console.log('[PAYMENT] Iniciando carregamento de informações de pagamento para ID:', id);
-      }
+      setIsLoading(true);
       
-      // Usar o endpoint de transações que está funcionando nos logs
-      const url = `${API_BASE_URL}/api/transactions/${id}/status`;
-      console.log('[PAYMENT] Fazendo requisição para:', url);
-      
+      // Primeiro, obter os dados básicos do pagamento do backend
+      const url = `${API_BASE_URL}/api/payments/${id}`;
       const response = await fetch(url);
-      console.log('[PAYMENT] Status da resposta:', response.status);
       
       if (!response.ok) {
-        console.error('[PAYMENT] Erro HTTP:', response.status, response.statusText);
-        throw new Error(`Erro ${response.status}: Não foi possível recuperar as informações de pagamento`);
+        throw new Error('Não foi possível recuperar as informações de pagamento');
       }
       
       const data = await response.json();
-      console.log('[PAYMENT] Dados recebidos:', data);
       
       if (data.error) {
-        console.error('[PAYMENT] Erro na resposta:', data.error);
         throw new Error(data.error);
       }
       
-      // Extrair nome e CPF das informações de transação
-      if (data.transaction?.customer_name) setName(data.transaction.customer_name);
-      if (data.transaction?.customer_cpf) setCpf(data.transaction.customer_cpf);
-      
-      // Se não conseguiu obter dados da API, buscar no localStorage
-      if (!data.transaction?.customer_name || !data.transaction?.customer_cpf) {
-        console.log('[PAYMENT] Dados incompletos da API, buscando no localStorage...');
-        
-        // Buscar dados do usuário do localStorage
-        const candidatoData = localStorage.getItem('candidato_data');
-        if (candidatoData) {
-          try {
-            const userData = JSON.parse(candidatoData);
-            console.log('[PAYMENT] Dados encontrados no localStorage:', userData);
-            
-            if (!data.transaction?.customer_name && userData.nome) {
-              setName(userData.nome);
-              console.log('[PAYMENT] Nome definido do localStorage:', userData.nome);
-            }
-            if (!data.transaction?.customer_cpf && userData.cpf) {
-              setCpf(userData.cpf);
-              console.log('[PAYMENT] CPF definido do localStorage:', userData.cpf.substring(0, 3) + '***' + userData.cpf.substring(userData.cpf.length - 2));
-            }
-          } catch (error) {
-            console.error('[PAYMENT] Erro ao parsear dados do localStorage:', error);
-          }
-        } else {
-          console.log('[PAYMENT] Nenhum dado encontrado no localStorage para candidato_data');
-        }
-      }
+      // Extrair nome e CPF das informações recuperadas
+      if (data.name) setName(data.name);
+      if (data.cpf) setCpf(data.cpf);
       
       // Atualizar as informações básicas do pagamento
-      const pixCode = data.transaction?.pix_code || '';
-      const pixQrCode = data.transaction?.pix_qr_code || '';
-      
-      console.log('[PAYMENT] Dados PIX extraídos:', {
-        pixCode: pixCode ? `${pixCode.substring(0, 20)}...` : 'VAZIO',
-        pixQrCode: pixQrCode ? `${pixQrCode.substring(0, 20)}...` : 'VAZIO'
-      });
-      
       setPaymentInfo({
-        id: data.transaction?.gateway_id || id,
-        pixCode: pixCode,
-        pixQrCode: pixQrCode,
-        status: data.status?.toUpperCase() || 'PENDING',
-        approvedAt: data.transaction?.approved_at,
-        rejectedAt: data.transaction?.rejected_at,
-        facebookReported: data.transaction?.facebook_reported
+        id: data.id,
+        pixCode: data.pixCode,
+        pixQrCode: data.pixQrCode,
+        status: data.status || 'PENDING',
+        approvedAt: data.approvedAt,
+        rejectedAt: data.rejectedAt,
+        facebookReported: data.facebookReported
       });
-      
-      // Se não há códigos PIX, mostrar erro específico
-      if (!pixCode || !pixQrCode) {
-        console.warn('[PAYMENT] ATENÇÃO: Códigos PIX não encontrados na resposta da API');
-        if (!checkStatus) {
-          setErrorMessage('Os códigos PIX não foram gerados ainda. Aguarde alguns instantes e recarregue a página.');
-        }
-      }
       
       // Se a verificação de status estiver ativada, verifica diretamente na For4Payments (frontend)
       if (checkStatus) {
@@ -181,14 +128,6 @@ const Payment: React.FC = () => {
                   statusData.status.toUpperCase()
                 )
               );
-              
-              // Se aprovado, redirecionar para página de treinamento
-              if (isApproved) {
-                console.log('[PAYMENT] Pagamento aprovado! Redirecionando para /treinamento...');
-                setTimeout(() => {
-                  setLocation('/treinamento');
-                }, 1500); // Aguardar 1.5 segundos para mostrar mensagem de sucesso
-              }
               
               // Se aprovado, relatar diretamente do frontend para o Facebook
               if (isApproved) {
@@ -275,12 +214,6 @@ const Payment: React.FC = () => {
                     description: "Seu pagamento foi processado com sucesso!",
                     variant: "default",
                   });
-                  
-                  // Redirecionar para página de treinamento
-                  console.log('[PAYMENT] Pagamento aprovado! Redirecionando para /treinamento...');
-                  setTimeout(() => {
-                    setLocation('/treinamento');
-                  }, 1500); // Aguardar 1.5 segundos para mostrar mensagem de sucesso
                 }
               }
             } catch (backendError) {
@@ -312,12 +245,6 @@ const Payment: React.FC = () => {
               if (backendData.status === 'APPROVED') {
                 initFacebookPixel();
                 trackPurchase(id, 64.90);
-                
-                // Redirecionar para página de treinamento
-                console.log('[PAYMENT] Pagamento aprovado! Redirecionando para /treinamento...');
-                setTimeout(() => {
-                  setLocation('/treinamento');
-                }, 1500); // Aguardar 1.5 segundos para mostrar mensagem de sucesso
               }
             }
           } catch (backendError) {
@@ -333,9 +260,10 @@ const Payment: React.FC = () => {
     }
   };
 
-  // Configurar o cronômetro e Server-Sent Events para verificação de status
+  // Configurar o cronômetro e verificação periódica de status
   useEffect(() => {
-    let eventSource: EventSource | null = null;
+    // Referência para o intervalo de verificação de status
+    let statusCheckInterval: number | null = null;
     
     if (paymentInfo) {
       // Configurar o cronômetro de contagem regressiva
@@ -351,128 +279,23 @@ const Payment: React.FC = () => {
         }, 1000) as unknown as number;
       }
       
-      // Conectar ao Server-Sent Events para verificação em tempo real (BACKEND)
+      // Verificar o status do pagamento periodicamente (a cada 15 segundos)
+      // apenas se o pagamento não estiver aprovado ou rejeitado
       if (paymentInfo.status !== 'APPROVED' && paymentInfo.status !== 'REJECTED') {
-        console.log('[PAYMENT] Conectando ao SSE para verificação em tempo real...');
-        
-        try {
-          eventSource = new EventSource(`${API_BASE_URL}/api/payments/${paymentInfo.id}/stream`);
-          
-          eventSource.onmessage = (event) => {
-            try {
-              const data = JSON.parse(event.data);
-              console.log('[PAYMENT SSE] Evento recebido:', data);
-              
-              if (data.type === 'status') {
-                // Atualizar status sem fazer loading
-                setPaymentInfo(prev => {
-                  if (!prev) return prev;
-                  return {
-                    ...prev,
-                    status: data.status?.toUpperCase() || prev.status || 'PENDING'
-                  };
-                });
-              }
-              
-              if (data.type === 'payment_approved' || data.type === 'approved') {
-                console.log('[PAYMENT SSE] Pagamento aprovado! Redirecionando...');
-                
-                // Mostrar mensagem de sucesso
-                toast({
-                  title: "\u2705 Pagamento Confirmado!",
-                  description: "Redirecionando para o treinamento...",
-                  variant: "default",
-                });
-                
-                // Atualizar status
-                setPaymentInfo(prev => {
-                  if (!prev) return prev;
-                  return {
-                    ...prev,
-                    status: 'APPROVED'
-                  };
-                });
-                
-                // Redirecionar após delay
-                setTimeout(() => {
-                  setLocation('/treinamento');
-                }, 1500);
-                
-                // Fechar conexão SSE
-                eventSource?.close();
-              }
-            } catch (error) {
-              console.error('[PAYMENT SSE] Erro ao processar evento:', error);
-            }
-          };
-          
-          eventSource.onerror = (error) => {
-            console.error('[PAYMENT SSE] Erro na conexão:', error);
-            eventSource?.close();
-            
-            // Fallback: se SSE falhar, usar polling tradicional
-            console.log('[PAYMENT SSE] Iniciando fallback com polling...');
-            const fallbackInterval = setInterval(async () => {
-              try {
-                const response = await fetch(`${API_BASE_URL}/api/transactions/${paymentInfo.id}/status`);
-                if (response.ok) {
-                  const data = await response.json();
-                  
-                  // Atualizar status
-                  setPaymentInfo(prev => {
-                    if (!prev) return prev;
-                    return {
-                      ...prev,
-                      status: data.status?.toUpperCase() || prev.status || 'PENDING'
-                    };
-                  });
-                  
-                  // Se aprovado, redirecionar
-                  if (data.status === 'paid' || data.status === 'approved') {
-                    clearInterval(fallbackInterval);
-                    
-                    toast({
-                      title: "✅ Pagamento Confirmado!",
-                      description: "Redirecionando para o treinamento...",
-                      variant: "default",
-                    });
-                    
-                    setPaymentInfo(prev => {
-                      if (!prev) return prev;
-                      return { ...prev, status: 'APPROVED' };
-                    });
-                    
-                    setTimeout(() => {
-                      setLocation('/treinamento');
-                    }, 1500);
-                  }
-                }
-              } catch (error) {
-                console.error('[PAYMENT FALLBACK] Erro no polling:', error);
-              }
-            }, 3000); // Polling a cada 3 segundos como fallback
-            
-            // Limpar fallback após 10 minutos
-            setTimeout(() => {
-              clearInterval(fallbackInterval);
-            }, 600000);
-          };
-          
-        } catch (error) {
-          console.error('[PAYMENT SSE] Erro ao conectar:', error);
-        }
+        console.log('[PAYMENT] Iniciando verificação periódica de status...');
+        statusCheckInterval = window.setInterval(() => {
+          console.log('[PAYMENT] Verificando status do pagamento...');
+          fetchPaymentInfo(paymentInfo.id, true);
+        }, 15000) as unknown as number;
       } else {
-        console.log(`[PAYMENT] Pagamento com status ${paymentInfo.status}. Não iniciando SSE.`);
+        console.log(`[PAYMENT] Pagamento com status ${paymentInfo.status}. Parando verificações.`);
       }
     }
     
-    // Limpar conexões quando o componente for desmontado ou quando o status mudar
+    // Limpar intervalos quando o componente for desmontado ou quando o status mudar
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
-      if (eventSource) {
-        console.log('[PAYMENT SSE] Fechando conexão SSE...');
-        eventSource.close();
-      }
+      if (statusCheckInterval) clearInterval(statusCheckInterval);
     };
   }, [paymentInfo?.id, paymentInfo?.status, timeLeft]);
   
@@ -583,11 +406,14 @@ const Payment: React.FC = () => {
                       <p className="text-lg font-bold text-[#E83D22]">R$ 64,90</p>
                       
                       <div className="w-full mt-1">
-                        <p className="text-xs text-gray-600">
+                        <p className="text-sm text-gray-600">
                           <span className="font-medium">Nome:</span> {name}
                         </p>
-                        <p className="text-xs text-gray-600">
+                        <p className="text-sm text-gray-600">
                           <span className="font-medium">CPF:</span> {cpf}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          <span className="font-medium">Email:</span> {email}
                         </p>
                       </div>
                     </div>
@@ -657,7 +483,7 @@ const Payment: React.FC = () => {
                         
                         <QRCodeGenerator 
                           value={paymentInfo?.pixCode || ''} 
-                          size={150}
+                          size={200}
                           className="mx-auto"
                           alt="QR Code PIX" 
                         />
@@ -700,20 +526,6 @@ const Payment: React.FC = () => {
                               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                             </svg>
-                          </Button>
-                        </div>
-                        
-                        {/* Botão laranja para copiar código PIX */}
-                        <div className="mt-3">
-                          <Button
-                            onClick={copiarCodigoPix}
-                            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-md transition-colors"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                            Copiar Código PIX
                           </Button>
                         </div>
                       </div>
@@ -778,31 +590,6 @@ const Payment: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
-      
-      {/* Botão flutuante do WhatsApp */}
-      <div className="fixed top-1/2 transform -translate-y-1/2 right-4 z-50 flex flex-col items-center">
-        <button
-          onClick={() => {
-            const phoneNumber = "15558373106";
-            const message = "Olá, desejo finalizar meu cadastro como Entregador Shopee.";
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-          }}
-          className="bg-green-500 hover:bg-green-600 rounded-full p-3 shadow-lg transform transition-all duration-200 hover:scale-110 active:scale-95"
-          style={{
-            filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))"
-          }}
-        >
-          <img 
-            src="https://logodownload.org/wp-content/uploads/2015/04/whatsapp-logo-icone.png"
-            alt="WhatsApp"
-            className="w-8 h-8"
-          />
-        </button>
-        <p className="text-xs text-center text-gray-600 mt-1 bg-white px-2 py-1 rounded shadow-sm max-w-[80px]">
-          Fale com um Gerente
-        </p>
       </div>
       
       <Footer />

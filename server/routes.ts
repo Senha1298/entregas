@@ -19,7 +19,6 @@ import {
 } from "@shared/schema";
 import webpush from "web-push";
 import { eq } from "drizzle-orm";
-import { PaymentAdapter } from "./payment-adapter";
 
 // Tipagem para o cache global de pagamentos
 declare global {
@@ -39,9 +38,6 @@ declare global {
 import axios from "axios";
 import MobileDetect from "mobile-detect";
 import { setupPushNotifications } from "./pushNotifications";
-
-// Instância global do adaptador de pagamentos para normalização
-const paymentAdapter = new PaymentAdapter();
 
 // Importar spawn do child_process para executar scripts Python
 import { spawn } from 'child_process';
@@ -1298,27 +1294,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // Normalizar resposta usando o adapter e salvar no cache
-      const normalizedTransaction = paymentAdapter.normalize4MPaymentResponse({
-        gateway_id: paymentResult.id,
-        status: paymentResult.status || 'pending',
-        amount: (paymentAmount/100).toString(),
-        customer_name: name,
-        customer_email: userEmail,
-        customer_cpf: cpf,
-        description: 'Kit de Segurança Shopee Delivery',
-        pix_code: paymentResult.pixCode || '',
-        pix_qr_code: paymentResult.pixQrCode || '',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      });
-      
-      // Salvar no cache
-      paymentAdapter.cacheTransaction(normalizedTransaction.id, normalizedTransaction);
-      
-      // Retornar resposta normalizada para o frontend
-      const normalizedResponse = paymentAdapter.createNormalizedResponse(normalizedTransaction);
-      res.status(200).json(normalizedResponse);
+      // Retornar resultado para o frontend
+      res.status(200).json(paymentResult);
     } catch (error: any) {
       console.error('Erro ao processar pagamento:', error);
       res.status(500).json({ 
@@ -1685,28 +1662,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Para demonstração, simular que a transação 4M926101 está paga
       if (transactionId === '4M926101') {
         console.log(`[STATUS CHECK DEV] 🎉 SIMULAÇÃO: Transação ${transactionId} está PAGA!`);
-        
-        // Normalizar simulação através do adapter
-        const simulatedTransaction = paymentAdapter.normalize4MPaymentResponse({
-          gateway_id: transactionId,
+        return res.json({
           status: 'paid',
-          amount: '64.9',
-          customer_name: 'Simulação Teste',
-          customer_email: 'simulacao@teste.com',
-          customer_cpf: '11111111111',
-          description: 'Kit de Segurança Shopee Delivery',
-          pix_code: 'PIX_SIMULADO_12345',
-          pix_qr_code: 'PIX_QR_SIMULADO_12345',
+          transaction_id: transactionId,
+          amount: 64.9,
           paid_at: '2025-09-19T23:01:36.539Z',
           created_at: '2025-09-19T23:01:10.237Z'
         });
-
-        // Cache da simulação
-        paymentAdapter.cacheTransaction(simulatedTransaction.id, simulatedTransaction);
-
-        // Retornar resposta normalizada da simulação
-        const normalizedSimulation = paymentAdapter.createNormalizedResponse(simulatedTransaction);
-        return res.json(normalizedSimulation);
       }
       
       console.log(`[STATUS CHECK DEV] Consultando API 4MPAGAMENTOS para transação: ${transactionId}`);
@@ -1729,30 +1691,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // A resposta pode vir tanto com data.data quanto diretamente no root
         const data = responseData.data || responseData;
         
-        // Normalizar resposta da API através do adapter
-        const normalizedTransaction = paymentAdapter.normalize4MPaymentResponse({
-          gateway_id: data.gateway_id || data.transaction_id || transactionId,
+        // Retornar o status e informações relevantes incluindo dados do PIX
+        return res.json({
           status: data.status,
-          amount: data.amount?.toString() || '64.90',
-          customer_name: data.customer_name || '',
-          customer_email: data.customer_email || '',
-          customer_cpf: data.customer_cpf || '',
-          description: 'Kit de Segurança Shopee Delivery',
-          pix_code: data.pix_code || '',
-          pix_qr_code: data.pix_qr_code || '',
+          transaction_id: data.gateway_id || data.transaction_id || transactionId,
+          amount: data.amount,
           paid_at: data.paid_at,
-          created_at: data.created_at
+          created_at: data.created_at,
+          transaction: {
+            gateway_id: data.gateway_id || data.transaction_id || transactionId,
+            customer_name: data.customer_name,
+            customer_cpf: data.customer_cpf,
+            customer_email: data.customer_email,
+            pix_code: data.pix_code,
+            pix_qr_code: data.pix_qr_code,
+            approved_at: data.paid_at,
+            rejected_at: null,
+            facebook_reported: false
+          }
         });
-
-        // Mesclar com cache para garantir que códigos PIX sejam preservados
-        const mergedTransaction = paymentAdapter.mergeWithCache(normalizedTransaction.id, normalizedTransaction);
-        
-        // Atualizar cache
-        paymentAdapter.cacheTransaction(mergedTransaction.id, mergedTransaction);
-
-        // Retornar resposta normalizada
-        const normalizedResponse = paymentAdapter.createNormalizedResponse(mergedTransaction);
-        return res.json(normalizedResponse);
       } else {
         console.error(`[STATUS CHECK DEV] Erro na API 4MPAGAMENTOS: ${response.status}`);
         const errorData = await response.text();
