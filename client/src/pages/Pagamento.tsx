@@ -7,7 +7,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { useToast } from '@/hooks/use-toast';
 import { useScrollTop } from '@/hooks/use-scroll-top';
 import { API_BASE_URL } from '../lib/api-config';
-import { initFacebookPixel, trackPurchase, checkPaymentStatus } from '@/lib/facebook-pixel';
+import { initFacebookPixel, trackPurchase } from '@/lib/facebook-pixel';
 import ConversionTracker from '@/components/ConversionTracker';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
 
@@ -24,9 +24,6 @@ interface PaymentInfo {
   rejectedAt?: string;
   facebookReported?: boolean;
 }
-
-// Definir um tipo auxiliar para atualizações de estado mais seguras
-type PaymentInfoUpdate = Partial<PaymentInfo> & { id: string; pixCode: string; pixQrCode: string; }
 
 const Payment: React.FC = () => {
   useScrollTop();
@@ -60,19 +57,13 @@ const Payment: React.FC = () => {
     fetchPaymentInfo(id);
   }, []);
 
-  // ✅ REMOÇÃO DE POLLING INSEGURO - Agora usa apenas SSE + backend seguro
-
-  // Buscar informações de pagamento da API usando o endpoint correto
-  const fetchPaymentInfo = async (id: string, checkStatus: boolean = false) => {
+  // Buscar informações de pagamento da API
+  const fetchPaymentInfo = async (id: string) => {
     try {
-      // Só mostrar loading na primeira busca, não nas verificações de status
-      if (!checkStatus) {
-        setIsLoading(true);
-        console.log('[PAYMENT] Iniciando carregamento de informações de pagamento para ID:', id);
-      }
+      setIsLoading(true);
+      console.log('[PAYMENT] Carregando informações de pagamento para ID:', id);
       
-      // Usar o endpoint de transações que está funcionando nos logs
-      // ⚠️ CRÍTICO: Adicionar cache-busting para garantir resposta fresca
+      // Usar o endpoint de transações com cache-busting
       const cacheBuster = Date.now();
       const url = `${API_BASE_URL}/api/transactions/${id}/status?t=${cacheBuster}`;
       console.log('[PAYMENT] Fazendo requisição para:', url);
@@ -81,36 +72,19 @@ const Payment: React.FC = () => {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
-        },
-        cache: 'no-store' // Forçar não usar cache
+          'Cache-Control': 'no-cache'
+        }
       });
-      console.log('[PAYMENT] Status da resposta:', response.status);
       
       if (!response.ok) {
-        console.error('[PAYMENT] Erro HTTP:', response.status, response.statusText);
-        throw new Error(`Erro ${response.status}: Não foi possível recuperar as informações de pagamento`);
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
       
       const data = await response.json();
-      console.log('[PAYMENT] Dados recebidos:', data);
+      console.log('[PAYMENT] Resposta da API:', data);
       
-      if (data.error) {
-        console.error('[PAYMENT] Erro na resposta:', data.error);
-        throw new Error(data.error);
-      }
-      
-      // Extrair nome e CPF das informações de transação
-      if (data.transaction?.customer_name) setName(data.transaction.customer_name);
-      if (data.transaction?.customer_cpf) setCpf(data.transaction.customer_cpf);
-      
-      // Se não conseguiu obter dados da API, buscar no localStorage
+      // Buscar dados do localStorage se disponível
       if (!data.transaction?.customer_name || !data.transaction?.customer_cpf) {
-        console.log('[PAYMENT] Dados incompletos da API, buscando no localStorage...');
-        
-        // Buscar dados do usuário do localStorage
         const candidatoData = localStorage.getItem('candidato_data');
         if (candidatoData) {
           try {
@@ -119,17 +93,13 @@ const Payment: React.FC = () => {
             
             if (!data.transaction?.customer_name && userData.nome) {
               setName(userData.nome);
-              console.log('[PAYMENT] Nome definido do localStorage:', userData.nome);
             }
             if (!data.transaction?.customer_cpf && userData.cpf) {
               setCpf(userData.cpf);
-              console.log('[PAYMENT] CPF definido do localStorage:', userData.cpf.substring(0, 3) + '***' + userData.cpf.substring(userData.cpf.length - 2));
             }
           } catch (error) {
             console.error('[PAYMENT] Erro ao parsear dados do localStorage:', error);
           }
-        } else {
-          console.log('[PAYMENT] Nenhum dado encontrado no localStorage para candidato_data');
         }
       }
       
@@ -155,14 +125,14 @@ const Payment: React.FC = () => {
       // Se não há códigos PIX, mostrar erro específico
       if (!pixCode || !pixQrCode) {
         console.warn('[PAYMENT] ATENÇÃO: Códigos PIX não encontrados na resposta da API');
-        if (!checkStatus) {
-          setErrorMessage('Os códigos PIX não foram gerados ainda. Aguarde alguns instantes e recarregue a página.');
-        }
+        setErrorMessage('Os códigos PIX não foram gerados ainda. Aguarde alguns instantes e recarregue a página.');
       }
 
-      // ✅ SISTEMA SEGURO: Usa apenas SSE + backend para verificação de status
-      // Todo o redirecionamento acontece via SSE em tempo real
-      console.log('[PAYMENT] Sistema seguro ativo: SSE detectará aprovação automaticamente');
+      // 🚀 POLLING DIRETO 4MPAGAMENTOS - SEM BACKEND!
+      if (data.transaction?.gateway_id && data.transaction.gateway_id.startsWith('4M')) {
+        console.log('[PAYMENT] Iniciando polling direto para transação:', data.transaction.gateway_id);
+        startDirectPolling(data.transaction.gateway_id);
+      }
     } catch (error: any) {
       console.error('Erro ao recuperar informações de pagamento:', error);
       setErrorMessage(error.message || 'Ocorreu um erro ao carregar as informações de pagamento.');
@@ -171,10 +141,70 @@ const Payment: React.FC = () => {
     }
   };
 
-  // Configurar o cronômetro e Server-Sent Events para verificação de status
-  useEffect(() => {
-    let eventSource: EventSource | null = null;
+  // 🚀 POLLING DIRETO PARA 4MPAGAMENTOS - SEM BACKEND!
+  const startDirectPolling = (transactionId: string) => {
+    console.log(`[4M-DIRECT] Iniciando polling direto para transação: ${transactionId}`);
     
+    const checkPayment = async () => {
+      try {
+        // Cache busting para garantir dados frescos
+        const cacheBuster = Date.now() + Math.random();
+        const url = `https://app.4mpagamentos.com/api/v1/transactions/${transactionId}?cb=${cacheBuster}`;
+        
+        console.log(`[4M-DIRECT] Verificando status: ${url}`);
+        
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`[4M-DIRECT] Status recebido para ${transactionId}:`, data.status);
+          
+          if (data.status === 'paid') {
+            console.log(`🎉 [4M-DIRECT] PAGAMENTO APROVADO! Redirecionando para /treinamento`);
+            
+            // Track conversion no Facebook Pixel
+            if (typeof trackPurchase === 'function') {
+              trackPurchase(64.90, 'BRL');
+            }
+            
+            // Mostrar toast de sucesso
+            toast({
+              title: "✅ Pagamento Confirmado!",
+              description: "Redirecionando para o treinamento...",
+              variant: "default",
+            });
+            
+            // Redirecionamento IMEDIATO
+            setLocation('/treinamento');
+            return; // Para o polling
+          }
+        } else {
+          console.warn(`[4M-DIRECT] Erro HTTP ${response.status} ao verificar ${transactionId}`);
+        }
+        
+        // Continuar verificando a cada 1 segundo se não está pago
+        setTimeout(checkPayment, 1000);
+        
+      } catch (error) {
+        console.error(`[4M-DIRECT] Erro ao verificar ${transactionId}:`, error);
+        // Continuar verificando mesmo com erro
+        setTimeout(checkPayment, 1000);
+      }
+    };
+    
+    // Iniciar verificação
+    checkPayment();
+  };
+
+  // Configurar apenas o cronômetro
+  useEffect(() => {
     if (paymentInfo) {
       // Configurar o cronômetro de contagem regressiva
       if (timeLeft > 0 && paymentInfo.status !== 'APPROVED' && paymentInfo.status !== 'REJECTED') {
@@ -189,160 +219,17 @@ const Payment: React.FC = () => {
         }, 1000) as unknown as number;
       }
       
-      // Conectar ao Server-Sent Events para verificação em tempo real (BACKEND)
-      if (paymentInfo.status !== 'APPROVED' && paymentInfo.status !== 'REJECTED') {
-        console.log('[PAYMENT] Conectando ao SSE para verificação em tempo real...');
-        
-        try {
-          eventSource = new EventSource(`${API_BASE_URL}/api/payments/${paymentInfo.id}/stream`);
-          
-          eventSource.onmessage = (event) => {
-            try {
-              const data = JSON.parse(event.data);
-              console.log('🔥 [PAYMENT SSE] Evento recebido:', data);
-              console.log('🔥 [PAYMENT SSE] Tipo:', data.type, 'Status:', data.status);
-              
-              if (data.type === 'status') {
-                // Atualizar status sem fazer loading
-                setPaymentInfo(prev => {
-                  if (!prev) return prev;
-                  return {
-                    ...prev,
-                    status: data.status?.toUpperCase() || prev.status || 'PENDING'
-                  };
-                });
-                
-                // ✅ SE STATUS FOR PAID/APPROVED, REDIRECIONAR IMEDIATAMENTE!
-                if (data.status === 'paid' || data.status === 'approved' || data.status === 'PAID' || data.status === 'APPROVED') {
-                  console.log('🚀🚀🚀 [PAYMENT SSE] STATUS PAID DETECTADO! REDIRECIONANDO AGORA...', data.status);
-                  
-                  // Mostrar mensagem de sucesso
-                  toast({
-                    title: "✅ Pagamento Confirmado!",
-                    description: "Redirecionando para o treinamento...",
-                    variant: "default",
-                  });
-                  
-                  // Atualizar status
-                  setPaymentInfo(prev => {
-                    if (!prev) return prev;
-                    return {
-                      ...prev,
-                      status: 'APPROVED'
-                    };
-                  });
-                  
-                  // 🚀 REDIRECIONAMENTO INSTANTÂNEO!
-                  setLocation('/treinamento');
-                  
-                  // Fechar conexão SSE
-                  eventSource?.close();
-                  return; // Parar processamento
-                }
-              }
-              
-              if (data.type === 'payment_approved' || data.type === 'approved') {
-                console.log('🔥🔥🔥 [PAYMENT SSE] EVENTO APPROVED DETECTADO! Redirecionando...', data.type);
-                
-                // Mostrar mensagem de sucesso
-                toast({
-                  title: "\u2705 Pagamento Confirmado!",
-                  description: "Redirecionando para o treinamento...",
-                  variant: "default",
-                });
-                
-                // Atualizar status
-                setPaymentInfo(prev => {
-                  if (!prev) return prev;
-                  return {
-                    ...prev,
-                    status: 'APPROVED'
-                  };
-                });
-                
-                // 🚀 REDIRECIONAMENTO INSTANTÂNEO!
-                setLocation('/treinamento');
-                
-                // Fechar conexão SSE
-                eventSource?.close();
-              }
-            } catch (error) {
-              console.error('[PAYMENT SSE] Erro ao processar evento:', error);
-            }
-          };
-          
-          eventSource.onerror = (error) => {
-            console.error('[PAYMENT SSE] Erro na conexão:', error);
-            eventSource?.close();
-            
-            // Fallback: se SSE falhar, usar polling tradicional
-            console.log('[PAYMENT SSE] Iniciando fallback com polling...');
-            const fallbackInterval = setInterval(async () => {
-              try {
-                const response = await fetch(`${API_BASE_URL}/api/transactions/${paymentInfo.id}/status`);
-                if (response.ok) {
-                  const data = await response.json();
-                  
-                  // Atualizar status
-                  setPaymentInfo(prev => {
-                    if (!prev) return prev;
-                    return {
-                      ...prev,
-                      status: data.status?.toUpperCase() || prev.status || 'PENDING'
-                    };
-                  });
-                  
-                  // Se aprovado, redirecionar
-                  if (data.status === 'paid' || data.status === 'approved') {
-                    clearInterval(fallbackInterval);
-                    
-                    toast({
-                      title: "✅ Pagamento Confirmado!",
-                      description: "Redirecionando para o treinamento...",
-                      variant: "default",
-                    });
-                    
-                    setPaymentInfo(prev => {
-                      if (!prev) return prev;
-                      return { ...prev, status: 'APPROVED' };
-                    });
-                    
-                    // 🚀 REDIRECIONAMENTO INSTANTÂNEO!
-                    setLocation('/treinamento');
-                  }
-                }
-              } catch (error) {
-                console.error('[PAYMENT FALLBACK] Erro no polling:', error);
-              }
-            }, 3000); // Polling a cada 3 segundos como fallback
-            
-            // Limpar fallback após 10 minutos
-            setTimeout(() => {
-              clearInterval(fallbackInterval);
-            }, 600000);
-          };
-          
-        } catch (error) {
-          console.error('[PAYMENT SSE] Erro ao conectar:', error);
-        }
-      } else {
-        console.log(`[PAYMENT] Pagamento com status ${paymentInfo.status}. Não iniciando SSE.`);
-      }
+      console.log('[PAYMENT] Sistema de polling direto ativo.');
     }
     
-    // Limpar conexões quando o componente for desmontado ou quando o status mudar
+    // Limpar cronômetro quando componente for desmontado
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
-      if (eventSource) {
-        console.log('[PAYMENT SSE] Fechando conexão SSE...');
-        eventSource.close();
-      }
     };
   }, [paymentInfo?.id, paymentInfo?.status, timeLeft]);
   
   // Inicializar o Facebook Pixel quando o componente é montado
   useEffect(() => {
-    // Inicializar o Facebook Pixel apenas uma vez quando o componente é montado
     initFacebookPixel();
   }, []);
 
@@ -376,7 +263,7 @@ const Payment: React.FC = () => {
       {isApproved && (
         <ConversionTracker 
           transactionId={paymentInfo.id} 
-          amount={47.90} 
+          amount={64.90} 
           enabled={true} 
         />
       )}
@@ -414,259 +301,147 @@ const Payment: React.FC = () => {
                   <p className="mt-4 text-gray-600">Carregando informações de pagamento...</p>
                 </div>
               ) : errorMessage ? (
-                <div className="py-8 text-center">
-                  <div className="text-red-500 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="8" x2="12" y2="12"></line>
-                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                  <div className="flex items-center">
+                    <div className="text-red-500 mr-3">
+                      <i className="fas fa-exclamation-triangle text-xl"></i>
+                    </div>
+                    <div>
+                      <h4 className="text-red-800 font-semibold mb-1">Erro</h4>
+                      <p className="text-red-700 text-sm">{errorMessage}</p>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Erro no Pagamento</h3>
-                  <p className="text-gray-600 mb-6">{errorMessage}</p>
-                  <Button
-                    onClick={() => setLocation('/')}
-                    className="bg-[#E83D22] hover:bg-[#d73920]"
+                  <Button 
+                    onClick={() => window.location.reload()} 
+                    className="mt-3 bg-red-600 hover:bg-red-700 text-white"
+                    data-testid="button-reload"
                   >
-                    Voltar para a Página Inicial
+                    Tentar Novamente
                   </Button>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  {/* Cabeçalho com imagem e dados */}
-                  <div className="flex flex-row gap-3 items-start">
-                    <div className="flex-shrink-0">
+              ) : paymentInfo ? (
+                <>
+                  {/* Timer */}
+                  <div className="bg-[#FFF8F6] border border-[#E83D2220] rounded-lg p-3 mb-4">
+                    <div className="text-center">
+                      <h4 className="text-[#E83D22] font-semibold text-sm mb-1">Tempo restante para pagamento</h4>
+                      <div className="text-2xl font-bold text-[#E83D22]" data-testid="text-timer">
+                        {formatTime(timeLeft)}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Valor do pagamento */}
+                  <div className="text-center mb-6">
+                    <div className="text-3xl font-bold text-[#E83D22] mb-2" data-testid="text-amount">
+                      R$ 64,90
+                    </div>
+                    <p className="text-gray-600 text-sm">Kit de Segurança + Treinamento</p>
+                  </div>
+
+                  {/* Status do pagamento */}
+                  <div className="text-center mb-4">
+                    <div 
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                        paymentInfo.status === 'APPROVED' || paymentInfo.status === 'PAID' 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}
+                      data-testid={`status-${paymentInfo.status?.toLowerCase()}`}
+                    >
+                      {paymentInfo.status === 'APPROVED' || paymentInfo.status === 'PAID' ? (
+                        <>
+                          <i className="fas fa-check-circle mr-2"></i>
+                          Pagamento Aprovado
+                        </>
+                      ) : (
+                        <>
+                          <i className="fas fa-clock mr-2"></i>
+                          Aguardando Pagamento
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* QR Code */}
+                  {paymentInfo.pixQrCode && (
+                    <div className="text-center mb-6">
+                      <div className="bg-white border-2 border-gray-200 rounded-lg p-4 inline-block">
+                        <QRCodeGenerator 
+                          value={paymentInfo.pixQrCode}
+                          size={200}
+                          data-testid="qr-code"
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">
+                        Escaneie o QR Code ou copie o código PIX abaixo
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Código PIX */}
+                  {paymentInfo.pixCode && (
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Código PIX Copia e Cola:
+                      </label>
+                      <div className="relative">
+                        <textarea
+                          value={paymentInfo.pixCode}
+                          readOnly
+                          className="w-full p-3 text-xs border border-gray-300 rounded-lg bg-gray-50 resize-none"
+                          rows={4}
+                          data-testid="input-pix-code"
+                        />
+                        <Button
+                          onClick={copiarCodigoPix}
+                          className="absolute top-2 right-2 bg-[#E83D22] hover:bg-[#D73621] text-white text-xs px-3 py-1"
+                          data-testid="button-copy-pix"
+                        >
+                          <i className="fas fa-copy mr-1"></i>
+                          Copiar
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Instruções */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <h4 className="font-semibold text-blue-800 mb-2 flex items-center">
+                      <i className="fas fa-info-circle mr-2"></i>
+                      Como pagar com PIX:
+                    </h4>
+                    <ol className="text-blue-700 text-sm space-y-1">
+                      <li>1. Abra o app do seu banco</li>
+                      <li>2. Escolha a opção PIX</li>
+                      <li>3. Escaneie o QR Code ou cole o código</li>
+                      <li>4. Confirme o pagamento</li>
+                      <li>5. Você será redirecionado automaticamente após a confirmação</li>
+                    </ol>
+                  </div>
+
+                  {/* Kit de segurança */}
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="flex items-center space-x-3">
                       <img 
                         src={kitEpiImage} 
-                        alt="Kit EPI Shopee" 
-                        className="w-20 rounded-md"
+                        alt="Kit de Segurança" 
+                        className="w-16 h-16 object-cover rounded-lg"
+                        data-testid="img-kit"
                       />
-                    </div>
-                    <div className="flex-grow">
-                      <h3 className="text-sm font-medium text-gray-800">Kit de Segurança Oficial</h3>
-                      <p className="text-lg font-bold text-[#E83D22]">R$ 64,90</p>
-                      
-                      <div className="w-full mt-1">
-                        <p className="text-xs text-gray-600">
-                          <span className="font-medium">Nome:</span> {name}
-                        </p>
-                        <p className="text-xs text-gray-600">
-                          <span className="font-medium">CPF:</span> {cpf}
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-800">Kit de Segurança Shopee</h4>
+                        <p className="text-sm text-gray-600">
+                          Equipamentos de proteção + Treinamento completo
                         </p>
                       </div>
                     </div>
                   </div>
-                  
-                  {/* Status de pagamento dinâmico baseado no status */}
-                  {paymentInfo?.status === 'APPROVED' ? (
-                    <div className="flex items-center justify-center gap-2 py-3 bg-[#e7ffe7] rounded-md border border-green-200">
-                      <div className="text-green-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                          <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-700 font-medium">
-                          Pagamento Aprovado!
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Seu cadastro foi atualizado com sucesso.
-                        </p>
-                      </div>
-                    </div>
-                  ) : paymentInfo?.status === 'REJECTED' ? (
-                    <div className="flex items-center justify-center gap-2 py-3 bg-[#ffeeee] rounded-md border border-red-200">
-                      <div className="text-red-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <line x1="15" y1="9" x2="9" y2="15"></line>
-                          <line x1="9" y1="9" x2="15" y2="15"></line>
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-700 font-medium">
-                          Pagamento Rejeitado
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Por favor, tente novamente ou contate o suporte.
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center gap-2 py-2 bg-[#fff8f6] rounded-md">
-                      <div className="text-[#E83D22] animate-spin">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                        </svg>
-                      </div>
-                      <p className="text-sm text-gray-700 font-medium">
-                        Aguardando pagamento PIX...
-                      </p>
-                    </div>
-                  )}
-                  
-                  {/* QR Code e demais detalhes de pagamento - mostrados apenas se não estiver aprovado ou rejeitado */}
-                  {(!paymentInfo?.status || paymentInfo?.status === 'PENDING') && (
-                    <>
-                      {/* QR Code */}
-                      <div className="flex flex-col items-center">
-                        <div className="mb-2">
-                          <img 
-                            src={pixLogo}
-                            alt="PIX Logo"
-                            className="h-8 mb-2 mx-auto"
-                          />
-                        </div>
-                        
-                        <QRCodeGenerator 
-                          value={paymentInfo?.pixCode || ''} 
-                          size={150}
-                          className="mx-auto"
-                          alt="QR Code PIX" 
-                        />
-                        
-                        {/* Tempo restante */}
-                        <div className="bg-[#fff3e6] border-[#E83D22] border p-2 rounded-md mt-3 w-[80%] mx-auto">
-                          <div className="flex items-center justify-center gap-2">
-                            <div className="text-[#E83D22]">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                              </svg>
-                            </div>
-                            <div className="flex flex-col">
-                              <p className="text-sm text-gray-700 font-medium">
-                                PIX expira em <span className="text-[#E83D22] font-bold">{formatTime(timeLeft)}</span>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Código PIX e botão copiar */}
-                      <div className="mt-4">
-                        <p className="text-sm text-gray-700 mb-2 font-medium text-center">
-                          Copie o código PIX e pague no seu aplicativo de banco:
-                        </p>
-                        <div className="relative">
-                          <div 
-                            className="bg-gray-50 p-3 rounded-md border border-gray-200 text-sm text-gray-600 break-all pr-12 max-h-[80px] overflow-y-auto"
-                          >
-                            {paymentInfo?.pixCode}
-                          </div>
-                          <Button
-                            variant="ghost"
-                            className="absolute right-1 top-1/2 transform -translate-y-1/2 text-[#E83D22] hover:text-[#d73920] p-1"
-                            onClick={copiarCodigoPix}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                          </Button>
-                        </div>
-                        
-                        {/* Botão laranja para copiar código PIX */}
-                        <div className="mt-3">
-                          <Button
-                            onClick={copiarCodigoPix}
-                            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-md transition-colors"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                            Copiar Código PIX
-                          </Button>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  
-                  {/* Se aprovado, mostrar mensagem de sucesso */}
-                  {paymentInfo?.status === 'APPROVED' && (
-                    <div className="flex flex-col items-center justify-center p-6 bg-[#f8fff8] rounded-md border border-green-100 mt-4">
-                      <div className="text-green-500 mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                          <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Pagamento Confirmado!</h3>
-                      <p className="text-center text-gray-600 mb-4">
-                        Seu pagamento foi processado com sucesso. Seu cadastro foi atualizado 
-                        e você será contatado em breve para as próximas etapas.
-                      </p>
-                      <Button
-                        onClick={() => setLocation('/')}
-                        className="bg-green-500 hover:bg-green-600 text-white"
-                      >
-                        Voltar para a Página Inicial
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Se rejeitado, mostrar mensagem de erro */}
-                  {paymentInfo?.status === 'REJECTED' && (
-                    <div className="flex flex-col items-center justify-center p-6 bg-[#fff8f8] rounded-md border border-red-100 mt-4">
-                      <div className="text-red-500 mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <line x1="15" y1="9" x2="9" y2="15"></line>
-                          <line x1="9" y1="9" x2="15" y2="15"></line>
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Pagamento Rejeitado</h3>
-                      <p className="text-center text-gray-600 mb-4">
-                        Houve um problema com o seu pagamento. Por favor, tente novamente 
-                        ou entre em contato com o suporte para assistência.
-                      </p>
-                      <Button
-                        onClick={() => setLocation('/')}
-                        className="bg-[#E83D22] hover:bg-[#d73920] text-white"
-                      >
-                        Voltar e Tentar Novamente
-                      </Button>
-                    </div>
-                  )}
-                  
-                  <div className="mt-4 text-center">
-                    <p className="text-xs text-gray-500">
-                      Após o pagamento, o sistema atualizará automaticamente seu cadastro.
-                      Você receberá um e-mail com a confirmação do pagamento.
-                    </p>
-                  </div>
-                </div>
-              )}
+                </>
+              ) : null}
             </div>
           </div>
         </div>
-      </div>
-      
-      {/* Botão flutuante do WhatsApp */}
-      <div className="fixed top-1/2 transform -translate-y-1/2 right-4 z-50 flex flex-col items-center">
-        <button
-          onClick={() => {
-            const phoneNumber = "15558373106";
-            const message = "Olá, desejo finalizar meu cadastro como Entregador Shopee.";
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-          }}
-          className="bg-green-500 hover:bg-green-600 rounded-full p-3 shadow-lg transform transition-all duration-200 hover:scale-110 active:scale-95"
-          style={{
-            filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))"
-          }}
-        >
-          <img 
-            src="https://logodownload.org/wp-content/uploads/2015/04/whatsapp-logo-icone.png"
-            alt="WhatsApp"
-            className="w-8 h-8"
-          />
-        </button>
-        <p className="text-xs text-center text-gray-600 mt-1 bg-white px-2 py-1 rounded shadow-sm max-w-[80px]">
-          Fale com um Gerente
-        </p>
       </div>
       
       <Footer />
