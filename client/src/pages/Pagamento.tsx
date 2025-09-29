@@ -66,19 +66,26 @@ const Payment: React.FC = () => {
       // Só mostrar loading na primeira busca, não nas verificações de status
       if (!checkStatus) {
         setIsLoading(true);
+        console.log('[PAYMENT] Iniciando carregamento de informações de pagamento para ID:', id);
       }
       
       // Usar o endpoint de transações que está funcionando nos logs
       const url = `${API_BASE_URL}/api/transactions/${id}/status`;
+      console.log('[PAYMENT] Fazendo requisição para:', url);
+      
       const response = await fetch(url);
+      console.log('[PAYMENT] Status da resposta:', response.status);
       
       if (!response.ok) {
-        throw new Error('Não foi possível recuperar as informações de pagamento');
+        console.error('[PAYMENT] Erro HTTP:', response.status, response.statusText);
+        throw new Error(`Erro ${response.status}: Não foi possível recuperar as informações de pagamento`);
       }
       
       const data = await response.json();
+      console.log('[PAYMENT] Dados recebidos:', data);
       
       if (data.error) {
+        console.error('[PAYMENT] Erro na resposta:', data.error);
         throw new Error(data.error);
       }
       
@@ -114,15 +121,31 @@ const Payment: React.FC = () => {
       }
       
       // Atualizar as informações básicas do pagamento
+      const pixCode = data.transaction?.pix_code || '';
+      const pixQrCode = data.transaction?.pix_qr_code || '';
+      
+      console.log('[PAYMENT] Dados PIX extraídos:', {
+        pixCode: pixCode ? `${pixCode.substring(0, 20)}...` : 'VAZIO',
+        pixQrCode: pixQrCode ? `${pixQrCode.substring(0, 20)}...` : 'VAZIO'
+      });
+      
       setPaymentInfo({
         id: data.transaction?.gateway_id || id,
-        pixCode: data.transaction?.pix_code || '',
-        pixQrCode: data.transaction?.pix_qr_code || '',
+        pixCode: pixCode,
+        pixQrCode: pixQrCode,
         status: data.status?.toUpperCase() || 'PENDING',
         approvedAt: data.transaction?.approved_at,
         rejectedAt: data.transaction?.rejected_at,
         facebookReported: data.transaction?.facebook_reported
       });
+      
+      // Se não há códigos PIX, mostrar erro específico
+      if (!pixCode || !pixQrCode) {
+        console.warn('[PAYMENT] ATENÇÃO: Códigos PIX não encontrados na resposta da API');
+        if (!checkStatus) {
+          setErrorMessage('Os códigos PIX não foram gerados ainda. Aguarde alguns instantes e recarregue a página.');
+        }
+      }
       
       // Se a verificação de status estiver ativada, verifica diretamente na For4Payments (frontend)
       if (checkStatus) {
