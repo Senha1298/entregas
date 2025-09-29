@@ -159,9 +159,16 @@ const Payment: React.FC = () => {
       // Se não há códigos PIX, mostrar erro específico
       if (!pixCode || !pixQrCode) {
         console.warn('[PAYMENT] ATENÇÃO: Códigos PIX não encontrados na resposta da API');
-        if (!checkStatus) {
-          setErrorMessage('Os códigos PIX não foram gerados ainda. Aguarde alguns instantes e recarregue a página.');
-        }
+        console.log('[PAYMENT] Debug - pixCode:', pixCode);
+        console.log('[PAYMENT] Debug - pixQrCode:', pixQrCode);
+        console.log('[PAYMENT] Debug - data.transaction:', data.transaction);
+        
+        // DESABILITANDO TEMPORARIAMENTE O ERRO para não bloquear a exibição
+        // if (!checkStatus) {
+        //   setErrorMessage('Os códigos PIX não foram gerados ainda. Aguarde alguns instantes e recarregue a página.');
+        // }
+      } else {
+        console.log('[PAYMENT] ✅ Códigos PIX encontrados com sucesso!');
       }
       
       // Se o pagamento já foi aprovado na primeira consulta, redirecionar automaticamente
@@ -675,6 +682,7 @@ const Payment: React.FC = () => {
                   
                   {/* QR Code e demais detalhes de pagamento - mostrados apenas se não estiver aprovado ou rejeitado */}
                   {(!paymentInfo?.status || paymentInfo?.status === 'PENDING') && (
+                    console.log('[PAYMENT RENDER] Exibindo QR Code. Status:', paymentInfo?.status, 'PixCode:', paymentInfo?.pixCode ? 'PRESENTE' : 'AUSENTE') ||
                     <>
                       {/* QR Code */}
                       <div className="flex flex-col items-center">
