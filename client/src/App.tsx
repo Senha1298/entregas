@@ -47,7 +47,6 @@ function Router() {
       <Route path="/treinamento" component={Treinamento} />
       <Route path="/treinamento-app" component={TreinamentoApp} />
       <Route path="/pagamento-instrutor" component={PagamentoInstrutor} />
-      <Route path="/pagamento/:id" component={Pagamento} />
       <Route path="/pagamento" component={Pagamento} />
       <Route path="/instalar-app" component={InstallApp} />
       <Route path="/admin" component={AdminPanel} />
