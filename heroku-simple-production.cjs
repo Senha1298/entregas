@@ -327,7 +327,7 @@ app.post('/api/proxy/for4payments/pix', async (req, res) => {
       const checkStatus4M = async () => {
         try {
           const fetch = (await import('node-fetch')).default;
-          const statusResponse = await fetch(`https://app.4mpagamentos.com/api/v1/payments/${transactionId}`, {
+          const statusResponse = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
             headers: {
               'Authorization': 'Bearer 3mpag_p7czqd3yk_mfr1pvd2',
               'Accept': 'application/json',
