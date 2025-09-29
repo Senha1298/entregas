@@ -1647,7 +1647,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Rota para verificar status de transação 4MPAGAMENTOS
   app.get('/api/transactions/:id/status', async (req, res) => {
-    console.log('🔍 [DEV] Verificando status da transação:', req.params.id);
+    // ⚠️ CRÍTICO: Headers para evitar cache
+    res.header('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.header('Pragma', 'no-cache');
+    res.header('Expires', '0');
+    res.header('Vary', '*');
+    
+    console.log('🔍 [DEV] Verificando status da transação:', req.params.id, 'em', new Date().toISOString());
     
     try {
       const transactionId = req.params.id;
@@ -1663,7 +1669,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (transactionId === '4M926101') {
         console.log(`[STATUS CHECK DEV] 🎉 SIMULAÇÃO: Transação ${transactionId} está PAGA!`);
         return res.json({
-          status: 'paid',
+          status: 'PAID',
           transaction_id: transactionId,
           amount: 64.9,
           paid_at: '2025-09-19T23:01:36.539Z',
@@ -1671,29 +1677,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.log(`[STATUS CHECK DEV] Consultando API 4MPAGAMENTOS para transação: ${transactionId}`);
+      console.log(`[STATUS CHECK DEV] 🔄 CONSULTANDO API 4MPAGAMENTOS EM TEMPO REAL: ${transactionId}`);
       
-      const response = await fetch(`https://app.4mpagamentos.com/api/v1/transactions/${transactionId}`, {
+      // ⚠️ CRÍTICO: Adicionar cache-busting para evitar cache da API
+      const cacheBuster = Date.now();
+      const apiUrl = `https://app.4mpagamentos.com/api/v1/transactions/${transactionId}?t=${cacheBuster}`;
+      
+      const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer 3mpag_p7czqd3yk_mfr1pvd2'
+          'Authorization': 'Bearer 3mpag_p7czqd3yk_mfr1pvd2',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
         }
       });
       
-      console.log(`[STATUS CHECK DEV] Status da resposta: ${response.status}`);
+      console.log(`[STATUS CHECK DEV] ✅ Status da resposta: ${response.status}`);
       
       if (response.ok) {
         const responseData = await response.json();
-        console.log(`[STATUS CHECK DEV] Dados recebidos:`, responseData);
+        console.log(`[STATUS CHECK DEV] 📦 Dados recebidos em ${new Date().toISOString()}:`, {
+          gateway_id: responseData.gateway_id,
+          status: responseData.status,
+          paid_at: responseData.paid_at,
+          amount: responseData.amount
+        });
         
-        // A resposta pode vir tanto com data.data quanto diretamente no root
-        const data = responseData.data || responseData;
+        // A resposta vem diretamente no root (não tem data.data)
+        const data = responseData;
+        
+        // ⚠️ CRÍTICO: Mapear status "paid" para "PAID" (uppercase)
+        let mappedStatus = data.status || 'pending';
+        if (data.status === 'paid') {
+          mappedStatus = 'PAID';
+          console.log(`[STATUS CHECK DEV] 🎉 TRANSAÇÃO ${transactionId} CONFIRMADA COMO PAGA!`);
+        } else {
+          console.log(`[STATUS CHECK DEV] ⏳ Transação ${transactionId} ainda pendente: ${data.status}`);
+        }
         
         // Retornar o status e informações relevantes incluindo dados do PIX
-        return res.json({
-          status: data.status,
+        const responsePayload = {
+          status: mappedStatus,
           transaction_id: data.gateway_id || data.transaction_id || transactionId,
           amount: data.amount,
           paid_at: data.paid_at,
@@ -1709,23 +1735,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
             rejected_at: null,
             facebook_reported: false
           }
-        });
-      } else {
-        console.error(`[STATUS CHECK DEV] Erro na API 4MPAGAMENTOS: ${response.status}`);
-        const errorData = await response.text();
-        console.error(`[STATUS CHECK DEV] Resposta de erro:`, errorData);
+        };
         
-        return res.status(response.status).json({
-          error: 'Erro ao consultar status da transação',
-          details: errorData
+        console.log(`[STATUS CHECK DEV] 📤 Retornando: status=${mappedStatus}, paid_at=${data.paid_at || 'null'}`);
+        return res.json(responsePayload);
+        
+      } else {
+        console.error(`[STATUS CHECK DEV] ❌ Erro na API 4MPAGAMENTOS: ${response.status}`);
+        const errorData = await response.text();
+        console.error(`[STATUS CHECK DEV] 💥 Resposta de erro:`, errorData);
+        
+        // ⚠️ IMPORTANTE: Não retornar 'pending' como fallback
+        return res.status(502).json({
+          error: `Falha ao consultar API de pagamentos (status ${response.status})`,
+          details: errorData,
+          timestamp: new Date().toISOString()
         });
       }
       
-    } catch (error) {
-      console.error('[STATUS CHECK DEV] Erro ao verificar status:', error);
+    } catch (error: any) {
+      console.error('[STATUS CHECK DEV] 💥 Erro ao verificar status:', error);
+      
+      // ⚠️ IMPORTANTE: Não retornar 'pending' como fallback
       return res.status(500).json({
         error: 'Erro interno ao verificar status da transação',
-        details: error.message
+        details: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   });
