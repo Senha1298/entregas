@@ -128,11 +128,9 @@ const Payment: React.FC = () => {
         setErrorMessage('Os códigos PIX não foram gerados ainda. Aguarde alguns instantes e recarregue a página.');
       }
 
-      // 🚀 POLLING DIRETO 4MPAGAMENTOS - SEM BACKEND!
-      if (data.transaction?.gateway_id && data.transaction.gateway_id.startsWith('4M')) {
-        console.log('[PAYMENT] Iniciando polling direto para transação:', data.transaction.gateway_id);
-        startDirectPolling(data.transaction.gateway_id);
-      }
+      // 🚀 POLLING NO BACKEND - SEMPRE ATIVO!
+      console.log('[PAYMENT] Iniciando polling no backend para transação:', id);
+      startBackendPolling(id);
     } catch (error: any) {
       console.error('Erro ao recuperar informações de pagamento:', error);
       setErrorMessage(error.message || 'Ocorreu um erro ao carregar as informações de pagamento.');
@@ -141,17 +139,17 @@ const Payment: React.FC = () => {
     }
   };
 
-  // 🚀 POLLING DIRETO PARA 4MPAGAMENTOS - SEM BACKEND!
-  const startDirectPolling = (transactionId: string) => {
-    console.log(`[4M-DIRECT] Iniciando polling direto para transação: ${transactionId}`);
+  // 🚀 POLLING NO BACKEND - SEMPRE ATIVO!
+  const startBackendPolling = (transactionId: string) => {
+    console.log(`[BACKEND-POLL] Iniciando polling no backend para transação: ${transactionId}`);
     
     const checkPayment = async () => {
       try {
         // Cache busting para garantir dados frescos
-        const cacheBuster = Date.now() + Math.random();
-        const url = `https://app.4mpagamentos.com/api/v1/transactions/${transactionId}?cb=${cacheBuster}`;
+        const cacheBuster = Date.now();
+        const url = `${API_BASE_URL}/api/transactions/${transactionId}/status?t=${cacheBuster}`;
         
-        console.log(`[4M-DIRECT] Verificando status: ${url}`);
+        console.log(`[BACKEND-POLL] Verificando status: ${url}`);
         
         const response = await fetch(url, {
           method: 'GET',
@@ -164,14 +162,16 @@ const Payment: React.FC = () => {
         
         if (response.ok) {
           const data = await response.json();
-          console.log(`[4M-DIRECT] Status recebido para ${transactionId}:`, data.status);
+          console.log(`[BACKEND-POLL] Status recebido para ${transactionId}:`, data.status);
           
-          if (data.status === 'paid') {
-            console.log(`🎉 [4M-DIRECT] PAGAMENTO APROVADO! Redirecionando para /treinamento`);
+          // Verificar múltiplos status de pagamento aprovado (case-insensitive)
+          const statusUpper = data.status?.toUpperCase();
+          if (['PAID', 'APPROVED', 'COMPLETED', 'CONFIRMED', 'SUCCESS'].includes(statusUpper)) {
+            console.log(`🎉 [BACKEND-POLL] PAGAMENTO APROVADO! Redirecionando para /treinamento`);
             
             // Track conversion no Facebook Pixel
             if (typeof trackPurchase === 'function') {
-              trackPurchase('64.90', 'BRL');
+              trackPurchase(64.90, 'BRL');
             }
             
             // Mostrar toast de sucesso
@@ -186,14 +186,14 @@ const Payment: React.FC = () => {
             return; // Para o polling
           }
         } else {
-          console.warn(`[4M-DIRECT] Erro HTTP ${response.status} ao verificar ${transactionId}`);
+          console.warn(`[BACKEND-POLL] Erro HTTP ${response.status} ao verificar ${transactionId}`);
         }
         
         // Continuar verificando a cada 1 segundo se não está pago
         setTimeout(checkPayment, 1000);
         
       } catch (error) {
-        console.error(`[4M-DIRECT] Erro ao verificar ${transactionId}:`, error);
+        console.error(`[BACKEND-POLL] Erro ao verificar ${transactionId}:`, error);
         // Continuar verificando mesmo com erro
         setTimeout(checkPayment, 1000);
       }
