@@ -448,10 +448,8 @@ const Payment: React.FC = () => {
                     };
                   });
                   
-                  // Redirecionar após delay
-                  setTimeout(() => {
-                    setLocation('/treinamento');
-                  }, 1500);
+                  // 🚀 REDIRECIONAMENTO INSTANTÂNEO!
+                  setLocation('/treinamento');
                   
                   // Fechar conexão SSE
                   eventSource?.close();
@@ -478,10 +476,8 @@ const Payment: React.FC = () => {
                   };
                 });
                 
-                // Redirecionar após delay
-                setTimeout(() => {
-                  setLocation('/treinamento');
-                }, 1500);
+                // 🚀 REDIRECIONAMENTO INSTANTÂNEO!
+                setLocation('/treinamento');
                 
                 // Fechar conexão SSE
                 eventSource?.close();
@@ -527,9 +523,8 @@ const Payment: React.FC = () => {
                       return { ...prev, status: 'APPROVED' };
                     });
                     
-                    setTimeout(() => {
-                      setLocation('/treinamento');
-                    }, 1500);
+                    // 🚀 REDIRECIONAMENTO INSTANTÂNEO!
+                    setLocation('/treinamento');
                   }
                 }
               } catch (error) {
