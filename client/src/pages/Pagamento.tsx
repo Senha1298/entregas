@@ -129,11 +129,28 @@ const Payment: React.FC = () => {
         pixQrCode: pixQrCode ? `${pixQrCode.substring(0, 20)}...` : 'VAZIO'
       });
       
+      // Mapear status da API para formato padronizado do frontend
+      let mappedStatus = 'PENDING';
+      const apiStatus = data.status?.toLowerCase();
+      
+      if (['paid', 'approved', 'completed'].includes(apiStatus)) {
+        mappedStatus = 'APPROVED';
+      } else if (['rejected', 'cancelled', 'failed'].includes(apiStatus)) {
+        mappedStatus = 'REJECTED';
+      } else if (['pending', 'waiting', 'processing'].includes(apiStatus)) {
+        mappedStatus = 'PENDING';
+      }
+      
+      console.log('[PAYMENT] Status mapeado:', {
+        original: data.status,
+        mapped: mappedStatus
+      });
+      
       setPaymentInfo({
         id: data.transaction?.gateway_id || id,
         pixCode: pixCode,
         pixQrCode: pixQrCode,
-        status: data.status?.toUpperCase() || 'PENDING',
+        status: mappedStatus,
         approvedAt: data.transaction?.approved_at,
         rejectedAt: data.transaction?.rejected_at,
         facebookReported: data.transaction?.facebook_reported
