@@ -14,7 +14,7 @@ const Apostila: FC = () => {
 
   const handleOpenPlayStore = () => {
     // Link para o app SPX Motorista Parceiro na Play Store
-    window.open('https://play.google.com/store/apps/details?id=com.shopee.br.spx.driver', '_blank');
+    window.open('https://play.google.com/store/apps/details?id=com.shopee.spx.driver.brazil&pcampaignid=web_share', '_blank');
   };
 
   return (
