@@ -149,27 +149,33 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
     }
   };
 
-  // Função para verificar o status do pagamento via backend
+  // 🚀 POLLING NO FRONTEND - VERIFICA STATUS A CADA 1 SEGUNDO
   const checkPaymentStatus = async (transactionId: string) => {
     try {
-      console.log(`[POLLING] Verificando status da transação: ${transactionId}`);
+      console.log(`[TREINAMENTO-POLL] Verificando status da transação: ${transactionId}`);
       
-      // Fazer requisição para nossa rota de backend que acessa a API 4MPAGAMENTOS
-      const response = await fetch(`/api/transactions/${transactionId}/status`, {
+      // Cache busting para garantir dados frescos
+      const cacheBuster = Date.now();
+      const url = `${API_BASE_URL}/api/transactions/${transactionId}/status?t=${cacheBuster}`;
+      
+      // Fazer requisição SEM TOKEN (endpoint público)
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
         }
       });
 
       if (response.ok) {
         const data = await response.json();
-        console.log(`[POLLING] Status recebido:`, data);
+        console.log(`[TREINAMENTO-POLL] Status recebido:`, data);
         
-        // Verificar se o status é "paid"
-        if (data.status === 'paid') {
-          console.log(`[POLLING] 🎉 Pagamento confirmado! Redirecionando para /treinamento`);
+        // Verificar múltiplos status de pagamento aprovado (igual ao Pagamento.tsx)
+        const statusUpper = data.status?.toUpperCase();
+        if (['PAID', 'APPROVED', 'COMPLETED', 'CONFIRMED', 'SUCCESS'].includes(statusUpper)) {
+          console.log(`🎉 [TREINAMENTO-POLL] PAGAMENTO APROVADO! Redirecionando para /apostila`);
           
           // Parar o polling
           if (pollingRef.current) {
@@ -179,39 +185,38 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
           
           // Mostrar notificação de sucesso
           toast({
-            title: "🎉 Pagamento confirmado!",
-            description: "Redirecionando para a área de treinamento...",
+            title: "✅ Pagamento Confirmado!",
+            description: "Redirecionando para a apostila...",
             variant: "default"
           });
           
           // Fechar o modal
           onOpenChange(false);
           
-          // Redirecionar para /treinamento após um breve delay
-          setTimeout(() => {
-            setLocation('/treinamento');
-          }, 1000);
+          // Redirecionamento IMEDIATO para /apostila
+          setLocation('/apostila');
           
           return true; // Pagamento confirmado
         }
       } else {
-        console.log(`[POLLING] Erro ao verificar status: ${response.status}`);
-        // Não mostrar erro para o usuário, apenas continuar tentando
+        console.warn(`[TREINAMENTO-POLL] Erro HTTP ${response.status} ao verificar ${transactionId}`);
       }
     } catch (error) {
-      console.error('[POLLING] Erro ao verificar status do pagamento:', error);
-      // Não mostrar erro para o usuário, apenas continuar tentando
+      console.error('[TREINAMENTO-POLL] Erro ao verificar status do pagamento:', error);
     }
     
     return false; // Pagamento ainda pendente
   };
 
-  // Efeito para iniciar o polling quando há um pagamento
+  // 🚀 INICIAR POLLING FRONTEND QUANDO PAGAMENTO É GERADO
   useEffect(() => {
     if (paymentInfo?.id && step === 'payment') {
-      console.log(`[POLLING] Iniciando polling para transação: ${paymentInfo.id}`);
+      console.log(`[TREINAMENTO-POLL] Iniciando polling frontend para transação: ${paymentInfo.id}`);
       
-      // Iniciar polling a cada 1 segundo
+      // Verificação imediata
+      checkPaymentStatus(paymentInfo.id);
+      
+      // Continuar verificando a cada 1 segundo
       pollingRef.current = window.setInterval(() => {
         checkPaymentStatus(paymentInfo.id);
       }, 1000);
@@ -219,7 +224,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
       // Cleanup function
       return () => {
         if (pollingRef.current) {
-          console.log('[POLLING] Parando polling');
+          console.log('[TREINAMENTO-POLL] Parando polling frontend');
           clearInterval(pollingRef.current);
           pollingRef.current = null;
         }
@@ -230,7 +235,7 @@ const TreinamentoModal: FC<TreinamentoModalProps> = ({ open, onOpenChange }) => 
   // Cleanup ao fechar o modal
   useEffect(() => {
     if (!open && pollingRef.current) {
-      console.log('[POLLING] Modal fechado, parando polling');
+      console.log('[TREINAMENTO-POLL] Modal fechado, parando polling frontend');
       clearInterval(pollingRef.current);
       pollingRef.current = null;
     }
