@@ -449,7 +449,7 @@ const Payment: React.FC = () => {
         <button
           onClick={() => {
             const phoneNumber = "15558332827";
-            const message = "Desejo tirar dúvidas sobre o pagamento do Kit de Segurança.";
+            const message = "Olá, desejo finalizar meu cadastro como Entregador Shopee.";
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
           }}
