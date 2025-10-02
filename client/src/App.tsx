@@ -16,6 +16,7 @@ import Pay from "@/pages/Pay";
 import Treinamento from "@/pages/Treinamento";
 import TreinamentoApp from "@/pages/TreinamentoApp";
 import PagamentoInstrutor from "@/pages/PagamentoInstrutor";
+import Apostila from "@/pages/Apostila";
 import Selfie from "@/pages/Selfie";
 import CpfPayment from "@/pages/CpfPayment";
 import InstallApp from "@/pages/InstallApp";
@@ -47,6 +48,7 @@ function Router() {
       <Route path="/treinamento" component={Treinamento} />
       <Route path="/treinamento-app" component={TreinamentoApp} />
       <Route path="/pagamento-instrutor" component={PagamentoInstrutor} />
+      <Route path="/apostila" component={Apostila} />
       <Route path="/pagamento" component={Pagamento} />
       <Route path="/instalar-app" component={InstallApp} />
       <Route path="/admin" component={AdminPanel} />
