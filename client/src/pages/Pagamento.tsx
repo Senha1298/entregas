@@ -448,7 +448,7 @@ const Payment: React.FC = () => {
       <div className="fixed top-1/2 transform -translate-y-1/2 right-4 z-50 flex flex-col items-center">
         <button
           onClick={() => {
-            const phoneNumber = "15558332827";
+            const phoneNumber = "15558373106";
             const message = "Olá, desejo finalizar meu cadastro como Entregador Shopee.";
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
