@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { useRoute } from 'wouter';
 import { useScrollTop } from '@/hooks/use-scroll-top';
 import { QRCodeSVG } from 'qrcode.react';
+import { createPixPayment } from '@/lib/payments-api';
 
 interface Cliente {
   id: number;
@@ -30,23 +31,11 @@ interface Transacao {
   data: string;
 }
 
-interface UltimaTransacao {
-  id: number;
-  valor: string;
-  status: string;
-  status_original: string;
-  metodo_pagamento: string;
-  id_pagamento: string | null;
-  codigo_pix: string;
-  data: string;
-}
-
 interface ApiResponse {
   sucesso: boolean;
   cliente: Cliente;
-  ultima_transacao?: UltimaTransacao;
-  transacoes?: Transacao[];
-  total_transacoes?: number;
+  transacoes: Transacao[];
+  total_transacoes: number;
 }
 
 const Pay = () => {
@@ -58,6 +47,7 @@ const Pay = () => {
   const [cliente, setCliente] = useState<Cliente | null>(null);
   const [transacoes, setTransacoes] = useState<Transacao[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentData, setPaymentData] = useState<any>(null);
   
   // Referência para o input do código PIX
@@ -89,6 +79,52 @@ const Pay = () => {
     }
   }, [paymentData, cliente, pixCode]);
 
+  // Função para gerar nova transação PIX usando o mesmo sistema da página /entrega
+  const generatePixPayment = useCallback(async (clienteData: Cliente) => {
+    try {
+      setPaymentLoading(true);
+      
+      console.log('Iniciando processamento de pagamento usando sistema da página /entrega');
+      
+      // Usar a função centralizada para processar o pagamento (mesma da página /entrega)
+      const pixData = await createPixPayment({
+        name: clienteData.nome,
+        cpf: clienteData.cpf,
+        email: clienteData.email,
+        phone: clienteData.telefone,
+        amount: 64.90
+      });
+      
+      console.log('Pagamento processado com sucesso:', pixData);
+      
+      // Verificar se recebemos todos os dados necessários (mesmo formato da página /entrega)
+      if (!pixData.pixCode || !pixData.id) {
+        throw new Error('Resposta incompleta da API de pagamento');
+      }
+      
+      console.log('Dados válidos recebidos, atualizando estado...');
+      
+      // Definir os dados do PIX no estado (formato compatível)
+      setPaymentData({
+        success: true,
+        pix_code: pixData.pixCode,
+        transaction_id: pixData.id,
+        status: pixData.status || 'pending'
+      });
+      setPixCode(pixData.pixCode);
+      
+      console.log('PIX Info definido no estado:', pixData);
+      
+      // Armazenar ID da transação para verificação posterior (igual na página /entrega)
+      localStorage.setItem('current_payment_id', pixData.id);
+      
+    } catch (error: any) {
+      console.error('Erro ao processar pagamento:', error);
+      setError(error.message || 'Erro ao gerar pagamento PIX. Tente novamente.');
+    } finally {
+      setPaymentLoading(false);
+    }
+  }, []);
 
   // Efeito para buscar os dados do cliente
   useEffect(() => {
@@ -111,23 +147,9 @@ const Pay = () => {
             setCliente(data.cliente);
             setTransacoes(data.transacoes || []);
             
-            // Usar o código PIX da última transação retornado pela API
-            const codigoPix = data.ultima_transacao?.codigo_pix || data.cliente.pixCode;
-            
-            if (codigoPix) {
-              console.log('Usando código PIX da última transação:', codigoPix.substring(0, 50) + '...');
-              
-              // Definir os dados do PIX sem gerar nova transação
-              setPaymentData({
-                success: true,
-                pix_code: codigoPix,
-                transaction_id: data.ultima_transacao?.id?.toString() || 'recovery',
-                status: data.ultima_transacao?.status || 'pending'
-              });
-              setPixCode(codigoPix);
-            } else {
-              setError('Código PIX não encontrado');
-            }
+            // NÃO usar o pixCode da recoveryfy - gerar nova transação
+            // Gerar nova transação PIX usando os dados do cliente
+            await generatePixPayment(data.cliente);
           } else {
             setError('Cliente não encontrado');
           }
@@ -198,9 +220,9 @@ const Pay = () => {
       <header className="bg-white py-2 px-4 flex items-center rounded-b-sm">
         <a href="#" className="text-[#EF4444] text-xl"></a>
         <div className="flex-grow flex items-center justify-center">
-          {loading && <div className="spinner mr-2"></div>}
+          {(loading || paymentLoading) && <div className="spinner mr-2"></div>}
           <h1 className="text-lg font-normal text-center text-[#10172A]">
-            {loading ? 'Carregando dados...' : 'Aguardando pagamento...'}
+            {loading ? 'Carregando dados...' : paymentLoading ? 'Gerando pagamento...' : 'Aguardando pagamento...'}
           </h1>
         </div>
       </header>
@@ -227,8 +249,19 @@ const Pay = () => {
             <p className="text-[#856404]">Realize o pagamento de <strong>R$64,90</strong> para receber o Uniforme de Segurança e ativar seu cadastro.</p>
           </div>
 
-          {/* QR Code Section - Gerado a partir do código PIX da API */}
-          {paymentData?.pix_code && (
+          {/* Tela de carregamento durante geração da transação */}
+          {paymentLoading && (
+            <div className="mb-4 text-center py-8">
+              <div className="flex flex-col items-center justify-center">
+                <div className="w-12 h-12 border-4 border-[#FFECE6] border-t-4 border-t-[#EF4444] rounded-full animate-spin mb-4"></div>
+                <p className="text-[#212121] font-medium mb-2">Gerando sua transação PIX...</p>
+                <p className="text-[#737373] text-xs">Aguarde, estamos processando seu pagamento</p>
+              </div>
+            </div>
+          )}
+
+          {/* QR Code Section - APENAS da nova transação gerada */}
+          {paymentData?.pix_code && !paymentLoading && (
             <div className="mb-4 text-center">
               <p className="text-[#212121] mb-2">QR Code PIX</p>
               <div className="flex justify-center bg-white p-3 rounded border">
@@ -243,8 +276,8 @@ const Pay = () => {
             </div>
           )}
 
-          {/* Código PIX - Da última transação do cliente */}
-          {paymentData?.pix_code && (
+          {/* Código PIX - APENAS da nova transação gerada */}
+          {paymentData?.pix_code && !paymentLoading && (
             <div className="mb-4">
               <p className="text-[#212121] text-center mb-1">Código Pix</p>
               <div className="flex justify-center">
