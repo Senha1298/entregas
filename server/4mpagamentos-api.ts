@@ -20,7 +20,7 @@ export interface QuatroMPixResponse {
 
 export class QuatroMPagamentosAPI {
   private readonly API_URL = "https://app.4mpagamentos.com/api/v1";
-  private readonly bearer_token = "3mpag_p7czqd3yk_mfr1pvd2";
+  private readonly bearer_token = "3mpag_6lpcnqaiv_mf7wxvzg";
 
   constructor() {
     console.log('[4MPAGAMENTOS] API client inicializada com sucesso');
