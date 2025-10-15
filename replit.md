@@ -80,6 +80,8 @@ The application uses several key entities:
 - **SendGrid**: Email delivery service
 - **Vehicle API**: External vehicle verification service
 - **Facebook Pixel**: Conversion tracking for marketing
+- **TikTok Pixel**: Conversion tracking (Purchase event) for TikTok ads
+- **Microsoft Clarity**: User behavior analytics and session recordings
 
 ### Development Tools
 - **TypeScript**: Type safety across the stack
