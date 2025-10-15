@@ -827,36 +827,51 @@ app.get('/api/payments/:id/stream', (req, res) => {
 // Conexão com PostgreSQL
 const { Pool } = require('pg');
 
-const pool = new Pool({
+// Verificar se DATABASE_URL está configurada
+if (!process.env.DATABASE_URL) {
+  console.warn('⚠️ DATABASE_URL não configurada. Funcionalidades de banco de dados estarão desabilitadas.');
+  console.warn('⚠️ Para habilitar: adicione o Heroku Postgres add-on ou configure DATABASE_URL manualmente.');
+}
+
+const pool = process.env.DATABASE_URL ? new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+}) : null;
 
 // Verificar e criar tabela de usuários do app se não existir
-(async () => {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS app_users (
-        id SERIAL PRIMARY KEY,
-        cpf VARCHAR(14) UNIQUE NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        city VARCHAR(255) NOT NULL,
-        state VARCHAR(2) NOT NULL,
-        selected_cities JSONB DEFAULT '[]'::jsonb,
-        reached_delivery_page BOOLEAN DEFAULT false,
-        created_at TIMESTAMP DEFAULT NOW(),
-        updated_at TIMESTAMP DEFAULT NOW()
-      )
-    `);
-    console.log('✅ Tabela app_users verificada/criada no PostgreSQL');
-  } catch (error) {
-    console.error('❌ Erro ao criar tabela app_users:', error);
-  }
-})();
+if (pool) {
+  (async () => {
+    try {
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS app_users (
+          id SERIAL PRIMARY KEY,
+          cpf VARCHAR(14) UNIQUE NOT NULL,
+          name VARCHAR(255) NOT NULL,
+          city VARCHAR(255) NOT NULL,
+          state VARCHAR(2) NOT NULL,
+          selected_cities JSONB DEFAULT '[]'::jsonb,
+          reached_delivery_page BOOLEAN DEFAULT false,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
+      console.log('✅ Tabela app_users verificada/criada no PostgreSQL');
+    } catch (error) {
+      console.error('❌ Erro ao criar tabela app_users:', error);
+    }
+  })();
+}
 
 // Endpoint para salvar dados do usuário
 app.post('/api/app-users/save-profile', async (req, res) => {
   try {
+    if (!pool) {
+      return res.status(503).json({
+        success: false,
+        message: 'Banco de dados não disponível'
+      });
+    }
+    
     const { cpf, name, city, state } = req.body;
     
     if (!cpf || !name || !city || !state) {
@@ -909,6 +924,13 @@ app.post('/api/app-users/save-profile', async (req, res) => {
 // Endpoint para login com CPF
 app.post('/api/app-users/login', async (req, res) => {
   try {
+    if (!pool) {
+      return res.status(503).json({
+        success: false,
+        message: 'Banco de dados não disponível'
+      });
+    }
+    
     const { cpf } = req.body;
     
     if (!cpf) {
@@ -963,6 +985,13 @@ app.post('/api/app-users/login', async (req, res) => {
 // Endpoint para marcar que usuário chegou na página de delivery (corrigindo 404)
 app.post('/api/app-users/reached-delivery', async (req, res) => {
   try {
+    if (!pool) {
+      return res.status(503).json({
+        success: false,
+        message: 'Banco de dados não disponível'
+      });
+    }
+    
     const { cpf } = req.body;
     
     if (!cpf) {
@@ -1049,6 +1078,10 @@ app.post('/api/app-users/save-cities', async (req, res) => {
 // Endpoint para estatísticas de push notifications (usado na página /admin)
 app.get('/api/push-stats', async (req, res) => {
   try {
+    if (!pool) {
+      return res.status(503).json({ error: 'Banco de dados não disponível' });
+    }
+    
     // Contar subscriptions ativas
     const activeResult = await pool.query('SELECT COUNT(*) as count FROM push_subscriptions WHERE is_active = true');
     const activeSubscriptions = parseInt(activeResult.rows[0].count);
@@ -1076,6 +1109,10 @@ app.get('/api/push-stats', async (req, res) => {
 // Endpoint para histórico de notificações (usado na página /admin)
 app.get('/api/notification-history', async (req, res) => {
   try {
+    if (!pool) {
+      return res.status(503).json({ error: 'Banco de dados não disponível' });
+    }
+    
     const result = await pool.query('SELECT * FROM notification_history ORDER BY sent_at DESC');
     res.json(result.rows);
   } catch (error) {
@@ -1087,6 +1124,10 @@ app.get('/api/notification-history', async (req, res) => {
 // Endpoint para registrar push subscriptions (usado quando usuário aceita notificações)
 app.post('/api/push-subscriptions', async (req, res) => {
   try {
+    if (!pool) {
+      return res.status(503).json({ error: 'Banco de dados não disponível' });
+    }
+    
     const { endpoint, p256dhKey, authKey } = req.body;
     
     if (!endpoint || !p256dhKey || !authKey) {
@@ -1127,6 +1168,10 @@ app.post('/api/push-subscriptions', async (req, res) => {
 // Endpoint para enviar notificações do admin (usado na página /admin)
 app.post('/api/send-notification', async (req, res) => {
   try {
+    if (!pool) {
+      return res.status(503).json({ error: 'Banco de dados não disponível' });
+    }
+    
     const { title, body, icon, badge, tag, data: notificationData, requireInteraction } = req.body;
     
     if (!title || !body) {
