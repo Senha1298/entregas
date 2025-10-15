@@ -20,9 +20,17 @@ export interface QuatroMPixResponse {
 
 export class QuatroMPagamentosAPI {
   private readonly API_URL = "https://app.4mpagamentos.com/api/v1";
-  private readonly bearer_token = "3mpag_6lpcnqaiv_mf7wxvzg";
+  private readonly bearer_token: string;
 
   constructor() {
+    // Usar variável de ambiente segura
+    this.bearer_token = process.env.MPAG_API_KEY || '';
+    
+    if (!this.bearer_token) {
+      console.error('[4MPAGAMENTOS] ⚠️ ERRO: MPAG_API_KEY não configurada!');
+      throw new Error('MPAG_API_KEY não configurada');
+    }
+    
     console.log('[4MPAGAMENTOS] API client inicializada com sucesso');
   }
 
