@@ -1768,11 +1768,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         let pixCode = data.pix_code;
         let pixQrCode = data.pix_qr_code;
         
-        if (!pixCode && global._paymentCache && global._paymentCache[transactionId]) {
+        // Verificar se códigos PIX estão vazios/undefined/null
+        const needsCache = !pixCode || pixCode === '' || pixCode === null;
+        
+        if (needsCache && global._paymentCache && global._paymentCache[transactionId]) {
           const cached = global._paymentCache[transactionId];
           pixCode = cached.pixCode;
           pixQrCode = cached.pixQrCode;
           console.log(`[CACHE] 🎯 Códigos PIX recuperados do cache para ${transactionId}`);
+        } else if (needsCache) {
+          console.log(`[CACHE] ⚠️ Códigos PIX não encontrados na API e cache vazio para ${transactionId}`);
         }
         
         // Retornar o status e informações relevantes incluindo dados do PIX
@@ -1795,7 +1800,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         };
         
-        console.log(`[STATUS CHECK DEV] 📤 Retornando: status=${mappedStatus}, paid_at=${data.paid_at || 'null'}, pix_from_cache=${!data.pix_code && !!pixCode}`);
+        const usedCache = needsCache && !!pixCode;
+        console.log(`[STATUS CHECK DEV] 📤 Retornando: status=${mappedStatus}, paid_at=${data.paid_at || 'null'}, pix_from_cache=${usedCache}, has_pix_code=${!!pixCode}`);
         return res.json(responsePayload);
         
       } else {
