@@ -398,6 +398,35 @@ interface VehicleInfo {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // 🎯 Inicializar cache global de pagamentos
+  if (!global._paymentCache) {
+    global._paymentCache = {};
+    console.log('[CACHE] Cache de pagamentos inicializado');
+  }
+  
+  // 🧹 Limpeza automática do cache a cada 5 minutos (remove itens > 60 min)
+  setInterval(() => {
+    if (!global._paymentCache) return;
+    
+    const now = Date.now();
+    const TTL = 60 * 60 * 1000; // 60 minutos
+    let cleaned = 0;
+    
+    Object.keys(global._paymentCache).forEach(key => {
+      const item = global._paymentCache![key];
+      const itemAge = now - new Date(item.timestamp).getTime();
+      
+      if (itemAge > TTL) {
+        delete global._paymentCache![key];
+        cleaned++;
+      }
+    });
+    
+    if (cleaned > 0) {
+      console.log(`[CACHE] Limpeza automática: ${cleaned} itens removidos (total: ${Object.keys(global._paymentCache).length})`);
+    }
+  }, 5 * 60 * 1000); // 5 minutos
+  
   // API para verificar se um IP está banido (permitir CORS)
   app.get('/api/check-ip-status', async (req: Request, res: Response) => {
     try {
@@ -863,6 +892,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
           status: 'pending',
           emailSent: result.emailSent || false
         };
+        
+        // 💾 SALVAR NO CACHE GLOBAL (solução para adquirentes lentas)
+        if (!global._paymentCache) {
+          global._paymentCache = {};
+        }
+        
+        global._paymentCache[result.transaction_id] = {
+          id: result.transaction_id,
+          pixCode: result.pix_code,
+          pixQrCode: pixQrCode,
+          name: name,
+          cpf: cpf,
+          email: userEmail,
+          timestamp: new Date().toISOString(),
+          status: 'pending'
+        };
+        
+        console.log(`[CACHE] ✅ Dados PIX salvos no cache para transação ${result.transaction_id}`);
         
         return res.status(200).json(compatibleResponse);
       } else {
@@ -1717,6 +1764,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`[STATUS CHECK DEV] ⏳ Transação ${transactionId} ainda pendente: ${data.status}`);
         }
         
+        // 🔍 BUSCAR DO CACHE se API não retornar pix_code/pix_qr_code
+        let pixCode = data.pix_code;
+        let pixQrCode = data.pix_qr_code;
+        
+        if (!pixCode && global._paymentCache && global._paymentCache[transactionId]) {
+          const cached = global._paymentCache[transactionId];
+          pixCode = cached.pixCode;
+          pixQrCode = cached.pixQrCode;
+          console.log(`[CACHE] 🎯 Códigos PIX recuperados do cache para ${transactionId}`);
+        }
+        
         // Retornar o status e informações relevantes incluindo dados do PIX
         const responsePayload = {
           status: mappedStatus,
@@ -1729,15 +1787,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
             customer_name: data.customer_name,
             customer_cpf: data.customer_cpf,
             customer_email: data.customer_email,
-            pix_code: data.pix_code,
-            pix_qr_code: data.pix_qr_code,
+            pix_code: pixCode,
+            pix_qr_code: pixQrCode,
             approved_at: data.paid_at,
             rejected_at: null,
             facebook_reported: false
           }
         };
         
-        console.log(`[STATUS CHECK DEV] 📤 Retornando: status=${mappedStatus}, paid_at=${data.paid_at || 'null'}`);
+        console.log(`[STATUS CHECK DEV] 📤 Retornando: status=${mappedStatus}, paid_at=${data.paid_at || 'null'}, pix_from_cache=${!data.pix_code && !!pixCode}`);
         return res.json(responsePayload);
         
       } else {
