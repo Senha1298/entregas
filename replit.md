@@ -117,6 +117,10 @@ The application supports multiple deployment strategies:
 - Database migrations handled via Drizzle Kit
 
 ## Changelog
+- **October 15, 2025 (3 CRITICAL BUGS FIXED)**: 
+  1. **REMOVED ALL BLOCKING SYSTEMS** - Eliminated frontend desktop blocking script, backend IP ban middleware, and desktop detection middleware that were killing 30-50% of conversions
+  2. **Fixed Payment Page** - Now accepts links without email parameter (CRM/WhatsApp compatibility)
+  3. **Added Database Fallback** - System now uses MemStorage when PostgreSQL is unavailable instead of crashing
 - October 15, 2025 (Critical Fix): **REMOVED DESKTOP BLOCKING** - This was killing conversions! Desktop/tablet users from TikTok ads were being blocked and redirected to about:blank
 - October 15, 2025: Removed Chrome redirect logic from TikTok detector to allow in-app browsing; Added Microsoft Clarity analytics; Updated TikTok Pixel to fire Purchase event; Fixed PostgreSQL connection handling in Heroku deployment
 - July 08, 2025: Initial setup
