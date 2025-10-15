@@ -117,7 +117,8 @@ The application supports multiple deployment strategies:
 - Database migrations handled via Drizzle Kit
 
 ## Changelog
-- October 15, 2025: Removed Chrome redirect logic from TikTok detector to allow in-app browsing; Added Microsoft Clarity analytics; Updated TikTok Pixel to fire Purchase event
+- October 15, 2025 (Critical Fix): **REMOVED DESKTOP BLOCKING** - This was killing conversions! Desktop/tablet users from TikTok ads were being blocked and redirected to about:blank
+- October 15, 2025: Removed Chrome redirect logic from TikTok detector to allow in-app browsing; Added Microsoft Clarity analytics; Updated TikTok Pixel to fire Purchase event; Fixed PostgreSQL connection handling in Heroku deployment
 - July 08, 2025: Initial setup
 
 ## User Preferences
