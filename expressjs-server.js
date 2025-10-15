@@ -53,7 +53,7 @@ app.get('/api/transactions/:id/status', async (req, res) => {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer 3mpag_p7czqd3yk_mfr1pvd2'
+          'Authorization': `Bearer ${process.env.MPAG_API_KEY}`
         }
       });
 
@@ -132,7 +132,7 @@ app.get('/api/payments/:id/stream', (req, res) => {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer 3mpag_p7czqd3yk_mfr1pvd2'
+          'Authorization': `Bearer ${process.env.MPAG_API_KEY}`
         }
       });
 
