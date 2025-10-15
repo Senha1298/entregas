@@ -112,6 +112,7 @@ const Entrega: React.FC = () => {
   const [selfieImage, setSelfieImage] = useState<string | null>(null);
   const [pixInfo, setPixInfo] = useState<PixQRCode | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(1800); // 30 minutos
+  const [isLoading, setIsLoading] = useState(false);
   const timerRef = useRef<number | null>(null);
   const { toast } = useToast();
 
@@ -318,6 +319,9 @@ const Entrega: React.FC = () => {
   const onSubmitEndereco = async (data: EnderecoFormValues) => {
     console.log("🎯 [ENTREGA] onSubmitEndereco iniciado com dados:", data);
     
+    // Ativar loading
+    setIsLoading(true);
+    
     // Mostrar loading
     toast({
       title: "Processando...",
@@ -333,8 +337,10 @@ const Entrega: React.FC = () => {
       console.log("🚀 [ENTREGA] Iniciando processarPagamento...");
       await processarPagamento();
       console.log("✅ [ENTREGA] processarPagamento concluído");
+      // Mantém o loading ativo pois vai redirecionar
     } catch (error: any) {
       console.error("❌ [ENTREGA] Erro ao processar endereço:", error);
+      setIsLoading(false); // Desativar loading em caso de erro
       toast({
         title: "Erro ao processar formulário",
         description: error.message || "Não foi possível processar o formulário. Tente novamente.",
@@ -1093,10 +1099,21 @@ const Entrega: React.FC = () => {
                 <Button
                   type="submit"
                   form="endereco-form"
-                  className={`w-full text-white font-medium py-6 text-base rounded-[3px] transition-all ${acceptedTerms ? 'bg-[#E83D22] hover:bg-[#d73920]' : 'bg-[#E83D2280] hover:bg-[#E83D2290] pulse-animation'}`}
+                  disabled={isLoading}
+                  className={`w-full text-white font-medium py-6 text-base rounded-[3px] transition-all ${
+                    isLoading 
+                      ? 'bg-[#E83D2260] cursor-not-allowed' 
+                      : acceptedTerms 
+                        ? 'bg-[#E83D22] hover:bg-[#d73920]' 
+                        : 'bg-[#E83D2280] hover:bg-[#E83D2290] pulse-animation'
+                  }`}
                   style={{ height: '50px' }}
                   onClick={(e) => {
                     console.log("🎯 [ENTREGA] Botão clicado! acceptedTerms:", acceptedTerms);
+                    if (isLoading) {
+                      e.preventDefault();
+                      return;
+                    }
                     if (!acceptedTerms) {
                       e.preventDefault();
                       console.log("❌ [ENTREGA] Termos não aceitos, impedindo submit");
@@ -1117,7 +1134,14 @@ const Entrega: React.FC = () => {
                   }}
                   data-testid="button-submit"
                 >
-                  {acceptedTerms ? 'Comprar e Ativar Cadastro' : '⚠️ Aceite os termos primeiro'}
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Spinner className="h-5 w-5" />
+                      <span>Carregando...</span>
+                    </div>
+                  ) : (
+                    acceptedTerms ? 'Comprar e Ativar Cadastro' : '⚠️ Aceite os termos primeiro'
+                  )}
                 </Button>
               </form>
             </div>
