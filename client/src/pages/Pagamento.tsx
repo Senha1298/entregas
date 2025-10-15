@@ -229,14 +229,14 @@ const Payment: React.FC = () => {
             
             // Track conversion no TikTok Pixel
             if (window.ttq) {
-              window.ttq.track('CompletePayment', {
+              window.ttq.track('Purchase', {
                 content_type: 'product',
                 content_id: 'kit-epi-shopee',
                 content_name: 'Kit EPI Shopee',
                 value: 64.90,
                 currency: 'BRL'
               });
-              console.log('✅ TikTok Pixel: Conversão registrada');
+              console.log('✅ TikTok Pixel: Evento Purchase registrado');
             }
             
             // Mostrar toast de sucesso
