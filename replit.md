@@ -117,6 +117,7 @@ The application supports multiple deployment strategies:
 - Database migrations handled via Drizzle Kit
 
 ## Changelog
+- **October 15, 2025 (Security Fix - API Keys)**: Moved 4mpagamentos API key from hardcoded values to secure environment variable (MPAG_API_KEY) across all server files to prevent key exposure
 - **October 15, 2025 (TikTok Pixel Fix - FINAL)**: 
   - Completely removed TikTok Pixel from payment page
   - Purchase event now fires ONLY in /treinamento page
