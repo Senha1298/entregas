@@ -35,8 +35,16 @@ const Treinamento: FC = () => {
     }
   }, []);
   
-  // TikTok Pixel - Evento Purchase
+  // TikTok Pixel - Evento Purchase (APENAS UMA VEZ)
   useEffect(() => {
+    // Verificar se já disparou o evento Purchase para evitar duplicatas
+    const purchaseTracked = sessionStorage.getItem('tiktok_purchase_tracked');
+    
+    if (purchaseTracked === 'true') {
+      console.log('⏭️ TikTok Pixel: Purchase já foi registrado nesta sessão. Ignorando duplicata.');
+      return;
+    }
+    
     // Carregar TikTok Pixel se ainda não estiver carregado
     if (!window.ttq) {
       const script = document.createElement('script');
@@ -56,6 +64,9 @@ const Treinamento: FC = () => {
     // Disparar evento Purchase após TikTok Pixel estar carregado
     setTimeout(() => {
       if (window.ttq) {
+        // Marcar como disparado ANTES de disparar (previne race conditions)
+        sessionStorage.setItem('tiktok_purchase_tracked', 'true');
+        
         window.ttq.track('Purchase', {
           content_type: 'product',
           content_id: 'kit-epi-shopee',
@@ -63,7 +74,7 @@ const Treinamento: FC = () => {
           value: 64.90,
           currency: 'BRL'
         });
-        console.log('✅ TikTok Pixel: Evento Purchase registrado na página de treinamento');
+        console.log('✅ TikTok Pixel: Evento Purchase registrado na página de treinamento (ÚNICA VEZ)');
       }
     }, 1000);
   }, []);

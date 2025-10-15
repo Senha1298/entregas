@@ -117,7 +117,11 @@ The application supports multiple deployment strategies:
 - Database migrations handled via Drizzle Kit
 
 ## Changelog
-- **October 15, 2025 (TikTok Pixel Fix - FINAL)**: Completely removed TikTok Pixel from payment page - now exists ONLY in /treinamento where Purchase event fires when user successfully completes payment and reaches training page
+- **October 15, 2025 (TikTok Pixel Fix - FINAL)**: 
+  - Completely removed TikTok Pixel from payment page
+  - Purchase event now fires ONLY in /treinamento page
+  - Added sessionStorage protection to prevent duplicate events (fires only once per browser session)
+  - Fixed issue where event was being tracked multiple times per conversion
 - **October 15, 2025 (3 CRITICAL BUGS FIXED)**: 
   1. **REMOVED ALL BLOCKING SYSTEMS** - Eliminated frontend desktop blocking script, backend IP ban middleware, and desktop detection middleware that were killing 30-50% of conversions
   2. **Fixed Payment Page** - Now accepts links without email parameter (CRM/WhatsApp compatibility)
