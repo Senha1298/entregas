@@ -59,10 +59,10 @@ const InstallApp: React.FC = () => {
     // Mostrar instruções manuais
     alert(
       '📱 COMO INSTALAR:\n\n' +
-      '🤖 ANDROID (Chrome):\n' +
-      '• Toque nos 3 pontos ⋮\n' +
+      '🤖 ANDROID:\n' +
+      '• Toque nos 3 pontos ⋮ no menu do navegador\n' +
       '• "Instalar aplicativo" ou "Adicionar à tela inicial"\n\n' +
-      '🍎 iOS (Safari):\n' +
+      '🍎 iOS:\n' +
       '• Toque no botão compartilhar 📤\n' +
       '• "Adicionar à Tela de Início"\n' +
       '• Confirme "Adicionar"'

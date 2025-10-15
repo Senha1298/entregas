@@ -117,7 +117,8 @@ The application supports multiple deployment strategies:
 - Database migrations handled via Drizzle Kit
 
 ## Changelog
-- July 08, 2025. Initial setup
+- October 15, 2025: Removed Chrome redirect logic from TikTok detector to allow in-app browsing; Added Microsoft Clarity analytics; Updated TikTok Pixel to fire Purchase event
+- July 08, 2025: Initial setup
 
 ## User Preferences
 
