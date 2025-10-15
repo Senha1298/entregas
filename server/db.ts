@@ -5,11 +5,18 @@ import * as schema from "@shared/schema";
 
 neonConfig.webSocketConstructor = ws;
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+// Permitir que a aplicação rode sem banco de dados (fallback para memória)
+export const isDatabaseAvailable = !!process.env.DATABASE_URL;
+
+if (!isDatabaseAvailable) {
+  console.warn('[DB] DATABASE_URL não configurado. A aplicação usará armazenamento em memória.');
+  console.warn('[DB] Para usar o banco de dados, configure a variável DATABASE_URL no Heroku.');
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+export const pool = isDatabaseAvailable 
+  ? new Pool({ connectionString: process.env.DATABASE_URL })
+  : null as any;
+
+export const db = isDatabaseAvailable 
+  ? drizzle({ client: pool, schema })
+  : null as any;

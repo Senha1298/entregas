@@ -297,4 +297,202 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+// Implementação de storage em memória (fallback quando banco não está disponível)
+class MemStorage implements IStorage {
+  private users: Map<number, User> = new Map();
+  private candidates: Map<number, Candidate> = new Map();
+  private states: Map<string, State> = new Map();
+  private benefits: Map<number, Benefit> = new Map();
+  private bannedIps: Map<string, BannedIp> = new Map();
+  private bannedDevices: Map<string, BannedDevice> = new Map();
+  private allowedDomains: Map<string, AllowedDomain> = new Map();
+  private appUsers: Map<string, AppUser> = new Map();
+  
+  private nextUserId = 1;
+  private nextCandidateId = 1;
+  private nextBenefitId = 1;
+  private nextAppUserId = 1;
+
+  async getUser(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(u => u.username === username);
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const newUser: User = { ...user, id: this.nextUserId++ } as User;
+    this.users.set(newUser.id, newUser);
+    return newUser;
+  }
+
+  async getCandidate(id: number): Promise<Candidate | undefined> {
+    return this.candidates.get(id);
+  }
+
+  async getCandidateByEmail(email: string): Promise<Candidate | undefined> {
+    return Array.from(this.candidates.values()).find(c => c.email === email);
+  }
+
+  async createCandidate(candidate: InsertCandidate): Promise<Candidate> {
+    const newCandidate: Candidate = { ...candidate, id: this.nextCandidateId++ } as Candidate;
+    this.candidates.set(newCandidate.id, newCandidate);
+    return newCandidate;
+  }
+
+  async getAllCandidates(): Promise<Candidate[]> {
+    return Array.from(this.candidates.values());
+  }
+
+  async getState(code: string): Promise<State | undefined> {
+    return this.states.get(code);
+  }
+
+  async getAllStates(): Promise<State[]> {
+    return Array.from(this.states.values());
+  }
+
+  async getStatesWithVacancies(): Promise<State[]> {
+    return Array.from(this.states.values()).filter(s => s.hasVacancies);
+  }
+
+  async createState(state: InsertState): Promise<State> {
+    const newState = state as State;
+    this.states.set(newState.code, newState);
+    return newState;
+  }
+
+  async getBenefit(id: number): Promise<Benefit | undefined> {
+    return this.benefits.get(id);
+  }
+
+  async getAllBenefits(): Promise<Benefit[]> {
+    return Array.from(this.benefits.values());
+  }
+
+  async createBenefit(benefit: InsertBenefit): Promise<Benefit> {
+    const newBenefit: Benefit = { ...benefit, id: this.nextBenefitId++ } as Benefit;
+    this.benefits.set(newBenefit.id, newBenefit);
+    return newBenefit;
+  }
+
+  async getBannedIp(ip: string): Promise<BannedIp | undefined> {
+    return this.bannedIps.get(ip);
+  }
+
+  async getAllBannedIps(): Promise<BannedIp[]> {
+    return Array.from(this.bannedIps.values());
+  }
+
+  async createBannedIp(bannedIp: InsertBannedIp): Promise<BannedIp> {
+    const newBannedIp = bannedIp as BannedIp;
+    this.bannedIps.set(newBannedIp.ip, newBannedIp);
+    return newBannedIp;
+  }
+
+  async updateBannedIpStatus(ip: string, isBanned: boolean): Promise<BannedIp | undefined> {
+    const bannedIp = this.bannedIps.get(ip);
+    if (bannedIp) {
+      bannedIp.isBanned = isBanned;
+      this.bannedIps.set(ip, bannedIp);
+      return bannedIp;
+    }
+    return undefined;
+  }
+
+  async updateLastAccess(ip: string): Promise<void> {
+    const bannedIp = this.bannedIps.get(ip);
+    if (bannedIp) {
+      bannedIp.lastAccessAt = new Date();
+      this.bannedIps.set(ip, bannedIp);
+    }
+  }
+
+  async getBannedDevice(deviceId: string): Promise<BannedDevice | undefined> {
+    return this.bannedDevices.get(deviceId);
+  }
+
+  async getAllBannedDevices(): Promise<BannedDevice[]> {
+    return Array.from(this.bannedDevices.values());
+  }
+
+  async createBannedDevice(device: InsertBannedDevice): Promise<BannedDevice> {
+    const newDevice = device as BannedDevice;
+    this.bannedDevices.set(newDevice.deviceId, newDevice);
+    return newDevice;
+  }
+
+  async isBannedByDeviceId(deviceId: string): Promise<boolean> {
+    const device = this.bannedDevices.get(deviceId);
+    return !!device?.isBanned;
+  }
+
+  async getAllowedDomain(domain: string): Promise<AllowedDomain | undefined> {
+    return this.allowedDomains.get(domain);
+  }
+
+  async getAllAllowedDomains(): Promise<AllowedDomain[]> {
+    return Array.from(this.allowedDomains.values());
+  }
+
+  async createAllowedDomain(allowedDomain: InsertAllowedDomain): Promise<AllowedDomain> {
+    const newDomain = allowedDomain as AllowedDomain;
+    this.allowedDomains.set(newDomain.domain, newDomain);
+    return newDomain;
+  }
+
+  async updateAllowedDomainStatus(domain: string, isActive: boolean): Promise<AllowedDomain | undefined> {
+    const allowedDomain = this.allowedDomains.get(domain);
+    if (allowedDomain) {
+      allowedDomain.isActive = isActive;
+      this.allowedDomains.set(domain, allowedDomain);
+      return allowedDomain;
+    }
+    return undefined;
+  }
+
+  async getAppUserByCpf(cpf: string): Promise<AppUser | undefined> {
+    return this.appUsers.get(cpf);
+  }
+
+  async createAppUser(appUser: InsertAppUser): Promise<AppUser> {
+    const newAppUser: AppUser = { 
+      ...appUser, 
+      id: this.nextAppUserId++,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    } as AppUser;
+    this.appUsers.set(newAppUser.cpf, newAppUser);
+    return newAppUser;
+  }
+
+  async updateAppUser(cpf: string, updates: Partial<InsertAppUser>): Promise<AppUser | undefined> {
+    const appUser = this.appUsers.get(cpf);
+    if (appUser) {
+      Object.assign(appUser, { ...updates, updatedAt: new Date() });
+      this.appUsers.set(cpf, appUser);
+      return appUser;
+    }
+    return undefined;
+  }
+
+  async upsertAppUser(appUser: InsertAppUser): Promise<AppUser> {
+    const existingUser = await this.getAppUserByCpf(appUser.cpf);
+    
+    if (existingUser) {
+      const updatedUser = await this.updateAppUser(appUser.cpf, appUser);
+      return updatedUser || existingUser;
+    } else {
+      return await this.createAppUser(appUser);
+    }
+  }
+}
+
+// Importar isDatabaseAvailable do db.ts
+import { isDatabaseAvailable } from './db';
+
+// Usar MemStorage se o banco não estiver disponível
+export const storage: IStorage = isDatabaseAvailable 
+  ? new DatabaseStorage() 
+  : new MemStorage();
