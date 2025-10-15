@@ -404,7 +404,7 @@ class MemStorage implements IStorage {
   async updateLastAccess(ip: string): Promise<void> {
     const bannedIp = this.bannedIps.get(ip);
     if (bannedIp) {
-      bannedIp.lastAccessAt = new Date();
+      bannedIp.lastAccessAttempt = new Date();
       this.bannedIps.set(ip, bannedIp);
     }
   }
