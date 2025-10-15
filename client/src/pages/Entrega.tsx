@@ -1100,9 +1100,9 @@ const Entrega: React.FC = () => {
                   type="submit"
                   form="endereco-form"
                   disabled={isLoading}
-                  className={`w-full text-white font-medium py-6 text-base rounded-[3px] transition-all ${
+                  className={`w-full text-white font-medium py-6 text-base rounded-[3px] transition-all !bg-opacity-100 ${
                     isLoading 
-                      ? 'bg-[#E83D2260] cursor-not-allowed' 
+                      ? '!bg-[#E83D22] cursor-not-allowed opacity-90' 
                       : acceptedTerms 
                         ? 'bg-[#E83D22] hover:bg-[#d73920]' 
                         : 'bg-[#E83D2280] hover:bg-[#E83D2290] pulse-animation'
