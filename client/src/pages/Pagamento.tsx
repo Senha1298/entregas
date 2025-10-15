@@ -75,13 +75,17 @@ const Payment: React.FC = () => {
     const id = urlParams.get('id');
     const emailParam = urlParams.get('email');
     
-    if (!id || !emailParam) {
-      setErrorMessage('Link de pagamento inválido. Verifique o link recebido por email.');
+    if (!id) {
+      setErrorMessage('Link de pagamento inválido. Falta o ID da transação.');
       setIsLoading(false);
       return;
     }
     
-    setEmail(emailParam);
+    // Email é opcional - pode vir da URL ou do localStorage
+    if (emailParam) {
+      setEmail(emailParam);
+    }
+    
     fetchPaymentInfo(id);
   }, []);
 

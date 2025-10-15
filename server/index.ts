@@ -19,76 +19,8 @@ setupCors(app);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Lista de IPs que nunca devem ser banidos
-const neverBanIPs = ['201.87.251.220']; // IP específico do cliente
-
-// Middleware para verificação e bloqueio de IPs banidos (nível servidor)
-// Este middleware intercepta TODAS as requisições e verifica se o IP está banido
-app.use(async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    // Ignorar requisições para endpoints de verificação de bannimento e report
-    // para evitar loop infinito ou bloquear a própria verificação
-    if (req.path.startsWith('/api/admin/report-desktop-access') || 
-        req.path.startsWith('/api/admin/register-device') ||
-        req.path.startsWith('/api/admin/check-ip-banned')) {
-      return next();
-    }
-    
-    // Pegar o IP real, mesmo atrás de proxy
-    const ip = req.ip || req.socket.remoteAddress || '0.0.0.0';
-    
-    // Em desenvolvimento, não bloquear
-    const hostname = req.hostname || '';
-    if (hostname.includes('localhost') || 
-        hostname.includes('127.0.0.1') || 
-        hostname.includes('replit') ||
-        process.env.NODE_ENV === 'development') {
-      return next();
-    }
-    
-    // Verificar se é um IP que nunca deve ser banido
-    const ipBaseWithoutProxy = ip.split(',')[0].trim();
-    if (neverBanIPs.some(whitelistedIP => ipBaseWithoutProxy.includes(whitelistedIP))) {
-      return next();
-    }
-    
-    // Verificar se o IP está banido
-    const bannedIp = await storage.getBannedIp(ip);
-    
-    // Se estiver banido, bloquear o acesso imediatamente
-    if (bannedIp?.isBanned) {
-      console.log(`[BLOQUEIO-IP] Servidor bloqueando acesso do IP banido: ${ip}`);
-      
-      // Para solicitações de API, retornar erro 403
-      if (req.path.startsWith('/api/')) {
-        return res.status(403).json({
-          error: 'IP_BLOCKED',
-          message: 'Acesso bloqueado permanentemente'
-        });
-      }
-      
-      // Para solicitações de página web, forçar redirecionamento about:blank
-      res.set('Content-Type', 'text/html');
-      res.send(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <script>window.location.replace("about:blank");</script>
-        </head>
-        <body></body>
-        </html>
-      `);
-      return;
-    }
-    
-    // Se não estiver banido, continuar
-    next();
-  } catch (error) {
-    console.error('[MIDDLEWARE] Erro ao verificar IP banido:', error);
-    // Em caso de erro, permitir acesso
-    next();
-  }
-});
+// Sistema de ban de IP foi removido para maximizar conversões
+// Todos os visitantes agora têm acesso ao site independente do dispositivo
 
 // Se estiver em produção, adiciona middleware para corrigir caminhos de assets no Heroku
 if (process.env.NODE_ENV === 'production') {
