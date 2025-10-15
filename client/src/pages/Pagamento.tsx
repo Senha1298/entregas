@@ -231,18 +231,6 @@ const Payment: React.FC = () => {
               trackPurchase(transactionId, 64.90, 'BRL');
             }
             
-            // Track conversion no TikTok Pixel
-            if (window.ttq) {
-              window.ttq.track('Purchase', {
-                content_type: 'product',
-                content_id: 'kit-epi-shopee',
-                content_name: 'Kit EPI Shopee',
-                value: 64.90,
-                currency: 'BRL'
-              });
-              console.log('✅ TikTok Pixel: Evento Purchase registrado');
-            }
-            
             // Mostrar toast de sucesso
             toast({
               title: "✅ Pagamento Confirmado!",

@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle } from 'lucide-react';
 import TreinamentoModal from '../components/TreinamentoModal';
 
-// Declaração de tipos para gtag
+// Declaração de tipos para gtag e TikTok Pixel
 declare global {
   interface Window {
     gtag: (...args: any[]) => void;
     dataLayer: any[];
+    ttq: any;
   }
 }
 
@@ -32,6 +33,39 @@ const Treinamento: FC = () => {
       gtag('js', new Date());
       gtag('config', 'AW-17372990053');
     }
+  }, []);
+  
+  // TikTok Pixel - Evento Purchase
+  useEffect(() => {
+    // Carregar TikTok Pixel se ainda não estiver carregado
+    if (!window.ttq) {
+      const script = document.createElement('script');
+      script.innerHTML = `
+        !function (w, d, t) {
+          w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
+        var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
+        ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+        
+        ttq.load('D3LDR93C77UD1HDJ6P80');
+        ttq.page();
+        }(window, document, 'ttq');
+      `;
+      document.head.appendChild(script);
+    }
+    
+    // Disparar evento Purchase após TikTok Pixel estar carregado
+    setTimeout(() => {
+      if (window.ttq) {
+        window.ttq.track('Purchase', {
+          content_type: 'product',
+          content_id: 'kit-epi-shopee',
+          content_name: 'Kit EPI Shopee',
+          value: 64.90,
+          currency: 'BRL'
+        });
+        console.log('✅ TikTok Pixel: Evento Purchase registrado na página de treinamento');
+      }
+    }, 1000);
   }, []);
   
   return (
