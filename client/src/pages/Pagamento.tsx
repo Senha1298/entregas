@@ -122,10 +122,13 @@ const Payment: React.FC = () => {
         facebookReported: data.transaction?.facebook_reported
       });
       
-      // Se não há códigos PIX, mostrar erro específico
-      if (!pixCode || !pixQrCode) {
-        console.warn('[PAYMENT] ATENÇÃO: Códigos PIX não encontrados na resposta da API');
-        setErrorMessage('Os códigos PIX não foram gerados ainda. Aguarde alguns instantes e recarregue a página.');
+      // Se há código PIX, pode parar o loading (QR code pode ser gerado no frontend)
+      if (pixCode) {
+        console.log('[PAYMENT] ✅ Código PIX recebido com sucesso!');
+        setIsLoading(false);
+      } else {
+        console.log('[PAYMENT] ⏳ Aguardando código PIX... Continuará carregando.');
+        // Manter loading ativo - será desligado quando o código chegar via polling
       }
 
       // 🚀 POLLING NO BACKEND - SEMPRE ATIVO!
@@ -134,7 +137,6 @@ const Payment: React.FC = () => {
     } catch (error: any) {
       console.error('Erro ao recuperar informações de pagamento:', error);
       setErrorMessage(error.message || 'Ocorreu um erro ao carregar as informações de pagamento.');
-    } finally {
       setIsLoading(false);
     }
   };
@@ -164,6 +166,29 @@ const Payment: React.FC = () => {
           const data = await response.json();
           console.log(`[BACKEND-POLL] Status recebido para ${transactionId}:`, data.status);
           
+          // Atualizar código PIX se chegou e ainda não temos
+          const newPixCode = data.transaction?.pix_code || '';
+          const newPixQrCode = data.transaction?.pix_qr_code || '';
+          
+          if (newPixCode) {
+            setPaymentInfo(prev => {
+              // Se já temos o código, não precisa atualizar
+              if (prev?.pixCode) {
+                return prev;
+              }
+              
+              // Atualizar com o novo código
+              console.log('[BACKEND-POLL] ✅ Código PIX recebido via polling!');
+              setIsLoading(false); // Desligar loading quando código chegar
+              
+              return {
+                ...prev!,
+                pixCode: newPixCode,
+                pixQrCode: newPixQrCode
+              };
+            });
+          }
+          
           // Verificar múltiplos status de pagamento aprovado (case-insensitive)
           const statusUpper = data.status?.toUpperCase();
           if (['PAID', 'APPROVED', 'COMPLETED', 'CONFIRMED', 'SUCCESS'].includes(statusUpper)) {
@@ -171,7 +196,7 @@ const Payment: React.FC = () => {
             
             // Track conversion no Facebook Pixel
             if (typeof trackPurchase === 'function') {
-              trackPurchase(64.90, 'BRL');
+              trackPurchase('64.90', 'BRL');
             }
             
             // Mostrar toast de sucesso
@@ -364,11 +389,11 @@ const Payment: React.FC = () => {
                   </div>
 
                   {/* QR Code */}
-                  {paymentInfo.pixQrCode && (
+                  {paymentInfo.pixCode && (
                     <div className="text-center mb-6">
                       <div className="bg-white border-2 border-gray-200 rounded-lg p-4 inline-block">
                         <QRCodeGenerator 
-                          value={paymentInfo.pixQrCode}
+                          value={paymentInfo.pixCode}
                           size={200}
                           data-testid="qr-code"
                         />
