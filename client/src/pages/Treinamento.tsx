@@ -56,6 +56,10 @@ const Treinamento: FC = () => {
         
         ttq.load('D3LDR93C77UD1HDJ6P80');
         ttq.page();
+        
+        // Carregar segundo pixel
+        ttq.load('D3NUMD3C77U1N95E0TJ0');
+        ttq.page();
         }(window, document, 'ttq');
       `;
       document.head.appendChild(script);
@@ -67,6 +71,7 @@ const Treinamento: FC = () => {
         // Marcar como disparado ANTES de disparar (previne race conditions)
         sessionStorage.setItem('tiktok_purchase_tracked', 'true');
         
+        // Disparar Purchase no primeiro pixel
         window.ttq.track('Purchase', {
           content_type: 'product',
           content_id: 'kit-epi-shopee',
@@ -74,7 +79,17 @@ const Treinamento: FC = () => {
           value: 64.90,
           currency: 'BRL'
         });
-        console.log('✅ TikTok Pixel: Evento Purchase registrado na página de treinamento (ÚNICA VEZ)');
+        
+        // Disparar Purchase no segundo pixel (instância específica)
+        window.ttq.instance('D3NUMD3C77U1N95E0TJ0').track('Purchase', {
+          content_type: 'product',
+          content_id: 'kit-epi-shopee',
+          content_name: 'Kit EPI Shopee',
+          value: 64.90,
+          currency: 'BRL'
+        });
+        
+        console.log('✅ TikTok Pixels: Evento Purchase registrado em ambos os pixels (ÚNICA VEZ)');
       }
     }, 1000);
   }, []);
