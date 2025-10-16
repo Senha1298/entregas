@@ -66,7 +66,7 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
     }
   };
 
-  // Buscar dados do CEP na API ViaCEP
+  // Buscar dados do CEP - OpenCEP como principal, ViaCEP como fallback
   const fetchCepData = async (cepValue: string) => {
     if (cepValue.length !== 8) {
       return;
@@ -76,19 +76,42 @@ const CepModal: React.FC<CepModalProps> = ({ isOpen, onClose, onConfirm }) => {
     setError(null);
     
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${cepValue}/json/`);
-      const data: CepApiResponse = await response.json();
+      // Tentar primeiro com OpenCEP (API principal)
+      console.log('[CEP] Tentando OpenCEP...');
+      const openCepResponse = await fetch(`https://opencep.com/v1/${cepValue}.json`, {
+        signal: AbortSignal.timeout(5000) // Timeout de 5 segundos
+      });
       
-      if (data.erro) {
-        // Não mostrar erro - deixar usuário prosseguir
+      if (openCepResponse.ok) {
+        const openCepData = await openCepResponse.json();
+        
+        if (openCepData && openCepData.cep) {
+          console.log('[CEP] ✅ OpenCEP funcionou!');
+          setLocationData({
+            city: openCepData.localidade,
+            state: openCepData.uf
+          });
+          return;
+        }
+      }
+      
+      // Se OpenCEP falhar, usar ViaCEP como fallback
+      console.log('[CEP] OpenCEP falhou, tentando ViaCEP...');
+      const viaCepResponse = await fetch(`https://viacep.com.br/ws/${cepValue}/json/`);
+      const viaCepData: CepApiResponse = await viaCepResponse.json();
+      
+      if (viaCepData.erro) {
+        console.log('[CEP] ⚠️ CEP não encontrado em nenhuma API');
         setLocationData(null);
       } else {
+        console.log('[CEP] ✅ ViaCEP funcionou (fallback)!');
         setLocationData({
-          city: data.localidade,
-          state: data.uf
+          city: viaCepData.localidade,
+          state: viaCepData.uf
         });
       }
     } catch (err) {
+      console.error('[CEP] ❌ Erro em ambas as APIs:', err);
       // Não mostrar erro - deixar usuário prosseguir silenciosamente
       setLocationData(null);
     } finally {

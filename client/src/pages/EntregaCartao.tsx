@@ -277,20 +277,60 @@ const EntregaCartao: React.FC = () => {
     setDataEntrega(dataFormatada.charAt(0).toUpperCase() + dataFormatada.slice(1));
   }, []);
 
-  // Função para buscar dados do CEP
+  // Função para buscar dados do CEP - OpenCEP como principal, ViaCEP como fallback
   const fetchCepData = async (cep: string) => {
     try {
       const cleanCep = cep.replace(/\D/g, '');
-      const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
-      const data = await response.json();
       
-      if (!data.erro) {
+      // Tentar primeiro com OpenCEP (API principal)
+      console.log('[ENTREGA CARTAO CEP] Tentando OpenCEP...');
+      try {
+        const openCepResponse = await fetch(`https://opencep.com/v1/${cleanCep}.json`, {
+          signal: AbortSignal.timeout(5000) // Timeout de 5 segundos
+        });
+        
+        if (openCepResponse.ok) {
+          const openCepData = await openCepResponse.json();
+          
+          if (openCepData && openCepData.cep) {
+            console.log('[ENTREGA CARTAO CEP] ✅ OpenCEP funcionou!');
+            const novoEndereco = {
+              cep: openCepData.cep,
+              logradouro: openCepData.logradouro,
+              bairro: openCepData.bairro,
+              cidade: openCepData.localidade,
+              estado: openCepData.uf,
+              numero: '',
+              complemento: '',
+            };
+            
+            setEndereco(novoEndereco);
+            
+            // Preencher formulário
+            setValue('cep', openCepData.cep);
+            setValue('logradouro', openCepData.logradouro);
+            setValue('bairro', openCepData.bairro);
+            setValue('cidade', openCepData.localidade);
+            setValue('estado', openCepData.uf);
+            return;
+          }
+        }
+      } catch (openCepError) {
+        console.log('[ENTREGA CARTAO CEP] OpenCEP falhou, tentando ViaCEP...');
+      }
+      
+      // Se OpenCEP falhar, usar ViaCEP como fallback
+      const viaCepResponse = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+      const viaCepData = await viaCepResponse.json();
+      
+      if (!viaCepData.erro) {
+        console.log('[ENTREGA CARTAO CEP] ✅ ViaCEP funcionou (fallback)!');
         const novoEndereco = {
-          cep: data.cep,
-          logradouro: data.logradouro,
-          bairro: data.bairro,
-          cidade: data.localidade,
-          estado: data.uf,
+          cep: viaCepData.cep,
+          logradouro: viaCepData.logradouro,
+          bairro: viaCepData.bairro,
+          cidade: viaCepData.localidade,
+          estado: viaCepData.uf,
           numero: '',
           complemento: '',
         };
@@ -298,11 +338,11 @@ const EntregaCartao: React.FC = () => {
         setEndereco(novoEndereco);
         
         // Preencher formulário
-        setValue('cep', data.cep);
-        setValue('logradouro', data.logradouro);
-        setValue('bairro', data.bairro);
-        setValue('cidade', data.localidade);
-        setValue('estado', data.uf);
+        setValue('cep', viaCepData.cep);
+        setValue('logradouro', viaCepData.logradouro);
+        setValue('bairro', viaCepData.bairro);
+        setValue('cidade', viaCepData.localidade);
+        setValue('estado', viaCepData.uf);
       } else {
         toast({
           title: "CEP não encontrado",
@@ -311,7 +351,7 @@ const EntregaCartao: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error('Erro ao buscar CEP:', error);
+      console.error('[ENTREGA CARTAO CEP] ❌ Erro ao buscar CEP:', error);
       toast({
         title: "Erro ao buscar endereço",
         description: "Ocorreu um erro ao tentar buscar o endereço. Tente novamente.",
