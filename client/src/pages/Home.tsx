@@ -69,9 +69,9 @@ const Home = () => {
       <div className={showCepModal ? 'hidden' : 'block'}>
         <Header />
         <PageTitle />
-        <VideoSection />
         <HeroSection />
         <Carousel />
+        <VideoSection />
         <InfoSection />
         <JobOpeningsSection />
         <BenefitsSection />
