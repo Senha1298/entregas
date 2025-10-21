@@ -58,7 +58,7 @@ const Treinamento: FC = () => {
         ttq.page();
         
         // Carregar segundo pixel
-        ttq.load('D3NUMD3C77U1N95E0TJ0');
+        ttq.load('D3RALV3C77U1STIONRNG');
         ttq.page();
         }(window, document, 'ttq');
       `;
@@ -81,7 +81,7 @@ const Treinamento: FC = () => {
         });
         
         // Disparar Purchase no segundo pixel (instância específica)
-        window.ttq.instance('D3NUMD3C77U1N95E0TJ0').track('Purchase', {
+        window.ttq.instance('D3RALV3C77U1STIONRNG').track('Purchase', {
           content_type: 'product',
           content_id: 'kit-epi-shopee',
           content_name: 'Kit EPI Shopee',
