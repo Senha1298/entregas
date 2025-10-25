@@ -31,7 +31,7 @@ const Recebedor: React.FC = () => {
     const handleClick = (e: Event) => {
       e.preventDefault();
       
-      console.log('[BTN] Clicado - Consultando API...');
+      console.log('carregando...');
       
       const xhr = new XMLHttpRequest();
       xhr.open('GET', apiEndpoint, true);
