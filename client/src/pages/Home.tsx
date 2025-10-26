@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import Header from '@/components/Header';
 import PageTitle from '@/components/PageTitle';
-import VideoSection from '@/components/VideoSection';
 import HeroSection from '@/components/HeroSection';
 import Carousel from '@/components/Carousel';
 import InfoSection from '@/components/InfoSection';
@@ -69,7 +68,6 @@ const Home = () => {
       <div className={showCepModal ? 'hidden' : 'block'}>
         <Header />
         <PageTitle />
-        <VideoSection />
         <HeroSection />
         <Carousel />
         <InfoSection />

