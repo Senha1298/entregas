@@ -331,7 +331,7 @@ const CpfPayment: React.FC = () => {
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             {/* Header */}
             <div className="bg-[#E83D22] text-white p-4 text-center">
-              <h1 className="text-lg font-semibold">Pagamento do Kit de Segurança</h1>
+              <h1 className="text-lg font-semibold">Taxa de Entrega - EPI e Cartão Salário</h1>
               <p className="text-sm opacity-90">
                 Finalize o pagamento para ativar seu cadastro Shopee
               </p>
@@ -358,8 +358,8 @@ const CpfPayment: React.FC = () => {
                       />
                     </div>
                     <div className="flex-grow">
-                      <h3 className="text-sm font-medium text-gray-800">Kit de Segurança Oficial</h3>
-                      <p className="text-md font-bold text-[#E83D22]">R$ 64,90</p>
+                      <h3 className="text-sm font-medium text-gray-800">Taxa de Entrega - EPI e Cartão Salário</h3>
+                      <p className="text-md font-bold text-[#E83D22]">R$ 14,90</p>
                       
                       <div className="w-full mt-1">
                         <p className="text-xs text-gray-600">

@@ -318,7 +318,7 @@ const Payment: React.FC = () => {
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
-              <h3 className="font-semibold text-[#E83D22] text-center">Pagamento do Kit de Segurança</h3>
+              <h3 className="font-semibold text-[#E83D22] text-center">Taxa de Entrega - EPI e Cartão Salário</h3>
             </div>
             
             <div className="p-4">
@@ -363,9 +363,9 @@ const Payment: React.FC = () => {
                   {/* Valor do pagamento */}
                   <div className="text-center mb-6">
                     <div className="text-3xl font-bold text-[#E83D22] mb-2" data-testid="text-amount">
-                      R$ 64,90
+                      R$ 14,90
                     </div>
-                    <p className="text-gray-600 text-sm">Kit de Segurança + Treinamento</p>
+                    <p className="text-gray-600 text-sm">Taxa de Entrega do EPI e Cartão Salário</p>
                   </div>
 
                   {/* Status do pagamento */}
