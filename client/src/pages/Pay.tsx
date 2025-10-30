@@ -92,7 +92,7 @@ const Pay = () => {
         cpf: clienteData.cpf,
         email: clienteData.email,
         phone: clienteData.telefone,
-        amount: 64.90
+        amount: 14.90
       });
       
       console.log('Pagamento processado com sucesso:', pixData);

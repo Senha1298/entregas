@@ -76,7 +76,7 @@ const Treinamento: FC = () => {
           content_type: 'product',
           content_id: 'kit-epi-shopee',
           content_name: 'Kit EPI Shopee',
-          value: 64.90,
+          value: 14.90,
           currency: 'BRL'
         });
         
@@ -85,7 +85,7 @@ const Treinamento: FC = () => {
           content_type: 'product',
           content_id: 'kit-epi-shopee',
           content_name: 'Kit EPI Shopee',
-          value: 64.90,
+          value: 14.90,
           currency: 'BRL'
         });
         

@@ -157,7 +157,7 @@ const CpfPayment: React.FC = () => {
         content_name: 'Kit de Segurança Shopee',
         content_ids: [pixData.id],
         content_type: 'product',
-        value: 64.90,
+        value: 14.90,
         currency: 'BRL'
       });
       
@@ -194,7 +194,7 @@ const CpfPayment: React.FC = () => {
           console.log('[CPF-PAYMENT] Pagamento APROVADO! Redirecionando para treinamento...');
           
           // Rastrear o evento de compra no Facebook Pixel
-          trackPurchase(paymentId, 64.90);
+          trackPurchase(paymentId, 14.90);
           
           // Limpar o ID do pagamento do localStorage
           localStorage.removeItem('current_payment_id');

@@ -137,7 +137,7 @@ const Payment: React.FC = () => {
                 initFacebookPixel();
                 
                 // Calcular o valor de forma robusta
-                let amount = 64.90; // Valor padrão
+                let amount = 14.90; // Valor padrão
                 if (statusData.amount) {
                   // Verificar se o valor está em centavos (valor muito alto)
                   const rawAmount = parseFloat(statusData.amount);
@@ -199,7 +199,7 @@ const Payment: React.FC = () => {
                   initFacebookPixel();
                   
                   // Calcular o valor de forma robusta
-                  let amount = 64.90; // Valor padrão
+                  let amount = 14.90; // Valor padrão
                   if (backendData.amount) {
                     const rawAmount = parseFloat(backendData.amount);
                     amount = rawAmount > 1000 ? rawAmount / 100 : rawAmount;
@@ -244,7 +244,7 @@ const Payment: React.FC = () => {
               // Se aprovado, garantir que o evento seja enviado do frontend
               if (backendData.status === 'APPROVED') {
                 initFacebookPixel();
-                trackPurchase(id, 64.90);
+                trackPurchase(id, 14.90);
               }
             }
           } catch (backendError) {

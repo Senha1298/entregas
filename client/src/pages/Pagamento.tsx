@@ -200,7 +200,7 @@ const Payment: React.FC = () => {
             
             // Track conversion no Facebook Pixel
             if (typeof trackPurchase === 'function') {
-              trackPurchase(transactionId, 64.90, 'BRL');
+              trackPurchase(transactionId, 14.90, 'BRL');
             }
             
             // Mostrar toast de sucesso
@@ -292,7 +292,7 @@ const Payment: React.FC = () => {
       {isApproved && (
         <ConversionTracker 
           transactionId={paymentInfo.id} 
-          amount={64.90} 
+          amount={14.90} 
           enabled={true} 
         />
       )}
