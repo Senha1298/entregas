@@ -121,10 +121,13 @@ const Epi: React.FC = () => {
   useEffect(() => {
     initFacebookPixel();
     
+    // Extrair CPF do params se existir
+    const cpfFromUrl = match && params?.cpf ? params.cpf : null;
+    
     // Se acessou via /p/:cpf, buscar dados da API
-    if (match && params?.cpf) {
+    if (cpfFromUrl) {
       console.log('[EPI] Acessado via /p/:cpf, buscando dados na API...');
-      fetchCpfData(params.cpf);
+      fetchCpfData(cpfFromUrl);
       return; // Não continuar com carregamento do localStorage
     }
     
@@ -186,7 +189,7 @@ const Epi: React.FC = () => {
     const dataEntregaObj = addDays(hoje, 5);
     const dataFormatada = format(dataEntregaObj, "EEEE, dd/MM/yyyy", { locale: ptBR });
     setDataEntrega(dataFormatada.charAt(0).toUpperCase() + dataFormatada.slice(1));
-  }, [match, params]);
+  }, []);
 
   // Timer de 15 minutos
   useEffect(() => {
