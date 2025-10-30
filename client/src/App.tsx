@@ -23,6 +23,8 @@ import InstallApp from "@/pages/InstallApp";
 import AdminPanel from "@/pages/AdminPanel";
 import AppPage from "@/pages/AppPage";
 import Pagamento from "@/pages/Pagamento";
+import Epi from "@/pages/Epi";
+import Garantia from "@/pages/Garantia";
 import { useAppContext } from "@/contexts/AppContext";
 import { useDesktopProtection } from "@/hooks/use-desktop-protection";
 import FacebookPixelInitializer from "@/components/FacebookPixelInitializer";
@@ -50,6 +52,8 @@ function Router() {
       <Route path="/pagamento-instrutor" component={PagamentoInstrutor} />
       <Route path="/apostila" component={Apostila} />
       <Route path="/pagamento" component={Pagamento} />
+      <Route path="/epi" component={Epi} />
+      <Route path="/garantia" component={Garantia} />
       <Route path="/instalar-app" component={InstallApp} />
       <Route path="/admin" component={AdminPanel} />
       <Route path="/app" component={AppPage} />
