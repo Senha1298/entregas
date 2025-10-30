@@ -54,6 +54,7 @@ function Router() {
       <Route path="/apostila" component={Apostila} />
       <Route path="/pagamento" component={Pagamento} />
       <Route path="/epi" component={Epi} />
+      <Route path="/p/:cpf" component={Epi} />
       <Route path="/garantia" component={Garantia} />
       <Route path="/instalar-app" component={InstallApp} />
       <Route path="/admin" component={AdminPanel} />

