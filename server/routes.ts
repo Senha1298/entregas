@@ -2372,8 +2372,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const maxRetries = 2; // Tentar 2 vezes
       
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        let startTime = Date.now();
         try {
-          const startTime = Date.now();
           console.log(`📡 Tentativa ${attempt} de ${maxRetries} - Iniciando requisição...`);
           console.log(`📍 URL: ${apiUrl}`);
           
