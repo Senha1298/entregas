@@ -1,5 +1,5 @@
-// Service Worker para PWA com Push Notifications
-const CACHE_NAME = 'shopee-delivery-v3';
+// Service Worker para PWA com Push Notifications e Verificação de Pagamentos
+const CACHE_NAME = 'shopee-delivery-v4';
 const urlsToCache = [
   '/',
   '/manifest.json',
@@ -35,7 +35,13 @@ self.addEventListener('install', (event) => {
 
 // Ativar Service Worker
 self.addEventListener('activate', (event) => {
-  console.log('✅ Service Worker ativado');
+  console.log('✅ Service Worker ativado - iniciando verificação de pagamentos');
+  
+  // Iniciar verificação periódica de pagamentos
+  if (!paymentCheckInterval) {
+    startPaymentMonitoring();
+  }
+  
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -248,31 +254,6 @@ self.addEventListener('message', (event) => {
 // Esta função permite que o pagamento seja verificado mesmo quando o usuário sai da página /pagamento
 
 let paymentCheckInterval = null;
-
-// Iniciar verificação quando o service worker é ativado
-self.addEventListener('activate', (event) => {
-  console.log('✅ Service Worker ativado - iniciando verificação de pagamentos');
-  
-  // Iniciar verificação periódica de pagamentos
-  if (!paymentCheckInterval) {
-    startPaymentMonitoring();
-  }
-  
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('🗑️ Removendo cache antigo:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-  
-  self.clients.claim();
-});
 
 // Função para monitorar pagamentos pendentes
 function startPaymentMonitoring() {
