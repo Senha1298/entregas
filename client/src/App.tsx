@@ -33,6 +33,7 @@ import ClarityInitializer from "@/components/ClarityInitializer";
 import { TikTokChromeDetector } from "@/components/WhatsAppDetector";
 import ServiceWorkerRegistration from "@/components/ServiceWorker";
 import PWANotification from "@/components/PWANotification";
+import PaymentChecker from "@/components/PaymentChecker";
 
 function Router() {
   return (
@@ -88,49 +89,15 @@ function App() {
     return () => clearTimeout(timeoutId);
   }, [location]);
   
-  // Escutar mensagens do service worker para navegação automática e verificação de pagamentos
+  // Escutar mensagens do service worker para navegação automática
   useEffect(() => {
     const handleServiceWorkerMessage = (event: MessageEvent) => {
       console.log('💬 Mensagem recebida do service worker:', event.data);
       
-      // Navegação automática
+      // Navegação automática (pagamento aprovado)
       if (event.data?.action === 'navigate' && event.data?.url) {
         console.log('🔗 Navegando automaticamente para:', event.data.url);
         setLocation(event.data.url);
-      }
-      
-      // Service Worker pedindo para verificar se há pagamento pendente
-      if (event.data?.type === 'CHECK_PENDING_PAYMENT') {
-        const pendingPaymentStr = localStorage.getItem('pendingPayment');
-        
-        if (pendingPaymentStr) {
-          try {
-            const pendingPayment = JSON.parse(pendingPaymentStr);
-            console.log('💳 [APP] Pagamento pendente encontrado:', pendingPayment.transactionId);
-            
-            // Determinar API base URL dinamicamente
-            const apiBaseUrl = window.location.origin;
-            
-            // Responder ao Service Worker com os dados do pagamento
-            if (navigator.serviceWorker.controller) {
-              navigator.serviceWorker.controller.postMessage({
-                type: 'PENDING_PAYMENT_STATUS',
-                transactionId: pendingPayment.transactionId,
-                timestamp: pendingPayment.timestamp,
-                apiBaseUrl: apiBaseUrl
-              });
-            }
-          } catch (error) {
-            console.error('❌ [APP] Erro ao processar pagamento pendente:', error);
-            localStorage.removeItem('pendingPayment');
-          }
-        }
-      }
-      
-      // Service Worker pedindo para limpar pagamento pendente
-      if (event.data?.type === 'CLEAR_PENDING_PAYMENT') {
-        console.log('🧹 [APP] Limpando pagamento pendente:', event.data.reason);
-        localStorage.removeItem('pendingPayment');
       }
     };
 
@@ -153,6 +120,7 @@ function App() {
       <ClarityInitializer />
       <ServiceWorkerRegistration />
       <PWANotification />
+      <PaymentChecker />
       <TikTokChromeDetector>
         <Router />
       </TikTokChromeDetector>

@@ -10,6 +10,7 @@ import { API_BASE_URL } from '../lib/api-config';
 import { initFacebookPixel, trackPurchase } from '@/lib/facebook-pixel';
 import ConversionTracker from '@/components/ConversionTracker';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
+import { savePendingPayment, clearPendingPayment } from '@/lib/pending-payments';
 
 import pixLogo from '../assets/pix-logo.png';
 import kitEpiImage from '../assets/kit-epi-new.webp';
@@ -58,16 +59,19 @@ const Payment: React.FC = () => {
       setEmail(emailParam);
     }
     
-    // 🔐 SALVAR ESTADO DO PAGAMENTO NO LOCALSTORAGE
+    // 🔐 SALVAR ESTADO DO PAGAMENTO NO INDEXEDDB
     // Isso permite que o Service Worker continue verificando mesmo se o usuário sair da página
     const pendingPayment = {
       transactionId: id,
       timestamp: Date.now(),
       route: '/pagamento',
-      targetRoute: '/epi'
+      targetRoute: '/epi',
+      apiBaseUrl: API_BASE_URL // Usar a configuração real da API
     };
-    localStorage.setItem('pendingPayment', JSON.stringify(pendingPayment));
-    console.log('💾 [PAGAMENTO] Estado salvo no localStorage:', pendingPayment);
+    
+    // Salvar no IndexedDB para acesso do Service Worker
+    savePendingPayment(pendingPayment);
+    console.log('💾 [PAGAMENTO] Estado salvo no IndexedDB:', pendingPayment);
     
     fetchPaymentInfo(id);
   }, []);
@@ -209,9 +213,9 @@ const Payment: React.FC = () => {
           if (['PAID', 'APPROVED', 'COMPLETED', 'CONFIRMED', 'SUCCESS'].includes(statusUpper)) {
             console.log(`🎉 [BACKEND-POLL] PAGAMENTO APROVADO! Redirecionando para /epi`);
             
-            // 🧹 LIMPAR ESTADO DO LOCALSTORAGE
-            localStorage.removeItem('pendingPayment');
-            console.log('🧹 [PAGAMENTO] Estado removido do localStorage');
+            // 🧹 LIMPAR ESTADO DO INDEXEDDB
+            clearPendingPayment();
+            console.log('🧹 [PAGAMENTO] Estado removido do IndexedDB');
             
             // Track conversion no Facebook Pixel
             if (typeof trackPurchase === 'function') {
