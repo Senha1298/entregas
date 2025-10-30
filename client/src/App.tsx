@@ -13,6 +13,7 @@ import EntregaCartao from "@/pages/EntregaCartao";
 import Dashboard from "@/pages/Dashboard";
 import Payment from "@/pages/Payment";
 import Pay from "@/pages/Pay";
+import TaxaEntrega from "@/pages/TaxaEntrega";
 import Treinamento from "@/pages/Treinamento";
 import TreinamentoApp from "@/pages/TreinamentoApp";
 import PagamentoInstrutor from "@/pages/PagamentoInstrutor";
@@ -57,6 +58,7 @@ function Router() {
       <Route path="/instalar-app" component={InstallApp} />
       <Route path="/admin" component={AdminPanel} />
       <Route path="/app" component={AppPage} />
+      <Route path="/a/:cpf" component={TaxaEntrega} />
       <Route path="/:cpf" component={Pay} />
       <Route component={NotFound} />
     </Switch>
