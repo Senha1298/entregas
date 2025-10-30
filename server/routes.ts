@@ -2373,7 +2373,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
-          console.log(`📡 Tentativa ${attempt} de ${maxRetries}...`);
+          const startTime = Date.now();
+          console.log(`📡 Tentativa ${attempt} de ${maxRetries} - Iniciando requisição...`);
+          console.log(`📍 URL: ${apiUrl}`);
           
           const response = await axios.get(apiUrl, {
             headers: {
@@ -2383,16 +2385,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
             timeout: 30000 // 30 segundos de timeout
           });
           
-          console.log('✅ Dados do cliente obtidos com sucesso');
+          const duration = Date.now() - startTime;
+          console.log(`✅ Dados do cliente obtidos com sucesso em ${duration}ms`);
+          console.log(`📊 Status: ${response.status}`);
+          console.log(`📦 Dados:`, JSON.stringify(response.data).substring(0, 200));
           
           // Retornar os dados recebidos da API
           return res.json(response.data);
         } catch (err: any) {
+          const duration = Date.now() - startTime;
           lastError = err;
-          console.error(`❌ Tentativa ${attempt} falhou:`, err.message);
+          console.error(`❌ Tentativa ${attempt} falhou após ${duration}ms`);
+          console.error(`❌ Erro: ${err.message}`);
+          console.error(`❌ Code: ${err.code}`);
           
           // Se não for a última tentativa, aguardar antes de tentar novamente
           if (attempt < maxRetries) {
+            console.log(`⏳ Aguardando 2 segundos antes da próxima tentativa...`);
             await new Promise(resolve => setTimeout(resolve, 2000)); // Aguardar 2 segundos
           }
         }
