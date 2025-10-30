@@ -72,12 +72,12 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
       })
     };
     
-    // Fazer a requisição com timeout
+    // Fazer a requisição com timeout aumentado
     console.log('Enviando requisição para:', apiUrl);
     console.log('Payload:', requestOptions.body);
     
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos timeout
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 segundos timeout (aumentado de 30s)
     
     const response = await fetch(apiUrl, {
       ...requestOptions,
@@ -92,7 +92,15 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`Erro HTTP ${response.status}: ${errorText}`);
-      throw new Error(`Falha na comunicação com o servidor: ${response.statusText}`);
+      
+      // Mensagens de erro mais específicas para o usuário
+      if (response.status >= 500) {
+        throw new Error('Serviço de pagamento temporariamente indisponível. Tente novamente em alguns instantes.');
+      } else if (response.status === 408 || response.status === 504) {
+        throw new Error('A requisição demorou muito. Verifique sua conexão e tente novamente.');
+      } else {
+        throw new Error(`Falha na comunicação com o servidor: ${response.statusText}`);
+      }
     }
     
     // Processar a resposta
@@ -110,6 +118,14 @@ export async function createPixPayment(data: PaymentRequest): Promise<PaymentRes
     return result;
   } catch (error: any) {
     console.error('Erro ao processar pagamento:', error);
+    
+    // Mensagens de erro mais amigáveis
+    if (error.name === 'AbortError') {
+      throw new Error('A operação demorou muito tempo. Verifique sua conexão com a internet e tente novamente.');
+    } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      throw new Error('Não foi possível conectar ao servidor. Verifique sua conexão com a internet.');
+    }
+    
     throw new Error(error.message || 'Não foi possível processar o pagamento no momento');
   }
 }
