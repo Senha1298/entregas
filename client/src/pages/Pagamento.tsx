@@ -196,7 +196,7 @@ const Payment: React.FC = () => {
           // Verificar múltiplos status de pagamento aprovado (case-insensitive)
           const statusUpper = data.status?.toUpperCase();
           if (['PAID', 'APPROVED', 'COMPLETED', 'CONFIRMED', 'SUCCESS'].includes(statusUpper)) {
-            console.log(`🎉 [BACKEND-POLL] PAGAMENTO APROVADO! Redirecionando para /treinamento`);
+            console.log(`🎉 [BACKEND-POLL] PAGAMENTO APROVADO! Redirecionando para /epi`);
             
             // Track conversion no Facebook Pixel
             if (typeof trackPurchase === 'function') {
@@ -206,12 +206,12 @@ const Payment: React.FC = () => {
             // Mostrar toast de sucesso
             toast({
               title: "✅ Pagamento Confirmado!",
-              description: "Redirecionando para o treinamento...",
+              description: "Redirecionando para a página do EPI...",
               variant: "default",
             });
             
-            // Redirecionamento IMEDIATO
-            setLocation('/treinamento');
+            // Redirecionamento IMEDIATO para página EPI
+            setLocation('/epi');
             return; // Para o polling
           }
         } else {
