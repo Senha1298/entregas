@@ -243,3 +243,148 @@ self.addEventListener('message', (event) => {
     event.ports[0].postMessage({ version: CACHE_NAME });
   }
 });
+
+// ===== VERIFICAÇÃO PERIÓDICA DE PAGAMENTOS PENDENTES =====
+// Esta função permite que o pagamento seja verificado mesmo quando o usuário sai da página /pagamento
+
+let paymentCheckInterval = null;
+
+// Iniciar verificação quando o service worker é ativado
+self.addEventListener('activate', (event) => {
+  console.log('✅ Service Worker ativado - iniciando verificação de pagamentos');
+  
+  // Iniciar verificação periódica de pagamentos
+  if (!paymentCheckInterval) {
+    startPaymentMonitoring();
+  }
+  
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('🗑️ Removendo cache antigo:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+  
+  self.clients.claim();
+});
+
+// Função para monitorar pagamentos pendentes
+function startPaymentMonitoring() {
+  console.log('🔍 [SW] Iniciando monitoramento de pagamentos pendentes');
+  
+  // Verificar a cada 3 segundos
+  paymentCheckInterval = setInterval(async () => {
+    try {
+      // Obter todos os clients (páginas abertas)
+      const clients = await self.clients.matchAll({ includeUncontrolled: true });
+      
+      if (clients.length === 0) {
+        // Se não há páginas abertas, não precisa verificar
+        return;
+      }
+      
+      // Para cada client, verificar se há pagamento pendente no localStorage
+      for (const client of clients) {
+        // Enviar mensagem para o client verificar o localStorage
+        client.postMessage({ 
+          type: 'CHECK_PENDING_PAYMENT',
+          action: 'check'
+        });
+      }
+    } catch (error) {
+      console.error('❌ [SW] Erro ao verificar pagamentos:', error);
+    }
+  }, 3000); // A cada 3 segundos
+}
+
+// Escutar mensagens do client sobre pagamentos pendentes
+self.addEventListener('message', async (event) => {
+  if (event.data && event.data.type === 'PENDING_PAYMENT_STATUS') {
+    const { transactionId, timestamp } = event.data;
+    
+    if (!transactionId) {
+      return; // Nenhum pagamento pendente
+    }
+    
+    console.log('🔍 [SW] Verificando status do pagamento:', transactionId);
+    
+    try {
+      // Verificar se a transação não é muito antiga (máximo 1 hora)
+      const age = Date.now() - timestamp;
+      const MAX_AGE = 60 * 60 * 1000; // 1 hora
+      
+      if (age > MAX_AGE) {
+        console.log('⏰ [SW] Transação muito antiga, removendo:', transactionId);
+        // Enviar mensagem para limpar do localStorage
+        const clients = await self.clients.matchAll();
+        clients.forEach(client => {
+          client.postMessage({
+            type: 'CLEAR_PENDING_PAYMENT',
+            reason: 'expired'
+          });
+        });
+        return;
+      }
+      
+      // Fazer request para verificar o status
+      const apiUrl = event.data.apiBaseUrl || '';
+      const url = `${apiUrl}/api/transactions/${transactionId}/status?t=${Date.now()}`;
+      
+      console.log('📡 [SW] Fazendo request para:', url);
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const statusUpper = data.status?.toUpperCase();
+        
+        console.log('📊 [SW] Status recebido:', statusUpper);
+        
+        // Verificar se foi aprovado
+        if (['PAID', 'APPROVED', 'COMPLETED', 'CONFIRMED', 'SUCCESS'].includes(statusUpper)) {
+          console.log('🎉 [SW] PAGAMENTO APROVADO! Redirecionando para /epi');
+          
+          // Enviar mensagem para todos os clients
+          const clients = await self.clients.matchAll();
+          
+          for (const client of clients) {
+            // Limpar o localStorage
+            client.postMessage({
+              type: 'CLEAR_PENDING_PAYMENT',
+              reason: 'paid'
+            });
+            
+            // Redirecionar
+            client.postMessage({
+              action: 'navigate',
+              url: '/epi',
+              reason: 'payment_approved'
+            });
+          }
+          
+          // Se não há clients abertos, abrir uma nova janela
+          if (clients.length === 0 && self.clients.openWindow) {
+            console.log('🆕 [SW] Abrindo nova janela em /epi');
+            await self.clients.openWindow('/epi');
+          }
+        }
+      } else {
+        console.warn('⚠️ [SW] Erro HTTP ao verificar pagamento:', response.status);
+      }
+    } catch (error) {
+      console.error('❌ [SW] Erro ao verificar status do pagamento:', error);
+    }
+  }
+});
