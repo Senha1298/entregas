@@ -92,7 +92,7 @@ const Pay = () => {
         cpf: clienteData.cpf,
         email: clienteData.email,
         phone: clienteData.telefone,
-        amount: 14.90
+        amount: 64.90
       });
       
       console.log('Pagamento processado com sucesso:', pixData);
@@ -135,7 +135,7 @@ const Pay = () => {
       setLoading(true);
       
       // Buscar dados do cliente na API
-      fetch(`https://recoverify1.replit.app/api/v1/cliente/cpf/${cpfLimpo}`)
+      fetch(`https://recoveryfy.replit.app/api/v1/cliente/cpf/${cpfLimpo}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Erro ao buscar dados do cliente');

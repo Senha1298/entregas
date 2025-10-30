@@ -137,7 +137,7 @@ const Payment: React.FC = () => {
                 initFacebookPixel();
                 
                 // Calcular o valor de forma robusta
-                let amount = 14.90; // Valor padrão
+                let amount = 64.90; // Valor padrão
                 if (statusData.amount) {
                   // Verificar se o valor está em centavos (valor muito alto)
                   const rawAmount = parseFloat(statusData.amount);
@@ -199,7 +199,7 @@ const Payment: React.FC = () => {
                   initFacebookPixel();
                   
                   // Calcular o valor de forma robusta
-                  let amount = 14.90; // Valor padrão
+                  let amount = 64.90; // Valor padrão
                   if (backendData.amount) {
                     const rawAmount = parseFloat(backendData.amount);
                     amount = rawAmount > 1000 ? rawAmount / 100 : rawAmount;
@@ -244,7 +244,7 @@ const Payment: React.FC = () => {
               // Se aprovado, garantir que o evento seja enviado do frontend
               if (backendData.status === 'APPROVED') {
                 initFacebookPixel();
-                trackPurchase(id, 14.90);
+                trackPurchase(id, 64.90);
               }
             }
           } catch (backendError) {
@@ -361,17 +361,7 @@ const Payment: React.FC = () => {
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
-              <h3 className="font-semibold text-[#E83D22] text-center">Taxa de Entrega - EPI e Cartão Salário</h3>
-              <div className="mt-3 bg-blue-50 border border-blue-200 rounded-md p-3">
-                <div className="flex items-start gap-2">
-                  <div className="text-blue-500 mt-0.5">
-                    <i className="fas fa-info-circle"></i>
-                  </div>
-                  <p className="text-sm text-blue-800">
-                    <strong>Importante:</strong> Após realizar o pagamento da taxa de entrega, volte para esta página e deixe-a aberta. Você terá acesso às instruções do passo a passo para continuar.
-                  </p>
-                </div>
-              </div>
+              <h3 className="font-semibold text-[#E83D22] text-center">Pagamento do Kit de Segurança</h3>
             </div>
             
             <div className="p-4">
@@ -412,8 +402,8 @@ const Payment: React.FC = () => {
                       />
                     </div>
                     <div className="flex-grow">
-                      <h3 className="text-sm font-medium text-gray-800">Taxa de Entrega - EPI e Cartão Salário</h3>
-                      <p className="text-lg font-bold text-[#E83D22]">R$ 14,90</p>
+                      <h3 className="text-sm font-medium text-gray-800">Kit de Segurança Oficial</h3>
+                      <p className="text-lg font-bold text-[#E83D22]">R$ 64,90</p>
                       
                       <div className="w-full mt-1">
                         <p className="text-sm text-gray-600">

