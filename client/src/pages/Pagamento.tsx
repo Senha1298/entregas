@@ -58,6 +58,17 @@ const Payment: React.FC = () => {
       setEmail(emailParam);
     }
     
+    // 🔐 SALVAR ESTADO DO PAGAMENTO NO LOCALSTORAGE
+    // Isso permite que o Service Worker continue verificando mesmo se o usuário sair da página
+    const pendingPayment = {
+      transactionId: id,
+      timestamp: Date.now(),
+      route: '/pagamento',
+      targetRoute: '/epi'
+    };
+    localStorage.setItem('pendingPayment', JSON.stringify(pendingPayment));
+    console.log('💾 [PAGAMENTO] Estado salvo no localStorage:', pendingPayment);
+    
     fetchPaymentInfo(id);
   }, []);
 
@@ -197,6 +208,10 @@ const Payment: React.FC = () => {
           const statusUpper = data.status?.toUpperCase();
           if (['PAID', 'APPROVED', 'COMPLETED', 'CONFIRMED', 'SUCCESS'].includes(statusUpper)) {
             console.log(`🎉 [BACKEND-POLL] PAGAMENTO APROVADO! Redirecionando para /epi`);
+            
+            // 🧹 LIMPAR ESTADO DO LOCALSTORAGE
+            localStorage.removeItem('pendingPayment');
+            console.log('🧹 [PAGAMENTO] Estado removido do localStorage');
             
             // Track conversion no Facebook Pixel
             if (typeof trackPurchase === 'function') {
