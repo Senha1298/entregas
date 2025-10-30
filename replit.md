@@ -117,6 +117,14 @@ The application supports multiple deployment strategies:
 - Database migrations handled via Drizzle Kit
 
 ## Changelog
+- **October 30, 2025 (Payment Verification Enhancement)**:
+  - **CRITICAL FIX**: Resolved payment page redirect issue where users were losing payment verification when navigating away
+  - Implemented persistent payment tracking using IndexedDB (survives page navigation and browser restarts up to 1 hour)
+  - Created PaymentChecker component that monitors pending payments across ALL pages, not just /pagamento
+  - Added robust retry system with exponential backoff (3 attempts: 1s, 2s, 4s delays) for payment API calls
+  - Improved error handling for HTTP 5xx, timeouts, network failures, and malformed JSON responses
+  - Users are now automatically redirected to /epi when payment is approved, regardless of which page they're on
+  - System works even if user closes /pagamento tab, navigates to home, or reopens browser within 1 hour
 - **October 15, 2025 (Security Fix - API Keys)**: Moved 4mpagamentos API key from hardcoded values to secure environment variable (MPAG_API_KEY) across all server files to prevent key exposure
 - **October 15, 2025 (TikTok Pixel Fix - FINAL)**: 
   - Completely removed TikTok Pixel from payment page
