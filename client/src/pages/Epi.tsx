@@ -147,27 +147,14 @@ const Epi: React.FC = () => {
       
       console.log('🎯 [EPI] Iniciando processamento de pagamento For4Payments para garantia de R$69,90');
       
-      // Criar pagamento para garantia usando a API
-      const response = await fetch('/api/transactions/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: dadosUsuario.nome,
-          cpf: dadosUsuario.cpf,
-          email: dadosUsuario.email || '',
-          phone: dadosUsuario.telefone || '',
-          amount: 69.90, // Valor da garantia
-          description: 'Garantia EPI Shopee'
-        }),
+      // Usar a função centralizada para processar o pagamento com valor de 69.90
+      const pixData = await createPixPayment({
+        name: dadosUsuario.nome,
+        cpf: dadosUsuario.cpf,
+        email: dadosUsuario.email || '',
+        phone: dadosUsuario.telefone || '',
+        amount: 69.90 // Valor da garantia
       });
-
-      if (!response.ok) {
-        throw new Error('Erro ao criar pagamento');
-      }
-
-      const pixData = await response.json();
       
       console.log('🎯 [EPI] Pagamento processado com sucesso:', pixData);
       
