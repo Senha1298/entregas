@@ -1,5 +1,5 @@
-// Service Worker para PWA com Push Notifications e Verificação de Pagamentos via IndexedDB
-const CACHE_NAME = 'shopee-delivery-v5';
+// Service Worker para PWA com Push Notifications
+const CACHE_NAME = 'shopee-delivery-v3';
 const urlsToCache = [
   '/',
   '/manifest.json',
@@ -36,7 +36,6 @@ self.addEventListener('install', (event) => {
 // Ativar Service Worker
 self.addEventListener('activate', (event) => {
   console.log('✅ Service Worker ativado');
-  
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -244,8 +243,3 @@ self.addEventListener('message', (event) => {
     event.ports[0].postMessage({ version: CACHE_NAME });
   }
 });
-
-// ===== OBSERVAÇÃO SOBRE VERIFICAÇÃO DE PAGAMENTOS =====
-// A verificação de pagamentos pendentes é feita pelo componente PaymentChecker.tsx
-// que roda em todas as páginas. Isso garante que o usuário seja redirecionado
-// automaticamente mesmo se sair da página de pagamento.

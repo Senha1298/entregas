@@ -33,7 +33,6 @@ import ClarityInitializer from "@/components/ClarityInitializer";
 import { TikTokChromeDetector } from "@/components/WhatsAppDetector";
 import ServiceWorkerRegistration from "@/components/ServiceWorker";
 import PWANotification from "@/components/PWANotification";
-import PaymentChecker from "@/components/PaymentChecker";
 
 function Router() {
   return (
@@ -94,7 +93,6 @@ function App() {
     const handleServiceWorkerMessage = (event: MessageEvent) => {
       console.log('💬 Mensagem recebida do service worker:', event.data);
       
-      // Navegação automática (pagamento aprovado)
       if (event.data?.action === 'navigate' && event.data?.url) {
         console.log('🔗 Navegando automaticamente para:', event.data.url);
         setLocation(event.data.url);
@@ -120,7 +118,6 @@ function App() {
       <ClarityInitializer />
       <ServiceWorkerRegistration />
       <PWANotification />
-      <PaymentChecker />
       <TikTokChromeDetector>
         <Router />
       </TikTokChromeDetector>
