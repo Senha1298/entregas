@@ -230,12 +230,12 @@ const Epi: React.FC = () => {
             </div>
             <div className="p-6">
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
-                <div className="flex items-start gap-3">
-                  <div className="text-amber-600 text-2xl">
+                <div className="flex flex-col items-center">
+                  <div className="text-amber-600 text-4xl mb-4">
                     <i className="fas fa-exclamation-triangle"></i>
                   </div>
-                  <div className="flex-1">
-                    <h4 className="text-amber-900 font-semibold text-lg mb-3">Importante: Mudança na Política de Entrega do Kit EPI</h4>
+                  <div className="w-full">
+                    <h4 className="text-amber-900 font-semibold text-lg mb-3 text-center">Importante: Mudança na Política de Entrega do Kit EPI</h4>
                     
                     <p className="text-amber-800 mb-3">
                       A Shopee não está mais entregando o Kit EPI <strong>gratuitamente</strong> devido a um grande número de solicitações 
@@ -353,7 +353,7 @@ const Epi: React.FC = () => {
                 ) : (
                   <>
                     <i className="fas fa-shield-alt mr-2"></i>
-                    Pagar Garantia de R$69,90 e Continuar
+                    Pagar Garantia e Continuar
                   </>
                 )}
               </Button>
