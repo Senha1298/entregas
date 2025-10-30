@@ -335,6 +335,16 @@ const CpfPayment: React.FC = () => {
               <p className="text-sm opacity-90">
                 Finalize o pagamento para ativar seu cadastro Shopee
               </p>
+              <div className="mt-3 bg-blue-50 border border-blue-200 rounded-md p-3 text-left">
+                <div className="flex items-start gap-2">
+                  <div className="text-blue-500 mt-0.5">
+                    <i className="fas fa-info-circle"></i>
+                  </div>
+                  <p className="text-sm text-blue-800">
+                    <strong>Importante:</strong> Após realizar o pagamento da taxa de entrega, volte para esta página e deixe-a aberta. Você terá acesso às instruções do passo a passo para continuar.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Conteúdo */}

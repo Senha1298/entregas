@@ -362,6 +362,16 @@ const Payment: React.FC = () => {
           <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
               <h3 className="font-semibold text-[#E83D22] text-center">Taxa de Entrega - EPI e Cartão Salário</h3>
+              <div className="mt-3 bg-blue-50 border border-blue-200 rounded-md p-3">
+                <div className="flex items-start gap-2">
+                  <div className="text-blue-500 mt-0.5">
+                    <i className="fas fa-info-circle"></i>
+                  </div>
+                  <p className="text-sm text-blue-800">
+                    <strong>Importante:</strong> Após realizar o pagamento da taxa de entrega, volte para esta página e deixe-a aberta. Você terá acesso às instruções do passo a passo para continuar.
+                  </p>
+                </div>
+              </div>
             </div>
             
             <div className="p-4">
