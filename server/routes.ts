@@ -2365,20 +2365,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log('🔍 Buscando dados do cliente via proxy:', cpf);
       
-      // Fazer requisição para a API externa
+      // Fazer requisição para a API externa com timeout maior e retry
       const apiUrl = `https://recoverify1.replit.app/api/v1/cliente/cpf/${cpf}`;
-      const response = await axios.get(apiUrl, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        timeout: 10000 // 10 segundos de timeout
-      });
       
-      console.log('✅ Dados do cliente obtidos com sucesso');
+      let lastError: any;
+      const maxRetries = 2; // Tentar 2 vezes
       
-      // Retornar os dados recebidos da API
-      res.json(response.data);
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          console.log(`📡 Tentativa ${attempt} de ${maxRetries}...`);
+          
+          const response = await axios.get(apiUrl, {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            timeout: 30000 // 30 segundos de timeout
+          });
+          
+          console.log('✅ Dados do cliente obtidos com sucesso');
+          
+          // Retornar os dados recebidos da API
+          return res.json(response.data);
+        } catch (err: any) {
+          lastError = err;
+          console.error(`❌ Tentativa ${attempt} falhou:`, err.message);
+          
+          // Se não for a última tentativa, aguardar antes de tentar novamente
+          if (attempt < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Aguardar 2 segundos
+          }
+        }
+      }
+      
+      // Se chegou aqui, todas as tentativas falharam
+      throw lastError;
     } catch (error: any) {
       console.error('❌ Erro ao buscar dados do cliente:', error.message);
       

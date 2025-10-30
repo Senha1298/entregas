@@ -106,13 +106,14 @@ const Epi: React.FC = () => {
     } catch (error) {
       console.error('[EPI] Erro ao buscar dados:', error);
       toast({
-        title: "Erro ao carregar dados",
-        description: "Não foi possível carregar seus dados. Você será redirecionado.",
+        title: "⏱️ Sistema lento",
+        description: "A busca dos seus dados está demorando mais que o normal. Por favor, tente novamente em alguns instantes ou entre em contato com o suporte.",
         variant: "destructive",
+        duration: 8000,
       });
       setTimeout(() => {
         setLocation('/');
-      }, 3000);
+      }, 8000);
     } finally {
       setIsLoadingCpf(false);
     }
