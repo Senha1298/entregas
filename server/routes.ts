@@ -2351,6 +2351,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Endpoint proxy para buscar dados do cliente na API externa (evita CORS)
+  app.get('/api/cliente/cpf/:cpf', async (req, res) => {
+    try {
+      const { cpf } = req.params;
+      
+      if (!cpf) {
+        return res.status(400).json({
+          sucesso: false,
+          message: 'CPF é obrigatório'
+        });
+      }
+      
+      console.log('🔍 Buscando dados do cliente via proxy:', cpf);
+      
+      // Fazer requisição para a API externa
+      const apiUrl = `https://recoverify1.replit.app/api/v1/cliente/cpf/${cpf}`;
+      const response = await axios.get(apiUrl, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000 // 10 segundos de timeout
+      });
+      
+      console.log('✅ Dados do cliente obtidos com sucesso');
+      
+      // Retornar os dados recebidos da API
+      res.json(response.data);
+    } catch (error: any) {
+      console.error('❌ Erro ao buscar dados do cliente:', error.message);
+      
+      if (error.response) {
+        // A API retornou um erro
+        res.status(error.response.status).json(error.response.data);
+      } else if (error.code === 'ECONNABORTED') {
+        res.status(408).json({ 
+          sucesso: false, 
+          message: 'Tempo esgotado ao buscar dados' 
+        });
+      } else {
+        res.status(500).json({ 
+          sucesso: false, 
+          message: 'Erro ao conectar com a API externa' 
+        });
+      }
+    }
+  });
+  
   // Endpoint para login por CPF
   app.post('/api/app-users/login', async (req, res) => {
     try {

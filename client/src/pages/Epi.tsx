@@ -37,13 +37,14 @@ const Epi: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number>(900); // 15 minutos em segundos
   const { toast } = useToast();
 
-  // Função para buscar dados do CPF na API
+  // Função para buscar dados do CPF na API (usando proxy local para evitar CORS)
   const fetchCpfData = async (cpf: string) => {
     try {
       setIsLoadingCpf(true);
       console.log(`[EPI] Buscando dados para CPF: ${cpf}`);
       
-      const apiUrl = `https://recoverify1.replit.app/api/v1/cliente/cpf/${cpf}`;
+      // Usar endpoint local que funciona como proxy (evita CORS)
+      const apiUrl = `/api/cliente/cpf/${cpf}`;
       
       const response = await fetch(apiUrl, {
         method: 'GET',
