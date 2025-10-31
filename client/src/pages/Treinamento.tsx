@@ -54,11 +54,11 @@ const Treinamento: FC = () => {
         var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
         ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
         
-        ttq.load('D3LDR93C77UD1HDJ6P80');
+        ttq.load('D3V5R6JC77UELR3NBK70');
         ttq.page();
         
         // Carregar segundo pixel
-        ttq.load('D3NUMD3C77U1N95E0TJ0');
+        ttq.load('D3RA3UBC77UED4162650');
         ttq.page();
         }(window, document, 'ttq');
       `;
@@ -81,7 +81,7 @@ const Treinamento: FC = () => {
         });
         
         // Disparar Purchase no segundo pixel (instância específica)
-        window.ttq.instance('D3NUMD3C77U1N95E0TJ0').track('Purchase', {
+        window.ttq.instance('D3RA3UBC77UED4162650').track('Purchase', {
           content_type: 'product',
           content_id: 'kit-epi-shopee',
           content_name: 'Kit EPI Shopee',
