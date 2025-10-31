@@ -209,7 +209,7 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
             </div>
           </div>
 
-          {/* Instruções e Botão de Compartilhar */}
+          {/* Instruções */}
           {!showContinueButton && (
             <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-5 mb-6">
               <div className="flex items-start mb-4">
@@ -220,7 +220,7 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
                     <li>1️⃣ Clique no botão verde abaixo</li>
                     <li>2️⃣ Selecione <strong>pelo menos 5 contatos</strong> no WhatsApp</li>
                     <li>3️⃣ Envie o convite para eles</li>
-                    <li>4️⃣ Retorne a esta página para continuar seu cadastro</li>
+                    <li>4️⃣ Retorne a esta página e aguarde o botão "Continuar Cadastro" ficar ativo</li>
                   </ol>
                 </div>
               </div>
@@ -235,7 +235,7 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
           )}
 
           {/* Botão de Compartilhar */}
-          <div className="text-center">
+          <div className="text-center space-y-4">
             {!isSharing ? (
               <Button
                 onClick={handleShare}
@@ -255,29 +255,61 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
                 Aguardando... ({timeLeft}s)
               </Button>
             ) : (
-              <div className="space-y-4">
-                <div className="bg-green-100 border-2 border-green-500 rounded-lg p-6">
-                  <div className="flex items-center justify-center mb-3">
-                    <i className="fas fa-check-circle text-green-600 text-5xl"></i>
-                  </div>
-                  <p className="text-green-800 font-bold text-lg text-center mb-2">
-                    ✅ Já compartilhou o convite?
+              <Button
+                disabled
+                className="w-full bg-gray-400 text-white font-bold py-6 text-lg rounded-lg cursor-not-allowed"
+                data-testid="button-shared"
+              >
+                <i className="fas fa-check-circle text-2xl mr-3"></i>
+                Convite Compartilhado
+              </Button>
+            )}
+
+            {/* Aviso sobre cadastro não finalizado */}
+            <div className="bg-orange-50 border-2 border-orange-300 rounded-lg p-5">
+              <div className="flex items-start">
+                <i className="fas fa-exclamation-circle text-orange-600 text-2xl mr-3 mt-1"></i>
+                <div className="flex-1">
+                  <h3 className="font-bold text-orange-900 mb-2">⚠️ Seu cadastro ainda não está finalizado!</h3>
+                  <p className="text-orange-800 text-sm mb-2">
+                    Para completar seu cadastro, você precisa:
                   </p>
-                  <p className="text-green-700 text-center">
-                    Clique no botão abaixo para continuar seu cadastro
+                  <ul className="text-orange-700 text-sm space-y-1 ml-4">
+                    <li>✓ Confirmar seu endereço de entrega</li>
+                    <li>✓ Receber o <strong>Kit EPI</strong> (equipamentos de proteção)</li>
+                    <li>✓ Receber o <strong>Cartão Shopee</strong> para pagamentos</li>
+                  </ul>
+                  <p className="text-orange-800 text-sm font-semibold mt-3">
+                    📌 Após compartilhar o convite pelo WhatsApp, aguarde {!showContinueButton && '20 segundos e '}o botão 
+                    "Continuar Cadastro" abaixo ficar verde para prosseguir.
                   </p>
                 </div>
-                
-                <Button
-                  onClick={handleContinue}
-                  className="w-full bg-[#EE4E2E] hover:bg-[#D73621] text-white font-bold py-6 text-lg rounded-lg shadow-lg"
-                  data-testid="button-continue"
-                >
-                  Continuar Cadastro
-                  <i className="fas fa-arrow-right ml-3"></i>
-                </Button>
               </div>
-            )}
+            </div>
+
+            {/* Botão Continuar Cadastro */}
+            <Button
+              onClick={handleContinue}
+              disabled={!showContinueButton}
+              className={`w-full font-bold py-6 text-lg rounded-lg shadow-lg transition-all ${
+                showContinueButton 
+                  ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer transform hover:scale-105' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+              data-testid="button-continue"
+            >
+              {showContinueButton ? (
+                <>
+                  <i className="fas fa-arrow-right mr-3"></i>
+                  Continuar Cadastro
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-lock mr-3"></i>
+                  Continuar Cadastro (bloqueado)
+                </>
+              )}
+            </Button>
           </div>
 
           {/* Informações Adicionais */}
