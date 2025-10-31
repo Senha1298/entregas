@@ -115,8 +115,8 @@ const Finalizacao: React.FC = () => {
 
   const handleLoadingComplete = () => {
     setShowLoadingModal(false);
-    // Redirecionar para a página de entrega após finalizar o cadastro
-    navigate('/entrega');
+    // Redirecionar para a página de compartilhar após finalizar o cadastro
+    navigate('/compartilhar');
   };
 
   const handleFinalizar = () => {
