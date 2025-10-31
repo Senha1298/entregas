@@ -35,23 +35,18 @@ const Compartilhar = () => {
     localStorage.setItem('referral_pix_type', pixKeyType);
 
     // Mensagem para WhatsApp
-    const message = `🚗 *SHOPEE ESTÁ CONTRATANDO ENTREGADORES!* 🚗
+    const message = `🚨 NOVIDADE URGENTE!
+🚗 A Shopee está contratando novos entregadores!
 
-🔥 *OPORTUNIDADE URGENTE!*
+Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
 
-A Shopee está buscando entregadores de:
-✅ Carro
-✅ Moto
-✅ Kombi
-✅ Van
+💰 Ganhe até R$ 750 por dia, receba após a rota e trabalhe nos dias e horários que quiser.
+📦 Renda extra simples, rápida e sem burocracia!
 
-💰 *GANHE ATÉ R$ 750,00 POR DIA* como renda extra!
+📍 Vagas abertas na sua região agora!
+👉 Cadastre-se já: https://shopee.cadastrodoentregador.com
 
-📍 Vagas disponíveis na sua região AGORA!
-
-👉 Cadastre-se já: www.entrar.inc
-
-⏰ Não perca essa chance!`;
+⏰ As vagas estão sendo preenchidas rápido — garanta a sua antes que acabe!`;
 
     // Usar esquema whatsapp:// para abrir diretamente a lista de contatos
     const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(message)}`;
