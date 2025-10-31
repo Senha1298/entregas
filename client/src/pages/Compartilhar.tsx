@@ -228,8 +228,8 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
             {!isSharing ? (
               <Button
                 onClick={handleShare}
-                className="w-full bg-[#EE4D2D] hover:bg-[#D93C17] text-white font-bold py-6 text-lg uppercase"
-                style={{ borderRadius: '2px' }}
+                className="w-full bg-[#25D366] hover:bg-[#1EBE5C] text-white font-bold py-6 text-lg uppercase"
+                style={{ borderRadius: '6px' }}
                 data-testid="button-share-whatsapp"
               >
                 <i className="fab fa-whatsapp text-2xl mr-3"></i>
