@@ -117,7 +117,7 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
       <div className="flex-grow container mx-auto px-4 py-8">
         <div className="w-full max-w-2xl mx-auto">
           {/* Aviso Urgente */}
-          <div className="bg-[#FFD4C4] p-6 mb-6" style={{ borderRadius: '2px' }}>
+          <div className="bg-[#FFF5F0] border border-[#FFCDC1] p-6 mb-6" style={{ borderRadius: '2px' }}>
             <div className="text-center mb-4">
               <div className="text-[#EE4D2D] text-5xl mb-3">
                 <i className="fas fa-exclamation-triangle"></i>
@@ -133,7 +133,7 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
               Ajude seus amigos e conhecidos a conquistar uma <strong>renda extra de até R$ 750,00 por dia</strong> 
               e ainda ganhe uma recompensa por cada indicação!
             </p>
-            <div className="bg-white p-4" style={{ borderRadius: '2px' }}>
+            <div className="bg-white p-4 border border-[#FFCDC1]" style={{ borderRadius: '2px' }}>
               <p className="text-[#1F2933] font-semibold text-center">
                 📢 Compartilhe o convite com <strong className="text-[#EE4D2D]">5 amigos</strong> e continue seu cadastro!
               </p>
@@ -141,7 +141,7 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
           </div>
 
           {/* Box de Recompensa */}
-          <div className="bg-[#FFD4C4] p-6 mb-6" style={{ borderRadius: '2px' }}>
+          <div className="bg-[#FFECE5] border border-[#FFCDC1] p-6 mb-6" style={{ borderRadius: '2px' }}>
             <div className="text-center mb-4">
               <div className="inline-block bg-[#EE4D2D] text-white px-6 py-3 text-lg font-bold mb-3 uppercase" style={{ borderRadius: '2px' }}>
                 GANHE R$ 50,00 POR INDICAÇÃO!
@@ -228,8 +228,8 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
             {!isSharing ? (
               <Button
                 onClick={handleShare}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-6 text-lg uppercase"
-                style={{ borderRadius: '6px' }}
+                className="w-full bg-[#EE4D2D] hover:bg-[#D93C17] text-white font-bold py-6 text-lg uppercase"
+                style={{ borderRadius: '2px' }}
                 data-testid="button-share-whatsapp"
               >
                 <i className="fab fa-whatsapp text-2xl mr-3"></i>
@@ -258,7 +258,7 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
             )}
 
             {/* Aviso sobre cadastro não finalizado */}
-            <div className="bg-[#FFD4C4] p-5" style={{ borderRadius: '2px' }}>
+            <div className="bg-[#FFF5F0] border border-[#FFCDC1] p-5" style={{ borderRadius: '2px' }}>
               <div className="text-center mb-3">
                 <i className="fas fa-exclamation-circle text-[#EE4D2D] text-4xl"></i>
               </div>
