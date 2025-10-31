@@ -122,35 +122,33 @@ A Shopee está buscando entregadores de:
         <div className="w-full max-w-2xl mx-auto">
           {/* Aviso Urgente */}
           <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-[#EE4E2E] rounded-lg p-6 mb-6 shadow-lg">
-            <div className="flex items-start">
-              <div className="text-[#EE4E2E] mr-4 text-4xl">
+            <div className="text-center mb-4">
+              <div className="text-[#EE4E2E] text-5xl mb-3">
                 <i className="fas fa-exclamation-triangle"></i>
               </div>
-              <div className="flex-1">
-                <h2 className="text-2xl font-bold text-[#EE4E2E] mb-3">
-                  🚨 PRECISAMOS DE ENTREGADORES NA SUA REGIÃO!
-                </h2>
-                <p className="text-gray-800 font-medium mb-3">
-                  A Shopee está expandindo rapidamente e <strong>precisa urgentemente</strong> de entregadores na sua região!
-                </p>
-                <p className="text-gray-700 mb-4">
-                  Ajude seus amigos e conhecidos a conquistar uma <strong>renda extra de até R$ 750,00 por dia</strong> 
-                  e ainda ganhe uma recompensa por cada indicação!
-                </p>
-                <div className="bg-white rounded-lg p-4 border-2 border-orange-200">
-                  <p className="text-gray-800 font-semibold text-center">
-                    📢 Compartilhe o convite com <strong className="text-[#EE4E2E]">5 amigos</strong> e continue seu cadastro!
-                  </p>
-                </div>
-              </div>
+              <h2 className="text-lg font-bold text-[#EE4E2E] mb-3">
+                🚨 PRECISAMOS DE ENTREGADORES NA SUA REGIÃO!
+              </h2>
+            </div>
+            <p className="text-gray-800 font-medium mb-3 text-center">
+              A Shopee está expandindo rapidamente e <strong>precisa urgentemente</strong> de entregadores na sua região!
+            </p>
+            <p className="text-gray-700 mb-4 text-center">
+              Ajude seus amigos e conhecidos a conquistar uma <strong>renda extra de até R$ 750,00 por dia</strong> 
+              e ainda ganhe uma recompensa por cada indicação!
+            </p>
+            <div className="bg-white rounded-lg p-4 border-2 border-orange-200">
+              <p className="text-gray-800 font-semibold text-center">
+                📢 Compartilhe o convite com <strong className="text-[#EE4E2E]">5 amigos</strong> e continue seu cadastro!
+              </p>
             </div>
           </div>
 
           {/* Box de Recompensa */}
           <div className="bg-green-50 border-2 border-green-500 rounded-lg p-6 mb-6 shadow-md">
             <div className="text-center mb-4">
-              <div className="inline-block bg-green-500 text-white px-6 py-3 rounded-full text-2xl font-bold mb-3">
-                💰 GANHE R$ 50,00 POR INDICAÇÃO!
+              <div className="inline-block bg-green-500 text-white px-6 py-3 rounded-full text-lg font-bold mb-3">
+                GANHE R$ 50,00 POR INDICAÇÃO!
               </div>
             </div>
             
@@ -249,7 +247,7 @@ A Shopee está buscando entregadores de:
                 data-testid="button-share-whatsapp"
               >
                 <i className="fab fa-whatsapp text-2xl mr-3"></i>
-                Compartilhar no WhatsApp Agora
+                Compartilhar no WhatsApp
               </Button>
             ) : !showContinueButton ? (
               <Button
