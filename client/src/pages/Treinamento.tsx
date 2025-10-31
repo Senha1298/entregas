@@ -5,6 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Button } from '@/components/ui/button';
 import { CheckCircle } from 'lucide-react';
 import TreinamentoModal from '../components/TreinamentoModal';
+import { initFacebookPixel, trackPurchase } from '../lib/facebook-pixel';
 
 // Declaração de tipos para gtag e TikTok Pixel
 declare global {
@@ -33,6 +34,32 @@ const Treinamento: FC = () => {
       gtag('js', new Date());
       gtag('config', 'AW-17372990053');
     }
+  }, []);
+  
+  // Facebook Pixel - Evento Purchase (APENAS UMA VEZ)
+  useEffect(() => {
+    // Verificar se já disparou o evento Purchase no Facebook para evitar duplicatas
+    const fbPurchaseTracked = sessionStorage.getItem('fb_purchase_tracked');
+    
+    if (fbPurchaseTracked === 'true') {
+      console.log('⏭️ Facebook Pixel: Purchase já foi registrado nesta sessão. Ignorando duplicata.');
+      return;
+    }
+    
+    // Inicializar Facebook Pixel
+    initFacebookPixel();
+    
+    // Disparar evento Purchase após 1 segundo
+    setTimeout(() => {
+      // Marcar como disparado ANTES de disparar (previne race conditions)
+      sessionStorage.setItem('fb_purchase_tracked', 'true');
+      
+      // Disparar Purchase com ID único para esta sessão
+      const sessionId = `treinamento_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      trackPurchase(sessionId, 64.90, 'BRL', 'Kit de Segurança Shopee');
+      
+      console.log('✅ Facebook Pixels: Evento Purchase registrado em TODOS os pixels (ÚNICA VEZ)');
+    }, 1000);
   }, []);
   
   // TikTok Pixel - Evento Purchase (APENAS UMA VEZ)
