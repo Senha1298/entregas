@@ -53,10 +53,11 @@ A Shopee está buscando entregadores de:
 
 ⏰ Não perca essa chance!`;
 
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    // Usar esquema whatsapp:// para abrir diretamente a lista de contatos
+    const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(message)}`;
     
-    // Abrir WhatsApp
-    window.open(whatsappUrl, '_blank');
+    // Abrir WhatsApp - tenta primeiro o esquema whatsapp://, depois fallback para wa.me
+    window.location.href = whatsappUrl;
 
     // Iniciar estado de aguardo
     setIsSharing(true);
