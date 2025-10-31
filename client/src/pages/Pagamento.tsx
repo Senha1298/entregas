@@ -39,59 +39,7 @@ const Payment: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [cpf, setCpf] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-
-  // Função auxiliar de fetch com timeout e retry
-  const fetchWithRetry = async (url: string, options: RequestInit = {}, maxRetries = 5): Promise<Response> => {
-    const timeout = 30000; // 30 segundos
-    
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        console.log(`[FETCH-RETRY] Tentativa ${attempt}/${maxRetries} para: ${url}`);
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), timeout);
-        
-        const response = await fetch(url, {
-          ...options,
-          signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (response.ok) {
-          console.log(`[FETCH-RETRY] ✅ Sucesso na tentativa ${attempt}`);
-          return response;
-        }
-        
-        // Se não for ok, mas não for erro de rede, retornar mesmo assim
-        if (response.status >= 400) {
-          console.warn(`[FETCH-RETRY] Resposta HTTP ${response.status} na tentativa ${attempt}`);
-          // Continuar tentando se ainda tiver tentativas
-          if (attempt < maxRetries) {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            continue;
-          }
-          return response;
-        }
-        
-        return response;
-      } catch (error: any) {
-        console.warn(`[FETCH-RETRY] Erro na tentativa ${attempt}:`, error.message);
-        
-        // Se foi timeout ou erro de rede, tentar novamente
-        if (attempt < maxRetries) {
-          const waitTime = Math.min(2000 * attempt, 10000); // Exponencial até 10s
-          console.log(`[FETCH-RETRY] Aguardando ${waitTime}ms antes da próxima tentativa...`);
-          await new Promise(resolve => setTimeout(resolve, waitTime));
-        } else {
-          // Última tentativa falhou, lançar erro
-          throw new Error(`Falha após ${maxRetries} tentativas: ${error.message}`);
-        }
-      }
-    }
-    
-    throw new Error('Número máximo de tentativas excedido');
-  };
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   // Buscar parâmetros da URL
   useEffect(() => {
@@ -100,7 +48,7 @@ const Payment: React.FC = () => {
     const emailParam = urlParams.get('email');
     
     if (!id) {
-      console.error('[PAYMENT] ID da transação não encontrado na URL');
+      setErrorMessage('Link de pagamento inválido. Falta o ID da transação.');
       setIsLoading(false);
       return;
     }
@@ -124,7 +72,7 @@ const Payment: React.FC = () => {
       const url = `${API_BASE_URL}/api/transactions/${id}/status?t=${cacheBuster}`;
       console.log('[PAYMENT] Fazendo requisição para:', url);
       
-      const response = await fetchWithRetry(url, {
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -133,10 +81,7 @@ const Payment: React.FC = () => {
       });
       
       if (!response.ok) {
-        console.warn(`[PAYMENT] Resposta não-ok recebida: ${response.status}`);
-        // NÃO lançar erro - continuar silenciosamente
-        setIsLoading(false);
-        return;
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
       
       const data = await response.json();
@@ -194,14 +139,8 @@ const Payment: React.FC = () => {
       console.log('[PAYMENT] Iniciando polling no backend para transação:', id);
       startBackendPolling(id);
     } catch (error: any) {
-      console.error('[PAYMENT] Erro ao recuperar informações, mas continuando:', error);
-      // NÃO exibir erro para o usuário - apenas logar
-      // Iniciar polling mesmo com erro inicial
-      const urlParams = new URLSearchParams(window.location.search);
-      const id = urlParams.get('id');
-      if (id) {
-        startBackendPolling(id);
-      }
+      console.error('Erro ao recuperar informações de pagamento:', error);
+      setErrorMessage(error.message || 'Ocorreu um erro ao carregar as informações de pagamento.');
       setIsLoading(false);
     }
   };
@@ -218,14 +157,14 @@ const Payment: React.FC = () => {
         
         console.log(`[BACKEND-POLL] Verificando status: ${url}`);
         
-        const response = await fetchWithRetry(url, {
+        const response = await fetch(url, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
             'Cache-Control': 'no-cache, no-store, must-revalidate',
             'Pragma': 'no-cache'
           }
-        }, 3);
+        });
         
         if (response.ok) {
           const data = await response.json();
@@ -279,13 +218,13 @@ const Payment: React.FC = () => {
           console.warn(`[BACKEND-POLL] Erro HTTP ${response.status} ao verificar ${transactionId}`);
         }
         
-        // Continuar verificando a cada 2 segundos se não está pago
-        setTimeout(checkPayment, 2000);
+        // Continuar verificando a cada 1 segundo se não está pago
+        setTimeout(checkPayment, 1000);
         
       } catch (error) {
-        console.warn(`[BACKEND-POLL] Erro ao verificar ${transactionId}, mas continuando polling:`, error);
-        // Continuar verificando mesmo com erro - aguardar mais tempo após erro
-        setTimeout(checkPayment, 5000);
+        console.error(`[BACKEND-POLL] Erro ao verificar ${transactionId}:`, error);
+        // Continuar verificando mesmo com erro
+        setTimeout(checkPayment, 1000);
       }
     };
     
@@ -389,7 +328,25 @@ const Payment: React.FC = () => {
                     <Spinner size="lg" />
                   </div>
                   <p className="mt-4 text-gray-600">Carregando informações de pagamento...</p>
-                  <p className="mt-2 text-gray-500 text-sm">Aguarde, estamos processando sua solicitação...</p>
+                </div>
+              ) : errorMessage ? (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                  <div className="flex items-center">
+                    <div className="text-red-500 mr-3">
+                      <i className="fas fa-exclamation-triangle text-xl"></i>
+                    </div>
+                    <div>
+                      <h4 className="text-red-800 font-semibold mb-1">Erro</h4>
+                      <p className="text-red-700 text-sm">{errorMessage}</p>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={() => window.location.reload()} 
+                    className="mt-3 bg-red-600 hover:bg-red-700 text-white"
+                    data-testid="button-reload"
+                  >
+                    Tentar Novamente
+                  </Button>
                 </div>
               ) : paymentInfo ? (
                 <>

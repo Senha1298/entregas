@@ -8,7 +8,6 @@ import Cadastro from "@/pages/Cadastro";
 import Municipios from "@/pages/Municipios";
 import Recebedor from "@/pages/Recebedor";
 import Finalizacao from "@/pages/Finalizacao";
-import Compartilhar from "@/pages/Compartilhar";
 import Entrega from "@/pages/Entrega";
 import EntregaCartao from "@/pages/EntregaCartao";
 import Dashboard from "@/pages/Dashboard";
@@ -41,7 +40,6 @@ function Router() {
       <Route path="/selfie" component={Selfie} />
       <Route path="/recebedor" component={Recebedor} />
       <Route path="/finalizacao" component={Finalizacao} />
-      <Route path="/compartilhar" component={Compartilhar} />
       <Route path="/entrega" component={Entrega} />
       <Route path="/entrega-cartao" component={EntregaCartao} />
       <Route path="/dashboard" component={Dashboard} />
