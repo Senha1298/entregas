@@ -361,7 +361,31 @@ const Payment: React.FC = () => {
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
             <div className="bg-[#FFF8F6] p-4 border-b border-[#E83D2220]">
-              <h3 className="font-semibold text-[#E83D22] text-center">Pagamento do Kit de Segurança</h3>
+              <h3 className="font-semibold text-[#E83D22] text-center mb-3">Pagamento do Kit de Segurança</h3>
+              
+              <div className="bg-[#fff3e0] border border-[#ff9800] rounded-md p-3 mt-3">
+                <div className="flex items-start gap-2">
+                  <div className="text-[#ff9800] flex-shrink-0 mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="12"></line>
+                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-[#663c00] mb-1">⚠️ IMPORTANTE - Não feche esta página!</p>
+                    <p className="text-xs text-[#663c00] leading-relaxed">
+                      Após efetuar o pagamento, você será redirecionado automaticamente para uma página com:
+                    </p>
+                    <ul className="text-xs text-[#663c00] mt-2 space-y-1 ml-4">
+                      <li>✓ Passo a passo completo para iniciar</li>
+                      <li>✓ Pontos de coleta do kit</li>
+                      <li>✓ Como funcionam as entregas</li>
+                      <li>✓ Contato do gerente Shopee via WhatsApp</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
             
             <div className="p-4">
