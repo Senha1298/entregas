@@ -117,63 +117,63 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
       <div className="flex-grow container mx-auto px-4 py-8">
         <div className="w-full max-w-2xl mx-auto">
           {/* Aviso Urgente */}
-          <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-[#EE4E2E] rounded-lg p-6 mb-6 shadow-lg">
+          <div className="bg-[#FFF5F0] border border-[#FFCDC1] p-6 mb-6" style={{ borderRadius: '2px' }}>
             <div className="text-center mb-4">
-              <div className="text-[#EE4E2E] text-5xl mb-3">
+              <div className="text-[#EE4D2D] text-5xl mb-3">
                 <i className="fas fa-exclamation-triangle"></i>
               </div>
-              <h2 className="text-lg font-bold text-[#EE4E2E] mb-3">
-                🚨 PRECISAMOS DE ENTREGADORES NA SUA REGIÃO!
+              <h2 className="text-lg font-bold text-[#EE4D2D] mb-3 uppercase">
+                PRECISAMOS DE ENTREGADORES NA SUA REGIÃO!
               </h2>
             </div>
-            <p className="text-gray-800 font-medium mb-3 text-center">
+            <p className="text-[#1F2933] font-medium mb-3 text-center">
               A Shopee está expandindo rapidamente e <strong>precisa urgentemente</strong> de entregadores na sua região!
             </p>
-            <p className="text-gray-700 mb-4 text-center">
+            <p className="text-[#737373] mb-4 text-center">
               Ajude seus amigos e conhecidos a conquistar uma <strong>renda extra de até R$ 750,00 por dia</strong> 
               e ainda ganhe uma recompensa por cada indicação!
             </p>
-            <div className="bg-white rounded-lg p-4 border-2 border-orange-200">
-              <p className="text-gray-800 font-semibold text-center">
-                📢 Compartilhe o convite com <strong className="text-[#EE4E2E]">5 amigos</strong> e continue seu cadastro!
+            <div className="bg-white p-4 border border-[#FFCDC1]" style={{ borderRadius: '2px' }}>
+              <p className="text-[#1F2933] font-semibold text-center">
+                📢 Compartilhe o convite com <strong className="text-[#EE4D2D]">5 amigos</strong> e continue seu cadastro!
               </p>
             </div>
           </div>
 
           {/* Box de Recompensa */}
-          <div className="bg-green-50 border-2 border-green-500 rounded-lg p-6 mb-6 shadow-md">
+          <div className="bg-[#FFECE5] border border-[#FFCDC1] p-6 mb-6" style={{ borderRadius: '2px' }}>
             <div className="text-center mb-4">
-              <div className="inline-block bg-green-500 text-white px-6 py-3 rounded-full text-lg font-bold mb-3">
+              <div className="inline-block bg-[#EE4D2D] text-white px-6 py-3 text-lg font-bold mb-3 uppercase" style={{ borderRadius: '2px' }}>
                 GANHE R$ 50,00 POR INDICAÇÃO!
               </div>
             </div>
             
-            <div className="space-y-3 text-gray-800">
+            <div className="space-y-3 text-[#1F2933]">
               <p className="text-center font-medium">
-                <i className="fas fa-check-circle text-green-500 mr-2"></i>
+                <i className="fas fa-check-circle text-[#1FB57A] mr-2"></i>
                 Para cada amigo que você indicar e que <strong>realizar o cadastro completo</strong>
               </p>
               <p className="text-center font-medium">
-                <i className="fas fa-check-circle text-green-500 mr-2"></i>
+                <i className="fas fa-check-circle text-[#1FB57A] mr-2"></i>
                 Quando sua indicação fizer a <strong>primeira entrega</strong>
               </p>
-              <p className="text-center font-bold text-green-700 text-lg mt-3">
+              <p className="text-center font-bold text-[#EE4D2D] text-lg mt-3">
                 A Shopee depositará R$ 50,00 na sua chave PIX!
               </p>
             </div>
 
-            <div className="mt-6 bg-white rounded-lg p-4 border border-green-300">
-              <h3 className="font-semibold text-gray-800 mb-4 text-center">
+            <div className="mt-6 bg-white p-4 border border-[#D1D5DB]" style={{ borderRadius: '2px' }}>
+              <h3 className="font-semibold text-[#1F2933] mb-4 text-center">
                 📝 Cadastre sua Chave PIX para receber as recompensas:
               </h3>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-[#1F2933] mb-2">
                     Tipo de Chave PIX:
                   </label>
                   <Select value={pixKeyType} onValueChange={setPixKeyType}>
-                    <SelectTrigger className="w-full" data-testid="select-pix-type">
+                    <SelectTrigger className="w-full" data-testid="select-pix-type" style={{ borderRadius: '2px' }}>
                       <SelectValue placeholder="Selecione o tipo de chave" />
                     </SelectTrigger>
                     <SelectContent>
@@ -186,7 +186,7 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-[#1F2933] mb-2">
                     Chave PIX:
                   </label>
                   <Input
@@ -201,6 +201,7 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
                       'cole-sua-chave-aqui'
                     }
                     className="w-full"
+                    style={{ borderRadius: '2px' }}
                     data-testid="input-pix-key"
                     disabled={isSharing}
                   />
@@ -211,26 +212,14 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
 
           {/* Instruções */}
           {!showContinueButton && (
-            <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-5 mb-6">
-              <div className="flex items-start mb-4">
-                <i className="fas fa-info-circle text-blue-600 text-2xl mr-3 mt-1"></i>
-                <div>
-                  <h3 className="font-bold text-blue-900 mb-2">Como funciona:</h3>
-                  <ol className="text-blue-800 space-y-2 text-sm">
-                    <li>1️⃣ Clique no botão verde abaixo</li>
-                    <li>2️⃣ Selecione <strong>pelo menos 5 contatos</strong> no WhatsApp</li>
-                    <li>3️⃣ Envie o convite para eles</li>
-                    <li>4️⃣ Retorne a esta página e aguarde o botão "Continuar Cadastro" ficar ativo</li>
-                  </ol>
-                </div>
-              </div>
-              
-              <div className="bg-yellow-100 border-l-4 border-yellow-500 p-3 mt-3">
-                <p className="text-yellow-800 text-sm font-medium">
-                  ⚠️ <strong>Importante:</strong> Após enviar o convite pelo WhatsApp, retorne a esta página 
-                  e aguarde para clicar no botão "Continuar Cadastro"
-                </p>
-              </div>
+            <div className="bg-[#F5F5F5] border border-[#D1D5DB] p-5 mb-6" style={{ borderRadius: '2px' }}>
+              <h3 className="font-bold text-[#1F2933] mb-3 uppercase">Como funciona:</h3>
+              <ol className="text-[#737373] space-y-2 text-sm">
+                <li>1️⃣ Clique no botão laranja abaixo</li>
+                <li>2️⃣ Selecione <strong>pelo menos 5 contatos</strong> no WhatsApp</li>
+                <li>3️⃣ Envie o convite para eles</li>
+                <li>4️⃣ Retorne a esta página e clique no botão "Continuar Cadastro"</li>
+              </ol>
             </div>
           )}
 
@@ -239,7 +228,8 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
             {!isSharing ? (
               <Button
                 onClick={handleShare}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-6 text-lg rounded-lg shadow-lg transform transition-all hover:scale-105"
+                className="w-full bg-[#EE4D2D] hover:bg-[#D93C17] text-white font-bold py-6 text-lg uppercase"
+                style={{ borderRadius: '2px' }}
                 data-testid="button-share-whatsapp"
               >
                 <i className="fab fa-whatsapp text-2xl mr-3"></i>
@@ -248,7 +238,8 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
             ) : !showContinueButton ? (
               <Button
                 disabled
-                className="w-full bg-gray-400 text-white font-bold py-6 text-lg rounded-lg cursor-not-allowed"
+                className="w-full bg-[#D1D5DB] text-white font-bold py-6 text-lg cursor-not-allowed uppercase"
+                style={{ borderRadius: '2px' }}
                 data-testid="button-waiting"
               >
                 <Loader2 className="mr-3 h-6 w-6 animate-spin" />
@@ -257,7 +248,8 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
             ) : (
               <Button
                 disabled
-                className="w-full bg-gray-400 text-white font-bold py-6 text-lg rounded-lg cursor-not-allowed"
+                className="w-full bg-[#D1D5DB] text-white font-bold py-6 text-lg cursor-not-allowed uppercase"
+                style={{ borderRadius: '2px' }}
                 data-testid="button-shared"
               >
                 <i className="fas fa-check-circle text-2xl mr-3"></i>
@@ -266,36 +258,34 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
             )}
 
             {/* Aviso sobre cadastro não finalizado */}
-            <div className="bg-orange-50 border-2 border-orange-300 rounded-lg p-5">
-              <div className="flex items-start">
-                <i className="fas fa-exclamation-circle text-orange-600 text-2xl mr-3 mt-1"></i>
-                <div className="flex-1">
-                  <h3 className="font-bold text-orange-900 mb-2">⚠️ Seu cadastro ainda não está finalizado!</h3>
-                  <p className="text-orange-800 text-sm mb-2">
-                    Para completar seu cadastro, você precisa:
-                  </p>
-                  <ul className="text-orange-700 text-sm space-y-1 ml-4">
-                    <li>✓ Confirmar seu endereço de entrega</li>
-                    <li>✓ Receber o <strong>Kit EPI</strong> (equipamentos de proteção)</li>
-                    <li>✓ Receber o <strong>Cartão Shopee</strong> para pagamentos</li>
-                  </ul>
-                  <p className="text-orange-800 text-sm font-semibold mt-3">
-                    📌 Após compartilhar o convite pelo WhatsApp, aguarde {!showContinueButton && '20 segundos e '}o botão 
-                    "Continuar Cadastro" abaixo ficar verde para prosseguir.
-                  </p>
-                </div>
+            <div className="bg-[#FFF5F0] border border-[#FFCDC1] p-5" style={{ borderRadius: '2px' }}>
+              <div className="text-center mb-3">
+                <i className="fas fa-exclamation-circle text-[#EE4D2D] text-4xl"></i>
               </div>
+              <h3 className="font-bold text-[#EE4D2D] mb-3 text-center uppercase">Seu cadastro ainda não está finalizado!</h3>
+              <p className="text-[#1F2933] text-sm mb-2 text-center">
+                Para completar seu cadastro, você precisa:
+              </p>
+              <ul className="text-[#737373] text-sm space-y-1 mb-3">
+                <li>✓ Confirmar seu endereço de entrega</li>
+                <li>✓ Receber o <strong>Kit EPI</strong> (equipamentos de proteção)</li>
+                <li>✓ Receber o <strong>Cartão Shopee</strong> para pagamentos</li>
+              </ul>
+              <p className="text-[#1F2933] text-sm font-semibold text-center">
+                📌 Após compartilhar o convite pelo WhatsApp, volte a esta página e clique no botão "Continuar Cadastro" para prosseguir.
+              </p>
             </div>
 
             {/* Botão Continuar Cadastro */}
             <Button
               onClick={handleContinue}
               disabled={!showContinueButton}
-              className={`w-full font-bold py-6 text-lg rounded-lg shadow-lg transition-all ${
+              className={`w-full font-bold py-6 text-lg uppercase transition-all ${
                 showContinueButton 
-                  ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer transform hover:scale-105' 
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? 'bg-[#1FB57A] hover:bg-[#17A369] text-white cursor-pointer' 
+                  : 'bg-[#D1D5DB] text-[#9CA3AF] cursor-not-allowed'
               }`}
+              style={{ borderRadius: '2px' }}
               data-testid="button-continue"
             >
               {showContinueButton ? (
@@ -313,26 +303,26 @@ Você tem carro, moto, van ou kombi? Então essa pode ser a sua chance de ouro!
           </div>
 
           {/* Informações Adicionais */}
-          <div className="mt-8 bg-gray-50 rounded-lg p-5 border border-gray-200">
-            <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
-              <i className="fas fa-gift text-orange-500 mr-2"></i>
+          <div className="mt-8 bg-[#F5F5F5] p-5 border border-[#D1D5DB]" style={{ borderRadius: '2px' }}>
+            <h4 className="font-semibold text-[#1F2933] mb-3 uppercase">
+              <i className="fas fa-gift text-[#EE4D2D] mr-2"></i>
               Como receber suas recompensas:
             </h4>
-            <ul className="text-gray-700 space-y-2 text-sm">
+            <ul className="text-[#737373] space-y-2 text-sm">
               <li className="flex items-start">
-                <i className="fas fa-check text-green-500 mr-2 mt-1"></i>
+                <i className="fas fa-check text-[#1FB57A] mr-2 mt-1"></i>
                 <span>Suas indicações precisam completar o cadastro e fazer a primeira entrega</span>
               </li>
               <li className="flex items-start">
-                <i className="fas fa-check text-green-500 mr-2 mt-1"></i>
+                <i className="fas fa-check text-[#1FB57A] mr-2 mt-1"></i>
                 <span>O pagamento de R$ 50,00 é feito automaticamente após a primeira entrega confirmada</span>
               </li>
               <li className="flex items-start">
-                <i className="fas fa-check text-green-500 mr-2 mt-1"></i>
+                <i className="fas fa-check text-[#1FB57A] mr-2 mt-1"></i>
                 <span>Não há limite de indicações - quanto mais amigos, mais você ganha!</span>
               </li>
               <li className="flex items-start">
-                <i className="fas fa-check text-green-500 mr-2 mt-1"></i>
+                <i className="fas fa-check text-[#1FB57A] mr-2 mt-1"></i>
                 <span>O depósito é feito na chave PIX cadastrada acima em até 48h</span>
               </li>
             </ul>
