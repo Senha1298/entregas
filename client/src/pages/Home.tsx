@@ -69,7 +69,7 @@ const Home = () => {
       <div className={showCepModal ? 'hidden' : 'block'}>
         <Header />
         <PageTitle />
-        {!showCepModal && <VideoSection />}
+        <VideoSection />
         <HeroSection />
         <Carousel />
         <InfoSection />
